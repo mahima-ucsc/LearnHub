@@ -31,7 +31,7 @@ class AuthController
     public function chooseRole()
     {
         $role = $_POST['role'];
-        $_SESSION['role'] = $role;
+        $_SESSION['temp_role'] = $role;
         redirectTo("/register/create-account");
     }
 

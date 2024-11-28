@@ -63,13 +63,14 @@ class UserService
                 "last_name" => $formData['last_name'],
                 "date_of_birth" => $formData['date_of_birth'],
                 "email" => $formData['email'],
-                "user_role" => $_SESSION['role'],
+                "user_role" => $_SESSION['temp_role'],
                 "password" => $password,
             ]
         );
         session_regenerate_id();
         $_SESSION['user'] = $this->db->lastInsertId();
-        $_SESSION['user_role'] = $formData['role'];
+        $_SESSION['user_role'] = $_SESSION['temp_role'];
+        unset($_SESSION['temp_role']);
     }
 
     public function login(array $formData)
@@ -94,6 +95,7 @@ class UserService
     public function logout()
     {
         unset($_SESSION['user']);
+        unset($_SESSION['user_role']);
         session_regenerate_id();
     }
 
