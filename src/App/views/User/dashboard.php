@@ -27,7 +27,7 @@
           <li id="courseManagementTab" onclick="showSection('courseManagementContent', 'courseManagementTab')">Manage Courses</li>
           <li id="adManagementTab" onclick="showSection('adManagementContent', 'adManagementTab')">Manage Ads</li>
           <li id="helpAndSupportTab" onclick="showSection('helpAndSupportContent', 'helpAndSupportTab')">supports</li>
-          <li>Transactions</li>
+          <li onclick="window.location.href='/billing-and-payment'">Transactions</li>
         </ul>
       </nav>
 

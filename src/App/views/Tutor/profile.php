@@ -16,9 +16,9 @@
             </div>
             <div class="user-data">
                 <h1 class="name">
-                    <?php echo e($userDetails['first_name'] . ' ' . $userDetails['last_name']); ?>
+                    Ajantha Silva
                 </h1>
-                <p class="username"><?php echo $userDetails['first_name'] ?></p>
+                <p class="username">ajantha</p>
             </div>
 
             <!-- Status badge -->
@@ -306,7 +306,7 @@
                             placeholder="Share your experience with this course..."
                             required></textarea>
                     </div>
-                    <input type="hidden" name="tutor_id" value="1" />
+                    <input type="hidden" name="tutor_id" value=<?= $_SESSION['user'] ?> />
 
                     <button type="submit" class="submit-review-btn">
                         Submit Review

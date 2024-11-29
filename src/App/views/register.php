@@ -63,7 +63,8 @@
                     </div>
                     <?php if (array_key_exists('email', $errors)) : ?>
                         <div class='register-error'>
-                            <?php echo e($errors['email'][0]); ?>
+                            <?php
+                            echo e($errors['email']); ?>
                         </div>
                     <?php endif; ?>
                 </div>

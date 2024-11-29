@@ -78,7 +78,7 @@
                 </svg>
                 <div class="dropdown-content">
                     <?php if (!empty($_SESSION['user'])): ?>
-                        <?php if (!($_SESSION['user_role'])): ?>
+                        <?php if (!($_SESSION['user_role'] === 'admin')): ?>
                             <a href="/profile">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>

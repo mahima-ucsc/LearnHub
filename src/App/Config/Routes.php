@@ -24,7 +24,7 @@ function registerRoutes(App $app)
     $app->get('/admin-dashboard', [PageController::class, 'adminDashboard'], [AdminOnlyMiddleware::class]);
     $app->get('/admin-dashboard/user-managment', [PageController::class, 'userManagment'], [AdminOnlyMiddleware::class]);
     $app->get('/admin-dashboard/course-managment', [PageController::class, 'courseManagment'], [AdminOnlyMiddleware::class]);
-    $app->get('/settings', [PageController::class, 'settings'], [AdminOnlyMiddleware::class]);
+    $app->get('/settings', [PageController::class, 'settings']);
     $app->get('/tutor', [TutorProfileController::class, 'tutorProfile'], [AuthRequiredMiddleware::class]);
     $app->get('/alert', [AlertController::class, 'alert']);
     $app->get('/error', [PageController::class, 'error']);

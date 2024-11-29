@@ -102,15 +102,4 @@ class CourseService
             ]
         );
     }
-
-    public function getReviews()
-    {
-        $userReview = $this->db->query(
-            "SELECT * FROM course_review WHERE user_id = :user_id",
-            [
-                'user_id' => $_SESSION['user']
-            ]
-        )->findAll();
-        return $userReview;
-    }
 }
