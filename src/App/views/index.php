@@ -10,7 +10,7 @@
                 <h1>Unlock Your Potential with LearnHub</h1>
                 <p>Discover a world of knowledge at your fingertips. Start your learning journey today!</p>
                 <div class="cta-buttons">
-                    <?php if ($_SESSION['user']): ?>
+                    <?php if (!empty($_SESSION['user'])): ?>
                         <a href="#courses" class="cta-primary get-start">Get Started</a>
                     <?php else: ?>
                         <a href="/register" class="cta-primary">Signup For Free</a>
