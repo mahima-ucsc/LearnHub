@@ -134,14 +134,14 @@
 
 
     <!-- Feedback Section -->
-    <section class="feedback-section">
+    <!-- <section class="feedback-section">
         <h2>Send Us Feedback</h2>
         <form>
             <label for="feedback">Your Feedback:</label>
             <textarea id="feedback" rows="4" placeholder="Write your feedback here..."></textarea>
             <button type="submit">Submit Feedback</button>
         </form>
-    </section>
+    </section> -->
 
 
 </section>
