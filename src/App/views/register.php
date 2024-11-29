@@ -150,6 +150,24 @@
             });
 
         });
+
+        // new validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const dobInput = document.getElementById('dob');
+            const today = new Date().toISOString().split('T')[0];
+            dobInput.setAttribute('max', today); // Set max date to today
+
+            // Optional: Additional validation on form submission
+            const form = document.getElementById('signup-form');
+            form.addEventListener('submit', function(event) {
+                const dobValue = new Date(dobInput.value);
+                const todayDate = new Date();
+                if (dobValue > todayDate) {
+                    event.preventDefault();
+                    alert('Date of Birth cannot be in the future.');
+                }
+            });
+        });
     </script>
 </body>
 
