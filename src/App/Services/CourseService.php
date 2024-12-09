@@ -60,17 +60,28 @@ class CourseService
     {
         // Fetch the search term from the GET request
         $searchTerm = $_GET['s'] ?? '';
-        $searchBy = $_GET['f'];
+        $searchBy = $_GET['f'] ?? '';
+        $Searchlocation = $_GET['location'] ?? '';
         $searchTerm = trim($searchTerm);
         $params = [
             "term" => "%{$searchTerm}%",
         ];
 
+        $locationClause = '';
+        if (!empty($Searchlocation)) {
+            $params["Searchlocation"] = $Searchlocation;
+            if ($searchBy === "tutor") {
+                $locationClause = "AND users.location = :Searchlocation";
+            } else {
+                $locationClause = "AND courses.location = :Searchlocation";
+            }
+        }
+
         if ($searchBy === "tutor") {
-            $whereClause = "WHERE users.first_name LIKE :term OR users.last_name LIKE :term";
+            $whereClause = "WHERE (users.first_name LIKE :term OR users.last_name LIKE :term) {$locationClause}";
         } else {
 
-            $whereClause = "WHERE title LIKE :term";
+            $whereClause = "WHERE title LIKE :term {$locationClause}";
         }
 
         $courses = $this->db->query(
