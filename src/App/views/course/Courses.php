@@ -46,10 +46,10 @@
                         <div class="filter-section">
                             <h4>Location</h4>
                             <div class="checkbox-group">
-                                <label><input type="checkbox" name="location" value="colombo"> Colombo</label>
-                                <label><input type="checkbox" name="location" value="kandy"> Kandy</label>
-                                <label><input type="checkbox" name="location" value="gampaha"> Gampaha</label>
-                                <label><input type="checkbox" name="location" value="matara"> Matara</label>
+                                <label><input type="radio" name="location" value="colombo" <?php echo e((string)$location === 'colombo' ? 'checked' : ''); ?>> Colombo</label>
+                                <label><input type="radio" name="location" value="kandy" <?php echo e((string)$location === 'kandy' ? 'checked' : ''); ?>> Kandy</label>
+                                <label><input type="radio" name="location" value="gampaha" <?php echo e((string)$location === 'gampaha' ? 'checked' : ''); ?>> Gampaha</label>
+                                <label><input type="radio" name="location" value="matara" <?php echo e((string)$location === 'matara' ? 'checked' : ''); ?>> Matara</label>
                             </div>
                         </div>
                         <div class="filter-section">
@@ -92,7 +92,7 @@
                                 </p>
                                 <p>
                                     <i class="fa fa-map-marker icon"></i>
-                                    Colombo
+                                    <?php echo ($course['location']); ?>
                                 </p>
                                 <p class="price">
                                     Rs. <?php echo ($course['price']); ?>/<?php echo ($course['pricing_period']); ?>
@@ -101,7 +101,7 @@
                             <div class="course-meta">
                                 <div class="course-teacher">
                                     <img src="/assets/images/user.jpeg" alt="teacher" />
-                                    <p>Isuru Naveen</p>
+                                    <p><?php echo ($course['first_name']); ?> <?php echo ($course['last_name']); ?></p>
                                 </div>
                                 <div>
                                     <a href="/courses/demo"> See More</a>

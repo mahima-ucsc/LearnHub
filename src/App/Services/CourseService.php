@@ -54,43 +54,30 @@ class CourseService
             ]
         )->find();
     }
-    public function getAllCourses(int $length = 6, int $offset = 0)
-    {
-        $searchTerm = addcslashes($_GET['s'] ?? '', '-_/');
-        $searchTerm = trim($searchTerm);
-        $params = [
-            "title" => "%{$searchTerm}%"
-        ];
 
-        $courses = $this->db->query(
-            "SELECT * FROM courses WHERE title LIKE :title
-            LIMIT {$length} OFFSET {$offset}",
-            $params
-        )->findAll();
-
-        $courseCount = $this->db->query(
-            "SELECT COUNT(*) FROM courses WHERE title LIKE :title",
-            $params
-        )->count();
-
-        return [$courses, $courseCount];
-    }
-
-    public function getAllCoursesByTutor(int $length = 6, int $offset = 0)
+    // search courses by teacher or course title
+    public function searchCourse(int $length = 6, int $offset = 0)
     {
         // Fetch the search term from the GET request
         $searchTerm = $_GET['s'] ?? '';
+        $searchBy = $_GET['f'];
         $searchTerm = trim($searchTerm);
         $params = [
-            "name" => "%{$searchTerm}%",
+            "term" => "%{$searchTerm}%",
         ];
 
-        // Use a JOIN to find courses directly based on tutor details
+        if ($searchBy === "tutor") {
+            $whereClause = "WHERE users.first_name LIKE :term OR users.last_name LIKE :term";
+        } else {
+
+            $whereClause = "WHERE title LIKE :term";
+        }
+
         $courses = $this->db->query(
-            "SELECT courses.* 
+            "SELECT courses.*, users.first_name as first_name, users.last_name 
          FROM courses
          JOIN users ON users.user_id = courses.tutor_id
-         WHERE users.first_name LIKE :name OR users.last_name LIKE :name
+         {$whereClause}
          LIMIT {$length} OFFSET {$offset}",
             $params
         )->findAll();
@@ -99,7 +86,7 @@ class CourseService
             "SELECT COUNT(*) 
          FROM courses
          JOIN users ON users.user_id = courses.tutor_id
-         WHERE users.first_name LIKE :name OR users.last_name LIKE :name",
+         {$whereClause}",
             $params
         )->count();
 
