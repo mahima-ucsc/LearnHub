@@ -24,12 +24,21 @@ class CoursesController
         $length = 6;
         $offset = ($page - 1) * $length;
         $searchTerm = $_GET['s'] ?? null;
-        $searchFilter = $_GET['f'] ?? null;
+        $searchBy = $_GET['f'] ?? null;
 
-        [$courses, $courseCount] = $this->courseService->getAllCourses(
-            $length,
-            $offset
-        );
+        if ($searchBy === 'tutor') {
+            [$courses, $courseCount] = $this->courseService->getAllCoursesByTutor(
+                $length,
+                $offset
+            );
+        } else {
+
+            [$courses, $courseCount] = $this->courseService->getAllCourses(
+                $length,
+                $offset
+            );
+        }
+
 
         $lastPage = ceil($courseCount / $length);
         $pages = $lastPage ? range(1, $lastPage) : [];
@@ -38,7 +47,7 @@ class CoursesController
             fn($pageNum) => http_build_query([
                 'p' => $pageNum,
                 's' => $searchTerm,
-                'f' => $searchFilter
+                'f' => $searchBy
             ]),
             $pages
         );
@@ -50,17 +59,17 @@ class CoursesController
             "previousPageQuery" => http_build_query([
                 'p' => $page - 1,
                 's' => $searchTerm,
-                'f' => $searchFilter
+                'f' => $searchBy
             ]),
             "lastPage" => $lastPage,
             "nextPageQuery" => http_build_query([
                 'p' => $page + 1,
                 's' => $searchTerm,
-                'f' => $searchFilter
+                'f' => $searchBy
             ]),
             "pageLinks" => $pageLinks,
             "searchTerm" => $searchTerm,
-            "searchFilter" => $searchFilter
+            "searchBy" => $searchBy
         ]);
     }
 

@@ -57,7 +57,7 @@ class CourseService
     public function getAllCourses(int $length = 6, int $offset = 0)
     {
         $searchTerm = addcslashes($_GET['s'] ?? '', '-_/');
-        $searchFilter = $_GET['f'] ?? '';
+        $searchTerm = trim($searchTerm);
         $params = [
             "title" => "%{$searchTerm}%"
         ];
@@ -75,6 +75,37 @@ class CourseService
 
         return [$courses, $courseCount];
     }
+
+    public function getAllCoursesByTutor(int $length = 6, int $offset = 0)
+    {
+        // Fetch the search term from the GET request
+        $searchTerm = $_GET['s'] ?? '';
+        $searchTerm = trim($searchTerm);
+        $params = [
+            "name" => "%{$searchTerm}%",
+        ];
+
+        // Use a JOIN to find courses directly based on tutor details
+        $courses = $this->db->query(
+            "SELECT courses.* 
+         FROM courses
+         JOIN users ON users.user_id = courses.tutor_id
+         WHERE users.first_name LIKE :name OR users.last_name LIKE :name
+         LIMIT {$length} OFFSET {$offset}",
+            $params
+        )->findAll();
+
+        $courseCount = $this->db->query(
+            "SELECT COUNT(*) 
+         FROM courses
+         JOIN users ON users.user_id = courses.tutor_id
+         WHERE users.first_name LIKE :name OR users.last_name LIKE :name",
+            $params
+        )->count();
+
+        return [$courses, $courseCount];
+    }
+
 
     public function update(array $formData, int $id)
     {
