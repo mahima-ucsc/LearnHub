@@ -17,6 +17,8 @@ class CoursesController
         private UserService $userService
     ) {}
 
+
+    // Search courses
     public function course()
     {
         $page = $_GET['p'] ?? 1;
@@ -25,19 +27,12 @@ class CoursesController
         $offset = ($page - 1) * $length;
         $searchTerm = $_GET['s'] ?? null;
         $searchBy = $_GET['f'] ?? null;
+        $location = $_GET['location'] ?? null;
 
-        if ($searchBy === 'tutor') {
-            [$courses, $courseCount] = $this->courseService->getAllCoursesByTutor(
-                $length,
-                $offset
-            );
-        } else {
-
-            [$courses, $courseCount] = $this->courseService->getAllCourses(
-                $length,
-                $offset
-            );
-        }
+        [$courses, $courseCount] = $this->courseService->searchCourse(
+            $length,
+            $offset
+        );
 
 
         $lastPage = ceil($courseCount / $length);
@@ -47,7 +42,8 @@ class CoursesController
             fn($pageNum) => http_build_query([
                 'p' => $pageNum,
                 's' => $searchTerm,
-                'f' => $searchBy
+                'f' => $searchBy,
+                "location" => $location
             ]),
             $pages
         );
@@ -59,19 +55,23 @@ class CoursesController
             "previousPageQuery" => http_build_query([
                 'p' => $page - 1,
                 's' => $searchTerm,
-                'f' => $searchBy
+                'f' => $searchBy,
+                "location" => $location
             ]),
             "lastPage" => $lastPage,
             "nextPageQuery" => http_build_query([
                 'p' => $page + 1,
                 's' => $searchTerm,
-                'f' => $searchBy
+                'f' => $searchBy,
+                "location" => $location
             ]),
             "pageLinks" => $pageLinks,
             "searchTerm" => $searchTerm,
-            "searchBy" => $searchBy
+            "searchBy" => $searchBy,
+            "location" => $location
         ]);
     }
+
 
     public function enrollCourse()
     {
