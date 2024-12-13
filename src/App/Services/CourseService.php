@@ -158,4 +158,11 @@ class CourseService
         )->findAll();
         return $userReview;
     }
+
+    public function getAllCourses()
+    {
+        $this->db->query(
+            "SELECT * FROM courses"
+        )->findAll();
+    }
 }

@@ -178,10 +178,10 @@ class CoursesController
             ]
         );
     }
-    public function demoCourses()
+    public function singleCourses(array $params)
     {
         echo $this->view->render(
-            "course/demo_courseInfo.php",
+            "course/single_course.php",
             [
                 'title' => "ICT 2024 A/L"
             ]
