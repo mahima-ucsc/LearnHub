@@ -104,7 +104,7 @@
                                     <p><?php echo ($course['first_name']); ?> <?php echo ($course['last_name']); ?></p>
                                 </div>
                                 <div>
-                                    <a href="/courses/demo"> See More</a>
+                                    <a href="/courses/<?php echo ($course['course_id']); ?>"> See More</a>
                                 </div>
                             </div>
                         </div>

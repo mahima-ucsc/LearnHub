@@ -24,7 +24,7 @@
                 <img src="/assets/images/user.jpeg" alt="John Doe" class="teacher-avatar">
                 <div class="teacher-info">
                     <h3> <?php echo e($user['first_name']); ?> <?php echo e($user['last_name']); ?></h3>
-                    <p>Senior Developer with 10+ years of experience. Passionate about teaching and helping others master Python programming.</p>
+                    <p><?php echo e($user['description']); ?></p>
                 </div>
             </div>
 
@@ -203,35 +203,7 @@
                 </div>
             </div>
         </div>
-        <div class="student-sidebar">
-            <div class="student-list-section">
-                <h2 class="section-title">Course Participants</h2>
-                <ul class="student-list">
-                    <li class="student-item">
-                        <img src="/assets/images/user.jpeg" alt="Student Avatar" class="student-avatar">
-                        <div class="student-details">
-                            <span class="student-name">Sachith Dhanushka</span>
-                            <span class="student-registered-date">Registered: Nov 15, 2024</span>
-                        </div>
-                    </li>
-                    <li class="student-item">
-                        <img src="/assets/images/user.jpeg" alt="Student Avatar" class="student-avatar">
-                        <div class="student-details">
-                            <span class="student-name">Dinuka Sahan</span>
-                            <span class="student-registered-date">Registered: Nov 10, 2024</span>
-                        </div>
-                    </li>
-                    <li class="student-item">
-                        <img src="/assets/images/user.jpeg" alt="Student Avatar" class="student-avatar">
-                        <div class="student-details">
-                            <span class="student-name">Isuru Naveen</span>
-                            <span class="student-registered-date">Registered: Nov 5, 2024</span>
-                        </div>
-                    </li>
-                </ul>
-                <button class="see-more-students" onclick="window.location.href='/courses/my-courses/<?php echo e($course['course_id']); ?>/participant';">See All Participants</button>
-            </div>
-        </div>
+
     </div>
     <div class="course-section">
         <h2 class="section-title">Course Resources</h2>
