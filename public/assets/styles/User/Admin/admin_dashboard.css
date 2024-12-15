@@ -54,6 +54,9 @@
 }
 
 /* Navigation Styles */
+.admin-nav a{
+    text-decoration: none;
+}
 .admin-nav ul {
     display: flex;
     flex-direction: column;
