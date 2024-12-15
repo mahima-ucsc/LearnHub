@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) NOT NULL,
     phone_no VARCHAR(15),
     date_of_birth DATE NOT NULL,
+    description VARCHAR(255),
     joined_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_login DATETIME,
     location VARCHAR(255),

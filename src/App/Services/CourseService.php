@@ -43,13 +43,24 @@ class CourseService
 
         return $myCourses;
     }
-    public function getCourse(string $id)
+    public function getMyCourseById(string $id)
     {
         return $this->db->query(
             "SELECT * FROM courses
             WHERE tutor_id = :user_id AND course_id = :id",
             [
                 'user_id' => $_SESSION['user'],
+                'id' => $id
+            ]
+        )->find();
+    }
+
+    public function getByCourseId(string $id)
+    {
+        return $this->db->query(
+            "SELECT * FROM courses
+            WHERE course_id = :id",
+            [
                 'id' => $id
             ]
         )->find();
@@ -157,5 +168,12 @@ class CourseService
             ]
         )->findAll();
         return $userReview;
+    }
+
+    public function getAllCourses()
+    {
+        return $this->db->query(
+            "SELECT * FROM courses"
+        )->findAll();
     }
 }

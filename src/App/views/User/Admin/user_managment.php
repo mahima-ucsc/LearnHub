@@ -1,177 +1,106 @@
-<?php include $this->resolve("partials/_header.php"); ?>
-
-<head>
-    <link rel="stylesheet" href="/assets/styles/User/Admin/user_managment.css">
-
-</head>
-<section class="user-dashboard">
-    <div class="user-managment-container">
-        <div class="user-content">
-            <div class="user-header">
-                <h1>User Management</h1>
-                <div class="header-actions">
-                    <div class="search-form">
-                        <input type="text" class="search-input" id="searchInput" placeholder="Search users...">
-                        <button class="search-btn" onclick="searchUsers()">Search</button>
-                    </div>
-                    <button class="add-user-btn" onclick="toggleModal()">Add New User</button>
-                </div>
+<div class="user-content">
+    <div class="user-header">
+        <h1>User Management</h1>
+        <div class="header-actions">
+            <div class="search-form">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search users...">
+                <button class="search-btn" onclick="searchUsers()">Search</button>
             </div>
-
-            <!-- User Table -->
-            <div class="user-table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Joined Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="userTableBody">
-                        <?php foreach ($users as $user) : ?>
-
-                            <tr>
-                                <td><?php echo $user['user_id']; ?></td>
-                                <td><?php echo $user['first_name']; ?> <?php echo $user['last_name']; ?></td>
-                                <td><?php echo $user['email']; ?></td>
-                                <td>2024-01-15</td>
-                                <td>
-                                    <button class="delete-btn">Delete</button>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-
-            <div id="addUserModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="toggleModal()">&times;</span>
-                    <h2>Add New User</h2>
-                    <form id="addUserForm" onsubmit="addUser(event)">
-                        <div class="form-group">
-                            <label for="username">Username:</label>
-                            <input type="text" id="username" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email:</label>
-                            <input type="email" id="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password:</label>
-                            <input type="password" id="password" required>
-                        </div>
-                        <button type="submit" class="add-user-btn">Add User</button>
-                    </form>
-                </div>
-            </div>
+            <button class="add-user-btn" onclick="toggleModal()">Add New User</button>
         </div>
     </div>
-</section>
 
-<script>
-    // Sample user data
-    let users = [{
-            id: 1,
-            username: "john_doe",
-            email: "john@example.com",
-            joinedDate: "2024-01-15"
-        },
-        {
-            id: 2,
-            username: "jane_smith",
-            email: "jane@example.com",
-            joinedDate: "2024-02-01"
-        },
-        {
-            id: 3,
-            username: "mike_johnson",
-            email: "mike@example.com",
-            joinedDate: "2024-02-15"
-        },
-        {
-            id: 4,
-            username: "sarah_wilson",
-            email: "sarah@example.com",
-            joinedDate: "2024-03-01"
-        },
-        {
-            id: 5,
-            username: "tom_brown",
-            email: "tom@example.com",
-            joinedDate: "2024-03-15"
-        }
-    ];
-
-    // Function to render users table
-    function renderUsers(usersToRender = users) {
-        const tableBody = document.getElementById('userTableBody');
-        tableBody.innerHTML = usersToRender.map(user => `
+    <!-- User Table -->
+    <div class="user-table-container">
+        <table class="data-table">
+            <thead>
                 <tr>
-                    <td>${user.id}</td>
-                    <td>${user.username}</td>
-                    <td>${user.email}</td>
-                    <td>${new Date(user.joinedDate).toLocaleDateString()}</td>
-                    <td>
-                        <button class="delete-btn" onclick="deleteUser(${user.id})">Delete</button>
-                    </td>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Joined Date</th>
+                    <th>Actions</th>
                 </tr>
-            `).join('');
-    }
+            </thead>
+            <tbody id="userTableBody">
+                <?php foreach ($users as $user) : ?>
 
-    // Function to handle user search
-    function searchUsers() {
-        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-        const filteredUsers = users.filter(user =>
-            user.username.toLowerCase().includes(searchTerm) ||
-            user.email.toLowerCase().includes(searchTerm)
-        );
-        renderUsers(filteredUsers);
-    }
+                    <tr>
+                        <td><?php echo $user['user_id']; ?></td>
+                        <td><?php echo $user['first_name']; ?> <?php echo $user['last_name']; ?></td>
+                        <td><?php echo $user['email']; ?></td>
+                        <td>2024-01-15</td>
+                        <td>
+                            <button class="delete-btn" onclick="event.stopPropagation();showModal('/user/delete/<?php echo e($user['user_id']) ?>')">Delete</button>
 
-    // Function to add new user
-    function addUser(event) {
-        event.preventDefault();
-        const newUser = {
-            id: users.length + 1,
-            username: document.getElementById('username').value,
-            email: document.getElementById('email').value,
-            joinedDate: new Date().toISOString().split('T')[0]
-        };
-        users.push(newUser);
-        renderUsers();
-        toggleModal();
-        event.target.reset();
-    }
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
 
-    // Function to delete user
-    function deleteUser(id) {
-        if (confirm('Are you sure you want to delete this user?')) {
-            users = users.filter(user => user.id !== id);
-            renderUsers();
-        }
-    }
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="toggleModal()">&times;</span>
+            <h2>Add New User</h2>
+            <form id="addUserForm" onsubmit="addUser(event)">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="add-user-btn">Add User</button>
+            </form>
+        </div>
+    </div>
+</div>
+<?php include $this->resolve('modals/delete_modal.php'); ?>
 
-    // Function to toggle modal
+<!-- <script>
+    // Toggles the Add User Modal
     function toggleModal() {
         const modal = document.getElementById('addUserModal');
         modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
     }
 
-    // Close modal when clicking outside
-    window.onclick = function(event) {
-        const modal = document.getElementById('addUserModal');
-        if (event.target == modal) {
-            modal.style.display = 'none';
-        }
+    // Handles form submission
+    function addUser(event) {
+        event.preventDefault();
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        console.log('User Added:', {
+            username,
+            email,
+            password
+        });
+
+        // Close modal after submission
+        toggleModal();
     }
 
-    // Initial render
-    renderUsers();
-</script>
 
 
-<?php include $this->resolve("partials/_footer.php"); ?>
+    // Close modal on clicking outside or pressing Escape
+    window.onclick = function(event) {
+        const addUserModal = document.getElementById('addUserModal');
+        if (event.target === addUserModal) {
+            addUserModal.style.display = 'none';
+        }
+    };
+    document.addEventListener('keydown', function(event) {
+        const addUserModal = document.getElementById('addUserModal');
+        if (event.key === 'Escape' && addUserModal.style.display === 'block') {
+            hideModal();
+        }
+    });
+</script> -->

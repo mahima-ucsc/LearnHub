@@ -1,93 +1,69 @@
-<?php include $this->resolve("partials/_header.php"); ?>
+<section class="courses-page">
+    <div class="main-container">
+        <!-- <div class="main-title">
+                        <h1>My Courses</h1>
+                    </div> -->
 
-<head>
-    <link rel="stylesheet" href="/assets/styles/User/Admin/course_managment.css">
-
-</head>
-
-
-<section class="course-content">
-    <div class="back-button">
-        <a href="/course/request">← Back to Requests</a>
-    </div>
-    <div class="header">
-        <h1>Course Management</h1>
-        <div class="search-bar">
-            <input type="text" placeholder="Search courses...">
-            <button class="btn">Add New Course</button>
-        </div>
-    </div>
-
-    <div class="courses-table-container">
-        <table class="courses-table">
-            <thead>
-                <tr>
-                    <th>Course Name</th>
-                    <th>Instructor</th>
-                    <th>Students</th>
-                    <th>Lessons</th>
-                    <th>Status</th>
-                    <th>Last Updated</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Web Development Fundamentals</td>
-                    <td>John Smith</td>
-                    <td>156</td>
-                    <td>24</td>
-                    <td><span class="status-badge status-active">Active</span></td>
-                    <td>2024-03-15</td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn">Edit</button>
-                            <button class="btn">View</button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Python Programming</td>
-                    <td>Sarah Johnson</td>
-                    <td>0</td>
-                    <td>18</td>
-                    <td><span class="status-badge status-draft">Draft</span></td>
-                    <td>2024-03-14</td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn">Edit</button>
-                            <button class="btn">View</button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Data Science Basics</td>
-                    <td>Michael Brown</td>
-                    <td>89</td>
-                    <td>32</td>
-                    <td><span class="status-badge status-active">Active</span></td>
-                    <td>2024-03-13</td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn">Edit</button>
-                            <button class="btn">View</button>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="table-footer">
-            <div>Showing 1-3 of 15 courses</div>
-            <div class="pagination">
-                <button>&lt;</button>
-                <button class="active">1</button>
-                <button>2</button>
-                <button>3</button>
-                <button>&gt;</button>
+        <div class="admin-header">
+            <h1>Course Management</h1>
+            <div class="header-actions">
+                <div class="search-form">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search users...">
+                    <button class="search-btn" onclick="searchUsers()">Search</button>
+                </div>
+                <button class="add-user-btn" onclick="toggleModal()"><a href="/course/create" style="text-decoration: none;"> Add New Course </a></button>
             </div>
         </div>
+
+        <div class="table-container">
+            <table class="courses-table">
+                <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>Students</th>
+                        <th>Time</th>
+                        <th>Revenue</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($courses as $courseData): ?>
+                        <tr onclick="window.location.href='/courses/my-courses/<?php echo e($courseData['course_id']) ?>';" style="cursor: pointer;">
+                            <td>
+                                <div class="course-name">
+                                    <?php echo e($courseData['title']) ?>
+                                    <span class="grade-badge">Grade <?php echo e($courseData['grade_id']) ?></span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="students-count">24 students</span>
+                            </td>
+                            <td>
+                                <div class="time-slot">
+                                    <i class="fas fa-clock"></i>
+                                    <?php
+                                    $start = date('g:i A', strtotime($courseData['start_time']));
+                                    $end = date('g:i A', strtotime($courseData['end_time']));
+                                    ?>
+                                    <span><?php echo e($start) ?> - <?php echo e($end) ?></span>
+                                    <span class="day-badge"><?php echo e($courseData['day']) ?></span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="revenue">Rs. <?php echo e($courseData['price'] * 24) ?></span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="/manage-course/edit/<?php echo e($courseData['course_id']); ?>" class="btn btn-edit">Edit</a>
+                                    <button onclick="event.stopPropagation(); showModal('/manage-course/delete/<?php echo e($courseData['course_id']) ?>')" class="btn btn-delete">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
+    <?php include $this->resolve('modals/delete_modal.php'); ?>
+
 </section>
-
-
-<?php include $this->resolve("partials/_header.php"); ?>

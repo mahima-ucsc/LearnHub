@@ -82,7 +82,7 @@ class CoursesController
 
     public function courseInfo(array $params)
     {
-        $course = $this->courseService->getCourse($params['course_id']);
+        $course = $this->courseService->getByCourseId($params['course_id']);
         $user = $this->userService->getUserProfile();
 
         if (!$course) {
@@ -91,7 +91,7 @@ class CoursesController
 
 
         echo $this->view->render(
-            'course/CourseInfo.php',
+            'course/course_info.php',
             [
                 'course' => $course,
                 'title' => $course['title'],
@@ -127,7 +127,7 @@ class CoursesController
 
     public function courseEditView(array $params)
     {
-        $course = $this->courseService->getCourse($params['course']);
+        $course = $this->courseService->getMyCourseById($params['course']);
 
         if (!$course) {
             redirectTo('/courses/my-courses');
@@ -144,7 +144,7 @@ class CoursesController
 
     public function editCourse(array $params)
     {
-        $course = $this->courseService->getCourse($params['course']);
+        $course = $this->courseService->getMyCourseById($params['course']);
 
         if (!$course) {
             redirectTo('/courses/my-courses');
@@ -175,15 +175,6 @@ class CoursesController
             "course/user_course_stats.php",
             [
                 'title' => "Stats"
-            ]
-        );
-    }
-    public function demoCourses()
-    {
-        echo $this->view->render(
-            "course/demo_courseInfo.php",
-            [
-                'title' => "ICT 2024 A/L"
             ]
         );
     }
