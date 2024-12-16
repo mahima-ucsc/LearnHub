@@ -1,6 +1,7 @@
 <?php include $this->resolve("partials/_header.php"); ?>
 
 <link rel="stylesheet" href="/assets/styles/Post/course-requests.css">
+<link rel="stylesheet" href="/assets/styles/Post/action-menu.css">
 
 <section class="course-requests-container">
     <h1 class="course-requests-title">Course Requests</h1>

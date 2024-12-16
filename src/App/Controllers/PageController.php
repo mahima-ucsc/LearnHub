@@ -18,6 +18,12 @@ class PageController
             "title" => "Home"
         ]);
     }
+    public function helpAndSupportReview()
+    {
+        echo $this->view->render('User/Admin/help_And_Support_Review.php', [
+            "title" => "help_And_Support_Review"
+        ]);
+    }
 
     public function about()
     {
@@ -160,6 +166,12 @@ class PageController
         echo $this->view->render('User/settings.php', [
             "title" => "Settings",
             "userDetails" => $userDetails
+        ]);
+    }
+    public function test()
+    {
+        echo $this->view->render('User/test-dash.php', [
+            "title" => "Settings",
         ]);
     }
 }

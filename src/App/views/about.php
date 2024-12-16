@@ -50,25 +50,24 @@
             <i class="fas fa-chalkboard-user"></i>
             <div>
                 <h3>+2k</h3>
-                <p>expert <br> tutors</p>
+                <p>expert tutors</p>
             </div>
         </div>
 
     </div>
 
-    <div class="mision">
-        <h2>Our Mission</h2>
-        <p>
-            To bridge the gap in educational infrastructure, empowering passionate tutors to share their knowledge seamlessly while providing learners with flexible and diverse opportunities to connect, learn, and grow. Through a collaborative ecosystem, we aim to transform education into an accessible and engaging experience for everyone.
-        </p>
-    </div>
+    <div class="cent">
+        <div class="mision">
+            <h2>Our Mission</h2>
+            <p>
+                To bridge the gap in educational infrastructure, empowering passionate tutors to share their knowledge seamlessly while providing learners with flexible and diverse opportunities to connect, learn, and grow. Through a collaborative ecosystem, we aim to transform education into an accessible and engaging experience for everyone.
+            </p>
+        </div>
 
-    <div class="work-flow">
-        <div class="up">
-            <img src="/assets/images/work-flow.jpeg" alt="work-flow-img">
+        <div class="work-flow">
+            <p>The Learn Hub workflow seamlessly connects tutors and learners: tutors register and create engaging classes, while learners sign up to explore and enroll in diverse learning opportunities, fostering collaboration and interactive learning within a vibrant, connected ecosystem.</p>
             <h2>How Learn Hub Works</h2>
         </div>
-        <p>The Learn Hub workflow seamlessly connects tutors and learners: tutors register and create engaging classes, while learners sign up to explore and enroll in diverse learning opportunities, fostering collaboration and interactive learning within a vibrant, connected ecosystem.</p>
     </div>
 
     <div class="team">
@@ -124,6 +123,5 @@
 
 
 </section>
-<!-- End Main Content Area -->
 
 <?php include $this->resolve("partials/_footer.php"); ?>

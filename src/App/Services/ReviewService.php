@@ -38,7 +38,7 @@ class ReviewService
         $userReview = $this->db->query(
             "SELECT * FROM tutor_review WHERE user_id = :user_id",
             [
-                'user_id' => 2
+                'user_id' => $_SESSION['user']
             ]
         )->findAll();
         return $userReview;

@@ -10,7 +10,7 @@
 
 <body>
     <nav class="navbar">
-        <img src="download.png" alt="LearnHub Logo" class="logo">
+        <img src="/assets/icons/lernhub-logo.png" alt="LearnHub Logo" class="logo">
         <ul>
             <li><a href="#">Home</a></li>
             <li><a href="#">About Us</a></li>
@@ -35,6 +35,11 @@
                         </svg>
                         <input type="text" name="first_name" id="fname" placeholder="First Name" required>
                     </div>
+                    <?php if (array_key_exists('first_name', $errors)) : ?>
+                        <div class='register-error'>
+                            <?php echo e($errors['first_name'][0]); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <div class="form-group">
                     <div class="input-wrapper">
@@ -43,6 +48,11 @@
                         </svg>
                         <input type="text" name="last_name" id="lname" placeholder="Last Name" required>
                     </div>
+                    <?php if (array_key_exists('last_name', $errors)) : ?>
+                        <div class='register-error'>
+                            <?php echo e($errors['last_name'][0]); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <div class="form-group">
                     <div class="input-wrapper">
@@ -51,6 +61,11 @@
                         </svg>
                         <input type="email" name="email" id="email" placeholder="Email Address" required>
                     </div>
+                    <?php if (array_key_exists('email', $errors)) : ?>
+                        <div class='register-error'>
+                            <?php echo e($errors['email'][0]); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <div class="form-group">
                     <div class="input-wrapper">
@@ -60,6 +75,11 @@
 
                         <input type="date" name="date_of_birth" id="dob" placeholder="Date of Birth" required>
                     </div>
+                    <?php if (array_key_exists('date_of_birth', $errors)) : ?>
+                        <div class='register-error'>
+                            <?php echo e($errors['date_of_birth'][0]); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <div class="form-group">
                     <div class="input-wrapper">
@@ -68,6 +88,11 @@
                         </svg>
                         <input type="password" name="password" id="password" placeholder="Password" required>
                     </div>
+                    <?php if (array_key_exists('password', $errors)) : ?>
+                        <div class='register-error'>
+                            <?php echo e($errors['password'][0]); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <div class="form-group">
                     <div class="input-wrapper">
@@ -76,16 +101,34 @@
                         </svg>
                         <input type="password" name="confirmPassword" id="confirm-password" placeholder="Confirm Password" required>
                     </div>
+                    <?php if (array_key_exists('confirmPassword', $errors)) : ?>
+                        <div class='register-error'>
+                            <?php echo e($errors['confirmPassword'][0]); ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="show-password">
+                        <label for="show-password">
+                            <span class="checkbox">
+                                <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                                </svg>
+                            </span>
+                            Show Password
+                        </label>
+                    </div>
                 </div>
                 <div class="checkbox-wrapper">
-                    <input type="checkbox" id="show-password">
-                    <label for="show-password">
+                    <input type="checkbox" id="terms" style="color:black;">
+                    <label for="terms">
                         <span class="checkbox">
                             <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
                             </svg>
                         </span>
-                        Show Password
+                        By signing up, I confirm that I agree to the Terms and Conditions and Privacy Policy.
                     </label>
                 </div>
                 <button type="submit" class="signup-button">Sign Up</button>

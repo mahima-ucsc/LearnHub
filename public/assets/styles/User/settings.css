@@ -135,6 +135,78 @@
     background-color: #ffd95d;
 }
 
+/* Change profile picture and cover photo */
+.profile-image-upload,
+.cover-image-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.image-upload-container,
+.cover-image-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.profile-image-preview,
+.cover-image-preview {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #f0f0f0;
+}
+
+.cover-image-preview {
+    width: 100%;
+    height: 300px;
+    border-radius: 12px;
+    border: none;
+}
+
+.profile-image-preview img,
+.cover-image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-image-preview .overlay,
+.cover-image-preview .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.profile-image-preview:hover .overlay,
+.cover-image-preview:hover .overlay {
+    opacity: 1;
+}
+
+.upload-icon {
+    color: white;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+}
+
+.file-input {
+    display: none;
+}
+
 @media screen and (max-width: 480px) {
     .settings-container {
         flex-direction: column;

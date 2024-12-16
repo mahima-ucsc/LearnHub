@@ -14,10 +14,17 @@
     justify-content: center;
     align-items: center;
     padding: 20px;
-    margin-top: 50px;
     margin-left: 50px;
+    flex-direction: column;
 }
-
+.std-cover{
+    margin: 0;
+    padding: 0;
+    margin-bottom: -120px;
+}
+.std-cover img{
+    width: 1500px;
+}
 /* Main layout */
 .main-container {
     display: flex;
@@ -28,7 +35,6 @@
 }
 
 .left-container, .right-container {
-    background-color: #ffffff;
     border-radius: 16px;
     /* box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); */
     padding: 40px;
@@ -42,6 +48,7 @@
 
 .right-container {
     flex: 0 0 800px;
+    margin-top: 50px;
 }
 
 /* User profile section */
@@ -172,6 +179,23 @@
     color: #FFC400;
 }
 
+.course-btn{
+    display: flex;
+    justify-content: center;
+}
+
+.course-btn button{
+    display: block;
+    background-color: #d6d6d6;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 10px;
+    color: #353535;
+    cursor: pointer;
+}
+.course-btn button:hover{
+    background-color: #999999;
+}
 /* Tags section */
 .tags {
     margin-top: 36px;

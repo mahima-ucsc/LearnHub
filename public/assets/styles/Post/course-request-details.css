@@ -168,7 +168,13 @@
   margin: 0 0 10px;
   font-weight: bold;
 }
-
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+}
+.hidden {
+  display: none;
+}
 @media (max-width: 768px) {
   .request-metadata {
     gap: 15px;

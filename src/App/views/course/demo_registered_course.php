@@ -248,6 +248,105 @@
             </li>
         </ul>
     </div>
+    <!-- Review -->
+    <div class="course-section reviews-section">
+        <h2 class="section-title">Student Reviews</h2>
+        <div class="reviews-summary">
+            <div class="overall-rating">
+                <div class="rating-number">4.8</div>
+                <div class="rating-stars">
+                    <span class="star active">★</span>
+                    <span class="star active">★</span>
+                    <span class="star active">★</span>
+                    <span class="star active">★</span>
+                    <span class="star half-active">★</span>
+                </div>
+                <div class="rating-text">256 Total Reviews</div>
+            </div>
+            <div class="rating-breakdown">
+                <div class="rating-bar">
+                    <span class="rating-label">5 Stars</span>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 65%"></div>
+                    </div>
+                    <span class="rating-percentage">65%</span>
+                </div>
+                <div class="rating-bar">
+                    <span class="rating-label">4 Stars</span>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 25%"></div>
+                    </div>
+                    <span class="rating-percentage">25%</span>
+                </div>
+                <div class="rating-bar">
+                    <span class="rating-label">3 Stars</span>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 8%"></div>
+                    </div>
+                    <span class="rating-percentage">8%</span>
+                </div>
+                <div class="rating-bar">
+                    <span class="rating-label">2 Stars</span>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 2%"></div>
+                    </div>
+                    <span class="rating-percentage">2%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="reviews-list">
+            <?php
+            $reviews = [
+                [
+                    'name' => 'Sachith Dhanushka',
+                    'date' => 'November 20, 2024',
+                    'rating' => 5,
+                    'comment' => 'Absolutely amazing course! The instructor explains complex Python concepts in a very clear and understandable way. The assignments are challenging but help reinforce the learning.',
+                    'avatar' => '/assets/images/user.jpeg'
+                ],
+                [
+                    'name' => 'Dinuka Sahan',
+                    'date' => 'November 15, 2024',
+                    'rating' => 4,
+                    'comment' => 'Great introduction to Python programming. The modules are well-structured, and the resources are helpful. Would recommend for beginners.',
+                    'avatar' => '/assets/images/user.jpeg'
+                ],
+                [
+                    'name' => 'Isuru Naveen',
+                    'date' => 'November 10, 2024',
+                    'rating' => 5,
+                    'comment' => 'Comprehensive course that covers everything from basics to advanced Python concepts. The OOP module was particularly enlightening.',
+                    'avatar' => '/assets/images/user.jpeg'
+                ]
+            ];
+
+            foreach ($reviews as $review): ?>
+                <div class="review-item">
+                    <div class="review-header">
+                        <img src="<?php echo htmlspecialchars($review['avatar']); ?>" alt="<?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
+                        <div class="review-meta">
+                            <span class="review-name"><?php echo htmlspecialchars($review['name']); ?></span>
+                            <span class="review-date"><?php echo htmlspecialchars($review['date']); ?></span>
+                        </div>
+                        <div class="review-rating">
+                            <?php
+                            for ($i = 1; $i <= 5; $i++) {
+                                echo $i <= $review['rating']
+                                    ? '<span class="star active">★</span>'
+                                    : '<span class="star">★</span>';
+                            }
+                            ?>
+                        </div>
+                    </div>
+                    <div class="review-body">
+                        <p><?php echo htmlspecialchars($review['comment']); ?></p>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
+    </div>
 
     <script>
         function toggleModule(index) {

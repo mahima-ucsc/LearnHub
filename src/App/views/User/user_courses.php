@@ -1,6 +1,7 @@
 <?php include $this->resolve('partials/_header.php') ?>
 
 <link rel="stylesheet" href="/assets/styles/User/user_courses.css">
+<link rel="stylesheet" href="/assets/styles/components/course-card.css">
 
 <section class="user-course">
     <h3>My Courses</h3>
@@ -38,7 +39,7 @@
                         <p>Isuru Naveen</p>
                     </div>
                     <div>
-                        <a href="/courses/my/registered"> See More</a>
+                        <a href="/courses/my/registered"> Continue</a>
                     </div>
                 </div>
             </div>
@@ -72,7 +73,7 @@
                         <p>Isuru Naveen</p>
                     </div>
                     <div>
-                        <a href="/courses/my/registered"> See More</a>
+                        <a href="/courses/my/registered"> Continue</a>
                     </div>
                 </div>
             </div>
@@ -106,7 +107,7 @@
                         <p>Isuru Naveen</p>
                     </div>
                     <div>
-                        <a href="/courses/my/registered"> See More</a>
+                        <a href="/courses/my/registered"> Continue</a>
                     </div>
                 </div>
             </div>
@@ -140,7 +141,7 @@
                         <p>Isuru Naveen</p>
                     </div>
                     <div>
-                        <a href="/courses/my/registered"> See More</a>
+                        <a href="/courses/my/registered"> Continue</a>
                     </div>
                 </div>
             </div>
@@ -174,7 +175,7 @@
                         <p>Isuru Naveen</p>
                     </div>
                     <div>
-                        <a href="/courses/my/registered"> See More</a>
+                        <a href="/courses/my/registered"> Continue</a>
                     </div>
                 </div>
             </div>

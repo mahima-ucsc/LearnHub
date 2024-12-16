@@ -1,0 +1,251 @@
+.course-content-section{
+    width: 1400px;
+}
+
+.course-content {
+    margin-left: 250px;
+    padding: 20px;
+}
+.back-button {
+    margin-top: 80px;
+}
+
+.back-button a {
+    color: #666;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.back-button a:hover {
+    color: #333;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.search-bar {
+    display: flex;
+    gap: 10px;
+}
+
+.search-bar input {
+    padding: 8px 15px;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+    width: 300px;
+}
+
+.btn {
+    padding: 8px 15px;
+    background-color: #FFC400;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #333333;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #e6b000;
+}
+
+.help-and-support-table-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow-x: auto;
+}
+
+.help-and-support-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.help-and-support-table th {
+    background-color: #f8f8f8;
+    text-align: left;
+    padding: 12px 20px;
+    font-weight: 600;
+    color: #333333;
+    border-bottom: 2px solid #dddddd;
+}
+
+.help-and-support-table td {
+    padding: 12px 20px;
+    border-bottom: 1px solid #dddddd;
+    color: #333333;
+}
+
+.help-and-support-table tr:hover {
+    background-color: #f5f5f5;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    background-color: #e0e0e0;
+}
+
+.status-active {
+    background-color: #4CAF50;
+    color: #ffffff;
+}
+
+.status-draft {
+    background-color: #FFC400;
+    color: #333333;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.action-buttons .btn {
+    padding: 4px 10px;
+    font-size: 0.9rem;
+}
+
+.table-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #f8f8f8;
+    border-top: 1px solid #dddddd;
+}
+
+.pagination {
+    display: flex;
+    gap: 5px;
+}
+
+.pagination button {
+    padding: 5px 10px;
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.pagination button.active {
+    background-color: #FFC400;
+    border-color: #FFC400;
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+    .course-content-section {
+        width: 100%;
+        padding: 0 20px;
+    }
+}
+
+@media (max-width: 992px) {
+    .course-content {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .search-bar {
+        width: 100%;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .search-bar input {
+        width: 100%;
+    }
+
+    .help-and-support-table-container {
+        padding: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .course-content-section {
+        padding: 0 10px;
+    }
+
+    .back-button {
+        margin-top: 50px;
+    }
+
+    .btn {
+        padding: 6px 10px;
+    }
+
+    .help-and-support-table th, .help-and-support-table td {
+        padding: 10px 15px;
+    }
+
+    .status-badge {
+        font-size: 0.75rem;
+        padding: 3px 6px;
+    }
+
+    .action-buttons .btn {
+        padding: 3px 8px;
+        font-size: 0.8rem;
+    }
+
+    .table-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .pagination {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .header {
+        margin-bottom: 20px;
+    }
+
+    .search-bar input {
+        width: 100%;
+        padding: 6px 10px;
+    }
+
+    .help-and-support-table-container {
+        overflow-x: scroll; 
+    }
+
+    .help-and-support-table {
+        min-width: 300px;
+        font-size: 12px;
+    }
+
+    .btn, .pagination button {
+        font-size: 0.9rem;
+        padding: 6px 10px;
+    }
+
+    .table-footer {
+        padding: 10px 15px;
+        flex-direction: column;
+    }
+
+    .pagination {
+        gap: 3px;
+        font-size: 0.85rem;
+    }
+
+    .back-button {
+        margin-top: 20px;
+    }
+}

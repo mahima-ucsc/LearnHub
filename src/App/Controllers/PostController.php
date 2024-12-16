@@ -71,6 +71,13 @@ class PostController
         redirectTo('/course/request/' . $requestId);
     }
 
+    public function updateComment(array $params)
+    {
+        $this->validatorService->validateCourseRequestComment($_POST);
+        $this->courseRequestService->updateCommentById($_POST, $params["requestId"], $params["commentId"]);
+        redirectTo($_SERVER['HTTP_REFERER']);
+    }
+
     public function createCourseRequest()
     {
         $this->validatorService->validateCourseRequest($_POST);
@@ -88,6 +95,11 @@ class PostController
     public function deleteCourseRequest(array $params)
     {
         $this->courseRequestService->deleteCourseRequestById($params["id"]);
+        redirectTo($_SERVER['HTTP_REFERER']);
+    }
+    public function deleteComment(array $params)
+    {
+        $this->courseRequestService->deleteCommentById($params["requestId"], $params["commentId"]);
         redirectTo($_SERVER['HTTP_REFERER']);
     }
 }

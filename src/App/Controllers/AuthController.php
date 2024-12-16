@@ -31,7 +31,7 @@ class AuthController
     public function chooseRole()
     {
         $role = $_POST['role'];
-        $_SESSION['role'] = $role;
+        $_SESSION['temp_role'] = $role;
         redirectTo("/register/create-account");
     }
 
@@ -54,7 +54,14 @@ class AuthController
     {
         $this->validatorService->validateLogin($_POST);
         $this->userService->login($_POST);
-        redirectTo('/');
+
+        if ($_SESSION['user_role'] === "admin") {
+            redirectTo('/admin-dashboard?tab=dashboard');
+        } else if ($_SESSION['user_role'] === 'teacher') {
+            redirectTo('/dashboard');
+        } else {
+            redirectTo('/profile');
+        }
     }
 
     public function logout()

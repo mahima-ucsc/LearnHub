@@ -3,19 +3,22 @@
 </head>
 <?php include $this->resolve("partials/_header.php"); ?>
 
-<section class="help">
-    <div class="head-container">
 
-    </div>
-    <div class="head">
-        <h2>How can we help you?</h2>
-        <p>Find answers to your questions, explore guides, or connect with our support team to get the help you need.</p>
-        <!-- Search Section -->
-        <form method="post">
-            <input type="text" class="textbox" placeholder="Search">
-            <input title="Search" value="" type="submit" class="button">
-        </form>
-    </div>
+<div class="head-container">
+
+</div>
+<div class="head">
+    <h2>How can we help you?</h2>
+    <p>Find answers to your questions, explore guides, or connect with our support team to get the help you need.</p>
+    <!-- Search Section -->
+    <form method="post">
+        <input type="text" class="textbox" placeholder="Search">
+        <input title="Search" value="" type="submit" class="button">
+    </form>
+</div>
+
+<section class="help">
+
     <!-- Support Options -->
     <section class="support-options">
         <h2>Get in Touch</h2>
@@ -25,7 +28,7 @@
             <button>Start Chat</button>
         </div>
         <div class="support-card">
-            <h3>Email Support</h3>
+            <h3>Get In Support</h3>
             <p>Send us your queries, and we'll get back to you soon.</p>
             <button onclick="contactUs()">Contact Us</button>
         </div>
@@ -62,7 +65,7 @@
             </div>
             <div class="faq-item">
                 <p class="faq-question" tabindex="0">Can I change my account type from student to tutor?</p>
-                <p class="faq-answer">Yes, you can change your account type from your profile settings under the "Account Type" section.</p>
+                <p class="faq-answer">No, you cannot change your account type once it is set. If you require assistance, please contact support for further guidance.</p>
             </div>
         </div>
 
@@ -75,7 +78,7 @@
             </div>
             <div class="faq-item">
                 <p class="faq-question" tabindex="0">Can I unenroll from a course?</p>
-                <p class="faq-answer">Yes, go to "My Courses," select the course you want to unenroll from, and click "Unenroll."</p>
+                <p class="faq-answer">No, you cannot unenroll from a course after payment has been made, as we do not offer refunds. Please ensure your selection before making a payment.</p>
             </div>
         </div>
 
@@ -92,6 +95,43 @@
             </div>
         </div>
     </section>
+
+    <!-- quction and sugetions -->
+    <section class="question-suggestion-section">
+        <div class="container">
+            <h2>Have Questions or Suggestions?</h2>
+            <p>We value your feedback! Let us know your thoughts, questions, or suggestions to improve your experience.</p>
+
+            <form class="feedback-form">
+                <!-- Name Field -->
+                <div class="form-group">
+                    <label for="name">Your Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your name" required />
+                </div>
+
+                <!-- Email Field -->
+                <div class="form-group">
+                    <label for="email">Your Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required />
+                </div>
+
+                <!-- Message Field -->
+                <div class="form-group">
+                    <label for="message">Your Message</label>
+                    <textarea id="message" name="message" rows="4" placeholder="Type your question or suggestion here..." required></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-group">
+                    <div class="help-submit">
+                        <button type="submit" class="submit-btn">Send Message</button>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
 
     <!-- Feedback Section -->
     <section class="feedback-section">
@@ -120,9 +160,9 @@
     // JavaScript to toggle FAQ answers
     const faqQuestions = document.querySelectorAll('.faq-question');
     faqQuestions.forEach(question => {
-      question.addEventListener('click', () => {
-        const answer = question.nextElementSibling;
-        answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
-      });
+        question.addEventListener('click', () => {
+            const answer = question.nextElementSibling;
+            answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
+        });
     });
 </script>

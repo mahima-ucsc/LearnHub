@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) NOT NULL,
     phone_no VARCHAR(15),
     date_of_birth DATE NOT NULL,
+    description VARCHAR(255),
     joined_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_login DATETIME,
     location VARCHAR(255),
@@ -59,6 +60,7 @@ CREATE TABLE IF NOT EXISTS courses (
     course_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
     title VARCHAR(255) NOT NULL,
     description TEXT,
+    thumbnail VARCHAR(255) NOT NULL,
     subject_id BIGINT(20) UNSIGNED NOT NULL,
     grade_id BIGINT(20) UNSIGNED NOT NULL,
     tutor_id BIGINT(20) UNSIGNED NOT NULL,
@@ -67,7 +69,7 @@ CREATE TABLE IF NOT EXISTS courses (
     day VARCHAR(20) NOT NULL,
     price decimal(10,2) NOT NULL,
     pricing_period VARCHAR(50) NOT NULL,
-    duration int(11),
+    location VARCHAR(50) NOT NULL,
     PRIMARY KEY(course_id),
     FOREIGN KEY (subject_id) REFERENCES subjects(subject_id) ON DELETE CASCADE,
     FOREIGN KEY (grade_id) REFERENCES grades(grade_id) ON DELETE CASCADE,
@@ -173,6 +175,17 @@ CREATE TABLE IF NOT EXISTS tutor_review(
     user_id BIGINT(20) UNSIGNED NOT NULL,
     PRIMARY KEY(review_id),
     FOREIGN KEY(tutor_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+-- Reviews for courses
+CREATE TABLE IF NOT EXISTS course_review(
+    review_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+    review TEXT NOT NULL,
+    rating TINYINT UNSIGNED CHECK (rating BETWEEN 0 AND 5),
+    course_id BIGINT(20) UNSIGNED NOT NULL,
+    user_id BIGINT(20) UNSIGNED NOT NULL,
+    PRIMARY KEY(review_id),
+    FOREIGN KEY(course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
     FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 

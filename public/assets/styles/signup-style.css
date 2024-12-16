@@ -201,6 +201,12 @@ body {
     background: #CD9D00;
 }
 
+.register-error{
+    color: red;
+    padding: 2px 4px;
+    font-size: 14px;
+}
+
 @media (max-width: 480px) {
     .container {
         padding: 30px 20px;

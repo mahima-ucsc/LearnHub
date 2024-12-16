@@ -11,14 +11,8 @@
 
 <body>
     <nav class="navbar">
-        <img src="download.png" alt="LearnHub Logo" class="logo">
-        <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Contact Us</a></li>
-            <li><a href="#">Help</a></li>
-        </ul>
-        <a class="login-button" href="/login">Log in</a>
+        <img src="/assets/icons/lernhub-logo.png" alt="LearnHub Logo" class="logo">
+        <button class="login-button" onclick="window.location.href='/login'">Log in</button>
     </nav>
     <div class="choose-role-container">
         <div class="choose-role-text">
@@ -40,7 +34,7 @@
         </form>
     </div>
     <div class="right-banner">
-        <img src="joinus.png" alt="Join us banner" />
+        <img src="/assets/images/joinus.png" alt="Join us banner" />
     </div>
 
     <script>
