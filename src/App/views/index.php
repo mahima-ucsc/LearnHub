@@ -1,6 +1,7 @@
 <?php include $this->resolve("partials/_header.php"); ?>
 
 <link rel="stylesheet" href="/assets/styles/main.css">
+<link rel="stylesheet" href="/assets/styles/components/course-card.css">
 
 
 <section class="main">
@@ -10,8 +11,12 @@
                 <h1>Unlock Your Potential with LearnHub</h1>
                 <p>Discover a world of knowledge at your fingertips. Start your learning journey today!</p>
                 <div class="cta-buttons">
-                    <a href="#courses" class="cta-primary">Get Started</a>
-                    <a href="/courses" class="cta-secondary">Explore Courses</a>
+                    <?php if ($_SESSION['user']): ?>
+                        <a href="#courses" class="cta-primary get-start">Get Started</a>
+                    <?php else: ?>
+                        <a href="/register" class="cta-primary">Signup For Free</a>
+                        <a href="/courses" class="cta-secondary">Explore Courses</a>
+                    <?php endif; ?>
                 </div>
             </div>
         </section>
@@ -31,10 +36,10 @@
 
         <div class="courses-container">
 
-            <section id="#courses" class="courses">
+            <section id="courses" class="courses">
                 <h2>Popular Courses</h2>
                 <hr class="line">
-                <div class="course-cards">
+                <div class="card-container">
                     <div class="search-course-card">
                         <div class="course-card-header">
                             <img src="/assets/images/dm.jpg" alt="Web Development" class="course-image">
@@ -348,12 +353,13 @@
                 alert('Offer claimed! Use code LEARN20 at checkout.');
             });
 
-            // Hide the advertisement when clicked outside
-            // document.addEventListener('click', function(event) {
-            //     if (!advertisement.contains(event.target) && event.target !== advertisement) {
-            //         hideAdvertisement();
-            //     }
-            // });
+        });
+
+        document.querySelector('.get-start').addEventListener('click', function() {
+            event.preventDefault();
+            document.getElementById('courses').scrollIntoView({
+                behavior: 'smooth'
+            });
         });
     </script>
 </section>

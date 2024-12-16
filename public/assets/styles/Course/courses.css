@@ -22,19 +22,21 @@
 }
 
 .left-course-container {
-    flex: 0 0 500px;
+    flex: 0 0 300px;
     background-color: #fff;
     padding-left: 40px;
+    /* position: fixed; */
 }
 
 
 .right-course-container {
     flex: 1;
+    margin-top: 80px;
 }
 
 /* Search bar */
 .search-container {
-    margin-top: 22px;
+    /* margin-top: 22px; */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -43,6 +45,8 @@
     width: 100%;
     background-color: #ffffff;
     padding: 24px;
+    position: fixed;
+    z-index: 1;
 }
 
 .course-search-bar {
@@ -220,154 +224,65 @@
 }
 
 
-/* Result section */
-.results{
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 20px;
-}
-
-.course-card-header{
-    line-height: 1.6;
-}
-
-.course-card-line{
-    width: 80px;
-    background-color: #FFC400;
-    height: 2px;
-    border: none;
-    padding: 1px;
-
-}
-
-.results h3 {
-    font-family: 'Archivo', sans-serif;
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 20px;
-    color: #1a1a1a;
-}
-
-.results a{
-    text-decoration: none;
-}
-
-/* Course Cards */
-
-.search-course-card {
-    background-color: #fff;
-    border: 1px solid #e9ecef;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
+/* Pagination */
+.pagination-container {
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: all 0.5s ease;
-    max-width: 450px;
-    flex-grow: 1;
-    box-shadow: 0 4px 15px rgba(161, 161, 161, 0.2);
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+    gap: 15px;
+
 }
 
-.search-course-card:hover {
-    box-shadow: 0 4px 15px rgba(255, 196, 0, 0.2);
-    transform: translateY(-8px);
-    /* border-left: 3px solid #FFC400; */
-}
-
-.course-image {
-    width: 100%;
-    border-radius: 8px;
-    object-fit: contain;
-    margin-right: 20px;
-}
-
-.course-info {
-    line-height: 1.6;
-    margin-top: 15px;
-}
-
-.course-description{
-    display: flex;
-    font-size: 14px;
-    color: #565D6D;
-    margin-bottom: 5px;
-    /* margin-top: 15px; */
-    padding-top: 8px;
-}
-
-.course-stat{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: end;
-    margin-top: 40px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #FFC400;
-}
-
-.course-stat .price{
-    margin: 0;
-    padding: 0;
-    font-size: 18px;
-    color: #4b4b4b;
-}
-
-.course-stat .icon {
-    color: #FFC400;
-}
-
-.course-meta{
+.pagination-btn {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding-top: 10px;
-}
-
-.course-meta .course-teacher{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 10px;
-}
-
-.course-meta .course-teacher p {
-    color: #474747;
-}
-
-.course-meta img{
-    width: 40px;
-    border-radius: 100px;
-    margin-right: 10px;
-    border: 2px solid #FFC400;
-}
-
-.course-meta a{
-    display: block;
-    text-decoration: none;
-    color: black;
-    background-color: #fff5d4;
     padding: 10px 15px;
+    background-color: #f8f9fa;
+    color: #171A1F;
+    text-decoration: none;
     border-radius: 20px;
-    border: 1px solid #FFC400;
-    font-size: 14px;
-}
-.course-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 8px;
+    transition: all 0.3s ease;
+    border: 1px solid #e0e0e0;
 }
 
-.course-info p {
-    font-size: 14px;
-    color: #565D6D;
-    margin-bottom: 5px;
+.pagination-btn:hover {
+    background-color: #FFC400;
+    color: #ffffff;
 }
 
-.course-rating {
-    color: #FFC400;
-    font-weight: 600;
+.pagination-btn i {
+    margin: 0 5px;
+}
+
+.page-numbers {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.page-numbers a {
+    text-decoration: none;
+    color: #171A1F;
+    padding: 8px 12px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.page-numbers a:hover {
+    background-color: #f8f9fa;
+}
+
+.page-numbers a.active-page {
+    background-color: #FFC400;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.prev-btn,
+.next-btn {
+    font-size: 14px;
 }
 
 @media (max-width: 1024px) {

@@ -17,12 +17,61 @@ class CoursesController
         private UserService $userService
     ) {}
 
+
+    // Search courses
     public function course()
     {
+        $page = $_GET['p'] ?? 1;
+        $page = (int) $page;
+        $length = 6;
+        $offset = ($page - 1) * $length;
+        $searchTerm = $_GET['s'] ?? null;
+        $searchBy = $_GET['f'] ?? null;
+        $location = $_GET['location'] ?? null;
+
+        [$courses, $courseCount] = $this->courseService->searchCourse(
+            $length,
+            $offset
+        );
+
+
+        $lastPage = ceil($courseCount / $length);
+        $pages = $lastPage ? range(1, $lastPage) : [];
+
+        $pageLinks = array_map(
+            fn($pageNum) => http_build_query([
+                'p' => $pageNum,
+                's' => $searchTerm,
+                'f' => $searchBy,
+                "location" => $location
+            ]),
+            $pages
+        );
+
         echo $this->view->render('course/Courses.php', [
-            "title" => "Search Course"
+            "title" => "Search Course",
+            "courses" => $courses,
+            "currentPage" => $page,
+            "previousPageQuery" => http_build_query([
+                'p' => $page - 1,
+                's' => $searchTerm,
+                'f' => $searchBy,
+                "location" => $location
+            ]),
+            "lastPage" => $lastPage,
+            "nextPageQuery" => http_build_query([
+                'p' => $page + 1,
+                's' => $searchTerm,
+                'f' => $searchBy,
+                "location" => $location
+            ]),
+            "pageLinks" => $pageLinks,
+            "searchTerm" => $searchTerm,
+            "searchBy" => $searchBy,
+            "location" => $location
         ]);
     }
+
 
     public function enrollCourse()
     {
@@ -33,7 +82,7 @@ class CoursesController
 
     public function courseInfo(array $params)
     {
-        $course = $this->courseService->getCourse($params['course_id']);
+        $course = $this->courseService->getByCourseId($params['course_id']);
         $user = $this->userService->getUserProfile();
 
         if (!$course) {
@@ -42,7 +91,7 @@ class CoursesController
 
 
         echo $this->view->render(
-            'course/CourseInfo.php',
+            'course/course_info.php',
             [
                 'course' => $course,
                 'title' => $course['title'],
@@ -53,6 +102,7 @@ class CoursesController
 
     public function createCourseView()
     {
+
         echo $this->view->render('course/CreateCourse.php', [
             "title" => "Create Course"
         ]);
@@ -77,7 +127,7 @@ class CoursesController
 
     public function courseEditView(array $params)
     {
-        $course = $this->courseService->getCourse($params['course']);
+        $course = $this->courseService->getMyCourseById($params['course']);
 
         if (!$course) {
             redirectTo('/courses/my-courses');
@@ -94,7 +144,7 @@ class CoursesController
 
     public function editCourse(array $params)
     {
-        $course = $this->courseService->getCourse($params['course']);
+        $course = $this->courseService->getMyCourseById($params['course']);
 
         if (!$course) {
             redirectTo('/courses/my-courses');
@@ -128,17 +178,9 @@ class CoursesController
             ]
         );
     }
-    public function demoCourses()
-    {
-        echo $this->view->render(
-            "course/demo_courseInfo.php",
-            [
-                'title' => "ICT 2024 A/L"
-            ]
-        );
-    }
     public function regCourses()
     {
+        $reviews = $this->courseService->getReviews();
         echo $this->view->render(
             "course/demo_registered_course.php",
             [

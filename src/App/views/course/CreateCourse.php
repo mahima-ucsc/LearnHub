@@ -1,5 +1,4 @@
 <?php include $this->resolve("partials/_header.php"); ?>
-<?php include $this->resolve("partials/_alert.php"); ?>
 
 <head>
     <link rel="stylesheet" href="/assets/styles/Course/create-course.css">
@@ -22,10 +21,6 @@
                 <label for="description">Course Description *</label>
                 <textarea id="description" name="description" required></textarea>
             </div>
-            <!-- <div class="create-course-form-group">
-                <label for="courseImage">Course Image URL *</label>
-                <input type="url" id="courseImage" name="courseImage" required>
-            </div> -->
             <div class="create-course-form-group">
                 <label for="price">Course Price (Rs.) *</label>
                 <div style="display: flex;flex-direction: row; padding: 10px;">
@@ -101,9 +96,10 @@
                 </select>
             </div>
         </div>
+
         <div class="create-course-form-group">
-            <label for="duration">Course Duration (in weeks)</label>
-            <input type="number" id="duration" name="duration" min="1" required>
+            <label for="location">Location</label>
+            <input type="text" name="location" id="location">
         </div>
 
         <div class="create-course-section">
@@ -112,11 +108,11 @@
             <button type="button" class="create-course-add-button" id="addModuleBtn">Add Module</button>
         </div>
         <div class="create-course-form-group">
-            <label for="courseImage">Course Thumbnail</label>
-            <div class="upload-area" onclick="document.getElementById('courseImage').click()">
+            <label for="thumbnail">Course Thumbnail</label>
+            <div class="upload-area" onclick="document.getElementById('thumbnail').click()">
                 <p>Click to upload image</p>
                 <p>or drag and drop</p>
-                <input type="file" id="courseImage" name="courseImage" accept="image/*" style="display: none">
+                <input type="file" id="thumbnail" name="thumbnail" accept="image/*" style="display: none">
             </div>
         </div>
 

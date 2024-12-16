@@ -56,7 +56,7 @@ class AuthController
         $this->userService->login($_POST);
 
         if ($_SESSION['user_role'] === "admin") {
-            redirectTo('/admin-dashboard');
+            redirectTo('/admin-dashboard?tab=dashboard');
         } else if ($_SESSION['user_role'] === 'teacher') {
             redirectTo('/dashboard');
         } else {

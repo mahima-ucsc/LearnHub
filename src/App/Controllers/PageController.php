@@ -168,4 +168,10 @@ class PageController
             "userDetails" => $userDetails
         ]);
     }
+    public function test()
+    {
+        echo $this->view->render('User/test-dash.php', [
+            "title" => "Settings",
+        ]);
+    }
 }

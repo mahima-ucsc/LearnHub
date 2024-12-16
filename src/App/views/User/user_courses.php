@@ -1,6 +1,7 @@
 <?php include $this->resolve('partials/_header.php') ?>
 
 <link rel="stylesheet" href="/assets/styles/User/user_courses.css">
+<link rel="stylesheet" href="/assets/styles/components/course-card.css">
 
 <section class="user-course">
     <h3>My Courses</h3>

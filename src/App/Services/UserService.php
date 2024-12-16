@@ -107,4 +107,14 @@ class UserService
 
         return $users;
     }
+
+    public function delete(int $id)
+    {
+        $this->db->query(
+            "DELETE FROM users WHERE user_id =:id",
+            [
+                'id' => $id
+            ]
+        );
+    }
 }
