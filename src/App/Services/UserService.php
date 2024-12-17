@@ -117,4 +117,36 @@ class UserService
             ]
         );
     }
+
+    // Function to add new user for admin
+    public function addUser(array $formData)
+    {
+        $password = password_hash($formData['password'], PASSWORD_BCRYPT, ["const" => 12]);
+        $this->db->query(
+            "INSERT INTO users(first_name, last_name, email, date_of_birth, password, user_role) 
+            VALUES (:first_name, :last_name, :email, :date_of_birth, :password, :user_role)",
+            [
+                "first_name" => $formData['first_name'],
+                "last_name" => $formData['last_name'],
+                "date_of_birth" => date('Y-m-d'), // Set today as default
+                "email" => $formData['email'],
+                "user_role" => $formData['user_role'],
+                "password" => $password,
+            ]
+        );
+    }
+
+    public function getUsers()
+    {
+        $searchTerm = $_GET['s'] ?? '';
+        $userData = $this->db->query(
+            "SELECT * FROM users WHERE first_name LIKE :term OR last_name LIKE :term",
+            [
+                "term" => "%{$searchTerm}%"
+            ]
+        )->findAll();
+        unset($userData['password']);
+
+        return $userData;
+    }
 }

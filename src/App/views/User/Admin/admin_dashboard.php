@@ -38,18 +38,19 @@
         <!-- Main Content -->
         <div id="main-container" class="admin-content">
             <?php
-            if ($_GET['tab'] === 'user-managment') {
-                include $this->resolve("User/Admin/user_managment.php");
-            } elseif ($_GET['tab'] === 'course-managment') {
-                include $this->resolve("User/Admin/course_managment.php");
-            } elseif ($_GET['tab'] === 'dashboard') {
-                include $this->resolve("User/Admin/dashboard.php");
+            $tab = $_GET['tab'] ?? 'dashboard'; // Default to 'dashboard'
+            switch ($tab) {
+                case 'user-managment':
+                    include $this->resolve("User/Admin/user_managment.php");
+                    break;
+                case 'course-managment':
+                    include $this->resolve("User/Admin/course_managment.php");
+                    break;
+                default:
+                    include $this->resolve("User/Admin/dashboard.php");
             }
-
-
             ?>
         </div>
-
     </div>
 
     <script>
@@ -74,6 +75,14 @@
         // Restore active tab on page load
         window.addEventListener('DOMContentLoaded', function() {
             const savedTab = localStorage.getItem('tab') || 'dashboard'; // Default to 'dashboard'
+
+            // Call loadTabContent to set the active tab
+            loadTabContent(savedTab);
+        });
+
+        // Restore active tab on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            const savedTab = localStorage.getItem('tab') || 'dashboard'; // Default to 'dashboard' if no tab is saved
 
             // Call loadTabContent to set the active tab
             loadTabContent(savedTab);
