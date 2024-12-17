@@ -22,4 +22,11 @@ class UserController
         $this->userService->delete((int)$params['user_id']);
         redirectTo('/admin-dashboard?tab=user-managment');
     }
+
+    public function addUser()
+    {
+        $this->userService->isEmailTaken($_POST['email']);
+        $this->userService->addUser($_POST);
+        redirectTo('/admin-dashboard?tab=user-managment');
+    }
 }
