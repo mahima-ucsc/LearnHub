@@ -176,4 +176,23 @@ class CourseService
             "SELECT * FROM courses"
         )->findAll();
     }
+
+    public function getNoOfCourses()
+    {
+        return $this->db->query(
+            "SELECT COUNT(*) FROM courses"
+        )->count();
+    }
+
+    public function registeredCourses()
+    {
+        return $this->db->query(
+            "SELECT courses.* FROM courses
+            JOIN students_courses SC ON courses.course_id = SC.course_id
+            WHERE SC.student_id = :id",
+            [
+                "id" => $_SESSION['user']
+            ]
+        )->findAll();
+    }
 }

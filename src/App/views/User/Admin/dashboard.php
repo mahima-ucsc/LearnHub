@@ -17,22 +17,22 @@
     <div class="admin-stats-grid">
         <div class="stat-box">
             <h3>Total Users</h3>
-            <div class="value">15,487</div>
+            <div class="value"><?php echo ((int)$stat['users']['students'] + (int)$stat['users']['teachers']) ?></div>
             <div class="trend">↑ 12.5% Growth this month</div>
         </div>
         <div class="stat-box">
             <h3>Student Users</h3>
-            <div class="value">14,892</div>
+            <div class="value"><?php echo $stat['users']['students'] ?></div>
             <div class="trend">↑ 8.3% Growth this month</div>
         </div>
         <div class="stat-box">
             <h3>Teacher Users</h3>
-            <div class="value">595</div>
+            <div class="value"><?php echo $stat['users']['teachers'] ?></div>
             <div class="trend">↑ 15.2% Growth this month</div>
         </div>
         <div class="stat-box">
             <h3>Total Courses</h3>
-            <div class="value">283</div>
+            <div class="value"><?php echo $stat['courses']; ?></div>
             <div class="trend">↑ 5.7% Growth this month</div>
         </div>
         <div class="stat-box">

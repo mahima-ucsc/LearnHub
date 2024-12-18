@@ -12,6 +12,7 @@ use App\Middleware\AuthRequiredMiddleware;
 use App\Middleware\GuestOnlyMiddleware;
 use App\Middleware\StudentOnlyMiddleware;
 use App\Middleware\TeacherOnlyMiddleware;
+use App\Services\UserService;
 use Framework\App;
 
 function registerRoutes(App $app)
@@ -50,7 +51,10 @@ function registerRoutes(App $app)
     $app->get('/mycourses', [PageController::class, 'myCourses'], [AuthRequiredMiddleware::class]);
     $app->get('/create-ad', [PageController::class, 'createAd'], [TeacherOnlyMiddleware::class]);
 
+    // Admin operations
+    $app->post('/admin/adduser', [UserController::class, 'addUser'], [AdminOnlyMiddleware::class]); // Add new user
     $app->delete('/user/delete/{user_id}', [UserController::class, 'deleteUser'], [AuthRequiredMiddleware::class]); // Delete user
+
 
 
     // Courses

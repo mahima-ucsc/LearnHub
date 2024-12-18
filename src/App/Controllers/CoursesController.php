@@ -118,10 +118,15 @@ class CoursesController
     public function myCourses()
     {
         $url = $_SESSION['user_role'] === 'teacher' ? 'Tutor/my_courses.php' : 'User/user_courses.php';
-        $myCourses = $this->courseService->getMyCourses();
+        if ($_SESSION['user_role'] == 'student') {
+            $courses = $this->courseService->registeredCourses();
+        } else if ($_SESSION['user_role'] == 'teacher') {
+            $courses = $this->courseService->getMyCourses();
+        }
+
         echo $this->view->render($url, [
             "title" => "My Courses",
-            "myCourses" => $myCourses
+            "courses" => $courses
         ]);
     }
 

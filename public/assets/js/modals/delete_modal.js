@@ -7,12 +7,12 @@ function showModal(deleteUrl) {
   deleteForm.action = deleteUrl;
 
   // Show the modal
-  modal.style.display = "block";
+  modal.classList.toggle("show");
   document.body.style.overflow = "hidden";
 }
 
 function hideModal() {
-  modal.style.display = "none";
+  modal.classList.toggle("show");
   document.body.style.overflow = "auto";
 }
 
@@ -25,7 +25,7 @@ window.onclick = function (event) {
 
 // Close modal on escape key press
 document.addEventListener("keydown", function (event) {
-  if (event.key === "Escape" && modal.style.display === "block") {
+  if (event.key === "Escape") {
     hideModal();
   }
 });
