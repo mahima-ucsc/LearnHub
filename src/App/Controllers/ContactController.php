@@ -11,23 +11,25 @@ class ContactController
 {
     public function __construct(private TemplateEngine $view) {}
 
-    public function sendEmail()
+    public function submitContactForm()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $name = htmlspecialchars($_POST['name']);
-            $email = htmlspecialchars($_POST['email']);
-            $message = htmlspecialchars($_POST['message']);
+            // Validate the POST data
+        $name = htmlspecialchars($_POST['name']);
+        $email = htmlspecialchars($_POST['email']);
+        $message = htmlspecialchars($_POST['msg']);
 
-            $to = 'dinukasahan2001@gmail.com';
-            $subject = "Contact Form Submission from $name";
-            $body = "Name: $name\nEmail: $email\nMessage:\n$message";
-            $headers = "From: $email\r\n";
+        // Store the data in the database
+        $contact = new Contact();
+        $contact->save([
+            'name' => $name,
+            'email' => $email,
+            'message' => $message
+        ]);
 
-            if (mail($to, $subject, $body, $headers)) {
-                echo "Message sent successfully!";
-            } else {
-                echo "Failed to send the message.";
-            }
+        // Redirect or return a response
+        header('Location: /thank-you');
+        exit;
         }
     }
 }

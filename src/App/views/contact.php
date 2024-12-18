@@ -26,7 +26,7 @@
 
             </div>
 
-            <form action="" method="post">
+            <form action="/contact" method="post">
                 <h3>get in touch</h3>
                 <input id="name" type="text" placeholder="enter your name" name="name" required maxlength="50" class="input-feild inputs">
                 <input id="email" type="email" placeholder="enter your email" name="email" required maxlength="50" class="input-feild inputs">

@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace App\Config;
 
-use App\Controllers\{AlertController, AssignmentController, AuthController, ProfileController, CoursesController, TutorProfileController, SettingController, PageController, ResourceController, PostController, ReviewController, UserController};
+use App\Controllers\{AlertController, AssignmentController, AuthController, ContactController, ProfileController, CoursesController, TutorProfileController, SettingController, PageController, ResourceController, PostController, ReviewController, UserController};
 use App\Middleware\AdminOnlyMiddleware;
 use App\Middleware\AuthRequiredMiddleware;
 use App\Middleware\GuestOnlyMiddleware;
@@ -19,6 +19,7 @@ function registerRoutes(App $app)
 {
     $app->get('/', [PageController::class, 'home']);
     $app->get('/contact', [PageController::class, 'contact']);
+    $app->post('/contact', [ContactController::class, 'submitContactForm']);
     $app->get('/about', [PageController::class, 'about']);
     $app->get('/profile', [ProfileController::class, 'profile'], [AuthRequiredMiddleware::class]);
     $app->get('/dashboard', [PageController::class, 'dashboard'], [AuthRequiredMiddleware::class]);
