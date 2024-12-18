@@ -72,10 +72,17 @@ class PageController
         if ($_GET['tab'] == 'course-managment') {
             $courses = $this->courseService->getAllCourses();
         }
+        $userCount = $this->userService->getNoOfUsers();
+        $courseCount = $this->courseService->getNoOfCourses();
+        $stat = [
+            "users" => $userCount,
+            "courses" => $courseCount
+        ];
         echo $this->view->render('User/Admin/admin_dashboard.php', [
             "title" => "Admin Dashboard",
             'users' => $users ?? '',
-            "courses" => $courses ?? ''
+            "courses" => $courses ?? '',
+            "stat" => $stat
         ]);
     }
 
