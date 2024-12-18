@@ -149,4 +149,22 @@ class UserService
 
         return $userData;
     }
+
+    public function getNoOfUsers()
+    {
+        $students =  $this->db->query(
+            "SELECT COUNT(*) FROM users WHERE user_role = 'student'"
+        )->count();
+
+        $teachers = $this->db->query(
+            "SELECT COUNT(*) FROM users WHERE user_role = 'teacher'"
+        )->count();
+
+        $count = [
+            'students' => $students,
+            'teachers' => $teachers
+        ];
+
+        return $count;
+    }
 }
