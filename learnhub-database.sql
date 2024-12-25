@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
     description VARCHAR(255),
     joined_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_login DATETIME,
+    profile_picture_url TEXT,
     location VARCHAR(255),
     password VARCHAR(255) NOT NULL,
     user_role ENUM('student', 'teacher', 'admin', 'guest') NOT NULL,
@@ -66,6 +67,7 @@ CREATE TABLE IF NOT EXISTS courses (
     tutor_id BIGINT(20) UNSIGNED NOT NULL,
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
+    thumbnail_url TEXT,
     day VARCHAR(20) NOT NULL,
     price decimal(10,2) NOT NULL,
     pricing_period VARCHAR(50) NOT NULL,
@@ -81,6 +83,7 @@ CREATE TABLE IF NOT EXISTS course_modules (
     module_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
     description TEXT,
     course_id BIGINT(20) UNSIGNED NOT NULL,
+    title VARCHAR(255) NOT NULL,
     PRIMARY KEY(module_id),
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
 );
