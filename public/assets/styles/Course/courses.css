@@ -301,7 +301,7 @@
 
     .left-course-container,
     .right-course-container {
-        padding: 24px;
+        padding: 0;
     }
 
     .search-course-card {
@@ -315,4 +315,5 @@
         margin-right: 0;
         margin-bottom: 15px;
     }
+
 }

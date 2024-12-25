@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\{ValidatorService, CourseService, UserService};
+use App\Services\{ValidatorService, CourseService, UserService, FileService};
+use App\Config\Paths;
 
 class CoursesController
 {
@@ -14,7 +15,8 @@ class CoursesController
         private TemplateEngine $view,
         private ValidatorService $validatorService,
         private CourseService $courseService,
-        private UserService $userService
+        private UserService $userService,
+        private FileService $fileService
     ) {}
 
 
@@ -103,15 +105,32 @@ class CoursesController
     public function createCourseView()
     {
 
-        echo $this->view->render('course/CreateCourse.php', [
+        echo $this->view->render('course/create_course.php', [
             "title" => "Create Course"
+        ]);
+    }
+
+    // Save course data in SESSION and redirect to next page to add course module
+    public function saveCourseData()
+    {
+        $thumbnail = $_FILES['thumbnail'] ?? null;
+        $this->validatorService->validateImg($thumbnail);
+        $this->fileService->upload("courses", $thumbnail); // Save image temporary
+
+        $_SESSION['courseData'] = $_POST;
+        redirectTo('/course/create/add-module');
+    }
+
+    public function addModuleView()
+    {
+        echo $this->view->render('course/add_course_module.php', [
+            "title" => "Add Course Module"
         ]);
     }
 
     public function createCourse()
     {
-        $this->validatorService->validateCourse($_POST);
-        $this->courseService->create($_POST);
+        $this->courseService->create($_POST['modules']);
         redirectTo('/courses/my-courses');
     }
 
@@ -123,7 +142,6 @@ class CoursesController
         } else if ($_SESSION['user_role'] == 'teacher') {
             $courses = $this->courseService->getMyCourses();
         }
-
         echo $this->view->render($url, [
             "title" => "My Courses",
             "courses" => $courses

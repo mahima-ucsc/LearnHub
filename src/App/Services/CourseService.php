@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use Exception;
 use Framework\Database;
 
 class CourseService
@@ -13,24 +14,43 @@ class CourseService
     public function create(array $formData)
     {
         $tutor_id = $_SESSION['user'];
+        $courseData = $_SESSION['courseData'];
+        $thumbnailUrl = $_SESSION['thumbnail'];
+
+
         $this->db->query(
-            "INSERT INTO courses(title, description, subject_id, grade_id, tutor_id, start_time, end_time, day, price, pricing_period, location, thumbnail)
-            VALUES (:title, :description, :subject_id, :grade_id, :tutor_id, :start_time, :end_time, :day, :price, :pricing_period, :location, :thumbnail)",
+            "INSERT INTO courses(title, description, subject_id, grade_id, tutor_id, start_time, end_time, day, price, pricing_period, location, thumbnail_url)
+                VALUES (:title, :description, :subject_id, :grade_id, :tutor_id, :start_time, :end_time, :day, :price, :pricing_period, :location, :thumbnail_url)",
             [
-                "title" => $formData['title'],
-                "description" => $formData['description'],
-                "subject_id" => $formData['subject_id'],
-                "grade_id" => $formData['grade_id'],
+                "title" => $courseData['title'],
+                "description" => $courseData['description'],
+                "subject_id" => $courseData['subject_id'],
+                "grade_id" => $courseData['grade_id'],
                 "tutor_id" => $tutor_id,
-                "start_time" => $formData['start_time'],
-                "end_time" => $formData['end_time'],
-                "day" => $formData['day'],
-                "price" => $formData['price'],
-                "pricing_period" => $formData['pricing_period'],
-                "location" => $formData['location'],
-                "thumbnail" => "thumbnail"
+                "start_time" => $courseData['start_time'],
+                "end_time" => $courseData['end_time'],
+                "day" => $courseData['day'],
+                "price" => $courseData['price'],
+                "pricing_period" => $courseData['pricing_period'],
+                "location" => $courseData['location'],
+                "thumbnail_url" => $thumbnailUrl
             ]
         );
+        $courseID = $this->db->lastInsertId();
+        foreach ($formData as $module) {
+            $this->db->query(
+                "INSERT INTO course_modules(course_id, description, title)
+                    VALUES (:courseID, :description, :title)",
+                [
+                    "courseID" => $courseID,
+                    "description" => $module['description'],
+                    "title" => $module['title']
+                ]
+            );
+        }
+
+        unset($_SESSION['courseData']);
+        unset($_SESSION['thumbnail']);
     }
 
     public function getMyCourses()
