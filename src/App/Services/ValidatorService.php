@@ -6,6 +6,7 @@ namespace App\Services;
 
 use Framework\Rules\{RequiredRule, EmailRule, InRule, MatchRule, MinRule, UrlRule};
 use Framework\Validator;
+use Framework\Exceptions\ValidationException;
 
 class ValidatorService
 {
@@ -72,5 +73,29 @@ class ValidatorService
         $this->validator->validate($formData, [
             "comment" => ["required"],
         ]);
+    }
+
+    public function validateImg(?array $file)
+    {
+        if (!$file || $file['error'] !== UPLOAD_ERR_OK) {
+            throw new ValidationException([
+                "img" => ['Failed to upload file.']
+            ]);
+        }
+
+        $maxSize = 10 * 1024 * 1024;
+
+        if ($file['size'] > $maxSize) {
+            throw new ValidationException([
+                "img" => ['File size is too large. Max file size is 10MB.']
+            ]);
+        }
+
+        $mimeType = $file['type'];
+        if (!preg_match('/^image\/.*/', $mimeType)) {
+            throw new ValidationException([
+                "img" => ['Invalid file type. Only image files are allowed.']
+            ]);
+        }
     }
 }
