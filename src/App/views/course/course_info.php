@@ -200,6 +200,48 @@
                             </div>
                         </div>
                     </div>
+
+
+                    <!-- asfffff -->
+                    <?php foreach ($modules as $module): ?>
+                        <div class="module-item">
+                            <div class="module-header" onclick="toggleModule(<?php echo e($module['module_id']); ?>)">
+                                <div class="module-title">
+                                    <h4><?php echo e($module['title']); ?></h4>
+                                    <span class="module-duration">8 hours</span>
+                                </div>
+                                <div class="module-toggle">
+                                    <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="module-content" id="module-<?php echo e($module['module_id']); ?>">
+                                <div class="module-description">
+                                    <p><?php echo e($module['description']); ?></p>
+                                </div>
+
+                                <div class="module-resources">
+                                    <h5>Resources</h5>
+                                    <ul>
+                                        <li>
+                                            <a href="#" class="resource-link">
+                                                <span class="resource-icon">📄</span>
+                                                Advanced Python PDF
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="resource-link">
+                                                <span class="resource-icon">📄</span>
+                                                Programming Exercises
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </div>

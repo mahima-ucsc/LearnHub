@@ -86,6 +86,17 @@ class CourseService
         )->find();
     }
 
+    public function getCourseModules(string $courseId)
+    {
+        return $this->db->query(
+            "SELECT * FROM course_modules
+            WHERE course_id = :id",
+            [
+                'id' => $courseId
+            ]
+        )->findAll();
+    }
+
     // search courses by teacher or course title
     public function searchCourse(int $length = 6, int $offset = 0)
     {
