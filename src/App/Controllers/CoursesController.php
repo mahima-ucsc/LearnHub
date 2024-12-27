@@ -85,6 +85,7 @@ class CoursesController
     public function courseInfo(array $params)
     {
         $course = $this->courseService->getByCourseId($params['course_id']);
+        $courseModules = $this->courseService->getCourseModules($params['course_id']);
         $user = $this->userService->getUserProfile();
 
         if (!$course) {
@@ -97,7 +98,8 @@ class CoursesController
             [
                 'course' => $course,
                 'title' => $course['title'],
-                'user' => $user
+                'user' => $user,
+                'modules' => $courseModules
             ]
         );
     }
