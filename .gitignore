@@ -1,3 +1,4 @@
+src/App/Config/AppConstants.php
 learnhub.sql
 src/App/Services/PostService.php
 .gitignore
