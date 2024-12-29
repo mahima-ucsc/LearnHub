@@ -72,13 +72,13 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="firstName">First Name</label>
-                        <input type="text" id="firstName" name="firstName" value="<?php echo e($userDetails['first_name']); ?>">
+                        <label for="first_name">First Name</label>
+                        <input type="text" id="first_name" name="first_name" value="<?php echo e($userDetails['first_name']); ?>">
                     </div>
 
                     <div class="form-group">
-                        <label for="lastName">Last Name</label>
-                        <input type="text" id="lastName" name="lastName" value="<?php echo e($userDetails['last_name']); ?>">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" id="last_name" name="last_name" value="<?php echo e($userDetails['last_name']); ?>">
                     </div>
 
                     <div class="form-group">
@@ -87,19 +87,24 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="phone">Phone</label>
-                        <input type="tel" id="phone" name="phone" value="+1 (555) 123-4567">
+                        <label for="phone_no">Phone</label>
+                        <input type="tel" id="phone_no" name="phone_no" value="<?php echo e($userDetails['phone_no']); ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="date_of_birth">Date of Birth</label>
+                        <input type="date" id="date_of_birth" name="date_of_birth" value="<?php echo e($userDetails['date_of_birth']); ?>">
                     </div>
 
                     <div class="form-group full-width">
-                        <label for="about">About Me</label>
-                        <textarea id="about" name="about" rows="4">Passionate learner and aspiring software developer. I love exploring new technologies and pushing my boundaries in the world of coding.</textarea>
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" rows="4"><?php echo e($userDetails['description']); ?></textarea>
                     </div>
 
                     <div class="form-group full-width">
                         <label for="location">Location</label>
-                        <input type="text" id="location" name="location" value="New York, NY">
+                        <input type="text" id="location" name="location" value="<?php echo e($userDetails['location']); ?>">
                     </div>
+
 
                     <button type="submit" class="save-button">Save Changes</button>
                 </form>
@@ -112,19 +117,41 @@
                     <div class="form-group">
                         <label for="currentPassword">Current Password</label>
                         <input type="password" id="currentPassword" name="currentPassword">
+                        <?php if (array_key_exists('password', $errors)) : ?>
+                            <div style="color: red;">
+                                <?php echo e($errors['password'][0]); ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
-
-                    <div class="form-group">
+                    <br>
+                    <div class="form-group ">
                         <label for="newPassword">New Password</label>
                         <input type="password" id="newPassword" name="newPassword">
+                        <?php if (array_key_exists('newPassword', $errors)) : ?>
+                            <div style="color: red;">
+                                <?php echo e($errors['newPassword'][0]); ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
+                    <br>
 
                     <div class="form-group">
                         <label for="confirmPassword">Confirm New Password</label>
                         <input type="password" id="confirmPassword" name="confirmPassword">
+                        <?php if (array_key_exists('confirmPassword', $errors)) : ?>
+                            <div style="color: red;">
+                                <?php echo e($errors['confirmPassword'][0]); ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
-
-                    <button type="submit" class="save-button">Update Password</button>
+                    <div class="form-group full-width">
+                        <?php if (array_key_exists('notMatch', $errors)) : ?>
+                            <div style="color: red;">
+                                <?php echo e($errors['notMatch'][0]); ?>
+                            </div>
+                        <?php endif; ?>
+                        <button type="submit" class="save-button">Update Password</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -134,30 +161,34 @@
             // Get all menu links
             const menuLinks = document.querySelectorAll('.settings-menu a');
 
+            // Function to activate the saved section or default to "general"
+            function activateSectionFromStorage() {
+                const savedSectionId = localStorage.getItem('activeSection') || 'general';
+                menuLinks.forEach(link => {
+                    link.classList.toggle('active', link.getAttribute('href').substring(1) === savedSectionId);
+                });
+                document.querySelectorAll('.settings-section').forEach(section => {
+                    section.classList.toggle('active', section.id === savedSectionId);
+                });
+            }
+
+            // Initialize the page with the saved section
+            activateSectionFromStorage();
+
             // Add click event listener to each link
             menuLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
 
-                    // Remove active class from all links and sections
-                    menuLinks.forEach(l => l.classList.remove('active'));
-                    document.querySelectorAll('.settings-section').forEach(section => {
-                        section.classList.remove('active');
-                    });
-
-                    // Add active class to clicked link
-                    this.classList.add('active');
-
-                    // Show corresponding section
+                    // Save the active section ID to localStorage
                     const sectionId = this.getAttribute('href').substring(1);
-                    document.getElementById(sectionId).classList.add('active');
+                    localStorage.setItem('activeSection', sectionId);
+
+                    // Activate the selected section
+                    activateSectionFromStorage();
                 });
             });
-        });
 
-        // Change Profile pic and cover pic
-
-        document.addEventListener('DOMContentLoaded', function() {
             // Profile Picture Preview
             const profilePictureInput = document.getElementById('profilePicture');
             const profileImagePreview = document.querySelector('.profile-image-preview img');

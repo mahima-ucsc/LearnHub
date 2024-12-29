@@ -29,4 +29,17 @@ class UserController
         $this->userService->addUser($_POST);
         redirectTo('/admin-dashboard?tab=user-managment');
     }
+
+    public function updateProfile()
+    {
+        $this->userService->canChangeEmail($_POST['email']);
+        $this->userService->updateProfile($_POST);
+        redirectTo('/settings');
+    }
+
+    public function updatePassword()
+    {
+        $this->userService->updatePassword($_POST);
+        redirectTo('/settings');
+    }
 }
