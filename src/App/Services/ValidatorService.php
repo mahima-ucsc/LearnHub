@@ -73,4 +73,12 @@ class ValidatorService
             "comment" => ["required"],
         ]);
     }
+    public function validateContactForm(array $formData)
+    {
+        $this->validator->validate($formData, [
+            "name" => ["required"],
+            "email" => ["required", "email"],
+            "message" => ["required"],
+        ]);
+    }
 }
