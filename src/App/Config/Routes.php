@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace App\Config;
 
-use App\Controllers\{AlertController, AssignmentController, AuthController, ProfileController, CoursesController, TutorProfileController, SettingController, PageController, ResourceController, PostController, ReviewController, UserController};
+use App\Controllers\{AlertController, AssignmentController, AuthController, ProfileController, CoursesController, NotificationController, TutorProfileController, SettingController, PageController, ResourceController, PostController, ReviewController, UserController};
 use App\Middleware\AdminOnlyMiddleware;
 use App\Middleware\AuthRequiredMiddleware;
 use App\Middleware\GuestOnlyMiddleware;
@@ -102,6 +102,10 @@ function registerRoutes(App $app)
     $app->get('/course/{courseId}/assignment/create', [AssignmentController::class, 'createAssignment']);
 
     $app->get('/test', [PageController::class, 'test']);
+
+    // Notifications
+    $app->get('/notification/test', [NotificationController::class, 'getTestNotification']);
+
     // Catch-all route for 404 page
     $app->get('/{any:.*}', [PageController::class, 'notFound']);
 }
