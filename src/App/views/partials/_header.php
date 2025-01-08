@@ -46,7 +46,7 @@
             </ul>
         </div>
         <div class="right-section">
-            <?php if (($_SESSION['user'])): ?>
+            <?php if (isset($_SESSION['user'])): ?>
                 <div class="upload-icon-container" onclick="window.location.href='/course/request/create'">
 
                     <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -71,7 +71,7 @@
                 </svg>
                 <div class="dropdown-content">
                     <?php if (isset($_SESSION['user'])): ?>
-                        <?php if (!($_SESSION['user_role'])): ?>
+                        <?php if (!(isset($_SESSION['user_role']))): ?>
                             <a href="/profile">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
