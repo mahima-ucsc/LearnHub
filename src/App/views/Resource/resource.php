@@ -57,14 +57,22 @@
             </div>
         </div>
         <div class="right-resource-container">
+            
             <div class="resource-accordion">
+                <div class="resource-add-btn">
+                    <a href="resource/create">
+                        <button>Add Resources</button>
+                    </a>
+                </div>
                 <!-- Accordion Resource Items -->
-                <div class="accordion-item">
-                    <div class="accordion-header">
-                        <div class="resource-title-container">
-                            <h4 class="resource-title">ICT A/L pastpaper book</h4>
-                            <span class="resource-type">Book</span>
-                        </div>
+                    <div class="accordion-item">
+                
+                        <div class="accordion-header">
+                    
+                            <div class="resource-title-container">
+                                <h4 class="resource-title">ICT A/L pastpaper book</h4>
+                                <span class="resource-type">Book</span>
+                            </div>
                         <div class="resource-price-container">
                             <span class="resource-price">Rs. 500</span>
                             <i class="fas fa-chevron-down accordion-icon"></i>

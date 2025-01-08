@@ -112,8 +112,13 @@ CREATE TABLE IF NOT EXISTS resources (
     resource_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
     title VARCHAR(255) NOT NULL,
     description TEXT,
-    resource TEXT NOT NULL,
-    PRIMARY KEY(resource_id)
+    user_id BIGINT(20) UNSIGNED NOT NULL,
+    type VARCHAR(255) NOT NULL,
+    attachment_link VARCHAR(2083),
+    download_count INT DEFAULT 0,
+    price DECIMAL(10, 2) NULL,
+    PRIMARY KEY(resource_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id);
 );
 
 -- Assign resources to course module dates
@@ -227,3 +232,5 @@ CREATE TABLE IF NOT EXISTS course_request_comments (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (request_id) REFERENCES course_requests(request_id) ON DELETE CASCADE
 );
+
+

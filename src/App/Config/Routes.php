@@ -89,6 +89,10 @@ function registerRoutes(App $app)
 
     // Resources
     $app->get('/resource', [ResourceController::class, 'resource']);
+    $app->get('/resource/create', [ResourceController::class, 'resourceCreateView']);
+    $app->get('/resource/my-resources', [ResourceController::class, 'myResources']);
+    $app->post('/save-resource-data', [ResourceController::class, 'saveResource']);
+
 
     // Reviews
     $app->post('/add-review', [ReviewController::class, 'addReview'], [AuthRequiredMiddleware::class]);
