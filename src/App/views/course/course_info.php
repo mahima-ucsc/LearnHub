@@ -5,6 +5,106 @@
 
 </head>
 
+<style>
+    .course-participant {
+        margin-top: 1.5rem;
+        width: 300px;
+    }
+
+    .course-participant h2 {
+        font-size: 16px;
+    }
+
+    .participant-dropdown {
+        margin: 0 auto;
+    }
+
+    .participant-dropdown-button {
+        background-color: #fff;
+        border: none;
+        border-bottom: 2px solid #dedede;
+        padding: 10px 15px;
+        cursor: pointer;
+        font-size: 1rem;
+        width: 100%;
+        text-align: center;
+    }
+
+    .dropdown-chevron {
+        padding: 4px;
+        color: rgb(156, 156, 156);
+        transition: transform 0.3s ease;
+    }
+
+    .dropdown-chevron.rotated {
+        transform: rotate(180deg);
+    }
+
+    .participant-dropdown-content {
+        opacity: 0;
+        visibility: hidden;
+        max-height: 0;
+        overflow: hidden;
+        /* Ensures content doesn't overflow */
+        background-color: #fff;
+        width: 100%;
+        z-index: 10;
+        transition: max-height 0.5s ease, opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .participant-dropdown-content.active {
+        opacity: 1;
+        visibility: visible;
+        max-height: 400px;
+        height: 400px;
+        /* Adjust based on the dropdown's content */
+    }
+
+
+    .participant-list {
+        list-style: none;
+        margin: 0;
+        padding: 10px;
+        max-height: 150px;
+    }
+
+    .participant-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 4px 0;
+        border-bottom: 1px solid #dedede;
+    }
+
+    .participant-avatar {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .participant-name {
+        font-size: 0.9rem;
+        color: #333;
+        flex: 1;
+    }
+
+    .view-all-button {
+        background-color: #FFC400;
+        color: #fff;
+        padding: 8px 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        width: 100%;
+
+    }
+
+    .view-all-button:hover {
+        background-color: #e0a900;
+    }
+</style>
 <section class="course-info-container">
     <div class="course-page-wrapper">
         <div class="main-content">
@@ -245,6 +345,56 @@
                 </div>
             </div>
         </div>
+        <?php if (isset($_SESSION['user_role'])): ?>
+            <?php if ($_SESSION['user_role'] === "teacher" || $_SESSION['user_role'] === "admin"): ?>
+
+                <div class="course-section course-participant">
+                    <h3>Course Participants</h3>
+                    <div class="participant-dropdown">
+                        <div class="participant-dropdown-content" id="participant-list">
+                            <ul class="participant-list">
+                                <li class="participant-item">
+                                    <img src="/assets/images/user.jpeg" alt="User 1" class="participant-avatar">
+                                    <span class="participant-name">Sachith Dhanushka</span>
+                                </li>
+                                <li class="participant-item">
+                                    <img src="/assets/images/user.jpeg" alt="User 2" class="participant-avatar">
+                                    <span class="participant-name">Dinuka Sahan</span>
+                                </li>
+                                <li class="participant-item">
+                                    <img src="/assets/images/user.jpeg" alt="User 3" class="participant-avatar">
+                                    <span class="participant-name">Isuru Naveen</span>
+                                </li>
+                                <li class="participant-item">
+                                    <img src="/assets/images/user.jpeg" alt="User 4" class="participant-avatar">
+                                    <span class="participant-name">Amanda Perera</span>
+                                </li>
+                                <li class="participant-item">
+                                    <img src="/assets/images/user.jpeg" alt="User 1" class="participant-avatar">
+                                    <span class="participant-name">Sachith Dhanushka</span>
+                                </li>
+                                <li class="participant-item">
+                                    <img src="/assets/images/user.jpeg" alt="User 2" class="participant-avatar">
+                                    <span class="participant-name">Dinuka Sahan</span>
+                                </li>
+                                <li class="participant-item">
+                                    <img src="/assets/images/user.jpeg" alt="User 3" class="participant-avatar">
+                                    <span class="participant-name">Isuru Naveen</span>
+                                </li>
+                                <li class="participant-item">
+                                    <img src="/assets/images/user.jpeg" alt="User 4" class="participant-avatar">
+                                    <span class="participant-name">Amanda Perera</span>
+                                </li>
+                                <button class="view-all-button" onclick="window.location.href = '/courses/<?php echo ($course['course_id']); ?>/participants'">View All</button>
+                            </ul>
+                        </div>
+                        <button class="participant-dropdown-button" onclick="toggleParticipantList()">
+                            View Participants <i class="fas fa-chevron-down dropdown-chevron"></i>
+                        </button>
+                    </div>
+                </div>
+            <?php endif; ?>
+        <?php endif; ?>
 
     </div>
     <div class="course-section">
@@ -379,6 +529,23 @@
             moduleContent.classList.toggle('active');
             moduleItem.classList.toggle('expanded');
             chevron.classList.toggle('rotated');
+        }
+
+        function toggleParticipantList() {
+            const participantList = document.getElementById('participant-list');
+            participantList.classList.toggle('active');
+
+            document.querySelector('.dropdown-chevron').classList.toggle('rotated');
+        }
+
+        function viewAllParticipants() {
+            alert('Redirecting to view all participants...');
+            // Add logic here to redirect or display all participants
+        }
+
+        function viewAllParticipants() {
+            // Redirect to a page or open a modal displaying all participants
+            window.location.href = '/course/participants';
         }
     </script>
 </section>
