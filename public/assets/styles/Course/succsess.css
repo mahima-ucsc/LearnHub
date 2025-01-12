@@ -1,0 +1,35 @@
+.course-success{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 150px;
+}
+
+.course-success img{
+    width: 120px;
+}
+
+.success-action-btn{
+    display: flex;
+    flex-direction: row;
+    
+}
+
+.course-success h1{
+    font-size: 32px;
+    margin-top: 26px;
+    margin-bottom: 26px;
+}
+
+.success-home-btn{
+    width: 220px;
+    background-color: #FFC400;
+    border: none;
+    margin: 10px;
+    padding: 10px 3px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+
+}
