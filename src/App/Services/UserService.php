@@ -50,6 +50,20 @@ class UserService
             throw new ValidationException(['email' => 'Email taken']);
         }
     }
+    public function canChangeEmail(string $email)
+    {
+        $emailCount =  $this->db->query(
+            "SELECT COUNT(*) FROM users WHERE email = :email AND user_id != :user",
+            [
+                'email' => $email,
+                'user' => $_SESSION['user']
+            ]
+        )->count();
+
+        if ($emailCount > 0) {
+            throw new ValidationException(['email' => 'Email taken']);
+        }
+    }
 
     public function create(array $formData)
     {
@@ -116,5 +130,108 @@ class UserService
                 'id' => $id
             ]
         );
+    }
+
+    // Function to add new user for admin
+    public function addUser(array $formData)
+    {
+        $password = password_hash($formData['password'], PASSWORD_BCRYPT, ["const" => 12]);
+        $this->db->query(
+            "INSERT INTO users(first_name, last_name, email, date_of_birth, password, user_role) 
+            VALUES (:first_name, :last_name, :email, :date_of_birth, :password, :user_role)",
+            [
+                "first_name" => $formData['first_name'],
+                "last_name" => $formData['last_name'],
+                "date_of_birth" => date('Y-m-d'), // Set today as default
+                "email" => $formData['email'],
+                "user_role" => $formData['user_role'],
+                "password" => $password,
+            ]
+        );
+    }
+
+    public function getUsers()
+    {
+        $searchTerm = $_GET['s'] ?? '';
+        $userData = $this->db->query(
+            "SELECT * FROM users WHERE first_name LIKE :term OR last_name LIKE :term",
+            [
+                "term" => "%{$searchTerm}%"
+            ]
+        )->findAll();
+        unset($userData['password']);
+
+        return $userData;
+    }
+
+    public function getNoOfUsers()
+    {
+        $students =  $this->db->query(
+            "SELECT COUNT(*) FROM users WHERE user_role = 'student'"
+        )->count();
+
+        $teachers = $this->db->query(
+            "SELECT COUNT(*) FROM users WHERE user_role = 'teacher'"
+        )->count();
+
+        $count = [
+            'students' => $students,
+            'teachers' => $teachers
+        ];
+
+        return $count;
+    }
+
+    public function updateProfile(array $formData)
+    {
+        $this->db->query(
+            "UPDATE users 
+            SET first_name = :fname, last_name = :lname, description = :description, email = :email,
+            phone_no = :phone_no, date_of_birth = :dob, location = :location
+            WHERE user_id = :user_id",
+            [
+                "fname" => $formData['first_name'],
+                "lname" => $formData['last_name'],
+                "description" => $formData['description'],
+                "email" => $formData['email'],
+                "phone_no" => $formData['phone_no'],
+                "dob" => $formData['date_of_birth'],
+                "location" => $formData['location'],
+                "user_id" => $_SESSION['user']
+            ]
+        );
+    }
+
+    public function updatePassword(array $formData)
+    {
+        $user = $this->db->query("SELECT * FROM users WHERE user_id = :user_id", [
+            'user_id' => $_SESSION['user']
+        ])->find();
+
+        $passwordMatch = password_verify($formData['currentPassword'], $user['password']);
+        if (!$passwordMatch) {
+            throw new ValidationException(['password' => ['Invalid Password']]);
+        }
+
+        if (!$formData['newPassword']) {
+            throw new ValidationException(['newPassword' => ['This field cannot be empty']]);
+        }
+        if (!$formData['confirmPassword']) {
+            throw new ValidationException(['confirmPassword' => ['This field cannot be empty']]);
+        }
+
+        if ($formData['newPassword'] === $formData['confirmPassword']) {
+            $password = password_hash($formData['newPassword'], PASSWORD_BCRYPT, ["const" => 12]);
+            $this->db->query(
+                "UPDATE users SET password = :password
+                WHERE user_id = :user_id",
+                [
+                    "user_id" => $_SESSION['user'],
+                    "password" => $password
+                ]
+            );
+        } else {
+            throw new ValidationException(['notMatch' => ['Passwords does not match']]);
+        }
     }
 }

@@ -21,7 +21,7 @@ class PageController
     public function helpAndSupportReview()
     {
         echo $this->view->render('User/Admin/help_And_Support_Review.php', [
-            "title" => "help_And_Support_Review"
+            "title" => "Help & Support"
         ]);
     }
 
@@ -50,7 +50,7 @@ class PageController
     {
         $myCourses = $this->courseService->getMyCourses();
         $users = $this->userService->getAllUsers();
-        echo $this->view->render('User/dashboard.php', [
+        echo $this->view->render('User/Tutor/dashboard.php', [
             "title" => "Dashboard",
             'users' => $users,
             "myCourses" => $myCourses
@@ -58,12 +58,31 @@ class PageController
     }
     public function adminDashboard()
     {
-        $courses = $this->courseService->getAllCourses();
-        $users = $this->userService->getAllUsers();
+        $users = [];
+        $courses = [];
+
+        // Handle user data
+        if ($_GET['tab'] == 'user-managment') {
+
+            // $users = $this->userService->getAllUsers();
+            $users = $this->userService->getUsers();
+        }
+
+
+        if ($_GET['tab'] == 'course-managment') {
+            $courses = $this->courseService->getAllCourses();
+        }
+        $userCount = $this->userService->getNoOfUsers();
+        $courseCount = $this->courseService->getNoOfCourses();
+        $stat = [
+            "users" => $userCount,
+            "courses" => $courseCount
+        ];
         echo $this->view->render('User/Admin/admin_dashboard.php', [
             "title" => "Admin Dashboard",
-            'users' => $users,
-            "courses" => $courses
+            'users' => $users ?? '',
+            "courses" => $courses ?? '',
+            "stat" => $stat
         ]);
     }
 

@@ -1,3 +1,4 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <div class="dashboard">
 
     <!-- Header -->
@@ -17,22 +18,22 @@
     <div class="admin-stats-grid">
         <div class="stat-box">
             <h3>Total Users</h3>
-            <div class="value">15,487</div>
+            <div class="value"><?php echo ((int)$stat['users']['students'] + (int)$stat['users']['teachers']) ?></div>
             <div class="trend">↑ 12.5% Growth this month</div>
         </div>
         <div class="stat-box">
             <h3>Student Users</h3>
-            <div class="value">14,892</div>
+            <div class="value"><?php echo $stat['users']['students'] ?></div>
             <div class="trend">↑ 8.3% Growth this month</div>
         </div>
         <div class="stat-box">
             <h3>Teacher Users</h3>
-            <div class="value">595</div>
+            <div class="value"><?php echo $stat['users']['teachers'] ?></div>
             <div class="trend">↑ 15.2% Growth this month</div>
         </div>
         <div class="stat-box">
             <h3>Total Courses</h3>
-            <div class="value">283</div>
+            <div class="value"><?php echo $stat['courses']; ?></div>
             <div class="trend">↑ 5.7% Growth this month</div>
         </div>
         <div class="stat-box">
@@ -45,31 +46,8 @@
     <div class="chart-container">
         <div class="chart-header">
             <h2>User Growth Trend</h2>
-            <div class="chart-legend">
-                <span>Students</span>
-                <span>Teachers</span>
-            </div>
         </div>
-        <svg class="chart-svg" viewBox="0 0 800 300">
-            <!-- Grid Lines -->
-            <line class="chart-grid" x1="50" y1="250" x2="750" y2="250" />
-            <line class="chart-grid" x1="50" y1="200" x2="750" y2="200" />
-            <line class="chart-grid" x1="50" y1="150" x2="750" y2="150" />
-            <line class="chart-grid" x1="50" y1="100" x2="750" y2="100" />
-            <line class="chart-grid" x1="50" y1="50" x2="750" y2="50" />
-
-            <!-- Chart Line -->
-            <path class="chart-line" d="M50,200 L185,180 L320,150 L455,120 L590,85 L725,50" />
-            <path class="chart-area" d="M50,200 L185,180 L320,150 L455,120 L590,85 L725,50 L725,250 L50,250 Z" />
-
-            <!-- Data Points -->
-            <circle class="chart-dot" cx="50" cy="200" r="4" />
-            <circle class="chart-dot" cx="185" cy="180" r="4" />
-            <circle class="chart-dot" cx="320" cy="150" r="4" />
-            <circle class="chart-dot" cx="455" cy="120" r="4" />
-            <circle class="chart-dot" cx="590" cy="85" r="4" />
-            <circle class="chart-dot" cx="725" cy="50" r="4" />
-        </svg>
+        <canvas id="myChart" style="max-width: 1200px;max-height: 450px;"></canvas>
     </div>
 
     <!-- Recent Transactions -->
@@ -147,3 +125,72 @@
         </table>
     </div>
 </div>
+
+<?php
+// Dummy data for the chart
+$labels = ['January', 'February', 'March', 'April', 'May'];
+$data = [10, 20, 15, 25, 30];
+
+// Convert PHP arrays to JSON for use in JavaScript
+$labelsJSON = json_encode($labels);
+$dataJSON = json_encode($data);
+?>
+
+<script>
+    // Get data from PHP
+    const labels = <?php echo $labelsJSON; ?>;
+    const data = <?php echo $dataJSON; ?>;
+
+    // Chart.js configuration
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'line', // Type of chart: bar, line, pie, etc.
+        data: {
+            labels: labels, // Labels for the X-axis
+            datasets: [{
+                label: 'Sales Data', // Legend label
+                data: data, // Data for the Y-axis 
+                borderColor: '#FFC400', // Line color
+                borderWidth: 2, // Line thickness
+                pointBackgroundColor: '#FFC400', // Point fill color
+                pointBorderColor: '#fff', // Point border color
+                pointBorderWidth: 2, // Point border width
+                pointRadius: 5, // Point size
+                hitRadius: 50
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false // Hides the legend
+                }
+            },
+            scales: {
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Sales (in $)',
+                        font: {
+                            size: 14
+                        }
+                    },
+                    beginAtZero: true,
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                labels: {
+                    font: {
+                        size: 14,
+                        family: 'Verdana'
+                    },
+                    color: '#333',
+                    padding: 20,
+                    boxWidth: 10,
+                }
+            }
+        }
+    });
+</script>

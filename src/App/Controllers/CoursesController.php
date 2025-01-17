@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\{ValidatorService, CourseService, UserService};
+use App\Services\{ValidatorService, CourseService, UserService, FileService};
+use App\Config\Paths;
 
 class CoursesController
 {
@@ -14,7 +15,8 @@ class CoursesController
         private TemplateEngine $view,
         private ValidatorService $validatorService,
         private CourseService $courseService,
-        private UserService $userService
+        private UserService $userService,
+        private FileService $fileService
     ) {}
 
 
@@ -47,6 +49,7 @@ class CoursesController
             ]),
             $pages
         );
+
 
         echo $this->view->render('course/Courses.php', [
             "title" => "Search Course",
@@ -83,11 +86,13 @@ class CoursesController
     public function courseInfo(array $params)
     {
         $course = $this->courseService->getByCourseId($params['course_id']);
-        $user = $this->userService->getUserProfile();
-
         if (!$course) {
             redirectTo('/courses/my-courses');
         }
+        $courseModules = $this->courseService->getCourseModules($params['course_id']);
+
+        $user = $this->userService->getUserProfile($course['tutor_id']);
+
 
 
         echo $this->view->render(
@@ -95,7 +100,8 @@ class CoursesController
             [
                 'course' => $course,
                 'title' => $course['title'],
-                'user' => $user
+                'user' => $user,
+                'modules' => $courseModules
             ]
         );
     }
@@ -103,25 +109,46 @@ class CoursesController
     public function createCourseView()
     {
 
-        echo $this->view->render('course/CreateCourse.php', [
+        echo $this->view->render('course/create_course.php', [
             "title" => "Create Course"
+        ]);
+    }
+
+    // Save course data in SESSION and redirect to next page to add course module
+    public function saveCourseData()
+    {
+        $thumbnail = $_FILES['thumbnail'] ?? null;
+        $this->validatorService->validateImg($thumbnail);
+        $this->fileService->upload("courses", $thumbnail); // Save image temporary
+
+        $_SESSION['courseData'] = $_POST;
+        redirectTo('/course/create/add-module');
+    }
+
+    public function addModuleView()
+    {
+        echo $this->view->render('course/add_course_module.php', [
+            "title" => "Add Course Module"
         ]);
     }
 
     public function createCourse()
     {
-        $this->validatorService->validateCourse($_POST);
-        $this->courseService->create($_POST);
+        $this->courseService->create($_POST['modules']);
         redirectTo('/courses/my-courses');
     }
 
     public function myCourses()
     {
         $url = $_SESSION['user_role'] === 'teacher' ? 'Tutor/my_courses.php' : 'User/user_courses.php';
-        $myCourses = $this->courseService->getMyCourses();
+        if ($_SESSION['user_role'] == 'student') {
+            $courses = $this->courseService->registeredCourses();
+        } else if ($_SESSION['user_role'] == 'teacher') {
+            $courses = $this->courseService->getMyCourses();
+        }
         echo $this->view->render($url, [
             "title" => "My Courses",
-            "myCourses" => $myCourses
+            "courses" => $courses
         ]);
     }
 
@@ -160,15 +187,6 @@ class CoursesController
         redirectTo('/courses/my-courses');
     }
 
-    public function courseParticipant()
-    {
-        $users = $this->userService->getAllUsers();
-        echo $this->view->render('course/course_participant.php', [
-            "title" => "Create Course",
-            'users' => $users
-        ]);
-    }
-
     public function courseParticipantStat()
     {
         echo $this->view->render(
@@ -196,5 +214,39 @@ class CoursesController
                 'title' => "ICT 2024 A/L"
             ]
         );
+    }
+
+    public function successMessage()
+    {
+        echo $this->view->render(
+            "course/success.php",
+            [
+                'title' => "Course Create Successfully"
+            ]
+        );
+    }
+
+    public function courseParticipant(array $params)
+    {
+        $students = $this->courseService->getCourseParticipants($params['course_id']);
+        echo $this->view->render(
+            "course/course_participants.php",
+            [
+                'students' => $students,
+                'title' => "Course Participants",
+            ]
+        );
+    }
+
+    public function RemoveCourseParticipant(array $params)
+    {
+        $this->courseService->RemoveParticipant($params['course_id'], $params['user_id']);
+        redirectTo($_SERVER['HTTP_REFERER']);
+    }
+
+    public function AddParticipant(array $params)
+    {
+        $this->courseService->AddParticipant($params['course_id'], $_POST['email']);
+        redirectTo($_SERVER['HTTP_REFERER']);
     }
 }
