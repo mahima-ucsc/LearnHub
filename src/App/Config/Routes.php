@@ -55,6 +55,8 @@ function registerRoutes(App $app)
     $app->get('/billing-and-payment', [PageController::class, 'billingAndPayment'], [AuthRequiredMiddleware::class]);
     $app->get('/mycourses', [PageController::class, 'myCourses'], [AuthRequiredMiddleware::class]);
     $app->get('/create-ad', [PageController::class, 'createAd'], [TeacherOnlyMiddleware::class]);
+    $app->post('/update-profile', [UserController::class, 'updateProfile'], [AuthRequiredMiddleware::class]);
+    $app->post('/update-password', [UserController::class, 'updatePassword'], [AuthRequiredMiddleware::class]);
 
     // Admin operations
     $app->post('/admin/adduser', [UserController::class, 'addUser'], [AdminOnlyMiddleware::class]); // Add new user
@@ -73,10 +75,19 @@ function registerRoutes(App $app)
     $app->get('/course/enroll', [CoursesController::class, 'enrollCourse'], [AuthRequiredMiddleware::class]);
     $app->get('/course/create', [CoursesController::class, 'createCourseView'], [TeacherOnlyMiddleware::class]);
     $app->post('/create-course', [CoursesController::class, 'createCourse'], [TeacherOnlyMiddleware::class]);
+    $app->post('/save-course-data', [CoursesController::class, 'saveCourseData'], [TeacherOnlyMiddleware::class]);
     $app->get('/courses/my-courses', [CoursesController::class, 'myCourses'], [AuthRequiredMiddleware::class]);
+
     $app->get('/courses/{course_id}', [CoursesController::class, 'courseInfo']);
+    $app->get('/courses/{course_id}/participants', [CoursesController::class, 'courseParticipant'], [TeacherOnlyMiddleware::class]);
+    $app->delete('/courses/{course_id}/participants/remove/{user_id}', [CoursesController::class, 'RemoveCourseParticipant'], [TeacherOnlyMiddleware::class]);
+    $app->post('/courses/{course_id}/participants/add', [CoursesController::class, 'AddParticipant'], [TeacherOnlyMiddleware::class]);
+
+
     $app->get('/courses/my/registered', [CoursesController::class, 'regCourses'], [AuthRequiredMiddleware::class]);
     $app->get('/courses/user', [CoursesController::class, 'userCourses'], [StudentOnlyMiddleware::class]);
+    $app->get('/course/create/add-module', [CoursesController::class, 'addModuleView']);
+    $app->get('/course/create/success', [CoursesController::class, 'successMessage']);
 
     // Course Requests
     $app->get('/course/request', [PostController::class, 'courseRequest']);

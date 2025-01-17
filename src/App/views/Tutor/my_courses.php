@@ -34,7 +34,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($myCourses as $courseData): ?>
+                    <?php foreach ($courses as $courseData): ?>
                         <tr onclick="window.location.href='/courses/my-courses/<?php echo e($courseData['course_id']) ?>';" style="cursor: pointer;">
                             <td>
                                 <div class="course-name">

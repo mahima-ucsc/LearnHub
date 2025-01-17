@@ -21,7 +21,7 @@
 }
 .results{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 350px));
+    grid-template-columns: repeat(auto-fit, minmax(350px, 380px));
     gap: 20px;
     margin-top: 22px;
 }

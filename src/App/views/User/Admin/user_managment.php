@@ -78,7 +78,7 @@
         </div>
     </div>
 </div>
-<?php include $this->resolve('modals/delete_modal.php'); ?>
+<?php include $this->resolve('components/delete_modal.php'); ?>
 
 <script>
     // Toggles the Add User Modal
@@ -107,12 +107,12 @@
 
 
     // Close modal on clicking outside or pressing Escape
-    window.onclick = function(event) {
-        const addUserModal = document.getElementById('addUserModal');
-        if (event.target === addUserModal) {
-            modal.classList.toggle('show');
-        }
-    };
+    // window.onclick = function(event) {
+    //     const addUserModal = document.getElementById('addUserModal');
+    //     if (event.target === addUserModal) {
+    //         modal.classList.toggle('show');
+    //     }
+    // };
 
     /* 
     Handle user search

@@ -50,7 +50,7 @@ class PageController
     {
         $myCourses = $this->courseService->getMyCourses();
         $users = $this->userService->getAllUsers();
-        echo $this->view->render('User/dashboard.php', [
+        echo $this->view->render('User/Tutor/dashboard.php', [
             "title" => "Dashboard",
             'users' => $users,
             "myCourses" => $myCourses

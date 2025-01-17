@@ -1,16 +1,25 @@
 <?php include $this->resolve('partials/_header.php') ?>
 
-<link rel="stylesheet" href="/assets/styles/User/user_courses.css">
 <link rel="stylesheet" href="/assets/styles/components/course-card.css">
+<link rel="stylesheet" href="/assets/styles/User/user_courses.css">
+<link rel="stylesheet" href="/assets/styles/modals/menu_dropdown.css">
 
 <section class="user-course">
     <h3>My Courses</h3>
     <hr>
 
-    <div class="results">
-
+    <div class="card-container">
         <?php foreach ($courses as $course): ?>
             <div class="search-course-card">
+                <div class="course-menu">
+                    <i class="fa fa-ellipsis-v"></i>
+                    <div class="menu-dropdown">
+                        <ul>
+                            <li onclick="pinCourse(123)">Pin Course</li>
+                            <li>Other Option</li>
+                        </ul>
+                    </div>
+                </div>
                 <div class="course-card-header">
                     <img src="/assets/images/dm.jpg" alt="Web Development" class="course-image">
                     <h4 class="course-title"><?php echo ($course['title']); ?></h4>
@@ -48,4 +57,5 @@
 
     </div>
 </section>
+<script src="/assets/js/modals/menu_dropdown.js"></script>
 <?php include $this->resolve('partials/_footer.php') ?>
