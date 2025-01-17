@@ -84,6 +84,8 @@ class PageController
             "courses" => $courses ?? '',
             "stat" => $stat
         ]);
+
+        
     }
 
     public function billingAndPayment()
