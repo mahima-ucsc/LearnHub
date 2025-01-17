@@ -85,7 +85,12 @@ class PageController
             "stat" => $stat
         ]);
 
-        
+        // handle posts
+        if ($_GET['tab'] == 'post-managment') {
+
+            $users = $this->userService->getUsers();
+        }
+
     }
 
     public function billingAndPayment()

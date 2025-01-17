@@ -90,7 +90,7 @@ function registerRoutes(App $app)
     $app->get('/course/create/success', [CoursesController::class, 'successMessage']);
 
     // Course Requests
-    $app->get('/course/request', [PostController::class, 'courseRequest']);
+    $app->get('/course/request', [PostController::class, 'approvedCourseRequestView']);
     $app->get('/course/request/create', [PostController::class, 'createCourseRequestView'], [AuthRequiredMiddleware::class]);
     $app->get('/course/request/edit/{id}', [PostController::class, 'updateCourseRequestView'], [AuthRequiredMiddleware::class]);
     $app->get('/course/request/{id}', [PostController::class, 'requestDetails'], [AuthRequiredMiddleware::class]);

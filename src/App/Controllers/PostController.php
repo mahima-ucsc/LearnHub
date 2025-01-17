@@ -42,7 +42,15 @@ class PostController
             "courseRequests" => $courseRequests
         ]);
     }
-
+    public function approvedCourseRequestView()
+    {
+        $courseRequests = $this->courseRequestService->getApprovedCourseRequests();
+        echo $this->view->render('post/CourseRequests.php', [
+            "title" => "Course Requests",
+            "courseRequests" => $courseRequests
+        ]);
+    }
+    
     public function createCourseRequestView()
     {
         $subjects = $this->subjectService->getSubjects();
