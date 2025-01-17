@@ -26,6 +26,7 @@
                 </tr>
             </thead>
             <tbody id="userTableBody">
+                
                 <?php foreach ($users as $user) : ?>
 
                     <tr>

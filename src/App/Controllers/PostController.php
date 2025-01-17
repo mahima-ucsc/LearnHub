@@ -50,7 +50,7 @@ class PostController
             "courseRequests" => $courseRequests
         ]);
     }
-    
+
     public function createCourseRequestView()
     {
         $subjects = $this->subjectService->getSubjects();

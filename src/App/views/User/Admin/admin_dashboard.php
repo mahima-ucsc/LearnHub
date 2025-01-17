@@ -3,7 +3,7 @@
 <head>
     <link rel="stylesheet" href="/assets/styles/User/Admin/admin_dashboard.css">
     <link rel="stylesheet" href="/assets/styles/User/Admin/user_managment.css">
-    <link rel="stylesheet" href="/assets/styles/User/Admin/course_managment.css">
+    <link rel="stylesheet" href="/assets/styles/User/Admin/post_managment.css">
     <link rel="stylesheet" href="/assets/styles/User/my-courses.css">
 
 

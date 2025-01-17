@@ -21,7 +21,7 @@ function registerRoutes(App $app)
     $app->get('/', [PageController::class, 'home']);
     $app->get('/about', [PageController::class, 'about']);
     $app->get('/profile', [ProfileController::class, 'profile'], [AuthRequiredMiddleware::class]);
-    $app->get('/dashboard', [PageController::class, 'dashboard'], [AuthRequiredMiddleware::class]);
+    $app->get('/dashboard', [[PageController::class, 'dashboard'], [PostController::class, 'createCourseRequestView']], [AuthRequiredMiddleware::class]);
     $app->get('/admin-dashboard', [PageController::class, 'adminDashboard'], [AdminOnlyMiddleware::class]);
     $app->get('/admin-dashboard/user-managment', [PageController::class, 'userManagment'], [AdminOnlyMiddleware::class]);
     $app->get('/admin-dashboard/course-managment', [PageController::class, 'courseManagment'], [AdminOnlyMiddleware::class]);
@@ -90,7 +90,7 @@ function registerRoutes(App $app)
     $app->get('/course/create/success', [CoursesController::class, 'successMessage']);
 
     // Course Requests
-    $app->get('/course/request', [PostController::class, 'approvedCourseRequestView']);
+    $app->get('/course/request', [PostController::class, 'courseRequest']);
     $app->get('/course/request/create', [PostController::class, 'createCourseRequestView'], [AuthRequiredMiddleware::class]);
     $app->get('/course/request/edit/{id}', [PostController::class, 'updateCourseRequestView'], [AuthRequiredMiddleware::class]);
     $app->get('/course/request/{id}', [PostController::class, 'requestDetails'], [AuthRequiredMiddleware::class]);

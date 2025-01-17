@@ -90,6 +90,39 @@ class CourseRequestService
 
         return $requests;
     }
+    public function getPendingCourseRequests()
+    {
+        $query =
+            "SELECT 
+                cr.title,
+                cr.request_id, 
+                cr.description,
+                cr.status, 
+                s.subject_title AS subject, 
+                cr.created_date, 
+                cr.updated_date, 
+                u.user_id as author_id,
+                CONCAT(u.first_name, ' ', u.last_name) AS author,
+                COUNT(c.comment_id) AS comments_count
+            FROM 
+                course_requests cr
+            LEFT JOIN 
+                subjects s ON cr.subject_id = s.subject_id
+            JOIN 
+                users u ON cr.user_id = u.user_id
+            LEFT JOIN 
+                course_request_comments c ON cr.request_id = c.request_id
+            WHERE 
+                cr.status = 'pending'
+            GROUP BY 
+                cr.title, cr.request_id, cr.description, cr.status, s.subject_title, 
+                cr.created_date, cr.updated_date, u.first_name, u.last_name;    
+            ";
+
+        $requests = $this->db->query($query)->findAll();
+
+        return $requests;
+    }
 
     public function getCourseReuqestById(string $requestId)
     {
