@@ -3,7 +3,7 @@
 <head>
     <link rel="stylesheet" href="/assets/styles/User/Admin/admin_dashboard.css">
     <link rel="stylesheet" href="/assets/styles/User/Admin/user_managment.css">
-    <link rel="stylesheet" href="/assets/styles/User/Admin/course_managment.css">
+    <link rel="stylesheet" href="/assets/styles/User/Admin/post_managment.css">
     <link rel="stylesheet" href="/assets/styles/User/my-courses.css">
 
 
@@ -30,6 +30,9 @@
                     <a href="?tab=course-managment">
                         <li class="content-tab" id="courseManagementTab" onclick="loadTabContent('course')">Course Management</li>
                     </a>
+                    <a href="?tab=post-managment">
+                        <li class="content-tab" id="postManagementTab" onclick="loadTabContent('post')">Post Management</li>
+                    </a>
                 </ul>
             </nav>
 
@@ -45,6 +48,9 @@
                     break;
                 case 'course-managment':
                     include $this->resolve("User/Admin/course_managment.php");
+                    break;
+                case 'post-managment':
+                    include $this->resolve("User/Admin/post_managment.php");
                     break;
                 default:
                     include $this->resolve("User/Admin/dashboard.php");
@@ -69,6 +75,8 @@
                 document.getElementById('userManagementTab').classList.add('nav-active');
             } else if (tab === 'course') {
                 document.getElementById('courseManagementTab').classList.add('nav-active');
+            } else if (tab === 'post') {
+                document.getElementById('postManagementTab').classList.add('nav-active');
             }
         }
 

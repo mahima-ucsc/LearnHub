@@ -1,0 +1,67 @@
+.main-container {
+    width: 90%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.main-title h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.posts-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.posts-table th, .posts-table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.posts-table th {
+    background-color: #f2f2f2;
+    color: #333;
+}
+
+.posts-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.posts-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.posts-table td form {
+    display: inline;
+}
+
+.posts-table td button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.posts-table td button[type="submit"] {
+    background-color: #FFC400;
+    color: white;
+}
+
+.posts-table td button[type="submit"]:hover {
+    background-color: #FFD700;
+}
+
+.posts-table td button[type="submit"].disapprove {
+    background-color: #dc3545;
+}
+
+.posts-table td button[type="submit"].disapprove:hover {
+    background-color: #c82333;
+}

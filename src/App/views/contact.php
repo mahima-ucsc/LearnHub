@@ -26,12 +26,35 @@
 
             </div>
 
-            <form action="" method="post">
+            <form action="/contact" method="POST">
                 <h3>get in touch</h3>
                 <input id="name" type="text" placeholder="enter your name" name="name" required maxlength="50" class="input-feild inputs">
                 <input id="email" type="email" placeholder="enter your email" name="email" required maxlength="50" class="input-feild inputs">
-                <textarea id="message" name="msg" class="input-message inputs" placeholder="enter your message" required maxlength="1000" cols="30" rows="10"></textarea>
+                <textarea id="message" name="message" class="input-message inputs" placeholder="enter your message" required maxlength="1000" cols="30" rows="10"></textarea>
                 <input id="sendButton" type="submit" value="send message" class="btn" name="submit">
+
+                <?php if (isset($_SESSION['error_message'])): ?>
+                    <div class="alert error">
+                        <?= htmlspecialchars($_SESSION['error_message']) ?>
+                    </div>
+                    <?php unset($_SESSION['error_message']); ?>
+                <?php endif; ?>
+
+                <?php if (isset($_SESSION['success_message'])): ?>
+                    <div class="alert success">
+                        <?= htmlspecialchars($_SESSION['success_message']) ?>
+                    </div>
+                    <?php unset($_SESSION['success_message']); ?>
+                <?php endif; ?>
+
+                <?php if (isset($_SESSION['errors']) && !empty($_SESSION['errors'])): ?>
+                    <ul>
+                        <?php foreach ($_SESSION['errors'] as $error): ?>
+                            <li style="color: red;"><?= htmlspecialchars($error) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <?php unset($_SESSION['errors']); ?>
+                <?php endif; ?>
             </form>
 
         </div>
@@ -56,6 +79,7 @@
             window.location.href = mailtoLink;
         });
     </script> -->
+
 
 </body>
 
