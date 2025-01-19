@@ -76,7 +76,7 @@ class PageController
 
         // handle posts
         if ($_GET['tab'] == 'post-managment') {
-            $courseRequests = $this->courseRequestService->getCourseRequestsforView();
+            $courseRequests = $this->courseRequestService->getPendingCourseRequests();
         }
 
         if ($_GET['tab'] == 'course-managment') {

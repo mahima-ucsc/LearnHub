@@ -1,67 +1,133 @@
-.main-container {
-    width: 90%;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+.request-feed {
+    background-color: #ffffff; /* Card background color */
+    border: 1px solid #e0e0e0; /* Light border */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin: 20px; /* Space around the card */
+    padding: 15px; /* Inner padding */
+    transition: transform 0.2s; /* Smooth hover effect */
 }
 
-.main-title h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333;
+.request-feed:hover {
+    transform: translateY(-2px); /* Lift effect on hover */
 }
 
-.posts-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
+.post-link {
+    display: flex; /* Use flexbox for layout */
+    width: 80%; /* Card takes 80% of the width */
+    border: none; /* No border */
 }
 
-.posts-table th, .posts-table td {
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    text-align: left;
+.request-post {
+    flex: 1; /* Takes 80% of the width */
+    padding: 20px; /* Inner padding */
 }
 
-.posts-table th {
-    background-color: #f2f2f2;
-    color: #333;
+.button-container {
+    display: flex; /* Use flexbox for button layout */
+    flex-direction: column; /* Align buttons vertically */
+    justify-content: center; /* Center buttons vertically */
+    align-items: right; /* Center buttons horizontally */
+    margin-left: auto; /* Pushes the button section to the right */
+    width: 20%; /* Takes 20% of the width */
 }
 
-.posts-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+.btn {
+    margin: 10px 0; /* Space between buttons */
+    padding: 10px 15px; /* Padding for buttons */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners for buttons */
+    background-color: #007bff; /* Button color */
+    color: white; /* Text color */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
 }
 
-.posts-table tr:hover {
-    background-color: #f1f1f1;
+.btn:hover {
+    background-color: #0056b3; /* Darker shade on hover */
 }
 
-.posts-table td form {
-    display: inline;
+.request-header {
+    display: flex; /* Flexbox for header layout */
+    justify-content: space-between; /* Space between user info and action menu */
+    align-items: center; /* Center align items vertically */
 }
 
-.posts-table td button {
-    padding: 5px 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+.user-info {
+    display: flex; /* Flexbox for user info layout */
+    align-items: center; /* Center align items vertically */
 }
 
-.posts-table td button[type="submit"] {
-    background-color: #FFC400;
-    color: white;
+.avatar {
+    width: 40px; /* Avatar size */
+    height: 40px; /* Avatar size */
+    border-radius: 50%; /* Circular avatar */
+    margin-right: 10px; /* Space between avatar and user details */
 }
 
-.posts-table td button[type="submit"]:hover {
-    background-color: #FFD700;
+.user-details h4 {
+    margin: 0; /* Remove default margin */
+    font-size: 1.2em; /* User name font size */
 }
 
-.posts-table td button[type="submit"].disapprove {
-    background-color: #dc3545;
+.post-time {
+    font-size: 0.9em; /* Smaller font for post time */
+    color: #757575; /* Gray color for post time */
 }
 
-.posts-table td button[type="submit"].disapprove:hover {
-    background-color: #c82333;
+.action-menu {
+    position: relative; /* Position for dropdown */
+}
+
+.menu-button {
+    background: none; /* No background */
+    border: none; /* No border */
+    cursor: pointer; /* Pointer cursor */
+    font-size: 1.5em; /* Font size for menu button */
+}
+
+.menu-dropdown {
+    display: none; /* Hide dropdown by default */
+    position: absolute; /* Position relative to the button */
+    right: 0; /* Align to the right */
+    background-color: #ffffff; /* Dropdown background */
+    border: 1px solid #e0e0e0; /* Light border */
+    border-radius: 4px; /* Rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    z-index: 1000; /* Ensure dropdown is above other elements */
+}
+
+.menu-button:hover + .menu-dropdown,
+.menu-dropdown:hover {
+    display: block; /* Show dropdown on hover */
+}
+
+.menu-dropdown a {
+    display: block; /* Block display for links */
+    padding: 10px; /* Padding for links */
+    color: #333; /* Link color */
+    text-decoration: none; /* No underline */
+}
+
+.menu-dropdown a:hover {
+    background-color: #f0f0f0; /* Background on hover */
+}
+
+.request-title h3 {
+    margin: 10px 0; /* Margin for title */
+    font-size: 1.5em; /* Title font size */
+}
+
+.request-content p {
+    margin: 10px 0; /* Margin for content */
+    line-height: 1.5; /* Line height for readability */
+}
+
+.request-metadata {
+    margin-top: 10px; /* Space above metadata */
+}
+
+.subject {
+    font-weight: bold; /* Bold subject */
+    color: #007BFF; /* Color for subject */
 }
