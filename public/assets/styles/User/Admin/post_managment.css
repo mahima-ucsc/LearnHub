@@ -14,7 +14,8 @@
 
 .post-link {
     display: flex; /* Use flexbox for layout */
-    width: 80%; /* Card takes 80% of the width */
+    justify-content: space-between; /* Space between the left and right containers */
+    align-items: center; /* Center items vertically */
     border: none; /* No border */
 }
 
@@ -30,6 +31,7 @@
     align-items: right; /* Center buttons horizontally */
     margin-left: auto; /* Pushes the button section to the right */
     width: 20%; /* Takes 20% of the width */
+    padding: 20px; /* Inner padding */
 }
 
 .btn {
@@ -37,14 +39,26 @@
     padding: 10px 15px; /* Padding for buttons */
     border: none; /* No border */
     border-radius: 5px; /* Rounded corners for buttons */
-    background-color: #007bff; /* Button color */
+    background-color: #FFC400; /* Button color */
     color: white; /* Text color */
     cursor: pointer; /* Pointer cursor on hover */
     transition: background-color 0.3s; /* Smooth transition for hover effect */
 }
 
 .btn:hover {
-    background-color: #0056b3; /* Darker shade on hover */
+    background-color: #FFD033; /* Darker shade on hover */
+}
+.approve {
+    background-color: #6FCB9F;
+}
+.approve:hover { 
+    background-color: #5bc783;
+}
+.move-trash {
+    background-color: #F29191;
+}
+.move-trash:hover {
+    background-color: #e07b7b;
 }
 
 .request-header {
@@ -128,6 +142,14 @@
 }
 
 .subject {
-    font-weight: bold; /* Bold subject */
-    color: #007BFF; /* Color for subject */
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background-color: #f8f8f8;
+    color: #555;
+    border-radius: 12px;
+    margin-top: 10px;
+    font-weight: 500;
+    width: fit-content;
 }
