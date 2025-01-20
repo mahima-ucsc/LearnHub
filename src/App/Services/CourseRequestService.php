@@ -69,8 +69,7 @@ class CourseRequestService
                 cr.created_date, 
                 cr.updated_date, 
                 u.user_id as author_id,
-                CONCAT(u.first_name, ' ', u.last_name) AS author,
-                COUNT(c.comment_id) AS comments_count
+                CONCAT(u.first_name, ' ', u.last_name) AS author
             FROM 
                 course_requests cr
             LEFT JOIN 
@@ -242,6 +241,30 @@ class CourseRequestService
                 "subject_id" => $formData['subject_id'] != -1 ? $formData['subject_id'] : null,
                 "request_id" => $requestId,
                 "user_id" => $_SESSION['user']
+            ]
+        );
+    }
+
+    public function approveCourseRequestById(string $requestId)
+    {
+        $this->db->query(
+            "UPDATE course_requests
+             SET status = 'approved'
+             WHERE request_id = :request_id",
+            [
+                "request_id" => $requestId
+            ]
+        );
+    }
+
+    public function rejectCourseRequestById(string $requestId)
+    {
+        $this->db->query(
+            "UPDATE course_requests
+             SET status = 'rejected'
+             WHERE request_id = :request_id",
+            [
+                "request_id" => $requestId
             ]
         );
     }

@@ -51,6 +51,19 @@ class PostController
         ]);
     }
 
+    public function approveCourseRequest()
+    {
+        // dd($_POST);
+        $this->courseRequestService->approveCourseRequestById($_POST['requestId']);
+        redirectTo('/admin-dashboard?tab=post-managment');
+    }
+
+    public function rejectCourseRequest()
+    {
+        $this->courseRequestService->rejectCourseRequestById($_POST['requestId']);
+        redirectTo('/admin-dashboard?tab=post-managment');
+    }
+
     public function createCourseRequestView()
     {
         $subjects = $this->subjectService->getSubjects();
