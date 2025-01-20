@@ -43,6 +43,8 @@
     color: white; /* Text color */
     cursor: pointer; /* Pointer cursor on hover */
     transition: background-color 0.3s; /* Smooth transition for hover effect */
+    width: 100%; /* Full width of the container */
+    text-align: center; /* Center text */
 }
 
 .btn:hover {
@@ -152,4 +154,78 @@
     margin-top: 10px;
     font-weight: 500;
     width: fit-content;
+}
+
+/* Modal Overlay */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 50%;
+    top: 50%;
+    width: 60%; /* Full width */
+    height: 80%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.7); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-container {
+    background-color: #fff; /* White background */
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px; /* Padding */
+    border: 1px solid #888; /* Border */
+    border-radius: 8px; /* Rounded corners */
+    width: 80%; /* Could be more or less, depending on screen size */
+    max-width: 600px; /* Max width */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow */
+    animation: fadeIn 0.3s; /* Fade-in animation */
+}
+
+/* Close Button */
+.close {
+    color: #aaa; /* Gray color */
+    float: right; /* Float to the right */
+    font-size: 28px; /* Font size */
+    font-weight: bold; /* Bold */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+.close:hover,
+.close:focus {
+    color: black; /* Change color on hover */
+    text-decoration: none; /* No underline */
+    cursor: pointer; /* Pointer cursor */
+}
+
+/* Avatar */
+.avatar {
+    width: 80px; /* Set width */
+    height: 80px; /* Set height */
+    border-radius: 50%; /* Circular avatar */
+    margin-bottom: 15px; /* Space below the avatar */
+}
+
+/* Heading */
+h2 {
+    margin: 0; /* Remove default margin */
+    font-size: 24px; /* Font size */
+    color: #333; /* Dark gray color */
+}
+
+/* Paragraphs */
+p {
+    color: #555; /* Medium gray color */
+    line-height: 1.5; /* Line height */
+}
+
+/* Strong Text */
+strong {
+    color: #000; /* Black color for strong text */
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
