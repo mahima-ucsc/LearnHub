@@ -50,11 +50,11 @@
                     </div>
                     <!-- buttons  -->
                     <div class="button-container">
-                        <form action="/admin-dashboard/course-managment/approve" method="POST" class="approve-form">
+                        <form action="/admin-dashboard/course-managment/approve" method="POST" class="approve-form" onsubmit="return confirm('Are you sure you want to approve this request?')">
                             <input type="hidden" name="requestId" value="<?= e($request['request_id']) ?>">
                             <button type="submit" class="btn approve">Approve</button>
                         </form>
-                        <form action="/admin-dashboard/course-managment/reject" method="POST" class="approve-form">
+                        <form action="/admin-dashboard/course-managment/reject" method="POST" class="reject-form" onsubmit="return confirm('Are you sure you want to reject this request?')">
                             <input type="hidden" name="requestId" value="<?= e($request['request_id']) ?>">
                             <button class="btn move-trash">Reject</button>
                         </form>

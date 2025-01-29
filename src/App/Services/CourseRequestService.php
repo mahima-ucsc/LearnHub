@@ -260,8 +260,7 @@ class CourseRequestService
     public function rejectCourseRequestById(string $requestId)
     {
         $this->db->query(
-            "UPDATE course_requests
-             SET status = 'rejected'
+            "DELETE FROM course_requests
              WHERE request_id = :request_id",
             [
                 "request_id" => $requestId
