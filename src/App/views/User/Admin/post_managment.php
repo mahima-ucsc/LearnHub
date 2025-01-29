@@ -1,3 +1,10 @@
+<?php 
+use App\views\components\Alert;
+
+$alert = new Alert('Course request approved successfully', 'success');
+
+?>
+
 <section class="posts-page">
     <div class="main-container">
         <div class="main-title">
