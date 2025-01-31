@@ -193,4 +193,11 @@ class PageController
             "title" => "Settings",
         ]);
     }
+
+    public function createAnnouncements()
+    {
+        echo $this->view->render("User/Tutor/create_announcement.php", [
+            "title" => "Create Announcement"
+        ]);
+    }
 }

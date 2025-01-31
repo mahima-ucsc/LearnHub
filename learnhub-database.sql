@@ -132,6 +132,7 @@ CREATE TABLE IF NOT EXISTS students_courses (
     student_id BIGINT(20) UNSIGNED NOT NULL,
     course_id BIGINT(20) UNSIGNED NOT NULL,
     registered_date DATE DEFAULT CURRENT_DATE(),
+    pinned BOOL DEFAULT FALSE,
     PRIMARY KEY(student_id, course_id),
     FOREIGN KEY (student_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
@@ -229,3 +230,23 @@ CREATE TABLE IF NOT EXISTS course_request_comments (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (request_id) REFERENCES course_requests(request_id) ON DELETE CASCADE
 );
+
+-- Assignments for courses
+
+CREATE TABLE assignment_details (
+    assignment_id INT AUTO_INCREMENT PRIMARY KEY,
+    course_id INT NOT NULL,
+    module_id INT NOT NULL,
+    resource_path VARCHAR(255) NOT NULL, -- Path to the resource file
+    upload_date DATE DEFAULT CURRENT_DATE,
+    deadline DATE NOT NULL,
+    instruction TEXT, -- Detailed instructions for the assignment
+    total_marks INT NOT NULL, -- Maximum marks for the assignment
+    created_by INT NOT NULL, -- User ID of the instructor who created the assignment
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    -- Foreign key constraints
+    CONSTRAINT fk_course FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
+    CONSTRAINT fk_module FOREIGN KEY (module_id) REFERENCES modules(module_id) ON DELETE CASCADE
+);
+

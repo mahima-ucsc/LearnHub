@@ -1,4 +1,5 @@
 <?php include $this->resolve("partials/_header.php"); ?>
+<?php include $this->resolve("course/sidebar/sidebar.php"); ?>
 
 <head>
     <link rel="stylesheet" href="/assets/styles/Course/course-info.css">
@@ -348,7 +349,7 @@
         <?php if (isset($_SESSION['user_role'])): ?>
             <?php if ($_SESSION['user_role'] === "teacher" || $_SESSION['user_role'] === "admin"): ?>
 
-                <div class="course-section course-participant">
+                <!-- <div class="course-section course-participant">
                     <h3>Course Participants</h3>
                     <div class="participant-dropdown">
                         <div class="participant-dropdown-content" id="participant-list">
@@ -392,7 +393,7 @@
                             View Participants <i class="fas fa-chevron-down dropdown-chevron"></i>
                         </button>
                     </div>
-                </div>
+                </div> -->
             <?php endif; ?>
         <?php endif; ?>
 
