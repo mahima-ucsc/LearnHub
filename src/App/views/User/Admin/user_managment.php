@@ -4,7 +4,7 @@
         <div class="header-actions">
             <div class="search-form">
                 <form id="searchForm">
-                    <input type="text" name="s" class="search-input" id="searchInput" placeholder="Search users..." value="<?php echo ($_GET['s']); ?>">
+                    <input type="text" name="s" class="search-input" id="searchInput" placeholder="Search users..." value="<?php echo ($_GET['s'] ); ?>">
                     <button class="search-btn" type="submit">Search</button>
                 </form>
             </div>
@@ -26,6 +26,7 @@
                 </tr>
             </thead>
             <tbody id="userTableBody">
+                
                 <?php foreach ($users as $user) : ?>
 
                     <tr>
@@ -78,7 +79,7 @@
         </div>
     </div>
 </div>
-<?php include $this->resolve('modals/delete_modal.php'); ?>
+<?php include $this->resolve('components/delete_modal.php'); ?>
 
 <script>
     // Toggles the Add User Modal
@@ -107,12 +108,12 @@
 
 
     // Close modal on clicking outside or pressing Escape
-    window.onclick = function(event) {
-        const addUserModal = document.getElementById('addUserModal');
-        if (event.target === addUserModal) {
-            modal.classList.toggle('show');
-        }
-    };
+    // window.onclick = function(event) {
+    //     const addUserModal = document.getElementById('addUserModal');
+    //     if (event.target === addUserModal) {
+    //         modal.classList.toggle('show');
+    //     }
+    // };
 
     /* 
     Handle user search

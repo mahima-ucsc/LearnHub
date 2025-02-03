@@ -50,6 +50,7 @@ class CoursesController
             $pages
         );
 
+
         echo $this->view->render('course/Courses.php', [
             "title" => "Search Course",
             "courses" => $courses,
@@ -85,12 +86,13 @@ class CoursesController
     public function courseInfo(array $params)
     {
         $course = $this->courseService->getByCourseId($params['course_id']);
-        $courseModules = $this->courseService->getCourseModules($params['course_id']);
-        $user = $this->userService->getUserProfile();
-
         if (!$course) {
             redirectTo('/courses/my-courses');
         }
+        $courseModules = $this->courseService->getCourseModules($params['course_id']);
+
+        $user = $this->userService->getUserProfile($course['tutor_id']);
+
 
 
         echo $this->view->render(
@@ -185,15 +187,6 @@ class CoursesController
         redirectTo('/courses/my-courses');
     }
 
-    public function courseParticipant()
-    {
-        $users = $this->userService->getAllUsers();
-        echo $this->view->render('course/course_participant.php', [
-            "title" => "Create Course",
-            'users' => $users
-        ]);
-    }
-
     public function courseParticipantStat()
     {
         echo $this->view->render(
@@ -221,5 +214,39 @@ class CoursesController
                 'title' => "ICT 2024 A/L"
             ]
         );
+    }
+
+    public function successMessage()
+    {
+        echo $this->view->render(
+            "course/success.php",
+            [
+                'title' => "Course Create Successfully"
+            ]
+        );
+    }
+
+    public function courseParticipant(array $params)
+    {
+        $students = $this->courseService->getCourseParticipants($params['course_id']);
+        echo $this->view->render(
+            "course/course_participants.php",
+            [
+                'students' => $students,
+                'title' => "Course Participants",
+            ]
+        );
+    }
+
+    public function RemoveCourseParticipant(array $params)
+    {
+        $this->courseService->RemoveParticipant($params['course_id'], $params['user_id']);
+        redirectTo($_SERVER['HTTP_REFERER']);
+    }
+
+    public function AddParticipant(array $params)
+    {
+        $this->courseService->AddParticipant($params['course_id'], $_POST['email']);
+        redirectTo($_SERVER['HTTP_REFERER']);
     }
 }

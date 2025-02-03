@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Services; 
 
 use Exception;
 use Framework\Database;
+use Framework\Exceptions\ValidationException;
 
 class CourseService
 {
@@ -225,5 +226,54 @@ class CourseService
                 "id" => $_SESSION['user']
             ]
         )->findAll();
+    }
+
+    public function getCourseParticipants(string $id)
+    {
+        $searchTerm = $_GET['s'] ?? '';
+        return $this->db->query(
+            "SELECT U.first_name, U.last_name, U.user_id, U.email, SC.* from users U
+            JOIN students_courses SC ON U.user_id = SC.student_id
+            WHERE SC.course_id = :id AND (U.first_name LIKE :term OR U.last_name LIKE :term)",
+            [
+                "id" => $id,
+                "term" => "%{$searchTerm}%"
+            ]
+        )->findAll();
+    }
+
+    public function RemoveParticipant(string $courseId, string $userId)
+    {
+        $this->db->query(
+            "DELETE FROM students_courses WHERE student_id = :std AND course_id = :course",
+            [
+                "std" => $userId,
+                "course" => $courseId
+            ]
+        );
+    }
+
+    public function AddParticipant(string $courseId, string $email)
+    {
+        $userId = $this->db->query(
+            "SELECT user_id FROM users
+            WHERE email = :email",
+            [
+                "email" => $email
+            ]
+        )->find();
+
+        if (!$userId) {
+            throw new ValidationException(['email' => 'Invalid Email address']);
+        } else {
+            $this->db->query(
+                "INSERT INTO students_courses(student_id, course_id)
+                VALUES(:studentId, :courseId)",
+                [
+                    "courseId" => $courseId,
+                    "studentId" => $userId['user_id']
+                ]
+            );
+        }
     }
 }
