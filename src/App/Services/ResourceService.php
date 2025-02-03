@@ -31,4 +31,15 @@ class ResourceService
             ]
         );
     }
+
+    public function delete(int $id)
+    {
+        $this->db->query(
+            "DELETE FROM resources WHERE resource_id = :id AND user_id = :user_id",
+            [
+                "id" => $id,
+                "user_id" => $_SESSION['user']
+            ]
+        );
+    }
 }

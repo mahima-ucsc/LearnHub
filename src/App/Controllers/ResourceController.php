@@ -33,6 +33,7 @@ class ResourceController
     {
         echo $this->view->render('Resource/my_resources.php', [
             'title' => 'My Resources'
+
         ]);
     }
 
@@ -40,5 +41,12 @@ class ResourceController
     {
         $this->resourceService->create($_POST);
         redirectTo("/resource/my-resources");
+    }
+
+    public function deleteResource(array $params)
+    {
+        dd("asfghdg");
+        $this->resourceService->delete((int)$params['resource']);
+        redirectTo('/resource/my-resources');
     }
 }
