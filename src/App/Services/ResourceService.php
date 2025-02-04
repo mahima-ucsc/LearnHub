@@ -42,4 +42,28 @@ class ResourceService
             ]
         );
     }
+
+    public function getAllResources()
+    {
+        return $this->db->query(
+            "SELECT r.*, u.first_name, u.last_name 
+             FROM resources r
+             JOIN users u ON r.user_id = u.user_id
+             ORDER BY r.resource_id DESC"
+        )->findAll();
+    }
+
+    public function getMyResources()
+    {
+        return $this->db->query(
+            "SELECT r.*, u.first_name, u.last_name 
+             FROM resources r
+             JOIN users u ON r.user_id = u.user_id 
+             WHERE r.user_id = :user_id
+             ORDER BY r.resource_id DESC",
+            [
+                'user_id' => $_SESSION['user']
+            ]
+        )->findAll();
+    }
 }

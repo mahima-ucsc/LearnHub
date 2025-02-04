@@ -17,8 +17,10 @@ class ResourceController
 
     public function resource()
     {
+        $resources = $this->resourceService->getAllResources();
         echo $this->view->render('Resource/resource.php', [
-            'title' => 'Resource'
+            'title' => 'Resource',
+            'resources' => $resources
         ]);
     }
 
@@ -31,9 +33,10 @@ class ResourceController
 
     public function myResources()
     {
+        $resources = $this->resourceService->getMyResources();
         echo $this->view->render('Resource/my_resources.php', [
-            'title' => 'My Resources'
-
+            'title' => 'My Resources',
+            'resources' => $resources
         ]);
     }
 
@@ -45,7 +48,7 @@ class ResourceController
 
     public function deleteResource(array $params)
     {
-        dd("asfghdg");
+
         $this->resourceService->delete((int)$params['resource']);
         redirectTo('/resource/my-resources');
     }

@@ -25,65 +25,47 @@
                     </a>
                 </div>
                 <!-- Resource Items -->
-                <div class="resource-item">
-                    <div class="resource-header">
-                        <div class="resource-title-container">
-                            <h4 class="resource-title">ICT A/L pastpaper book</h4>
-                            <span class="resource-type">Book</span>
-
-                        </div>
-                        <div class="resource-price-container">
-                            <span class="resource-price">Rs. 500</span>
-                        </div>
-                    </div>
-                    <div class="resource-content">
-                        <div class="resource-details">
-                            <div class="resource-description">
-                                <p>A/L ICT pastpaper book. It is in good quality. If you are interested please contact me using +12 345 6789</p>
-                                <div class="resource-meta">
-                                    <div class="resource-owner">
-                                        <img src="/assets/images/user.jpeg" alt="owner">
-                                        <span>Nadun Madusanka</span>
+                <!-- Replace hardcoded resources with dynamic data -->
+                <?php if (!empty($resources)): ?>
+                    <?php foreach ($resources as $resource): ?>
+                        <div class="resource-item">
+                            <div class="resource-header">
+                                <div class="resource-title-container">
+                                    <h4 class="resource-title"><?php echo e($resource['title']); ?></h4>
+                                    <span class="resource-type"><?php echo e($resource['type']); ?></span>
+                                </div>
+                                <div class="resource-price-container">
+                                    <?php if ($resource['price']): ?>
+                                        <span class="resource-price">Rs. <?php echo e($resource['price']); ?></span>
+                                    <?php else: ?>
+                                        <span class="resource-price-free">Free</span>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <div class="resource-content">
+                                <div class="resource-details">
+                                    <div class="resource-description">
+                                        <p><?php echo e($resource['description']); ?></p>
+                                        <div class="resource-meta">
+                                            <div class="resource-owner">
+                                                <img src="/assets/images/user.jpeg" alt="owner">
+                                                <span><?php echo e($resource['first_name'] . ' ' . $resource['last_name']); ?></span>
+                                            </div>
+                                            <a href="/resource/<?php echo e($resource['resource_id']); ?>" class="see-more-btn">See More Details</a>
+                                        </div>
                                     </div>
-
-                                    <a href="/resource/demo" class="see-more-btn">See More Details</a>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No resources found</p>
+                <?php endif; ?>
+
+
+
             </div>
-
-            <div class="resource-item">
-                <div class="resource-header">
-                    <div class="resource-title-container">
-                        <h4 class="resource-title">ICT A/L pastpaper book</h4>
-                        <span class="resource-type">Book</span>
-
-                    </div>
-                    <div class="resource-price-container">
-                        <span class="resource-price">Rs. 500</span>
-                    </div>
-                </div>
-                <div class="resource-content">
-                    <div class="resource-details">
-                        <div class="resource-description">
-                            <p>A/L ICT pastpaper book. It is in good quality. If you are interested please contact me using +12 345 6789</p>
-                            <div class="resource-meta">
-                                <div class="resource-owner">
-                                    <img src="/assets/images/user.jpeg" alt="owner">
-                                    <span>Nadun Madusanka</span>
-                                </div>
-
-                                <a href="/resource/demo" class="see-more-btn">See More Details</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
-    </div>
     </div>
 </section>
 

@@ -24,88 +24,56 @@
                     </a>
                 </div>
                 <!-- Accordion Resource Items -->
-                <div class="accordion-item">
-
-                    <div class="accordion-header">
-
-                        <div class="resource-title-container">
-                            <h4 class="resource-title">ICT A/L pastpaper book</h4>
-                            <span class="resource-type">Book</span>
-                        </div>
-                        <div class="resource-price-container">
-                            <span class="resource-price">Rs. 500</span>
-                        </div>
-                    </div>
-                    <div class="accordion-content">
-                        <div class="accordion-details">
-
-                            <div class="resource-description">
-                                <p>A/L ICT pastpaper book. It is in good quality. If you are interested please contact me using +12 345 6789</p>
-                                <div class="resource-meta">
-                                    <div class="resource-owner">
-                                        <img src="/assets/images/user.jpeg" alt="owner">
-                                        <span>Nadun Madusanka</span>
-                                    </div>
-
-                                    <div class="resource-edit-btn">
-                                        <a href="/resource/demo">
-                                            <button>Edit</button>
-                                        </a>
-                                    </div>
-                                    <div class="resource-delete-btn">
-                                        <button onclick="event.stopPropagation();showModal('/resource/delete/5')">Delete</button>
-
+                <?php if (!empty($resources)): ?>
+                    <?php foreach ($resources as $resource): ?>
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                <div class="resource-title-container">
+                                    <h4 class="resource-title"><?php echo e($resource['title']); ?></h4>
+                                    <span class="resource-type"><?php echo e($resource['type']); ?></span>
+                                </div>
+                                <div class="resource-price-container">
+                                    <?php if ($resource['price']): ?>
+                                        <span class="resource-price">Rs. <?php echo e($resource['price']); ?></span>
+                                    <?php else: ?>
+                                        <span class="resource-price-free">Free</span>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-details">
+                                    <div class="resource-description">
+                                        <p><?php echo e($resource['description']); ?></p>
+                                        <div class="resource-meta">
+                                            <div class="resource-owner">
+                                                <img src="/assets/images/user.jpeg" alt="owner">
+                                                <span><?php echo e($resource['first_name'] . ' ' . $resource['last_name']); ?></span>
+                                            </div>
+                                            <div class="resource-edit-btn">
+                                                <a href="/resource/edit/<?php echo e($resource['resource_id']); ?>">
+                                                    <button>Edit</button>
+                                                </a>
+                                            </div>
+                                            <div class="resource-delete-btn">
+                                                <button onclick="event.stopPropagation();showModal('/resource/delete/<?php echo e($resource['resource_id']); ?>')">Delete</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p><b>
+                            <center>No resources found</center>
+                        </b></p>
+                <?php endif; ?>
 
-                <!-- Repeat similar structure for other resources -->
-                <div class="accordion-item">
-                    <div class="accordion-header">
-                        <div class="resource-title-container">
-                            <h4 class="resource-title">Grade 11 Science Practical Video series</h4>
-                            <span class="resource-type">Video</span>
-                        </div>
-                        <div class="resource-price-container">
-                            <span class="resource-price-free">Free</span>
-                            <i class="fas fa-chevron-down accordion-icon"></i>
-                        </div>
-                    </div>
-                    <div class="accordion-content">
-                        <div class="accordion-details">
-                            <div class="resource-description">
-                                <p>This series include almost all the practicals in the grade 10 teachers guid. Send me a whatsapp message if you are interested. +12 345 6789</p>
-                                <div class="resource-meta">
-                                    <div class="resource-owner">
-                                        <img src="/assets/images/user.jpeg" alt="owner">
-                                        <span>Isuru Naveen</span>
-                                    </div>
-                                    <div class="resource-location">
-                                        <i class="fa fa-map-marker"></i>
-                                        <span>Colombo</span>
-                                    </div>
-                                    <div class="resource-edit-btn">
-                                        <a href="/resource/demo">
-                                            <button>Edit</button>
-                                        </a>
-                                    </div>
-                                    <div class="resource-delete-btn">
-                                        <button onclick="event.stopPropagation();showModal('/resource/delete/5')">Delete</button>
 
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
-    <?php include $this->resolve('modals/delete_modal.php'); ?>
+    <?php include $this->resolve('components/delete_modal.php'); ?>
 
 
 
