@@ -269,3 +269,12 @@ CREATE TABLE IF NOT EXISTS assignments_submissions(
     FOREIGN KEY (student_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (assignment_id) REFERENCES assignments(assignment_id) ON DELETE CASCADE
 )
+
+CREATE TABLE contact_tickets (
+    `id` INT(11) NOT NULL AUTO_INCREMENT , 
+    `name` VARCHAR(50) NOT NULL , 
+    `email` VARCHAR(50) NOT NULL , 
+    `message` TEXT NOT NULL , 
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    PRIMARY KEY (`id`)
+);

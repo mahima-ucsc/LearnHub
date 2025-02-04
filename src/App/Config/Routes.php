@@ -6,25 +6,27 @@ declare(strict_types=1);
 
 namespace App\Config;
 
-use App\Controllers\{AlertController, AssignmentController, AuthController, ProfileController, CoursesController, TutorProfileController, SettingController, PageController, ResourceController, PostController, ReviewController, UserController};
+use App\Controllers\{AlertController, AssignmentController, AuthController, ContactController, ProfileController, CoursesController, TutorProfileController, SettingController, PageController, ResourceController, PostController, ReviewController, UserController};
 use App\Middleware\AdminOnlyMiddleware;
 use App\Middleware\AuthRequiredMiddleware;
 use App\Middleware\GuestOnlyMiddleware;
 use App\Middleware\StudentOnlyMiddleware;
 use App\Middleware\TeacherOnlyMiddleware;
+use App\Services\ContactService;
 use App\Services\UserService;
 use Framework\App;
 
 function registerRoutes(App $app)
 {
     $app->get('/', [PageController::class, 'home']);
-    $app->get('/contact', [PageController::class, 'contact']);
     $app->get('/about', [PageController::class, 'about']);
     $app->get('/profile', [ProfileController::class, 'profile'], [AuthRequiredMiddleware::class]);
-    $app->get('/dashboard', [PageController::class, 'dashboard'], [AuthRequiredMiddleware::class]);
+    $app->get('/dashboard', [[PageController::class, 'dashboard'], [PostController::class, 'createCourseRequestView']], [AuthRequiredMiddleware::class]);
     $app->get('/admin-dashboard', [PageController::class, 'adminDashboard'], [AdminOnlyMiddleware::class]);
-    $app->get('/admin-dashboard/user-managment', [PageController::class, 'userManagment'], [AdminOnlyMiddleware::class]);
+    $app->post('/admin-dashboard/course-managment/approve', [PostController::class, 'approveCourseRequest']);
+    $app->post('/admin-dashboard/course-managment/reject', [PostController::class, 'rejectCourseRequest']);
     $app->get('/admin-dashboard/course-managment', [PageController::class, 'courseManagment'], [AdminOnlyMiddleware::class]);
+    $app->get('/admin-dashboard/user-managment', [PageController::class, 'userManagment'], [AdminOnlyMiddleware::class]);
     $app->get('/settings', [PageController::class, 'settings'], [AuthRequiredMiddleware::class]);
     $app->get('/tutor', [TutorProfileController::class, 'tutorProfile'], [AuthRequiredMiddleware::class]);
     $app->get('/alert', [AlertController::class, 'alert']);
@@ -36,6 +38,11 @@ function registerRoutes(App $app)
 
 
     $app->get('/denied', [PageController::class, 'denied']);
+
+    // Contact
+    $app->get('/contact', [PageController::class, 'contact']);
+    $app->post('/contact', [ContactController::class, 'submitContactForm']);
+
 
     // User
     $app->post('/choose-role', [AuthController::class, 'chooseRole'], [GuestOnlyMiddleware::class]);
@@ -89,7 +96,7 @@ function registerRoutes(App $app)
     $app->get('/course/create/success', [CoursesController::class, 'successMessage']);
 
     // Course Requests
-    $app->get('/course/request', [PostController::class, 'courseRequest']);
+    $app->get('/course/request', [PostController::class, 'approvedCourseRequestView']);
     $app->get('/course/request/create', [PostController::class, 'createCourseRequestView'], [AuthRequiredMiddleware::class]);
     $app->get('/course/request/edit/{id}', [PostController::class, 'updateCourseRequestView'], [AuthRequiredMiddleware::class]);
     $app->get('/course/request/{id}', [PostController::class, 'requestDetails'], [AuthRequiredMiddleware::class]);

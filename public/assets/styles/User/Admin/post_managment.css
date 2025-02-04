@@ -1,0 +1,231 @@
+.request-feed {
+    background-color: #ffffff; /* Card background color */
+    border: 1px solid #e0e0e0; /* Light border */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin: 20px; /* Space around the card */
+    padding: 15px; /* Inner padding */
+    transition: transform 0.2s; /* Smooth hover effect */
+}
+
+.request-feed:hover {
+    transform: translateY(-2px); /* Lift effect on hover */
+}
+
+.post-link {
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Space between the left and right containers */
+    align-items: center; /* Center items vertically */
+    border: none; /* No border */
+}
+
+.request-post {
+    flex: 1; /* Takes 80% of the width */
+    padding: 20px; /* Inner padding */
+}
+
+.button-container {
+    display: flex; /* Use flexbox for button layout */
+    flex-direction: column; /* Align buttons vertically */
+    justify-content: center; /* Center buttons vertically */
+    align-items: right; /* Center buttons horizontally */
+    margin-left: auto; /* Pushes the button section to the right */
+    width: 20%; /* Takes 20% of the width */
+    padding: 20px; /* Inner padding */
+}
+
+.btn {
+    margin: 10px 0; /* Space between buttons */
+    padding: 10px 15px; /* Padding for buttons */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners for buttons */
+    background-color: #FFC400; /* Button color */
+    color: white; /* Text color */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+    width: 100%; /* Full width of the container */
+    text-align: center; /* Center text */
+}
+
+.btn:hover {
+    background-color: #FFD033; /* Darker shade on hover */
+}
+.approve {
+    background-color: #6FCB9F;
+}
+.approve:hover { 
+    background-color: #5bc783;
+}
+.move-trash {
+    background-color: #F29191;
+}
+.move-trash:hover {
+    background-color: #e07b7b;
+}
+
+.request-header {
+    display: flex; /* Flexbox for header layout */
+    justify-content: space-between; /* Space between user info and action menu */
+    align-items: center; /* Center align items vertically */
+}
+
+.user-info {
+    display: flex; /* Flexbox for user info layout */
+    align-items: center; /* Center align items vertically */
+}
+
+.avatar {
+    width: 40px; /* Avatar size */
+    height: 40px; /* Avatar size */
+    border-radius: 50%; /* Circular avatar */
+    margin-right: 10px; /* Space between avatar and user details */
+}
+
+.user-details h4 {
+    margin: 0; /* Remove default margin */
+    font-size: 1.2em; /* User name font size */
+}
+
+.post-time {
+    font-size: 0.9em; /* Smaller font for post time */
+    color: #757575; /* Gray color for post time */
+}
+
+.action-menu {
+    position: relative; /* Position for dropdown */
+}
+
+.menu-button {
+    background: none; /* No background */
+    border: none; /* No border */
+    cursor: pointer; /* Pointer cursor */
+    font-size: 1.5em; /* Font size for menu button */
+}
+
+.menu-dropdown {
+    display: none; /* Hide dropdown by default */
+    position: absolute; /* Position relative to the button */
+    right: 0; /* Align to the right */
+    background-color: #ffffff; /* Dropdown background */
+    border: 1px solid #e0e0e0; /* Light border */
+    border-radius: 4px; /* Rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    z-index: 1000; /* Ensure dropdown is above other elements */
+}
+
+.menu-button:hover + .menu-dropdown,
+.menu-dropdown:hover {
+    display: block; /* Show dropdown on hover */
+}
+
+.menu-dropdown a {
+    display: block; /* Block display for links */
+    padding: 10px; /* Padding for links */
+    color: #333; /* Link color */
+    text-decoration: none; /* No underline */
+}
+
+.menu-dropdown a:hover {
+    background-color: #f0f0f0; /* Background on hover */
+}
+
+.request-title h3 {
+    margin: 10px 0; /* Margin for title */
+    font-size: 1.5em; /* Title font size */
+}
+
+.request-content p {
+    margin: 10px 0; /* Margin for content */
+    line-height: 1.5; /* Line height for readability */
+}
+
+.request-metadata {
+    margin-top: 10px; /* Space above metadata */
+}
+
+.subject {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background-color: #f8f8f8;
+    color: #555;
+    border-radius: 12px;
+    margin-top: 10px;
+    font-weight: 500;
+    width: fit-content;
+}
+
+/* Modal Overlay */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 50%;
+    top: 50%;
+    width: 60%; /* Full width */
+    height: 80%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.7); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-container {
+    background-color: #fff; /* White background */
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px; /* Padding */
+    border: 1px solid #888; /* Border */
+    border-radius: 8px; /* Rounded corners */
+    width: 80%; /* Could be more or less, depending on screen size */
+    max-width: 600px; /* Max width */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow */
+    animation: fadeIn 0.3s; /* Fade-in animation */
+}
+
+/* Close Button */
+.close {
+    color: #aaa; /* Gray color */
+    float: right; /* Float to the right */
+    font-size: 28px; /* Font size */
+    font-weight: bold; /* Bold */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+.close:hover,
+.close:focus {
+    color: black; /* Change color on hover */
+    text-decoration: none; /* No underline */
+    cursor: pointer; /* Pointer cursor */
+}
+
+/* Avatar */
+.avatar {
+    width: 80px; /* Set width */
+    height: 80px; /* Set height */
+    border-radius: 50%; /* Circular avatar */
+    margin-bottom: 15px; /* Space below the avatar */
+}
+
+/* Heading */
+h2 {
+    margin: 0; /* Remove default margin */
+    font-size: 24px; /* Font size */
+    color: #333; /* Dark gray color */
+}
+
+/* Paragraphs */
+p {
+    color: #555; /* Medium gray color */
+    line-height: 1.5; /* Line height */
+}
+
+/* Strong Text */
+strong {
+    color: #000; /* Black color for strong text */
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

@@ -5,12 +5,17 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\{UserService, CourseService};
+use App\Services\{CourseRequestService, UserService, CourseService};
 
 
 class PageController
 {
-    public function __construct(private TemplateEngine $view, private UserService $userService, private CourseService $courseService) {}
+    public function __construct(
+        private TemplateEngine $view,
+        private UserService $userService,
+        private CourseService $courseService,
+        private CourseRequestService $courseRequestService
+    ) {}
 
     public function home()
     {
@@ -60,6 +65,7 @@ class PageController
     {
         $users = [];
         $courses = [];
+        $courseRequests = [];
 
         // Handle user data
         if ($_GET['tab'] == 'user-managment') {
@@ -68,10 +74,15 @@ class PageController
             $users = $this->userService->getUsers();
         }
 
+        // handle posts
+        if ($_GET['tab'] == 'post-managment') {
+            $courseRequests = $this->courseRequestService->getPendingCourseRequests();
+        }
 
         if ($_GET['tab'] == 'course-managment') {
             $courses = $this->courseService->getAllCourses();
         }
+
         $userCount = $this->userService->getNoOfUsers();
         $courseCount = $this->courseService->getNoOfCourses();
         $stat = [
@@ -82,7 +93,8 @@ class PageController
             "title" => "Admin Dashboard",
             'users' => $users ?? '',
             "courses" => $courses ?? '',
-            "stat" => $stat
+            "stat" => $stat,
+            "courseRequests" => $courseRequests
         ]);
     }
 
