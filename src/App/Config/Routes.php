@@ -21,7 +21,7 @@ function registerRoutes(App $app)
     $app->get('/', [PageController::class, 'home']);
     $app->get('/about', [PageController::class, 'about']);
     $app->get('/profile', [ProfileController::class, 'profile'], [AuthRequiredMiddleware::class]);
-    $app->get('/dashboard', [PostController::class, 'createCourseRequestView'], [AuthRequiredMiddleware::class]);
+    $app->get('/dashboard', [PageController::class, 'dashboard'], [AuthRequiredMiddleware::class]);
     $app->get('/admin-dashboard', [PageController::class, 'adminDashboard'], [AdminOnlyMiddleware::class]);
     $app->post('/admin-dashboard/course-managment/approve', [PostController::class, 'approveCourseRequest']);
     $app->post('/admin-dashboard/course-managment/reject', [PostController::class, 'rejectCourseRequest']);
