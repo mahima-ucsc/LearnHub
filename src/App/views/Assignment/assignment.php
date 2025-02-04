@@ -91,6 +91,11 @@
         margin-bottom: 0.5rem;
     }
 
+    .attachments-list a {
+        text-decoration: none;
+        color: #000;
+    }
+
     .attachment-icon {
         color: #ffc400;
         font-size: 1.2rem;
@@ -271,17 +276,17 @@
         <div class="section">
             <h2 class="section-title">Assignment Files</h2>
             <ul class="attachments-list">
-                <li>
-                    <span class="attachment-icon">📎</span>
-                    <span>assignment_instructions.pdf</span>
-                </li>
-                <li>
-                    <span class="attachment-icon">📎</span>
-                    <span>template.docx</span>
-                </li>
+                <?php foreach ($resources as $resource): ?>
+                    <li>
+                        <a href="/assignment/<?php echo e($assignment['assignment_id']) ?>/resource/<?php echo e($resource['resource_id']) ?>" class="resource-link">
+                            <span class="attachment-icon">📎</span>
+                            <?php echo e($resource['resource_path']) ?>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+
             </ul>
         </div>
-
         <div class="section">
             <h2 class="section-title">Your Submission</h2>
             <div class="upload-area" id="uploadArea">
