@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Services; 
+namespace App\Services;
 
 use Exception;
 use Framework\Database;
@@ -285,15 +285,5 @@ class CourseService
                 ]
             );
         }
-    }
-
-    public function getAssignment(string $course_id)
-    {
-        return $this->db->query(
-            "SELECT * from assignments WHERE course_id = :id",
-            [
-                "id" => $course_id
-            ]
-        )->findAll();
     }
 }

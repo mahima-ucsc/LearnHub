@@ -120,6 +120,9 @@ function registerRoutes(App $app)
     $app->get('/courses/{courseId}/assignment/create', [AssignmentController::class, 'createAssignmentView']);
     $app->post('/courses/{courseId}/assignment/create', [AssignmentController::class, 'createAssignment']);
     $app->get('/courses/{courseId}/assignment/{assignment_id}', [AssignmentController::class, 'assignmentView']);
+    $app->get('/assignment/{assignment_id}/resource/{resource_id}', [AssignmentController::class, 'getResource']);
+
+
     $app->get('/courses/{courseId}/assignment/{assignment_id}/test', [AssignmentController::class, 'getData']);
     $app->get('/courses/{courseId}/assignment/submit', [AssignmentController::class, 'submitAssignment']);
     $app->get('/courses/{courseId}/assignment/review', [AssignmentController::class, 'review']);

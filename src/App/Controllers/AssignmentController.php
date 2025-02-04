@@ -53,4 +53,23 @@ class AssignmentController
         $assignment = $this->assignmentService->getAssignment($params['assignment_id']);
         echo json_encode($assignment);
     }
+
+    public function getResource(array $params)
+    {
+        $assignment = $this->assignmentService->getAssignment($params['assignment_id']);
+        if (empty($assignment)) {
+            redirectTo($_SERVER['HTTP_REFERER']);
+        }
+
+        $resource = $this->assignmentService->getResourceById($params['resource_id']);
+        if (empty($assignment)) {
+            redirectTo($_SERVER['HTTP_REFERER']);
+        }
+
+        if ($resource['assignment_id'] !== $assignment['assignment_id']) {
+            redirectTo($_SERVER['HTTP_REFERER']);
+        }
+
+        $this->assignmentService->readResource($resource);
+    }
 }
