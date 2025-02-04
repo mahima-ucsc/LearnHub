@@ -408,7 +408,7 @@
 
                             <div class="assignment-content">
                                 <div class="assignment-details">
-                                    <p onclick="window.location.href='assignment/<?php echo e($item['assignment_id']); ?>'" style="cursor: pointer;"><?php echo e($item['instruction']); ?></p>
+                                    <p onclick="window.location.href='/courses/<?php echo e($course['course_id']); ?>/assignment/<?php echo e($item['assignment_id']); ?>'" style="cursor: pointer;"><?php echo e($item['instruction']); ?></p>
                                     <div class="assignment-meta">
                                         <span class="deadline">
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

@@ -43,9 +43,11 @@ class AssignmentController
     public function assignmentView(array $params)
     {
         $assignment = $this->assignmentService->getAssignment($params['assignment_id']);
+        $resources = $this->assignmentService->getAssignmentResource($assignment['assignment_id']);
         echo $this->view->render("Assignment/assignment.php", [
             "title" => $assignment['title'],
-            "assignment" => $assignment
+            "assignment" => $assignment,
+            'resources' => $resources
         ]);
     }
     public function getData(array $params)
