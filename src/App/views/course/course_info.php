@@ -418,6 +418,16 @@
                                             <?php echo e($item['deadline']); ?>
                                         </span>
                                     </div>
+                                    <?php foreach ($resources[$item['assignment_id']] as $resource): ?>
+                                        <ul>
+                                            <li>
+                                                <a href="/assignment/<?php echo e($item['assignment_id']) ?>/resource/<?php echo e($resource['resource_id']) ?>" class="resource-link">
+                                                    <span class="resource-icon">📄</span>
+                                                    <?php echo e($resource['resource_path']) ?>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    <?php endforeach; ?>
                                     <form class="assignment-upload" action="/submit-assignment" method="POST" enctype="multipart/form-data">
                                         <input type="hidden" name="module_id" value="1">
                                         <div class="file-upload">

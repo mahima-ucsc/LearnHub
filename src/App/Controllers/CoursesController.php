@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\{ValidatorService, CourseService, UserService, FileService};
+use App\Services\{AssignmentService, ValidatorService, CourseService, UserService, FileService};
 use App\Config\Paths;
 
 class CoursesController
@@ -16,7 +16,8 @@ class CoursesController
         private ValidatorService $validatorService,
         private CourseService $courseService,
         private UserService $userService,
-        private FileService $fileService
+        private FileService $fileService,
+        private AssignmentService $assignmentService
     ) {}
 
 
@@ -93,7 +94,13 @@ class CoursesController
 
         $user = $this->userService->getUserProfile($course['tutor_id']);
 
-        $assignments = $this->courseService->getAssignment($params['course_id']);
+        $assignments = $this->assignmentService->getAssignmentByCourse($params['course_id']);
+        $assignmentsResources = [];
+
+        foreach ($assignments as $assignment) {
+            $resources = $this->assignmentService->getAssignmentResource($assignment['assignment_id']);
+            $assignmentsResources[$assignment['assignment_id']] = $resources;
+        }
 
         echo $this->view->render(
             'course/course_info.php',
@@ -102,7 +109,8 @@ class CoursesController
                 'title' => $course['title'],
                 'user' => $user,
                 'modules' => $courseModules,
-                'assignments' => $assignments
+                'assignments' => $assignments,
+                'resources' => $assignmentsResources
             ]
         );
     }
