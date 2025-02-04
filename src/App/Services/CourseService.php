@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Services; 
+namespace App\Services;
 
 use Exception;
 use Framework\Database;
@@ -218,14 +218,24 @@ class CourseService
 
     public function registeredCourses()
     {
-        return $this->db->query(
+        $courses = $this->db->query(
             "SELECT courses.* FROM courses
             JOIN students_courses SC ON courses.course_id = SC.course_id
-            WHERE SC.student_id = :id",
+            WHERE SC.student_id = :id AND pinned = 0",
             [
                 "id" => $_SESSION['user']
             ]
         )->findAll();
+        $pinnedCourses = $this->db->query(
+            "SELECT courses.* FROM courses
+            JOIN students_courses SC ON courses.course_id = SC.course_id
+            WHERE SC.student_id = :id AND pinned = 1",
+            [
+                "id" => $_SESSION['user']
+            ]
+        )->findAll();
+
+        return [$courses, $pinnedCourses];
     }
 
     public function getCourseParticipants(string $id)
