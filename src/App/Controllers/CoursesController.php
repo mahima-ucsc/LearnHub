@@ -93,7 +93,7 @@ class CoursesController
 
         $user = $this->userService->getUserProfile($course['tutor_id']);
 
-
+        $assignments = $this->courseService->getAssignment($params['course_id']);
 
         echo $this->view->render(
             'course/course_info.php',
@@ -101,7 +101,8 @@ class CoursesController
                 'course' => $course,
                 'title' => $course['title'],
                 'user' => $user,
-                'modules' => $courseModules
+                'modules' => $courseModules,
+                'assignments' => $assignments
             ]
         );
     }
