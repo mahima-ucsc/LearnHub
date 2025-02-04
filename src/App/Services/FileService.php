@@ -40,4 +40,20 @@ class FileService
             $_SESSION['thumbnail'] = $fileName;
         }
     }
+
+    public function uploadFile(string $dir, array $file)
+    {
+        $storageDir = Paths::STORAGE_UPLOADS . "/" . $dir;
+        $extention = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $fileName = uniqid("", true) . "." . $extention;
+        $storagePath = $storageDir . "/" . $fileName;
+        if (!is_dir($storageDir)) {
+            mkdir($storageDir, 0777, true);
+        }
+        if (!move_uploaded_file($file['tmp_name'], $storagePath)) {
+            throw new ValidationException([
+                "file" => ['Failed to upload.']
+            ]);
+        }
+    }
 }

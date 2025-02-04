@@ -74,6 +74,14 @@ class ValidatorService
             "comment" => ["required"],
         ]);
     }
+    public function validateContactForm(array $formData)
+    {
+        $this->validator->validate($formData, [
+            "name" => ["required"],
+            "email" => ["required", "email"],
+            "message" => ["required"],
+        ]);
+    }
 
     public function validateImg(?array $file)
     {
@@ -97,5 +105,28 @@ class ValidatorService
                 "img" => ['Invalid file type. Only image files are allowed.']
             ]);
         }
+    }
+    public function validateFile(?array $file)
+    {
+        if (!$file || $file['error'] !== UPLOAD_ERR_OK) {
+            throw new ValidationException([
+                "file" => ['Failed to upload file.']
+            ]);
+        }
+
+        $maxSize = 50 * 1024 * 1024;
+
+        if ($file['size'] > $maxSize) {
+            throw new ValidationException([
+                "file" => ['File size is too large. Max file size is 50MB.']
+            ]);
+        }
+
+        // $mimeType = $file['type'];
+        // if (!preg_match('/^image\/.*/', $mimeType)) {
+        //     throw new ValidationException([
+        //         "img" => ['Invalid file type. Only image files are allowed.']
+        //     ]);
+        // }
     }
 }

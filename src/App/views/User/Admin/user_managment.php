@@ -4,7 +4,7 @@
         <div class="header-actions">
             <div class="search-form">
                 <form id="searchForm">
-                    <input type="text" name="s" class="search-input" id="searchInput" placeholder="Search users..." value="<?php echo ($_GET['s']); ?>">
+                    <input type="text" name="s" class="search-input" id="searchInput" placeholder="Search users..." value="<?php echo ($_GET['s'] ); ?>">
                     <button class="search-btn" type="submit">Search</button>
                 </form>
             </div>
@@ -26,6 +26,7 @@
                 </tr>
             </thead>
             <tbody id="userTableBody">
+                
                 <?php foreach ($users as $user) : ?>
 
                     <tr>

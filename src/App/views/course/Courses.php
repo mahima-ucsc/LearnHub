@@ -77,7 +77,8 @@
                 <?php foreach ($courses as $course): ?>
                     <div class="search-course-card">
                         <div class="course-card-header">
-                            <img src="/assets/images/dm.jpg" alt="Web Development" class="course-image">
+                            <img src="<?= isset($course['thumbnail_url']) ? 'storage/uploads/courses/' . $course['thumbnail_url'] : '/assets/images/dm.jpg' ?>" alt="Web Development" class="course-image">
+
                             <h4 class="course-title"><?php echo ($course['title']); ?></h4>
                             <hr class="course-card-line" />
                         </div>
