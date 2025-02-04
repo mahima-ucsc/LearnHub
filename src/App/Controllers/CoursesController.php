@@ -93,7 +93,7 @@ class CoursesController
 
         $user = $this->userService->getUserProfile($course['tutor_id']);
 
-
+        $assignments = $this->courseService->getAssignment($params['course_id']);
 
         echo $this->view->render(
             'course/course_info.php',
@@ -101,7 +101,8 @@ class CoursesController
                 'course' => $course,
                 'title' => $course['title'],
                 'user' => $user,
-                'modules' => $courseModules
+                'modules' => $courseModules,
+                'assignments' => $assignments
             ]
         );
     }
@@ -138,7 +139,9 @@ class CoursesController
         redirectTo('/courses/my-courses');
     }
 
-    public function myCourses()
+    // Dont use for anything
+    // Left for Rollback
+    public function myCoursesOld()
     {
         $url = $_SESSION['user_role'] === 'teacher' ? 'Tutor/my_courses.php' : 'User/user_courses.php';
         if ($_SESSION['user_role'] == 'student') {
@@ -149,6 +152,23 @@ class CoursesController
         echo $this->view->render($url, [
             "title" => "My Courses",
             "courses" => $courses
+        ]);
+    }
+    public function myCourses()
+    {
+        $url = $_SESSION['user_role'] === 'teacher' ? 'Tutor/my_courses.php' : 'User/student/registered_courses.php';
+
+        if ($_SESSION['user_role'] == 'student') {
+            [$courses, $pinnedCourses] = $this->courseService->registeredCourses();
+        } else if ($_SESSION['user_role'] == 'teacher') {
+            $courses = $this->courseService->getMyCourses();
+        }
+
+
+        echo $this->view->render($url, [
+            "title" => "My Courses",
+            "courses" => $courses,
+            "pinnedCourses" => $pinnedCourses ?? []
         ]);
     }
 
@@ -248,5 +268,16 @@ class CoursesController
     {
         $this->courseService->AddParticipant($params['course_id'], $_POST['email']);
         redirectTo($_SERVER['HTTP_REFERER']);
+    }
+
+    public function pinCourse()
+    {
+        $requestBody = file_get_contents('php://input');
+        $data = json_decode($requestBody, true);
+        $courses = $this->courseService->registeredCourses();
+        echo json_encode([
+            'success' => true,
+            'pinnedCourses' => $courses,
+        ]);
     }
 }

@@ -21,7 +21,7 @@ function registerRoutes(App $app)
     $app->get('/', [PageController::class, 'home']);
     $app->get('/about', [PageController::class, 'about']);
     $app->get('/profile', [ProfileController::class, 'profile'], [AuthRequiredMiddleware::class]);
-    $app->get('/dashboard', [[PageController::class, 'dashboard'], [PostController::class, 'createCourseRequestView']], [AuthRequiredMiddleware::class]);
+    $app->get('/dashboard', [PageController::class, 'dashboard'], [AuthRequiredMiddleware::class]);
     $app->get('/admin-dashboard', [PageController::class, 'adminDashboard'], [AdminOnlyMiddleware::class]);
     $app->post('/admin-dashboard/course-managment/approve', [PostController::class, 'approveCourseRequest']);
     $app->post('/admin-dashboard/course-managment/reject', [PostController::class, 'rejectCourseRequest']);
@@ -33,6 +33,8 @@ function registerRoutes(App $app)
     $app->get('/error', [PageController::class, 'error']);
     $app->get('/unauthorized-access', [PageController::class, 'unauthorizedAccess']);
     $app->get('/help-and-support', [PageController::class, 'helpAndSupport']);
+    $app->get('/announcements/create', [PageController::class, 'createAnnouncements']);
+
 
 
     $app->get('/denied', [PageController::class, 'denied']);
@@ -79,6 +81,8 @@ function registerRoutes(App $app)
     $app->post('/create-course', [CoursesController::class, 'createCourse'], [TeacherOnlyMiddleware::class]);
     $app->post('/save-course-data', [CoursesController::class, 'saveCourseData'], [TeacherOnlyMiddleware::class]);
     $app->get('/courses/my-courses', [CoursesController::class, 'myCourses'], [AuthRequiredMiddleware::class]);
+    $app->get('/courses/test', [CoursesController::class, 'myCoursesTest']);
+    $app->post('/courses/pin-course', [CoursesController::class, 'pinCourse']);
 
     $app->get('/courses/{course_id}', [CoursesController::class, 'courseInfo']);
     $app->get('/courses/{course_id}/participants', [CoursesController::class, 'courseParticipant'], [TeacherOnlyMiddleware::class]);
@@ -113,7 +117,12 @@ function registerRoutes(App $app)
     $app->delete('/review/delete/{review}', [ReviewController::class, 'deleteReview'], [AuthRequiredMiddleware::class]);
 
     // Assignments
-    $app->get('/course/{courseId}/assignment/create', [AssignmentController::class, 'createAssignment']);
+    $app->get('/courses/{courseId}/assignment/create', [AssignmentController::class, 'createAssignmentView']);
+    $app->post('/courses/{courseId}/assignment/create', [AssignmentController::class, 'createAssignment']);
+    $app->get('/courses/{courseId}/assignment/{assignment_id}', [AssignmentController::class, 'assignmentView']);
+    $app->get('/courses/{courseId}/assignment/{assignment_id}/test', [AssignmentController::class, 'getData']);
+    $app->get('/courses/{courseId}/assignment/submit', [AssignmentController::class, 'submitAssignment']);
+    $app->get('/courses/{courseId}/assignment/review', [AssignmentController::class, 'review']);
 
     $app->get('/test', [PageController::class, 'test']);
     // Catch-all route for 404 page

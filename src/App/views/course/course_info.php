@@ -1,4 +1,5 @@
 <?php include $this->resolve("partials/_header.php"); ?>
+<?php include $this->resolve("course/sidebar/sidebar.php"); ?>
 
 <head>
     <link rel="stylesheet" href="/assets/styles/Course/course-info.css">
@@ -103,6 +104,52 @@
 
     .view-all-button:hover {
         background-color: #e0a900;
+    }
+
+    /* assignment */
+    .course-assignments {
+        margin-top: 48px;
+    }
+
+    .assignment-item {
+        border-radius: 12px;
+        border: 1px solid #eee;
+        margin-bottom: 1rem;
+        padding: 5px 20px;
+    }
+
+    .assignment-header {
+        cursor: pointer;
+        padding: 10px 0;
+    }
+
+    .assignment-header h5 {
+        font-size: 16px;
+        margin: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .assignment-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+        padding-left: 20px;
+    }
+
+    .assignment-content.active {
+        max-height: 500px;
+        /* Adjust based on content height */
+    }
+
+    .chevron-icon {
+        transition: transform 0.3s ease;
+        margin-left: 10px;
+    }
+
+    .chevron-icon.rotated {
+        transform: rotate(180deg);
     }
 </style>
 <section class="course-info-container">
@@ -343,12 +390,162 @@
                         </div>
                     <?php endforeach; ?>
                 </div>
+                <!-- Assignments -->
+                <div class="course-assignments">
+                    <h2 class="section-title">Assignments</h2>
+
+                    <?php foreach ($assignments as $item): ?>
+                        <div class="assignment-item">
+                            <div class="assignment-header" onclick="toggleAssignment(this)">
+                                <h5><?php echo e($item['title']); ?>
+                                    <span class="chevron-icon">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
+                                    </span>
+                                </h5>
+                            </div>
+
+                            <div class="assignment-content">
+                                <div class="assignment-details">
+                                    <p onclick="window.location.href='assignment/<?php echo e($item['assignment_id']); ?>'" style="cursor: pointer;"><?php echo e($item['instruction']); ?></p>
+                                    <div class="assignment-meta">
+                                        <span class="deadline">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <polyline points="12 6 12 12 16 14"></polyline>
+                                            </svg>
+                                            <?php echo e($item['deadline']); ?>
+                                        </span>
+                                    </div>
+                                    <form class="assignment-upload" action="/submit-assignment" method="POST" enctype="multipart/form-data">
+                                        <input type="hidden" name="module_id" value="1">
+                                        <div class="file-upload">
+                                            <input type="file" name="assignment_file" id="assignment-1" required>
+                                            <label for="assignment-1" class="file-label">
+                                                Choose File
+                                            </label>
+                                        </div>
+                                        <button type="submit" class="submit-assignment" onclick="preventDefault();">Submit Assignment</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+
+                    <!-- Assignment Item 1 -->
+                    <div class="assignment-item">
+                        <div class="assignment-header" onclick="toggleAssignment(this)">
+                            <h5>Assignment 1: Basic Calculator Program
+                                <span class="chevron-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </span>
+                            </h5>
+                        </div>
+
+                        <div class="assignment-content">
+                            <div class="assignment-details">
+                                <p>Create a simple calculator program using Python that can perform basic arithmetic operations.</p>
+                                <div class="assignment-meta">
+                                    <span class="deadline">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polyline points="12 6 12 12 16 14"></polyline>
+                                        </svg>
+                                        Deadline: December 31, 2024
+                                    </span>
+                                </div>
+                                <form class="assignment-upload" action="/submit-assignment" method="POST" enctype="multipart/form-data">
+                                    <input type="hidden" name="module_id" value="1">
+                                    <div class="file-upload">
+                                        <input type="file" name="assignment_file" id="assignment-1" required>
+                                        <label for="assignment-1" class="file-label">
+                                            Choose File
+                                        </label>
+                                    </div>
+                                    <button type="submit" class="submit-assignment">Submit Assignment</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Assignment Item 2 -->
+                    <div class="assignment-item">
+                        <div class="assignment-header" onclick="toggleAssignment(this)">
+                            <h5>Assignment 2: Banking System
+                                <span class="chevron-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </span>
+                            </h5>
+                        </div>
+
+                        <div class="assignment-content">
+                            <div class="assignment-details">
+                                <p>Design and implement a simple banking system using OOP principles.</p>
+                                <div class="assignment-meta">
+                                    <span class="deadline">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polyline points="12 6 12 12 16 14"></polyline>
+                                        </svg>
+                                        Deadline: January 15, 2025
+                                    </span>
+                                </div>
+                                <div class="assignment-submitted">
+                                    <span class="success-message">✓ Assignment submitted</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="course-assignments" style="margin-top: 48px;">
+                    <div class="assignments-header" onclick="toggleAssignments()">
+                        <h2 class="section-title">Assignments</h2>
+                        <div class="module-toggle">
+                            <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="assignments-content" id="assignments-content">
+                        <div class="module-assignment">
+                            <h5>Assignment</h5>
+                            <div class="assignment-details">
+                                <p>Create a simple calculator program using Python that can perform basic arithmetic operations.</p>
+                                <div class="assignment-meta">
+                                    <span class="deadline">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polyline points="12 6 12 12 16 14"></polyline>
+                                        </svg>
+                                        Deadline: December 31, 2024
+                                    </span>
+                                </div>
+                                <form class="assignment-upload" action="/submit-assignment" method="POST" enctype="multipart/form-data">
+                                    <input type="hidden" name="module_id" value="1">
+                                    <div class="file-upload">
+                                        <input type="file" name="assignment_file" id="assignment-1" required>
+                                        <label for="assignment-1" class="file-label">
+                                            Choose File
+                                        </label>
+                                    </div>
+                                    <button type="submit" class="submit-assignment">Submit Assignment</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
             </div>
         </div>
         <?php if (isset($_SESSION['user_role'])): ?>
             <?php if ($_SESSION['user_role'] === "teacher" || $_SESSION['user_role'] === "admin"): ?>
 
-                <div class="course-section course-participant">
+                <!-- <div class="course-section course-participant">
                     <h3>Course Participants</h3>
                     <div class="participant-dropdown">
                         <div class="participant-dropdown-content" id="participant-list">
@@ -392,9 +589,12 @@
                             View Participants <i class="fas fa-chevron-down dropdown-chevron"></i>
                         </button>
                     </div>
-                </div>
+                </div> -->
             <?php endif; ?>
         <?php endif; ?>
+
+    </div>
+    <div>
 
     </div>
     <div class="course-section">
@@ -546,6 +746,15 @@
         function viewAllParticipants() {
             // Redirect to a page or open a modal displaying all participants
             window.location.href = '/course/participants';
+        }
+
+        function toggleAssignment(headerElement) {
+            const assignmentItem = headerElement.closest('.assignment-item');
+            const content = assignmentItem.querySelector('.assignment-content');
+            const chevron = headerElement.querySelector('.chevron-icon');
+
+            content.classList.toggle('active');
+            chevron.classList.toggle('rotated');
         }
     </script>
 </section>
