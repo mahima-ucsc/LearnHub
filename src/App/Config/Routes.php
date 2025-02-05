@@ -109,6 +109,8 @@ function registerRoutes(App $app)
     $app->get('/resource/my-resources', [ResourceController::class, 'myResources']);
     $app->post('/save-resource-data', [ResourceController::class, 'saveResource']);
     $app->delete('resource/delete/{resource}', [ResourceController::class, 'deleteResource']);
+    $app->get('/resource/edit/{id}', [ResourceController::class, 'editView']);
+    $app->post('/resource/edit/{id}', [ResourceController::class, 'edit']);
 
 
     // Reviews

@@ -234,34 +234,41 @@
   background-color: #ffca19;
 }
 
+/* Resource Edit Button */
 .resource-edit-btn button {
   text-decoration: none;
   display: block;
-  padding: 10px 15px;
-  background-color: #ffc400;
+  padding: 10px 20px;
+  background-color: #0bda51;
   border: none;
   border-radius: 15px;
-  font-size: 14px;
+  font-size: 18px;
   cursor: pointer;
+  margin-bottom: 5px;
 }
 
 .resource-edit-btn button:hover {
-  background-color: #ffe07a;
+  background-color: #5df28d;
+}
+
+.resource-edit-link {
+  text-decoration: none;
 }
 
 .resource-delete-btn button {
   text-decoration: none;
   display: block;
-  padding: 10px 15px;
+  padding: 10px 20px;
   background-color: #ff0000;
   border: none;
   border-radius: 15px;
-  font-size: 14px;
+  font-size: 18px;
   cursor: pointer;
+  margin-bottom: 5px;
 }
 
 .resource-delete-btn button:hover {
-  background-color: #ffe07a;
+  background-color: #ffa896;
 }
 
 /* Modal styles */

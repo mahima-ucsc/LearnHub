@@ -52,4 +52,40 @@ class ResourceController
         $this->resourceService->delete((int)$params['resource']);
         redirectTo('/resource/my-resources');
     }
+
+
+    public function editView(array $params)
+    {
+        $resource = $this->resourceService->getResourceById((int)$params['id']);
+
+        if (!$resource) {
+            redirectTo('/resource/my-resources');
+        }
+
+        echo $this->view->render('Resource/edit_resource.php', [
+            'title' => 'Edit Resource',
+            'resource' => $resource
+        ]);
+    }
+
+    public function edit(array $params)
+    {
+        $formData = $_POST;
+        $id = (int)$params['id'];
+
+        // Handle file upload if exists
+        // if (!empty($_FILES['fileUpload']['name'])) {
+        //     $fileData = $_FILES['fileUpload'];
+        //     // $attachmentLink = $this->handleFileUpload($fileData);
+        //     // $formData['attachment_link'] = $attachmentLink;
+        // }
+
+        // Set price to NULL if type is FREE
+        if ($formData['type'] === '1') {
+            $formData['price'] = NULL;
+        }
+
+        $this->resourceService->update($id, $formData);
+        redirectTo('/resource/my-resources');
+    }
 }

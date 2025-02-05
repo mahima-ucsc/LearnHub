@@ -66,4 +66,44 @@ class ResourceService
             ]
         )->findAll();
     }
+
+
+    public function getResourceById(int $id)
+    {
+        return $this->db->query(
+            "SELECT * FROM resources WHERE resource_id = :id AND user_id = :user_id",
+            [
+                'id' => $id,
+                'user_id' => $_SESSION['user']
+            ]
+        )->find();
+    }
+
+
+    public function update(int $id, array $formData)
+    {
+        $params = [
+            'id' => $id,
+            'title' => $formData['title'],
+            'description' => $formData['description'],
+            'type' => $formData['type'],
+            'price' => $formData['type'] === '1' ? NULL : ($formData['price'] ?? NULL),
+            'user_id' => $_SESSION['user']
+        ];
+
+        $sql = "UPDATE resources 
+            SET title = :title, 
+                description = :description, 
+                type = :type, 
+                price = :price";
+
+        if (isset($formData['attachment_link'])) {
+            $sql .= ", attachment_link = :attachment_link";
+            $params['attachment_link'] = $formData['attachment_link'];
+        }
+
+        $sql .= " WHERE resource_id = :id AND user_id = :user_id";
+
+        $this->db->query($sql, $params);
+    }
 }

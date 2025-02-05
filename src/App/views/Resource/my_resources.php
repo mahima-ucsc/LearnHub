@@ -3,10 +3,10 @@
 
 <head>
     <link rel="stylesheet" href="/assets/styles/Resource/my_resources.css">
-    <link rel="stylesheet" href="/assets/styles/User/Admin/admin_dashboard.css">
+    <!-- <link rel="stylesheet" href="/assets/styles/User/Admin/admin_dashboard.css">
     <link rel="stylesheet" href="/assets/styles/User/Admin/user_managment.css">
     <link rel="stylesheet" href="/assets/styles/User/Admin/course_managment.css">
-    <link rel="stylesheet" href="/assets/styles/User/my-courses.css">
+    <link rel="stylesheet" href="/assets/styles/User/my-courses.css"> -->
 </head>
 
 <section class="resource-container">
@@ -30,7 +30,6 @@
                             <div class="accordion-header">
                                 <div class="resource-title-container">
                                     <h4 class="resource-title"><?php echo e($resource['title']); ?></h4>
-                                    <span class="resource-type"><?php echo e($resource['type']); ?></span>
                                 </div>
                                 <div class="resource-price-container">
                                     <?php if ($resource['price']): ?>
@@ -50,7 +49,7 @@
                                                 <span><?php echo e($resource['first_name'] . ' ' . $resource['last_name']); ?></span>
                                             </div>
                                             <div class="resource-edit-btn">
-                                                <a href="/resource/edit/<?php echo e($resource['resource_id']); ?>">
+                                                <a href="/resource/edit/<?php echo e($resource['resource_id']); ?>" class="resource-edit-link">
                                                     <button>Edit</button>
                                                 </a>
                                             </div>
