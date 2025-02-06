@@ -129,4 +129,10 @@ class ValidatorService
         //     ]);
         // }
     }
+
+
+    public function sendVerificationCode(string $email)
+    {
+        dd($email);
+    }
 }

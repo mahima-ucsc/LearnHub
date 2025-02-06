@@ -86,12 +86,7 @@ class UserService
         $_SESSION['user_role'] = $_SESSION['temp_role'];
         unset($_SESSION['temp_role']);
     }
-
-    public function sendVerificationCode(string $email)
-    {
-        dd($email);
-    }
-
+    
     public function login(array $formData)
     {
         $user = $this->db->query("SELECT * FROM users WHERE email = :email", [
