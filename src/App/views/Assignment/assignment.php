@@ -200,6 +200,23 @@
         background-color: #f44336;
     }
 
+    /* Edit feature */
+    .edit-icon {
+        cursor: pointer;
+        margin-left: 10px;
+        color: #ffc400;
+    }
+
+    .edit-field {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .hidden {
+        display: none;
+    }
+
     @keyframes slideIn {
         from {
             transform: translateX(100%);
@@ -245,108 +262,107 @@
 </style>
 </head>
 
-<body>
-    <div class="container">
-        <div class="assignment-header">
-            <h1 class="title"><?php echo e($assignment['title']); ?></h1>
-            <div class="meta-info">
-                <div class="meta-item">
-                    <span>📅 Due:</span>
-                    <span><?php echo e($assignment['deadline']); ?></span>
-                </div>
-                <div class="meta-item">
-                    <span>Status:</span>
-                    <span class="status pending">Not Submitted</span>
-                </div>
+<div class="container">
+    <div class="assignment-header">
+        <h1 class="title"><?php echo e($assignment['title']); ?></h1>
+        <div class="meta-info">
+            <div class="meta-item">
+                <span>📅 Due:</span>
+                <span><?php echo e($assignment['deadline']); ?></span>
             </div>
-        </div>
-
-        <div class="section">
-            <h2 class="section-title">Instructions</h2>
-            <div class="description">
-                <?php echo e($assignment['instruction']); ?>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2 class="section-title">Assignment Files</h2>
-            <ul class="attachments-list">
-                <li>
-                    <span class="attachment-icon">📎</span>
-                    <span>assignment_instructions.pdf</span>
-                </li>
-                <li>
-                    <span class="attachment-icon">📎</span>
-                    <span>template.docx</span>
-                </li>
-            </ul>
-        </div>
-
-        <div class="section">
-            <h2 class="section-title">Your Submission</h2>
-            <div class="upload-area" id="uploadArea">
-                <span style="font-size: 2rem;">📤</span>
-                <p>Drop your files here or click to upload</p>
-                <input type="file" id="fileInput" multiple style="display: none;">
-            </div>
-            <div id="submissionsList"></div>
-            <div class="button-group">
-                <button id="submitBtn" disabled>Submit Assignment</button>
+            <div class="meta-item">
+                <span>Status:</span>
+                <span class="status pending">Not Submitted</span>
             </div>
         </div>
     </div>
 
-    <div class="notification" id="notification"></div>
+    <div class="section">
+        <h2 class="section-title">Instructions</h2>
+        <div class="description">
+            <?php echo e($assignment['instruction']); ?>
+        </div>
+    </div>
 
-    <script>
-        const uploadArea = document.getElementById('uploadArea');
-        const fileInput = document.getElementById('fileInput');
-        const submissionsList = document.getElementById('submissionsList');
-        const submitBtn = document.getElementById('submitBtn');
-        const notification = document.getElementById('notification');
-        const maxFileSize = 10 * 1024 * 1024; // 10MB
-        let files = [];
+    <div class="section">
+        <h2 class="section-title">Assignment Files</h2>
+        <ul class="attachments-list">
+            <li>
+                <span class="attachment-icon">📎</span>
+                <span>assignment_instructions.pdf</span>
+            </li>
+            <li>
+                <span class="attachment-icon">📎</span>
+                <span>template.docx</span>
+            </li>
+        </ul>
+    </div>
 
-        // Handle file upload area
-        uploadArea.addEventListener('click', () => fileInput.click());
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.style.borderColor = '#ffc400';
-            uploadArea.style.background = '#fff9e6';
+    <div class="section">
+        <h2 class="section-title">Your Submission</h2>
+        <div class="upload-area" id="uploadArea">
+            <span style="font-size: 2rem;">📤</span>
+            <p>Drop your files here or click to upload</p>
+            <input type="file" id="fileInput" multiple style="display: none;">
+        </div>
+        <div id="submissionsList"></div>
+        <div class="button-group">
+            <button id="submitBtn" disabled>Submit Assignment</button>
+        </div>
+    </div>
+</div>
+
+<div class="notification" id="notification"></div>
+
+<script>
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const submissionsList = document.getElementById('submissionsList');
+    const submitBtn = document.getElementById('submitBtn');
+    const notification = document.getElementById('notification');
+    const maxFileSize = 10 * 1024 * 1024; // 10MB
+    let files = [];
+
+    // Handle file upload area
+    uploadArea.addEventListener('click', () => fileInput.click());
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = '#ffc400';
+        uploadArea.style.background = '#fff9e6';
+    });
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.style.borderColor = '#ddd';
+        uploadArea.style.background = 'white';
+    });
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = '#ddd';
+        uploadArea.style.background = 'white';
+        handleFiles(e.dataTransfer.files);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        handleFiles(e.target.files);
+    });
+
+    function handleFiles(newFiles) {
+        Array.from(newFiles).forEach(file => {
+            if (file.size > maxFileSize) {
+                showNotification('File size exceeds 10MB limit', 'error');
+                return;
+            }
+            files.push(file);
+            addFileToList(file);
         });
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.style.borderColor = '#ddd';
-            uploadArea.style.background = 'white';
-        });
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.style.borderColor = '#ddd';
-            uploadArea.style.background = 'white';
-            handleFiles(e.dataTransfer.files);
-        });
+        updateSubmitButton();
+    }
 
-        fileInput.addEventListener('change', (e) => {
-            handleFiles(e.target.files);
-        });
+    function addFileToList(file) {
+        const li = document.createElement('div');
+        li.className = 'submission-item';
 
-        function handleFiles(newFiles) {
-            Array.from(newFiles).forEach(file => {
-                if (file.size > maxFileSize) {
-                    showNotification('File size exceeds 10MB limit', 'error');
-                    return;
-                }
-                files.push(file);
-                addFileToList(file);
-            });
-            updateSubmitButton();
-        }
-
-        function addFileToList(file) {
-            const li = document.createElement('div');
-            li.className = 'submission-item';
-
-            const fileSize = (file.size / 1024 / 1024).toFixed(2);
-            li.innerHTML = `
+        const fileSize = (file.size / 1024 / 1024).toFixed(2);
+        li.innerHTML = `
                 <div class="submission-info">
                     <span class="attachment-icon">📄</span>
                     <div>
@@ -357,57 +373,56 @@
                 <span class="remove-submission">×</span>
             `;
 
-            li.querySelector('.remove-submission').addEventListener('click', () => {
-                files = files.filter(f => f !== file);
-                li.remove();
-                updateSubmitButton();
-            });
-
-            submissionsList.appendChild(li);
-        }
-
-        function updateSubmitButton() {
-            submitBtn.disabled = files.length === 0;
-        }
-
-        function showNotification(message, type = 'success') {
-            notification.textContent = message;
-            notification.className = `notification ${type}`;
-            notification.style.display = 'block';
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000);
-        }
-
-        submitBtn.addEventListener('click', () => {
-            // Here you would typically upload the files to your server
-            // For demo purposes, we'll just show a success message
-            showNotification('Assignment submitted successfully!');
-
-            // Update status
-            document.querySelector('.status').className = 'status submitted';
-            document.querySelector('.status').textContent = 'Submitted';
-
-            // Clear files
-            files = [];
-            submissionsList.innerHTML = '';
+        li.querySelector('.remove-submission').addEventListener('click', () => {
+            files = files.filter(f => f !== file);
+            li.remove();
             updateSubmitButton();
         });
 
-        ////////////////////////////////////////////////////////////////////
+        submissionsList.appendChild(li);
+    }
 
-        // Fetch course data after the page is loaded
-        fetch("/courses/48/assignment/7/test") // Update this to match the correct endpoint URL
-            .then(response => response.json()) // Convert response to JSON
-            .then(data => {
-                console.log(data);
+    function updateSubmitButton() {
+        submitBtn.disabled = files.length === 0;
+    }
 
-            })
-            .catch(error => {
-                console.error("Error fetching courses:", error);
-                document.getElementById("loading").innerText = "Failed to load courses!";
-            });
-    </script>
-</body>
+    function showNotification(message, type = 'success') {
+        notification.textContent = message;
+        notification.className = `notification ${type}`;
+        notification.style.display = 'block';
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 3000);
+    }
 
-</html>
+    submitBtn.addEventListener('click', () => {
+        // Here you would typically upload the files to your server
+        // For demo purposes, we'll just show a success message
+        showNotification('Assignment submitted successfully!');
+
+        // Update status
+        document.querySelector('.status').className = 'status submitted';
+        document.querySelector('.status').textContent = 'Submitted';
+
+        // Clear files
+        files = [];
+        submissionsList.innerHTML = '';
+        updateSubmitButton();
+    });
+
+    ////////////////////////////////////////////////////////////////////
+
+    // Fetch course data after the page is loaded
+    fetch("/courses/48/assignment/7/test") // Update this to match the correct endpoint URL
+        .then(response => response.json()) // Convert response to JSON
+        .then(data => {
+            console.log(data);
+
+        })
+        .catch(error => {
+            console.error("Error fetching courses:", error);
+            document.getElementById("loading").innerText = "Failed to load courses!";
+        });
+</script>
+
+<?php include $this->resolve("partials/_footer.php"); ?>
