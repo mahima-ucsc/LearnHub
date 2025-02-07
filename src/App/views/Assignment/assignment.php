@@ -205,6 +205,23 @@
         background-color: #f44336;
     }
 
+    /* Edit feature */
+    .edit-icon {
+        cursor: pointer;
+        margin-left: 10px;
+        color: #ffc400;
+    }
+
+    .edit-field {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .hidden {
+        display: none;
+    }
+
     @keyframes slideIn {
         from {
             transform: translateX(100%);
@@ -250,18 +267,50 @@
 </style>
 </head>
 
-<body>
-    <div class="container">
-        <div class="assignment-header">
-            <h1 class="title"><?php echo e($assignment['title']); ?></h1>
-            <div class="meta-info">
-                <div class="meta-item">
-                    <span>📅 Due:</span>
-                    <span><?php echo e($assignment['deadline']); ?></span>
+<div class="container">
+    <div class="assignment-header">
+        <h1 class="title"><?php echo e($assignment['title']); ?></h1>
+        <div class="meta-info">
+            <div class="meta-item">
+                <span>📅 Due:</span>
+                <span><?php echo e($assignment['deadline']); ?></span>
+            </div>
+            <div class="meta-item">
+                <span>Status:</span>
+                <span class="status pending">Not Submitted</span>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Instructions</h2>
+                <div class="description">
+                    <?php echo e($assignment['instruction']); ?>
                 </div>
-                <div class="meta-item">
-                    <span>Status:</span>
-                    <span class="status pending">Not Submitted</span>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Assignment Files</h2>
+                <ul class="attachments-list">
+                    <?php foreach ($resources as $resource): ?>
+                        <li>
+                            <a href="/assignment/<?php echo e($assignment['assignment_id']) ?>/resource/<?php echo e($resource['resource_id']) ?>" class="resource-link">
+                                <span class="attachment-icon">📎</span>
+                                <?php echo e($resource['resource_path']) ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+
+                </ul>
+            </div>
+            <div class="section">
+                <h2 class="section-title">Your Submission</h2>
+                <div class="upload-area" id="uploadArea">
+                    <span style="font-size: 2rem;">📤</span>
+                    <p>Drop your files here or click to upload</p>
+                    <input type="file" id="fileInput" multiple style="display: none;">
+                </div>
+                <div id="submissionsList"></div>
+                <div class="button-group">
+                    <button id="submitBtn" disabled>Submit Assignment</button>
                 </div>
             </div>
         </div>
@@ -276,17 +325,17 @@
         <div class="section">
             <h2 class="section-title">Assignment Files</h2>
             <ul class="attachments-list">
-                <?php foreach ($resources as $resource): ?>
-                    <li>
-                        <a href="/assignment/<?php echo e($assignment['assignment_id']) ?>/resource/<?php echo e($resource['resource_id']) ?>" class="resource-link">
-                            <span class="attachment-icon">📎</span>
-                            <?php echo e($resource['resource_path']) ?>
-                        </a>
-                    </li>
-                <?php endforeach; ?>
-
+                <li>
+                    <span class="attachment-icon">📎</span>
+                    <span>assignment_instructions.pdf</span>
+                </li>
+                <li>
+                    <span class="attachment-icon">📎</span>
+                    <span>template.docx</span>
+                </li>
             </ul>
         </div>
+
         <div class="section">
             <h2 class="section-title">Your Submission</h2>
             <div class="upload-area" id="uploadArea">
@@ -413,6 +462,5 @@
                 document.getElementById("loading").innerText = "Failed to load courses!";
             });
     </script>
-</body>
 
-</html>
+    <?php include $this->resolve("partials/_footer.php"); ?>

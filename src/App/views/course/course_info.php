@@ -512,44 +512,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div class="course-assignments" style="margin-top: 48px;">
-                    <div class="assignments-header" onclick="toggleAssignments()">
-                        <h2 class="section-title">Assignments</h2>
-                        <div class="module-toggle">
-                            <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </div>
-                    </div>
-
-                    <div class="assignments-content" id="assignments-content">
-                        <div class="module-assignment">
-                            <h5>Assignment</h5>
-                            <div class="assignment-details">
-                                <p>Create a simple calculator program using Python that can perform basic arithmetic operations.</p>
-                                <div class="assignment-meta">
-                                    <span class="deadline">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <polyline points="12 6 12 12 16 14"></polyline>
-                                        </svg>
-                                        Deadline: December 31, 2024
-                                    </span>
-                                </div>
-                                <form class="assignment-upload" action="/submit-assignment" method="POST" enctype="multipart/form-data">
-                                    <input type="hidden" name="module_id" value="1">
-                                    <div class="file-upload">
-                                        <input type="file" name="assignment_file" id="assignment-1" required>
-                                        <label for="assignment-1" class="file-label">
-                                            Choose File
-                                        </label>
-                                    </div>
-                                    <button type="submit" class="submit-assignment">Submit Assignment</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
             </div>
         </div>
         <?php if (isset($_SESSION['user_role'])): ?>

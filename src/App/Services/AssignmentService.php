@@ -137,4 +137,76 @@ class AssignmentService
         header("Content-Disposition: attachment;filename={$resource['resource_path']}");
         readfile($filePath);
     }
+
+    public function update(array $formData, string $courseId, string $assignmentId, array $files)
+    {
+        $this->db->beginTransaction();
+        try {
+            $this->db->query(
+                "UPDATE assignments
+                SET deadline = :deadline, instruction = :instruction, title = :title
+                WHERE assignment_id = :assignment_id",
+                [
+                    'assignment_id' => $assignmentId,
+                    'deadline' => $formData['deadline'],
+                    'instruction' => $formData['instruction'],
+                    'title' => $formData['title']
+                ]
+            );
+
+            if (!empty($formData['deleted_files'])) {
+                $deletedFiles = explode(",", $formData['deleted_files']);
+                foreach ($deletedFiles as $resourceId) {
+                    $file = $this->db->query(
+                        "SELECT resource_path FROM assignment_resource WHERE resource_id = :id",
+                        ['id' => $resourceId]
+                    )->find();
+
+                    if ($file) {
+                        $filePath = Paths::STORAGE_UPLOADS . '/assignments/' . $file['resource_path'];
+                        if (file_exists($filePath)) {
+                            unlink($filePath); // Delete the file from server
+                        }
+
+                        $this->db->query(
+                            "DELETE FROM assignment_resource WHERE resource_id = :id",
+                            ['id' => $resourceId]
+                        );
+                    }
+                }
+            }
+
+            if (!empty($files['files']['name'][0])) {
+                foreach ($files['files']['tmp_name'] as $key => $tmpName) {
+                    // Build the individual file array
+                    $file = [
+                        'name'     => $files['files']['name'][$key],
+                        'tmp_name' => $files['files']['tmp_name'][$key],
+                        'error'    => $files['files']['error'][$key],
+                    ];
+                    try {
+                        // Call uploadFile function for each file
+                        $newFileName = $this->uploadFile($file, 'assignments');
+                        $this->db->query(
+                            "INSERT INTO assignment_resource(assignment_id, course_id, resource_path)
+                            VALUES(:assignment_id, :course_id, :resource_path)",
+                            [
+                                "assignment_id" => $assignmentId,
+                                "course_id" => $courseId,
+                                "resource_path" => $newFileName
+                            ]
+                        );
+                    } catch (ValidationException $e) {
+                        throw new ValidationException([
+                            "file" => [$e]
+                        ]);
+                    }
+                }
+            }
+            $this->db->commit();
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
+    }
 }
