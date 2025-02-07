@@ -7,6 +7,7 @@ namespace App\Services;
 use Framework\Database;
 use Framework\Exceptions\ValidationException;
 
+
 class UserService
 {
     public function __construct(private Database $db) {}
@@ -237,8 +238,8 @@ class UserService
 
     public function sendVerificationCode(string $email)
     {
-    //     $userRepository = new UserRepository();
-    //     $mailService = new MailService();
+        // $userRepository = new UserRepository();
+        // $mailService = new MailService();
 
 
         $verificationCode = random_int(100000, 999999);
