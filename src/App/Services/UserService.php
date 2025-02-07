@@ -86,7 +86,7 @@ class UserService
         $_SESSION['user_role'] = $_SESSION['temp_role'];
         unset($_SESSION['temp_role']);
     }
-    
+
     public function login(array $formData)
     {
         $user = $this->db->query("SELECT * FROM users WHERE email = :email", [
@@ -233,5 +233,19 @@ class UserService
         } else {
             throw new ValidationException(['notMatch' => ['Passwords does not match']]);
         }
+    }
+
+    public function sendVerificationCode(string $email)
+    {
+    //     $userRepository = new UserRepository();
+    //     $mailService = new MailService();
+
+
+        $verificationCode = random_int(100000, 999999);
+        dd($verificationCode);
+
+        // $userRepository->saveVerificationCode($email, $verificationCode);
+
+        // $mailService->sendMail($email, 'Verification Code', "Your verification code is: $verificationCode");
     }
 }

@@ -6,7 +6,9 @@
       "email": "mahimaindhot@gmail.com"
     }
   ],
-  "require": {},
+  "require": {
+    
+  },
   "autoload": {
     "psr-4": {
       "Framework\\": "src/Framework",

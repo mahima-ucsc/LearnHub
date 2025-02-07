@@ -39,14 +39,17 @@ class AuthController
     {
         $this->validatorService->validateRegister($_POST);
         $this->userService->isEmailTaken($_POST['email']);
-        $this->validatorService->sendVerificationCode($_POST['email']);
+        $this->userService->sendVerificationCode($_POST['email']);
         $this->userService->create($_POST);
-        redirectTo('/interest');
+        redirectTo('register/verification');
+        // redirectTo('/interest');
     }
 
     public function verificationView()
     {
-        
+        echo $this->view->render("register_varification.php", [
+            "title" => "Verification"
+        ]);
     }
 
     public function loginView()
