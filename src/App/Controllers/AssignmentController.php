@@ -7,9 +7,7 @@ namespace App\Controllers;
 use Framework\TemplateEngine;
 
 use App\Services\{AssignmentService};
-
-
-
+use PDO;
 
 class AssignmentController
 {
@@ -71,5 +69,21 @@ class AssignmentController
         }
 
         $this->assignmentService->readResource($resource);
+    }
+
+    public function editAssignment(array $params)
+    {
+        $assignment = $this->assignmentService->getAssignment($params['assignment_id']);
+        $resources = $this->assignmentService->getAssignmentResource((int)$params['assignment_id']);
+        $title =  "Edit - " . $assignment['title'];
+        echo $this->view->render("Assignment/edit.php", [
+            "title" => $title,
+            "assignment" => $assignment,
+            "resources" => $resources,
+        ]);
+    }
+    public function updateAssignment(array $params)
+    {
+        $this->assignmentService->update($_POST, $params['courseId'], $params['assignment_id'], $_FILES);
     }
 }
