@@ -15,24 +15,23 @@
             <h2>Basic Information</h2>
             <div class="create-course-form-group">
                 <label for="courseTitle">Course Title *</label>
-                <input type="text" id="title" name="title" value="<?php echo e($oldFormData['title'] ?? ''); ?>" required>
+                <input type="text" id="title" name="title" value="<?= isset($oldFormData['title']) ? e($oldFormData['title']) : '' ?>" required>
             </div>
             <div class="create-course-form-group">
                 <label for="description">Course Description *</label>
-                <textarea id="description" name="description" required><?php echo e($oldFormData['description'] ?? ''); ?></textarea>
+                <textarea id="description" name="description" required><?= isset($oldFormData['description']) ? e($oldFormData['description']) : '' ?></textarea>
             </div>
             <div class="create-course-form-group">
                 <label for="price">Course Price (Rs.) *</label>
                 <div style="display: flex;flex-direction: row; padding: 10px;">
-                    <input type="number" id="price" name="price" min="0" step="0.01" value="<?php echo e($oldFormData['price'] ?? ''); ?>" required>
-
+                    <input type="number" id="price" name="price" min="0" step="0.01" value="<?= isset($oldFormData['price']) ? e($oldFormData['price']) : '' ?>" required>
 
                     <select id="pricing_period" name="pricing_period" style="margin-left:16px" required>
                         <option value="">Select Price period</option>
-                        <option value="daily" <?php echo ($oldFormData['pricing_period'] == 'daily' ? 'selected' : ''); ?>>Daily</option>
-                        <option value="monthly" <?php echo ($oldFormData['pricing_period'] == 'monthly' ? 'selected' : ''); ?>>Monthly</option>
-                        <option value="yearly" <?php echo ($oldFormData['pricing_period'] == 'yearly' ? 'selected' : ''); ?>>Yearly</option>
-                        <option value="wholecourse" <?php echo ($oldFormData['pricing_period'] == 'wholecourse' ? 'selected' : ''); ?>>For whole course</option>
+                        <option value="daily" <?= isset($oldFormData['pricing_period']) && $oldFormData['pricing_period'] == 'daily' ? 'selected' : '' ?>>Daily</option>
+                        <option value="monthly" <?= isset($oldFormData['pricing_period']) && $oldFormData['pricing_period'] == 'monthly' ? 'selected' : '' ?>>Monthly</option>
+                        <option value="yearly" <?= isset($oldFormData['pricing_period']) && $oldFormData['pricing_period'] == 'yearly' ? 'selected' : '' ?>>Yearly</option>
+                        <option value="wholecourse" <?= isset($oldFormData['pricing_period']) && $oldFormData['pricing_period'] == 'wholecourse' ? 'selected' : '' ?>>For whole course</option>
                     </select>
                 </div>
             </div>
@@ -58,23 +57,23 @@
                 <label for="day">Day (in weeks) *</label>
                 <select id="day" name="day" required>
                     <option value="">Select a day</option>
-                    <option value="sun" <?php echo ($oldFormData['day'] == 'sun') ? 'selected' : ''; ?>>Sunday</option>
-                    <option value="mon" <?php echo ($oldFormData['day'] == 'mon') ? 'selected' : ''; ?>>Monday</option>
-                    <option value="tue" <?php echo ($oldFormData['day'] == 'tue') ? 'selected' : ''; ?>>Tuesday</option>
-                    <option value="wed" <?php echo ($oldFormData['day'] == 'wed') ? 'selected' : ''; ?>>Wednesday</option>
-                    <option value="thu" <?php echo ($oldFormData['day'] == 'thu') ? 'selected' : ''; ?>>Thursday</option>
-                    <option value="fri" <?php echo ($oldFormData['day'] == 'fri') ? 'selected' : ''; ?>>Friday</option>
-                    <option value="sat" <?php echo ($oldFormData['day'] == 'sat') ? 'selected' : ''; ?>>Saturday</option>
+                    <option value="sun" <?= isset($oldFormData['day']) && $oldFormData['day'] == 'sun' ? 'selected' : '' ?>>Sunday</option>
+                    <option value="mon" <?= isset($oldFormData['day']) && $oldFormData['day'] == 'mon' ? 'selected' : '' ?>>Monday</option>
+                    <option value="tue" <?= isset($oldFormData['day']) && $oldFormData['day'] == 'tue' ? 'selected' : '' ?>>Tuesday</option>
+                    <option value="wed" <?= isset($oldFormData['day']) && $oldFormData['day'] == 'wed' ? 'selected' : '' ?>>Wednesday</option>
+                    <option value="thu" <?= isset($oldFormData['day']) && $oldFormData['day'] == 'thu' ? 'selected' : '' ?>>Thursday</option>
+                    <option value="fri" <?= isset($oldFormData['day']) && $oldFormData['day'] == 'fri' ? 'selected' : '' ?>>Friday</option>
+                    <option value="sat" <?= isset($oldFormData['day']) && $oldFormData['day'] == 'sat' ? 'selected' : '' ?>>Saturday</option>
                 </select>
             </div>
             <div class="create-course-form-group">
                 <label>Course Time*</label> <br>
                 <div style="display: flex; flex-direction: row; margin-left: 26px;">
                     <label for="start_time" style="margin-right: 26px;">Start Time*</label>
-                    <input type="time" id="start_time" name="start_time" value='<?php echo e($oldFormData['start_time']); ?>' required>
+                    <input type="time" id="start_time" name="start_time" value='<?= isset($oldFormData['start_time']) ? e($oldFormData['start_time']) : '' ?>' required>
 
                     <label for="end_time" style="margin-right: 26px;margin-left: 16px;">End Time*</label>
-                    <input type="time" id="end_time" name="end_time" value='<?php echo e($oldFormData['end_time']); ?>' required>
+                    <input type="time" id="end_time" name="end_time" value='<?= isset($oldFormData['end_time']) ? e($oldFormData['end_time']) : '' ?>' required>
                 </div>
             </div>
             <div class="create-course-form-group">
@@ -100,16 +99,16 @@
 
         <div class="create-course-form-group">
             <label for="location">Location</label>
-            <input type="text" name="location" id="location" value="<?php echo e($oldFormData['location']); ?>">
+            <input type="text" name="location" id="location" value="<?= isset($oldFormData['location']) ? e($oldFormData['location']) : '' ?>">
         </div>
         <div class="create-course-form-group">
             <label for="thumbnail">Course Thumbnail</label>
             <input type="file" id="thumbnail" name="thumbnail" accept="image/*" onchange="previewThumbnail(this)">
 
             <img id="thumbnailPreview" style="max-width: 100%; max-height: 200px; display: none;" alt="Thumbnail preview">
-            <?php if ($errors['img']): ?>
+            <?php if (isset($errors['img'])): ?>
                 <div class="error">
-                    <?php echo e($errors['img'][0]); ?>
+                    <?= e($errors['img'][0]) ?>
                 </div>
             <?php endif; ?>
         </div>
