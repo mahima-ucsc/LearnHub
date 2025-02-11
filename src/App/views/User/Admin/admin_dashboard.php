@@ -88,13 +88,6 @@
             loadTabContent(savedTab);
         });
 
-        // Restore active tab on page load
-        window.addEventListener('DOMContentLoaded', function() {
-            const savedTab = localStorage.getItem('tab') || 'dashboard'; // Default to 'dashboard' if no tab is saved
-
-            // Call loadTabContent to set the active tab
-            loadTabContent(savedTab);
-        });
     </script>
 </section>
 
