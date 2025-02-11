@@ -243,6 +243,11 @@ class UserService
         $mail = new PHPMailer(true); // Passing `true` enables exceptions
         $verificationCode = random_int(100000, 999999);
 
+        $HVcode = password_hash((string)$verificationCode, PASSWORD_BCRYPT, ["const" => 12]);
+        $_SESSION['otp_hash'] = $HVcode;
+
+        // dd($_SESSION['otp_hash']);
+
         try {
             // server settings
             $mail->isSMTP(); //set mailer to use smtp
@@ -270,20 +275,5 @@ class UserService
         } catch (Exception $e) {
             echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }
-
-        // $this->db->query(
-        //     "INSERT INTO users(first_name, last_name, email, date_of_birth, password, user_role) 
-        //     VALUES (:first_name, :last_name, :email, :date_of_birth, :password, :user_role)",
-        //     [
-
-
-        //     ]
-        // );
-
-        // dd($verificationCode);
-
-        // $userRepository->saveVerificationCode($email, $verificationCode);
-
-        // $mailService->sendMail($email, 'Verification Code', "Your verification code is: $verificationCode");
     }
 }
