@@ -6,7 +6,9 @@ namespace App\Services;
 
 use Framework\Database;
 use Framework\Exceptions\ValidationException;
-
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
 class UserService
 {
@@ -238,14 +240,43 @@ class UserService
 
     public function sendVerificationCode(string $email)
     {
+        $mail = new PHPMailer(true); // Passing `true` enables exceptions
         $verificationCode = random_int(100000, 999999);
+
+        try {
+            // server settings
+            $mail->isSMTP(); //set mailer to use smtp
+            $mail->Host = 'smtp.gmail.com'; //specify main and backup server
+            $mail->SMTPAuth = true; //enable smtp authentication
+            $mail->Username = 'learnhubnet@gmail.com'; //smtp username
+            $mail->Password = 'utsd sdge opzv swwx'; // smtp password that is google app password
+            $mail->SMTPSecure = 'tls';
+            $mail->Port = 587;
+
+            // recipients
+            // sender (server mail)
+            $mail->setFrom('dinukasahan2001@gmail.com', 'server');
+            // receiver (client mail)
+            $mail->addAddress($email, "client");
+
+
+            // email content 
+            $mail->isHTML(true);
+            $mail->Subject = 'email verification';
+            $mail->Body = 'the verificaiton code is : ' . $verificationCode;
+
+            $mail->send();
+            echo 'verfication mail sent successfully';
+        } catch (Exception $e) {
+            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        }
 
         // $this->db->query(
         //     "INSERT INTO users(first_name, last_name, email, date_of_birth, password, user_role) 
         //     VALUES (:first_name, :last_name, :email, :date_of_birth, :password, :user_role)",
         //     [
-                
-            
+
+
         //     ]
         // );
 
