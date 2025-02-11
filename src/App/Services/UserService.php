@@ -238,12 +238,18 @@ class UserService
 
     public function sendVerificationCode(string $email)
     {
-        // $userRepository = new UserRepository();
-        // $mailService = new MailService();
-
-
         $verificationCode = random_int(100000, 999999);
-        dd($verificationCode);
+
+        // $this->db->query(
+        //     "INSERT INTO users(first_name, last_name, email, date_of_birth, password, user_role) 
+        //     VALUES (:first_name, :last_name, :email, :date_of_birth, :password, :user_role)",
+        //     [
+                
+            
+        //     ]
+        // );
+
+        // dd($verificationCode);
 
         // $userRepository->saveVerificationCode($email, $verificationCode);
 
