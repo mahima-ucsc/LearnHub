@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\{AssignmentService, ValidatorService, CourseService, UserService, FileService};
+use App\Services\{AssignmentService, ValidatorService, CourseService, UserService, FileService, SubjectService};
 use App\Config\Paths;
 
 class CoursesController
@@ -17,7 +17,8 @@ class CoursesController
         private CourseService $courseService,
         private UserService $userService,
         private FileService $fileService,
-        private AssignmentService $assignmentService
+        private AssignmentService $assignmentService,
+        private SubjectService $subjectService,
     ) {}
 
 
@@ -117,9 +118,10 @@ class CoursesController
 
     public function createCourseView()
     {
-
+        $subjects = $this->subjectService->getSubjects();
         echo $this->view->render('course/create_course.php', [
-            "title" => "Create Course"
+            "title" => "Create Course",
+            "subjects" => $subjects
         ]);
     }
 

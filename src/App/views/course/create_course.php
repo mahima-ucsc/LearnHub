@@ -38,19 +38,12 @@
             <div class="create-course-form-group">
                 <label for="subject_id">Subject *</label>
                 <select id="subject_id" name="subject_id" required>
-                    <option value="">Select a subject</option>
-                    <option value="1">Physics</option>
-                    <option value="2">Combined Mathematics</option>
-                    <option value="3">Chemistry</option>
-                    <option value="4">ICT</option>
-                    <option value="5">Science for Technology</option>
-                    <option value="6">Bio Science Technology</option>
-                    <option value="7">Mathematics</option>
-                    <option value="8">Science</option>
-                    <option value="9">Geography</option>
-                    <option value="10">Econ</option>
-                    <option value="11">Political Science</option>
-                    <option value="12">Logics</option>
+                    <?php foreach ($subjects as $subject): ?>
+                        <option value="<?= e($subject["subject_id"]); ?>">
+                            <?= e($subject["subject_title"]); ?>
+                        </option>
+                    <?php endforeach; ?>
+
                 </select>
             </div>
             <div class="create-course-form-group">
