@@ -231,35 +231,34 @@ CREATE TABLE IF NOT EXISTS course_request_comments (
 );
 
 -- Assignments for courses
-
 CREATE TABLE IF NOT EXISTS assignments (
-    assignment_id INT AUTO_INCREMENT PRIMARY KEY,
+    assignment_id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     course_id BIGINT(20) UNSIGNED NOT NULL,
     upload_date DATE DEFAULT CURRENT_DATE,
     deadline DATE,
     instruction TEXT,
-    tutor_id INT NOT NULL,
+    tutor_id BIGINT(20) UNSIGNED NOT NULL,
     
-    FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
+    FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
     FOREIGN KEY (tutor_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS assignment_resource (
-    resource_id INT AUTO_INCREMENT,
-    assignment_id INT,
+    resource_id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    assignment_id BIGINT(20) UNSIGNED NOT NULL,
     course_id BIGINT(20) UNSIGNED NOT NULL,
     resource_path VARCHAR(255),
     
-    PRIMARY KEY (resource_id, assignment_id, course_id),
+    UNIQUE KEY (course_id, assignment_id),
     
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
-    FOREIGN KEY (assignment_id) REFERENCES courses(assignments) ON DELETE CASCADE
+    FOREIGN KEY (assignment_id) REFERENCES assignments(assignment_id) ON DELETE CASCADE
 );
 
 
 CREATE TABLE IF NOT EXISTS assignments_submissions(
     submission_id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    assignment_id INT NOT NULL,
+    assignment_id BIGINT(20) UNSIGNED NOT NULL,
     course_id BIGINT(20) UNSIGNED NOT NULL,
     submission_path VARCHAR(255),
     upload_date DATE DEFAULT CURRENT_DATE,
@@ -268,7 +267,7 @@ CREATE TABLE IF NOT EXISTS assignments_submissions(
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
     FOREIGN KEY (student_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (assignment_id) REFERENCES assignments(assignment_id) ON DELETE CASCADE
-)
+);
 
 CREATE TABLE contact_tickets (
     `id` INT(11) NOT NULL AUTO_INCREMENT , 
