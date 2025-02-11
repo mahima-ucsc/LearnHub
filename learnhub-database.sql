@@ -299,3 +299,14 @@ CREATE TABLE contact_tickets (
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
     PRIMARY KEY (`id`)
 );
+
+-- Table for OTP verification
+CREATE TABLE otp_verification (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    otp VARCHAR(255) NOT NULL,
+    expires_at DATETIME NOT NULL,
+    is_verified TINYINT(1) DEFAULT 0,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
