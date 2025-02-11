@@ -10,7 +10,7 @@ class AppConstants
     public const DB_DRIVER = 'mysql';
     public const DB_HOST = 'localhost';
     public const DB_PORT = 3306;
-    public const DB_NAME = 'myhub';
+    public const DB_NAME = 'mylearnhub';
     public const DB_USER = 'phpmyadmin';
     public const DB_PASS = 'phpmyadmin';
 }
