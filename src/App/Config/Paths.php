@@ -11,5 +11,5 @@ class Paths
 
     public const STORAGE_UPLOADS = __DIR__ . '/../../../public/storage/uploads';
     // realtive paths to uploads
-    public const RELATIVE_COURSE_THUMBNAIL_UPLOADS = 'thumbnails';
+    public const RELATIVE_COURSE_THUMBNAIL_UPLOADS = '/courses/thumbnails';
 }

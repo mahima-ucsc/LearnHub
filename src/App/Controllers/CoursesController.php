@@ -166,10 +166,10 @@ class CoursesController
     {
         $thumbnail = $_FILES['thumbnail'] ?? null;
         $this->validatorService->validateImg($thumbnail);
-
-        $thumbnailUrl = $this->fileService->uploadFile(Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS, $thumbnail);
+        $this->validatorService->validateCourse($_POST);
+        $thumbnailFileName = $this->fileService->uploadFile(Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS, $thumbnail);
         $formData = $_POST;
-        $formData['thumbnail_url'] = $thumbnailUrl;
+        $formData['thumbnail_filename'] = $thumbnailFileName;
         $this->courseService->createCourse($formData);
         redirectTo('/courses/my-courses');
     }

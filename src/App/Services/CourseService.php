@@ -78,7 +78,7 @@ class CourseService
                 "price" => $formData['price'],
                 "pricing_period" => $formData['pricing_period'],
                 "location" => $formData['location'],
-                "thumbnail_url" => $formData['thumbnail_url'],
+                "thumbnail_url" => $formData['thumbnail_filename'],
             ]
         );
     }
