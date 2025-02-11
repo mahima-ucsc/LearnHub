@@ -125,7 +125,15 @@ class CoursesController
         ]);
     }
 
-    // Save course data in SESSION and redirect to next page to add course module
+    /**
+     * This function is used when creating a course. Initially, it saves the course data in the session 
+     * and then redirects to the next page to add course modules. The add module view sends a POST request 
+     * invoking the createCourse function to save both course data and course modules at the same time.
+     * 
+     * However, the new flow allows creating courses without modules. Modules can be added later.
+     * 
+     * @deprecated This function is deprecated due to the new flow that allows creating courses without modules.
+     */
     public function saveCourseData()
     {
         $thumbnail = $_FILES['thumbnail'] ?? null;
@@ -143,9 +151,26 @@ class CoursesController
         ]);
     }
 
+    /**
+     * @deprecated
+     * It was used to save both modules and course details at once when redirected from the add course view to the add modules view.
+     */
     public function createCourse()
     {
         $this->courseService->create($_POST['modules']);
+        redirectTo('/courses/my-courses');
+    }
+
+    // TODO: Rename this function when the old create course is removed
+    public function createCourseNew()
+    {
+        $thumbnail = $_FILES['thumbnail'] ?? null;
+        $this->validatorService->validateImg($thumbnail);
+
+        $thumbnailUrl = $this->fileService->uploadFile(Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS, $thumbnail);
+        $formData = $_POST;
+        $formData['thumbnail_url'] = $thumbnailUrl;
+        $this->courseService->createCourse($formData);
         redirectTo('/courses/my-courses');
     }
 
