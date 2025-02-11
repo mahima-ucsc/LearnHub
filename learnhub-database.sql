@@ -23,6 +23,23 @@ CREATE TABLE IF NOT EXISTS grades (
     PRIMARY KEY(grade_id)
 );
 
+-- Insert grades
+INSERT INTO `grades` (`grade_id`, `grade_name`) VALUES
+(1, 'Grade 1'),
+(2, 'Grade 2'),
+(3, 'Grade 3'),
+(4, 'Grade 4'),
+(5, 'Grade 5'),
+(6, 'Grade 6'),
+(7, 'Grade 7'),
+(8, 'Grade 8'),
+(9, 'Grade 9'),
+(10, 'Grade 10'),
+(11, 'Grade 11'),
+(12, 'Grade 12'),
+(13, 'Grade 13');
+
+
 -- Each student has one grade
 CREATE TABLE IF NOT EXISTS student_grades (
     student_id BIGINT(20) UNSIGNED NOT NULL,
@@ -217,6 +234,9 @@ CREATE TABLE IF NOT EXISTS course_requests (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
+ALTER TABLE course_requests
+ADD COLUMN status ENUM('pending', 'approved') NOT NULL DEFAULT 'pending';
+
 -- Comments on course requests
 CREATE TABLE IF NOT EXISTS course_request_comments (
     comment_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -235,10 +255,11 @@ CREATE TABLE IF NOT EXISTS course_request_comments (
 CREATE TABLE IF NOT EXISTS assignments (
     assignment_id INT AUTO_INCREMENT PRIMARY KEY,
     course_id BIGINT(20) UNSIGNED NOT NULL,
+    resource_path varchar(255) DEFAULT NULL,
     upload_date DATE DEFAULT CURRENT_DATE,
-    deadline DATE,
-    instruction TEXT,
-    tutor_id INT NOT NULL,
+    deadline datetime,
+    instruction text ,
+    tutor_id bigint(20) UNSIGNED NOT NULL,
     
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
     FOREIGN KEY (tutor_id) REFERENCES users(user_id) ON DELETE CASCADE

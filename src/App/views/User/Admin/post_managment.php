@@ -1,68 +1,67 @@
+<?php 
+use App\views\components\Alert;
+
+$alert = new Alert('Course request approved successfully', 'success');
+
+?>
+
 <section class="posts-page">
     <div class="main-container">
         <div class="main-title">
             <h1>Post Management</h1>
         </div>
-
-        <?php foreach ($courseRequests as $request): ?>
-            <!-- Request Feed -->
-            <div class="request-feed" id="post-<?= $request["request_id"] ?>">
-                <div class="post-link">
-                    <!-- Course Request -->
-                    <div class="request-post">
-                        <div class="request-header">
-                            <div class="user-info">
-                                <img src="/assets/images/user.jpeg" alt="User Avatar" class="avatar">
-                                <div class="user-details">
-                                    <h4><?= e($request["author"]) ?></h4>
-                                    <span class="post-time">
-                                        <?= e(
-                                            $request["updated_date"] === $request["created_date"] ?
-                                                "Posted on " . formatDate($request["created_date"], 'F j, Y') :
-                                                "Edited on " . formatDate($request["updated_date"], 'F j, Y')
-                                        ) ?>
-                                    </span>
+        <?php if (!$courseRequests): ?>
+            <div class="empty">
+                <h2>No pending course requests</h2>
+            </div>
+        <?php else: ?>
+            <?php foreach ($courseRequests as $request): ?>
+                <!-- Request Feed -->
+                <div class="request-feed" id="post-<?= $request["request_id"] ?>">
+                    <div class="post-link">
+                        <!-- Course Request -->
+                        <div class="request-post">
+                            <div class="request-header">
+                                <div class="user-info">
+                                    <img src="/assets/images/user.jpeg" alt="User Avatar" class="avatar">
+                                    <div class="user-details">
+                                        <h4><?= e($request["author"]) ?></h4>
+                                        <span class="post-time">
+                                            <?= e(
+                                                $request["updated_date"] === $request["created_date"] ?
+                                                    "Posted on " . formatDate($request["created_date"], 'F j, Y') :
+                                                    "Edited on " . formatDate($request["updated_date"], 'F j, Y')
+                                            ) ?>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                            <!-- <div class="action-menu">
-                                <button class="menu-button">⋮</button>
-                                <div class="menu-dropdown">
-                                    <a href="<?= "/course/request/" . $request["request_id"] ?>">View</a>
-                                    <?php if ($request["author_id"] == $_SESSION["user"]): ?>
-                                        <a href="<?= "/course/request/edit/" . $request["request_id"] ?>">Edit</a>
-                                        <form action="<?= "/course/request/" . $request["request_id"] ?>" method="POST">
-                                            <input type="hidden" name="_METHOD" value="DELETE" />
-                                            <button type="submit" onclick="return confirm('Are you sure you want to delete this request?')">Delete</button>
-                                        </form>
-                                    <?php endif; ?>
+                            <div class="request-title">
+                                <h3><?= e($request["title"]) ?></h3>
+                            </div>
+                            <div class="request-content">
+                                <p><?= e($request["description"]) ?></p>
+                                <div class="request-metadata">
+                                    <span class="subject"><?= e($request["subject"]  ?? "Other") ?></span>
                                 </div>
-                            </div> -->
-                        </div>
-                        <div class="request-title">
-                            <h3><?= e($request["title"]) ?></h3>
-                        </div>
-                        <div class="request-content">
-                            <p><?= e($request["description"]) ?></p>
-                            <div class="request-metadata">
-                                <span class="subject"><?= e($request["subject"]  ?? "Other") ?></span>
                             </div>
                         </div>
-                    </div>
-                    <!-- buttons  -->
-                    <div class="button-container">
-                        <form action="/admin-dashboard/course-managment/approve" method="POST" class="approve-form">
-                            <input type="hidden" name="requestId" value="<?= e($request['request_id']) ?>">
-                            <button type="submit" class="btn approve">Approve</button>
-                        </form>
-                        <form action="/admin-dashboard/course-managment/reject" method="POST" class="approve-form">
-                            <input type="hidden" name="requestId" value="<?= e($request['request_id']) ?>">
-                            <button class="btn move-trash">Reject</button>
-                        </form>
-                        <button class="btn view">View</button>
+                        <!-- buttons  -->
+                        <div class="button-container">
+                            <form action="/admin-dashboard/course-managment/approve" method="POST" class="approve-form" onsubmit="return confirm('Are you sure you want to approve this request?')">
+                                <input type="hidden" name="requestId" value="<?= e($request['request_id']) ?>">
+                                <button type="submit" class="btn approve">Approve</button>
+                            </form>
+                            <form action="/admin-dashboard/course-managment/reject" method="POST" class="reject-form" onsubmit="return confirm('Are you sure you want to reject this request?')">
+                                <input type="hidden" name="requestId" value="<?= e($request['request_id']) ?>">
+                                <button class="btn move-trash">Reject</button>
+                            </form>
+                            <button class="btn view">View</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        <?php endforeach; ?>
+            <?php endforeach; ?>
+        <?php endif; ?>
     </div>
 </section>
 

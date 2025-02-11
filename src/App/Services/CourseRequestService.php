@@ -69,7 +69,8 @@ class CourseRequestService
                 cr.created_date, 
                 cr.updated_date, 
                 u.user_id as author_id,
-                CONCAT(u.first_name, ' ', u.last_name) AS author
+                CONCAT(u.first_name, ' ', u.last_name) AS author,
+                COUNT(c.comment_id) AS comments_count
             FROM 
                 course_requests cr
             LEFT JOIN 
@@ -260,8 +261,7 @@ class CourseRequestService
     public function rejectCourseRequestById(string $requestId)
     {
         $this->db->query(
-            "UPDATE course_requests
-             SET status = 'rejected'
+            "DELETE FROM course_requests
              WHERE request_id = :request_id",
             [
                 "request_id" => $requestId
