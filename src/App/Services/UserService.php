@@ -74,8 +74,8 @@ class UserService
         $password = password_hash($formData['password'], PASSWORD_BCRYPT, ["const" => 12]);
 
         $this->db->query(
-            "INSERT INTO users(first_name, last_name, email, date_of_birth, password, user_role) 
-            VALUES (:first_name, :last_name, :email, :date_of_birth, :password, :user_role)",
+            "INSERT INTO users(first_name, last_name, email, date_of_birth, password, user_role, is_verified) 
+            VALUES (:first_name, :last_name, :email, :date_of_birth, :password, :user_role, :is_verified)",
             [
                 "first_name" => $formData['first_name'],
                 "last_name" => $formData['last_name'],
@@ -83,12 +83,16 @@ class UserService
                 "email" => $formData['email'],
                 "user_role" => $_SESSION['temp_role'],
                 "password" => $password,
+                "is_verified" => 1,
             ]
         );
+
         session_regenerate_id();
         $_SESSION['user'] = $this->db->lastInsertId();
         $_SESSION['user_role'] = $_SESSION['temp_role'];
         unset($_SESSION['temp_role']);
+        unset($_SESSION['$tempUser']);
+        unset($_SESSION['otp_hash']);
     }
 
     public function login(array $formData)
@@ -246,8 +250,7 @@ class UserService
 
         $HVcode = password_hash((string)$verificationCode, PASSWORD_BCRYPT, ["const" => 12]);
         $_SESSION['otp_hash'] = $HVcode;
-
-        // dd($_SESSION['otp_hash']);
+        // dd([$verificationCode, $HVcode, $email]);
 
         try {
             // server settings
@@ -275,20 +278,6 @@ class UserService
             echo 'verfication mail sent successfully';
         } catch (Exception $e) {
             echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-        }
-    }
-
-    public function userVerification($code)
-    {
-        if (password_verify($code, $_SESSION['otp_hash'])) {
-            $user = $_SESSION['user'];
-            $this->db->query(
-                "UPDATE users SET is_verified = 1 WHERE user_id = :user",
-                ['user' => $user]
-            );
-            redirectTo('/');
-        } else {
-            throw new ValidationException(['verificationCode' => ['Invalid verification code']]);
         }
     }
 }

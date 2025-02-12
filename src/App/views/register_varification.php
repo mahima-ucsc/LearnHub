@@ -1,3 +1,72 @@
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 300px;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+        color: #6c757d;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    input[type="text"] {
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    button {
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    #submitBtn {
+        background-color: #ffc400;
+        color: rgb(0, 0, 0);
+    }
+
+    #submitBtn:hover {
+        background-color: rgba(255, 196, 0, 0.83);
+    }
+
+    #resendBtn {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    #resendBtn:disabled {
+        background-color: #6c757d;
+    }
+
+    #resendBtn:hover:enabled {
+        background-color: #0056b3;
+    }
+</style>
+
 <body>
     <div class="container">
         <h2>Enter Verification Code</h2>
@@ -6,61 +75,24 @@
             <br>
             <button type="submit" id="submitBtn">Submit</button>
         </form>
-        <br>
-        <button id="resendBtn" disabled>Resend Code (30s)</button>
+        <form method="POST" action="/resend-otp">
+            <button type="submit" id="resendBtn" disabled>Resend Code (30s)</button>
+        </form>
     </div>
 
     <script>
-        // let timer = 30;
-        // const resendBtn = document.getElementById("resendBtn");
-        // const submitBtn = document.getElementById("submitBtn");
-
-        // // Event listener for submitting the verification code
-        // submitBtn.addEventListener("click", () => {
-        //     const code = document.getElementById("verificationCode").value;
-        //     <?php
-                //     // $hashCode = password_hash($code, PASSWORD_DEFAULT, ["cost" => 12]);
-                //     dd($code);
-                //     dd($_SESSION['otp_hash']);
-                //     // if ($hashCode === $_SESSION['otp_hash']) {
-                //     //     echo "alert('Verification code submitted: ' + code);";
-                //     // } else {
-                //     //     echo "alert('Invalid verification code!');";
-                //     // }
-                //     // 
-                //     
-                ?>
-        //     // alert("Verification code submitted: " + code);
-        // });
-
-        // // Function to handle the countdown for the resend button
-        // const countdown = setInterval(() => {
-        //     timer--; // Decrease timer by 1 second
-        //     resendBtn.textContent = `Resend Code (${timer}s)`;
-        //     if (timer === 0) {
-        //         clearInterval(countdown); // Stop the timer when it reaches 0
-        //         resendBtn.textContent = "Resend Code";
-        //         resendBtn.disabled = false; // Enable the resend button
-        //     }
-        // }, 1000);
-
-        // // Event listener for the resend button
-        // resendBtn.addEventListener("click", () => {
-        //     alert("Verification code resent!");
-        //     resendBtn.disabled = true; // Disable the button to prevent multiple clicks
-        //     timer = 30; // Reset timer to 30 seconds
-        //     resendBtn.textContent = `Resend Code (${timer}s)`;
-
-        //     // Start a new countdown when the button is clicked
-        //     const newCountdown = setInterval(() => {
-        //         timer--;
-        //         resendBtn.textContent = `Resend Code (${timer}s)`;
-        //         if (timer === 0) {
-        //             clearInterval(newCountdown); // Stop the timer when it reaches 0
-        //             resendBtn.textContent = "Resend Code";
-        //             resendBtn.disabled = false; // Enable the button again
-        //         }
-        //     }, 1000);
-        // });
+        document.addEventListener('DOMContentLoaded', function() {
+            var resendBtn = document.getElementById('resendBtn');
+            var timer = 30;
+            var interval = setInterval(function() {
+                timer--;
+                resendBtn.textContent = 'Resend Code (' + timer + 's)';
+                if (timer <= 0) {
+                    clearInterval(interval);
+                    resendBtn.disabled = false;
+                    resendBtn.textContent = 'Resend Code';
+                }
+            }, 1000);
+        });
     </script>
 </body>

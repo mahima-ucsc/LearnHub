@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
+use Framework\Exceptions\ValidationException;
 use App\Services\{ValidatorService, UserService};
 
 class AuthController
@@ -40,9 +41,17 @@ class AuthController
         $this->validatorService->validateRegister($_POST);
         $this->userService->isEmailTaken($_POST['email']);
         $this->userService->sendVerificationCode($_POST['email']);
-        $this->userService->create($_POST);
+        $_SESSION['tempUser'] = $_POST;
         redirectTo('register/verification');
-        // redirectTo('/interest');
+    }
+
+    public function tempUserSave()
+    {
+        $this->validatorService->validateRegister($_POST);
+        $this->userService->isEmailTaken($_POST['email']);
+        $this->userService->sendVerificationCode($_POST['email']);
+        $_SESSION[$tempUser = $_POST];
+        redirectTo('register/verification');
     }
 
     public function verificationView()
@@ -54,7 +63,12 @@ class AuthController
 
     public function verifyuser()
     {
-        $this->userService->userVerification($_POST['verificationCode']);
+        if (password_verify($_POST['verificationCode'], $_SESSION['otp_hash'])) {
+            $this->userService->create($_SESSION['tempUser']);
+            redirectTo('/');
+        } else {
+            throw new ValidationException(['verificationCode' => ['Invalid verification code']]);
+        }
     }
 
     public function loginView()
