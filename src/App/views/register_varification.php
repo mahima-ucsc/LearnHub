@@ -83,7 +83,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var resendBtn = document.getElementById('resendBtn');
-            var timer = 30;
+            var timer = 10;
             var interval = setInterval(function() {
                 timer--;
                 resendBtn.textContent = 'Resend Code (' + timer + 's)';

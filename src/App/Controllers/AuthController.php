@@ -71,6 +71,12 @@ class AuthController
         }
     }
 
+    public function resendOtp()
+    {
+        $this->userService->sendVerificationCode($_SESSION['tempUser']['email']);
+        redirectTo('register/verification');
+    }
+
     public function loginView()
     {
         echo $this->view->render("login.php", [
