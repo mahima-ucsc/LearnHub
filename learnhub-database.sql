@@ -310,3 +310,7 @@ CREATE TABLE otp_verification (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
+ALTER TABLE `users` 
+ADD `is_verified` BOOLEAN NOT NULL DEFAULT FALSE 
+AFTER `is_verified`;
+

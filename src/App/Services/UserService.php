@@ -286,8 +286,9 @@ class UserService
                 "UPDATE users SET is_verified = 1 WHERE user_id = :user",
                 ['user' => $user]
             );
+            redirectTo('/');
         } else {
-            echo "not verified";
+            throw new ValidationException(['verificationCode' => ['Invalid verification code']]);
         }
     }
 }
