@@ -78,7 +78,7 @@
                     <div class="search-course-card">
                         <div class="course-card-header">
                             <!-- TODO: Ensure thumbnail URL is fully generated as template data -->
-                            <img src="<?= isset($course['thumbnail_url']) ? 'storage/uploads/thumbnails/' . $course['thumbnail_url'] : '/assets/images/dm.jpg' ?>" alt="Course Thumbnail" class="course-image">
+                            <img src="<?= isset($course['thumbnail_url']) ? 'storage/uploads/courses/thumbnails/' . $course['thumbnail_url'] : '/assets/images/dm.jpg' ?>" alt="Course Thumbnail" class="course-image">
 
                             <h4 class="course-title"><?php echo ($course['title']); ?></h4>
                             <hr class="course-card-line" />
