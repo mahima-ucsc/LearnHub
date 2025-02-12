@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\views\components\Alert;
 use Framework\Database;
 use Framework\Exceptions\ValidationException;
-
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
 class UserService
 {
@@ -71,8 +74,8 @@ class UserService
         $password = password_hash($formData['password'], PASSWORD_BCRYPT, ["const" => 12]);
 
         $this->db->query(
-            "INSERT INTO users(first_name, last_name, email, date_of_birth, password, user_role) 
-            VALUES (:first_name, :last_name, :email, :date_of_birth, :password, :user_role)",
+            "INSERT INTO users(first_name, last_name, email, date_of_birth, password, user_role, is_verified) 
+            VALUES (:first_name, :last_name, :email, :date_of_birth, :password, :user_role, :is_verified)",
             [
                 "first_name" => $formData['first_name'],
                 "last_name" => $formData['last_name'],
@@ -80,12 +83,16 @@ class UserService
                 "email" => $formData['email'],
                 "user_role" => $_SESSION['temp_role'],
                 "password" => $password,
+                "is_verified" => 1,
             ]
         );
+
         session_regenerate_id();
         $_SESSION['user'] = $this->db->lastInsertId();
         $_SESSION['user_role'] = $_SESSION['temp_role'];
         unset($_SESSION['temp_role']);
+        unset($_SESSION['$tempUser']);
+        unset($_SESSION['otp_hash']);
     }
 
     public function login(array $formData)
@@ -238,21 +245,39 @@ class UserService
 
     public function sendVerificationCode(string $email)
     {
+        $mail = new PHPMailer(true); // Passing `true` enables exceptions
         $verificationCode = random_int(100000, 999999);
 
-        // $this->db->query(
-        //     "INSERT INTO users(first_name, last_name, email, date_of_birth, password, user_role) 
-        //     VALUES (:first_name, :last_name, :email, :date_of_birth, :password, :user_role)",
-        //     [
-                
-            
-        //     ]
-        // );
+        $HVcode = password_hash((string)$verificationCode, PASSWORD_BCRYPT, ["const" => 12]);
+        $_SESSION['otp_hash'] = $HVcode;
+        // dd([$verificationCode, $HVcode, $email]);
 
-        // dd($verificationCode);
+        try {
+            // server settings
+            $mail->isSMTP(); //set mailer to use smtp
+            $mail->Host = 'smtp.gmail.com'; //specify main and backup server
+            $mail->SMTPAuth = true; //enable smtp authentication
+            $mail->Username = 'learnhubnet@gmail.com'; //smtp username
+            $mail->Password = 'utsd sdge opzv swwx'; // smtp password that is google app password
+            $mail->SMTPSecure = 'tls';
+            $mail->Port = 587;
 
-        // $userRepository->saveVerificationCode($email, $verificationCode);
+            // recipients
+            // sender (server mail)
+            $mail->setFrom('learnhubnet@gmail.com', 'LearnHub-community');
+            // receiver (client mail)
+            $mail->addAddress($email, "client");
 
-        // $mailService->sendMail($email, 'Verification Code', "Your verification code is: $verificationCode");
+
+            // email content 
+            $mail->isHTML(true);
+            $mail->Subject = 'email verification';
+            $mail->Body = 'the verificaiton code is : ' . $verificationCode;
+
+            $mail->send();
+            echo 'verfication mail sent successfully';
+        } catch (Exception $e) {
+            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        }
     }
 }
