@@ -50,6 +50,7 @@ function registerRoutes(App $app)
     $app->get('/register', [AuthController::class, 'registerRoleView'], [GuestOnlyMiddleware::class]);
     $app->post('/register', [AuthController::class, 'register'], [GuestOnlyMiddleware::class]);
     $app->get('/register/verification', [AuthController::class, 'verificationView'], [AuthRequiredMiddleware::class]);
+    $app->post('/verify-otp', [AuthController::class, 'verifyuser'], [AuthRequiredMiddleware::class]);
     $app->get('/interest', [PageController::class, 'interest'], [AuthRequiredMiddleware::class]);
     $app->get('/interest/skip', [PageController::class, 'interestSkip'], [AuthRequiredMiddleware::class]);
     $app->get('/interest/continue', [PageController::class, 'interestContinue'], [AuthRequiredMiddleware::class]);

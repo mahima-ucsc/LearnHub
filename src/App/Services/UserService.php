@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\views\components\Alert;
 use Framework\Database;
 use Framework\Exceptions\ValidationException;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -260,7 +261,7 @@ class UserService
 
             // recipients
             // sender (server mail)
-            $mail->setFrom('dinukasahan2001@gmail.com', 'server');
+            $mail->setFrom('learnhubnet@gmail.com', 'LearnHub-community');
             // receiver (client mail)
             $mail->addAddress($email, "client");
 
@@ -274,6 +275,19 @@ class UserService
             echo 'verfication mail sent successfully';
         } catch (Exception $e) {
             echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        }
+    }
+
+    public function userVerification($code)
+    {
+        if (password_verify($code, $_SESSION['otp_hash'])) {
+            $user = $_SESSION['user'];
+            $this->db->query(
+                "UPDATE users SET is_verified = 1 WHERE user_id = :user",
+                ['user' => $user]
+            );
+        } else {
+            echo "not verified";
         }
     }
 }

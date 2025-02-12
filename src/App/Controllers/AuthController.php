@@ -52,6 +52,11 @@ class AuthController
         ]);
     }
 
+    public function verifyuser()
+    {
+        $this->userService->userVerification($_POST['verificationCode']);
+    }
+
     public function loginView()
     {
         echo $this->view->render("login.php", [
