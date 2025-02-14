@@ -91,17 +91,24 @@ class CoursesController
         if (!$course) {
             redirectTo('/courses/my-courses');
         }
-        $courseModules = $this->courseService->getCourseModules($params['course_id']);
+        $courseModules = $this->courseService->getCourseModuleList($params['course_id']);
 
-        $user = $this->userService->getUserProfile($course['tutor_id']);
-
+        // Get module resources based on module ID
+        $moduleResources = [];
+        foreach ($courseModules as $module) {
+            $resources = $this->courseService->courseResourceList($module['course_id'], $module['module_id']);
+            $moduleResources[$module['module_id']] = $resources;
+        }
         $assignments = $this->assignmentService->getAssignmentByCourse($params['course_id']);
-        $assignmentsResources = [];
 
+        // Get module resources based on module ID
+        $assignmentsResources = [];
         foreach ($assignments as $assignment) {
             $resources = $this->assignmentService->getAssignmentResource($assignment['assignment_id']);
             $assignmentsResources[$assignment['assignment_id']] = $resources;
         }
+
+        $user = $this->userService->getUserProfile($course['tutor_id']);
 
         echo $this->view->render(
             'course/course_info.php',
@@ -111,7 +118,8 @@ class CoursesController
                 'user' => $user,
                 'modules' => $courseModules,
                 'assignments' => $assignments,
-                'resources' => $assignmentsResources
+                'assignmentsResources' => $assignmentsResources,
+                'moduleResources' => $moduleResources
             ]
         );
     }
@@ -145,7 +153,7 @@ class CoursesController
 
     public function createCourse()
     {
-        $this->courseService->create($_POST['modules']);
+        $this->courseService->create($_POST['modules'], $_FILES['modules']);
         redirectTo('/courses/my-courses');
     }
 
@@ -289,5 +297,24 @@ class CoursesController
             'success' => true,
             'pinnedCourses' => $courses,
         ]);
+    }
+
+    public function readModuleResources(array $params)
+    {
+        $module = $this->courseService->getCourseModule($params['course_id'], $params['module_id']);
+        if (empty($module)) {
+            redirectTo($_SERVER['HTTP_REFERER']);
+        }
+
+        $resource = $this->courseService->moduleResource($params['resource_id']);
+        if (empty($resource)) {
+            redirectTo($_SERVER['HTTP_REFERER']);
+        }
+
+        if ($resource['module_id'] !== $module['module_id']) {
+            redirectTo($_SERVER['HTTP_REFERER']);
+        }
+
+        $this->courseService->readResource($resource);
     }
 }
