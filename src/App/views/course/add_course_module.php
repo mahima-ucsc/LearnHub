@@ -30,7 +30,6 @@
             border-radius: 16px;
             padding: 2rem;
             margin-bottom: 2rem;
-            /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
             border: 1px solid #e0e0e0;
             position: relative;
             transition: all 0.3s ease;
@@ -66,6 +65,104 @@
             border-color: #FFC400;
             outline: none;
             box-shadow: 0 0 0 3px rgba(255, 196, 0, 0.2);
+        }
+
+        /* Publish Options Styling */
+        .publish-options-container {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .publish-options-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .publish-options {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .publish-option-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.75rem 1.25rem;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .publish-option-label:hover {
+            border-color: #FFC400;
+        }
+
+        .publish-option-label.active {
+            background: #FFF8E1;
+            border-color: #FFC400;
+        }
+
+        .publish-option-label input[type="radio"] {
+            margin-right: 0.75rem;
+            width: 18px;
+            height: 18px;
+            /* accent-color: #FFC400; */
+        }
+
+        /* Date Time Container Styling */
+        .datetime-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+
+        .datetime-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .datetime-field label {
+            font-size: 0.9rem;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .datetime-field input {
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .datetime-field input:focus {
+            border-color: #FFC400;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 196, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .datetime-container {
+                grid-template-columns: 1fr;
+            }
+
+            .publish-options {
+                flex-direction: column;
+                gap: 1rem;
+            }
         }
 
         .resource-container {
@@ -339,6 +436,38 @@
             <label for="module_description_${moduleCount}">Module Description *</label>
             <textarea id="module_description_${moduleCount}" name="modules[${moduleCount}][description]" required placeholder="Describe what students will learn in this module" rows="4"></textarea>
         </div>
+        <div class="publish-options-container">
+            <h3 class="publish-options-title">Publish Course Module</h3>
+            <div class="publish-options">
+                <label class="publish-option-label active">
+                    <input type="radio" name="modules[${moduleCount}][publish_type]" 
+                        value="immediate" checked 
+                        onclick="togglePublishDate(${moduleCount}, 'immediate')">
+                    Publish Immediately
+                </label>
+                <label class="publish-option-label">
+                    <input type="radio" name="modules[${moduleCount}][publish_type]" 
+                        value="schedule" 
+                        onclick="togglePublishDate(${moduleCount}, 'schedule')">
+                    Schedule for Later
+                </label>
+            </div>
+            
+            <div class="datetime-container" id="publishDateContainer_${moduleCount}" style="display: none;">
+                <div class="datetime-field">
+                    <label for="module_start_date_${moduleCount}">Start Date and Time</label>
+                    <input type="datetime-local" 
+                        id="module_start_date_${moduleCount}" 
+                        name="modules[${moduleCount}][start_date]">
+                </div>
+                <div class="datetime-field">
+                    <label for="module_end_date_${moduleCount}">End Date and Time</label>
+                    <input type="datetime-local" 
+                        id="module_end_date_${moduleCount}" 
+                        name="modules[${moduleCount}][end_date]">
+                </div>
+            </div>
+        </div>
         <div class="resource-container">
             <div class="resource-header">
                 <h3>Module Resources</h3>
@@ -552,5 +681,41 @@
         document.addEventListener('DOMContentLoaded', function() {
             addModule();
         });
+
+        function togglePublishDate(moduleId, type) {
+            const container = document.getElementById(`publishDateContainer_${moduleId}`);
+            const publishOptions = document.querySelectorAll(`[name="modules[${moduleId}][publish_type]"]`);
+            const labels = document.querySelectorAll(`[name="modules[${moduleId}][publish_type]"]`).forEach(radio => {
+                const label = radio.closest('.publish-option-label');
+                if (radio.checked) {
+                    label.classList.add('active');
+                } else {
+                    label.classList.remove('active');
+                }
+            });
+
+            if (type === 'schedule') {
+                container.style.display = 'grid';
+                container.classList.add('active');
+
+                // Set minimum date to today
+                const today = new Date();
+                const formattedDate = today.toISOString().slice(0, 16);
+
+                const startDate = document.getElementById(`module_start_date_${moduleId}`);
+                const endDate = document.getElementById(`module_end_date_${moduleId}`);
+
+                startDate.min = formattedDate;
+                endDate.min = formattedDate;
+
+                // Add validation for end date must be after start date
+                startDate.addEventListener('change', () => {
+                    endDate.min = startDate.value;
+                });
+            } else {
+                container.style.display = 'none';
+                container.classList.remove('active');
+            }
+        }
     </script>
 </section>
