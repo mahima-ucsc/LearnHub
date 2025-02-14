@@ -187,7 +187,7 @@
                 <h2 class="section-title">Course Modules</h2>
                 <div class="module-list">
                     <!-- Module 1 -->
-                    <div class="module-item">
+                    <!-- <div class="module-item">
                         <div class="module-header" onclick="toggleModule(0)">
                             <div class="module-title">
                                 <h4>Introduction to Python Programming</h4>
@@ -249,10 +249,10 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <!-- Module 2 -->
-                    <div class="module-item">
+                    <!-- <div class="module-item">
                         <div class="module-header" onclick="toggleModule(1)">
                             <div class="module-title">
                                 <h4>Object-Oriented Programming in Python</h4>
@@ -307,47 +307,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Module 3 -->
-                    <div class="module-item">
-                        <div class="module-header" onclick="toggleModule(2)">
-                            <div class="module-title">
-                                <h4>Advanced Python Concepts</h4>
-                                <span class="module-duration">8 hours</span>
-                            </div>
-                            <div class="module-toggle">
-                                <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="6 9 12 15 18 9"></polyline>
-                                </svg>
-                            </div>
-                        </div>
-
-                        <div class="module-content" id="module-2">
-                            <div class="module-description">
-                                <p>Explore advanced Python features including decorators, generators, context managers, and metaclasses.</p>
-                            </div>
-
-                            <div class="module-resources">
-                                <h5>Resources</h5>
-                                <ul>
-                                    <li>
-                                        <a href="#" class="resource-link">
-                                            <span class="resource-icon">📄</span>
-                                            Advanced Python PDF
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="resource-link">
-                                            <span class="resource-icon">📄</span>
-                                            Programming Exercises
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
+                    </div> -->
 
                     <!-- asfffff -->
                     <?php foreach ($modules as $module): ?>
@@ -372,18 +332,14 @@
                                 <div class="module-resources">
                                     <h5>Resources</h5>
                                     <ul>
-                                        <li>
-                                            <a href="#" class="resource-link">
-                                                <span class="resource-icon">📄</span>
-                                                Advanced Python PDF
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" class="resource-link">
-                                                <span class="resource-icon">📄</span>
-                                                Programming Exercises
-                                            </a>
-                                        </li>
+                                        <?php foreach ($moduleResources[$module['module_id']] as $resource): ?>
+                                            <li>
+                                                <a href="/course/<?php echo e($course['course_id']) ?>/module/<?php echo e($module['module_id']) ?>/resource/<?php echo e($resource['resource_id']) ?>" class="resource-link">
+                                                    <span class="resource-icon">📄</span>
+                                                    <?php echo e($resource['resource_path']) ?>
+                                                </a>
+                                            </li>
+                                        <?php endforeach; ?>
                                     </ul>
                                 </div>
                             </div>
@@ -418,7 +374,7 @@
                                             <?php echo e($item['deadline']); ?>
                                         </span>
                                     </div>
-                                    <?php foreach ($resources[$item['assignment_id']] as $resource): ?>
+                                    <?php foreach ($assignmentsResources[$item['assignment_id']] as $resource): ?>
                                         <ul>
                                             <li>
                                                 <a href="/assignment/<?php echo e($item['assignment_id']) ?>/resource/<?php echo e($resource['resource_id']) ?>" class="resource-link">
