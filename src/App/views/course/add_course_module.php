@@ -111,7 +111,7 @@
             margin-right: 0.75rem;
             width: 18px;
             height: 18px;
-            accent-color: #FFC400;
+            /* accent-color: #FFC400; */
         }
 
         /* Date Time Container Styling */
