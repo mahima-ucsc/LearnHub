@@ -6,6 +6,7 @@ namespace App\Services;
 
 use Exception;
 use Framework\Database;
+use App\Config\Paths;
 use Framework\Exceptions\ValidationException;
 
 class CourseService
@@ -17,42 +18,79 @@ class CourseService
      * This function is deprecated.
      * It was used to save both modules and course details at once when redirected from the add course view to the add modules view.
      */
-    public function create(array $formData)
+    public function create(array $formData, array $files)
     {
-        $tutor_id = $_SESSION['user'];
-        $courseData = $_SESSION['courseData'];
-        $thumbnailUrl = $_SESSION['thumbnail'];
+        $this->db->beginTransaction();
+        try {
+
+            $tutor_id = $_SESSION['user'];
+            $courseData = $_SESSION['courseData'];
+            $thumbnailUrl = $_SESSION['thumbnail'];
 
 
-        $this->db->query(
-            "INSERT INTO courses(title, description, subject_id, grade_id, tutor_id, start_time, end_time, day, price, pricing_period, location, thumbnail_url)
-                VALUES (:title, :description, :subject_id, :grade_id, :tutor_id, :start_time, :end_time, :day, :price, :pricing_period, :location, :thumbnail_url)",
-            [
-                "title" => $courseData['title'],
-                "description" => $courseData['description'],
-                "subject_id" => $courseData['subject_id'],
-                "grade_id" => $courseData['grade_id'],
-                "tutor_id" => $tutor_id,
-                "start_time" => $courseData['start_time'],
-                "end_time" => $courseData['end_time'],
-                "day" => $courseData['day'],
-                "price" => $courseData['price'],
-                "pricing_period" => $courseData['pricing_period'],
-                "location" => $courseData['location'],
-                "thumbnail_url" => $thumbnailUrl
-            ]
-        );
-        $courseID = $this->db->lastInsertId();
-        foreach ($formData as $module) {
             $this->db->query(
-                "INSERT INTO course_modules(course_id, description, title)
-                    VALUES (:courseID, :description, :title)",
+                "INSERT INTO courses(title, description, subject_id, grade_id, tutor_id, start_time, end_time, day, price, pricing_period, location, thumbnail_url)
+                    VALUES (:title, :description, :subject_id, :grade_id, :tutor_id, :start_time, :end_time, :day, :price, :pricing_period, :location, :thumbnail_url)",
                 [
-                    "courseID" => $courseID,
-                    "description" => $module['description'],
-                    "title" => $module['title']
+                    "title" => $courseData['title'],
+                    "description" => $courseData['description'],
+                    "subject_id" => $courseData['subject_id'],
+                    "grade_id" => $courseData['grade_id'],
+                    "tutor_id" => $tutor_id,
+                    "start_time" => $courseData['start_time'],
+                    "end_time" => $courseData['end_time'],
+                    "day" => $courseData['day'],
+                    "price" => $courseData['price'],
+                    "pricing_period" => $courseData['pricing_period'],
+                    "location" => $courseData['location'],
+                    "thumbnail_url" => $thumbnailUrl
                 ]
             );
+            $courseID = $this->db->lastInsertId();
+            foreach ($formData as $index => $module) {
+                $this->db->query(
+                    "INSERT INTO course_modules(course_id, description, title)
+                        VALUES (:courseID, :description, :title)",
+                    [
+                        "courseID" => $courseID,
+                        "description" => $module['description'],
+                        "title" => $module['title']
+                    ]
+                );
+                $moduleId = $this->db->lastInsertId();
+
+                if (isset($files['name'][$index]['resources'])) {
+                    foreach ($files['name'][$index]['resources'] as $key => $fileName) {
+                        $file = [
+                            'name'     => $files['name'][$index]['resources'][$key],
+                            'tmp_name' => $files['tmp_name'][$index]['resources'][$key],
+                            'error'    => $files['error'][$index]['resources'][$key],
+                        ];
+
+                        try {
+                            // Call uploadFile function for each file
+                            $newFileName = $this->uploadFile($file, 'course_module_resource');
+                            $this->db->query(
+                                "INSERT INTO course_module_resource(module_id, course_id, resource_path)
+                                VALUES(:module_id, :course_id, :resource_path)",
+                                [
+                                    "module_id" => $moduleId,
+                                    "course_id" => $courseID,
+                                    "resource_path" => $newFileName
+                                ]
+                            );
+                        } catch (ValidationException $e) {
+                            throw new ValidationException([
+                                "file" => [$e]
+                            ]);
+                        }
+                    }
+                }
+            }
+            $this->db->commit();
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            throw $e;
         }
 
         unset($_SESSION['courseData']);
@@ -116,16 +154,69 @@ class CourseService
         )->find();
     }
 
-    public function getCourseModules(string $courseId)
+    public function getCourseModuleList(string $courseId)
     {
         return $this->db->query(
-            "SELECT * FROM course_modules
-            WHERE course_id = :id",
+            "SELECT 
+            CM.module_id, 
+            CM.title, 
+            CM.description, 
+            CM.course_id, 
+            GROUP_CONCAT(CMR.resource_id ORDER BY CMR.resource_id SEPARATOR ',') AS resource_ids,
+            GROUP_CONCAT(CMR.resource_path ORDER BY CMR.resource_id SEPARATOR ',') AS resource_paths
+            FROM course_modules CM
+            JOIN course_module_resource CMR 
+                ON CM.module_id = CMR.module_id
+            WHERE CM.course_id = :id
+            GROUP BY CM.module_id;
+            ",
             [
                 'id' => $courseId
             ]
         )->findAll();
     }
+
+    public function getCourseModule(string $courseId, string $moduleId)
+    {
+        return $this->db->query(
+            "SELECT * FROM course_modules WHERE module_id = :module_id AND course_id = :course_id",
+            [
+                "module_id" => $moduleId,
+                "course_id" => $courseId
+            ]
+        )->find();
+    }
+
+    public function courseResourceList(int $courseId, int $moduleId)
+    {
+        return $this->db->query(
+            "SELECT * FROM  course_module_resource WHERE course_id = :course_id AND module_id = :module_id",
+            [
+                "course_id" => $courseId,
+                "module_id" => $moduleId
+            ]
+        )->findAll();
+    }
+    public function moduleResource(string $resourceId)
+    {
+        return $this->db->query(
+            "SELECT * FROM  course_module_resource WHERE resource_id = :resource_id",
+            [
+                "resource_id" => $resourceId
+            ]
+        )->find();
+    }
+
+    public function readResource(array $resource)
+    {
+        $filePath = Paths::STORAGE_UPLOADS . '/course_module_resource/' . $resource['resource_path'];
+        if (!file_exists($filePath)) {
+            redirectTo($_SERVER['HTTP_REFERER']);
+        }
+        header("Content-Disposition: attachment;filename={$resource['resource_path']}");
+        readfile($filePath);
+    }
+
 
     // search courses by teacher or course title
     public function searchCourse(int $length = 6, int $offset = 0)
@@ -314,5 +405,35 @@ class CourseService
                 ]
             );
         }
+    }
+
+    public function uploadFile(array $file, string $dir)
+    {
+        $storageDir = Paths::STORAGE_UPLOADS . "/" . $dir;
+        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $baseName = pathinfo($file['name'], PATHINFO_FILENAME);
+        // $fileName = uniqid("", true) . "." . $extention;
+
+        $fileName = $file['name'];
+        $storagePath = $storageDir . "/" . $fileName;
+
+        // Ensure directory exists
+        if (!is_dir($storageDir)) {
+            mkdir($storageDir, 0777, true);
+        }
+
+        $counter = 1;
+        while (file_exists($storagePath)) {
+            $fileName = $baseName . "_" . $counter . "." . $extension;
+            $storagePath = $storageDir . "/" . $fileName;
+            $counter++;
+        }
+        if (!move_uploaded_file($file['tmp_name'], $storagePath)) {
+            throw new ValidationException([
+                "file" => ['Failed to upload.']
+            ]);
+        }
+
+        return $fileName;
     }
 }
