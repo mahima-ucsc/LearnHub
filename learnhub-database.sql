@@ -64,18 +64,50 @@ CREATE TABLE IF NOT EXISTS courses (
     subject_id BIGINT(20) UNSIGNED NOT NULL,
     grade_id BIGINT(20) UNSIGNED NOT NULL,
     tutor_id BIGINT(20) UNSIGNED NOT NULL,
-    start_time TIME NOT NULL,
-    end_time TIME NOT NULL,
+    start_time TIME NULL,
+    end_time TIME NULL,
     thumbnail_url TEXT,
-    day VARCHAR(20) NOT NULL,
+    day VARCHAR(20) NULL,
     price decimal(10,2) NOT NULL,
-    pricing_period VARCHAR(50) NOT NULL,
+    billing_type ENUM('onetime', 'recurring') NOT NULL,   
     location VARCHAR(50) NOT NULL,
     published_date DATE NOT NULL DEFAULT CURRENT_DATE,
     PRIMARY KEY(course_id),
     FOREIGN KEY (subject_id) REFERENCES subjects(subject_id) ON DELETE CASCADE,
     FOREIGN KEY (grade_id) REFERENCES grades(grade_id) ON DELETE CASCADE,
     FOREIGN KEY (tutor_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+-- Table for recurring course subscription periods
+CREATE TABLE IF NOT EXISTS recurring_course_sub_periods (
+    sub_period_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    course_id BIGINT(20) UNSIGNED NOT NULL,
+    start_datetime DATETIME NOT NULL,
+    end_datetime DATETIME NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
+);
+
+-- Table for payments related to subscription periods
+CREATE TABLE IF NOT EXISTS sub_period_payments (
+    payment_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    sub_period_id BIGINT(20) UNSIGNED NOT NULL,
+    user_id BIGINT(20) UNSIGNED NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    payment_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    FOREIGN KEY (sub_period_id) REFERENCES recurring_course_sub_periods(sub_period_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+-- Table for one-time course payments
+CREATE TABLE IF NOT EXISTS onetime_course_payments (
+    payment_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    course_id BIGINT(20) UNSIGNED NOT NULL,
+    user_id BIGINT(20) UNSIGNED NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    payment_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 -- Course modules for each course
