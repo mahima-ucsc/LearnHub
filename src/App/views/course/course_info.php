@@ -1,156 +1,11 @@
 <?php include $this->resolve("partials/_header.php"); ?>
 <?php include $this->resolve("course/sidebar/sidebar.php"); ?>
 
-<head>
-    <link rel="stylesheet" href="/assets/styles/Course/course-info.css">
 
-</head>
+<link rel="stylesheet" href="/assets/styles/Course/course-info.css">
 
 <style>
-    .course-participant {
-        margin-top: 1.5rem;
-        width: 300px;
-    }
 
-    .course-participant h2 {
-        font-size: 16px;
-    }
-
-    .participant-dropdown {
-        margin: 0 auto;
-    }
-
-    .participant-dropdown-button {
-        background-color: #fff;
-        border: none;
-        border-bottom: 2px solid #dedede;
-        padding: 10px 15px;
-        cursor: pointer;
-        font-size: 1rem;
-        width: 100%;
-        text-align: center;
-    }
-
-    .dropdown-chevron {
-        padding: 4px;
-        color: rgb(156, 156, 156);
-        transition: transform 0.3s ease;
-    }
-
-    .dropdown-chevron.rotated {
-        transform: rotate(180deg);
-    }
-
-    .participant-dropdown-content {
-        opacity: 0;
-        visibility: hidden;
-        max-height: 0;
-        overflow: hidden;
-        /* Ensures content doesn't overflow */
-        background-color: #fff;
-        width: 100%;
-        z-index: 10;
-        transition: max-height 0.5s ease, opacity 0.5s ease, visibility 0.5s ease;
-    }
-
-    .participant-dropdown-content.active {
-        opacity: 1;
-        visibility: visible;
-        max-height: 400px;
-        height: 400px;
-        /* Adjust based on the dropdown's content */
-    }
-
-
-    .participant-list {
-        list-style: none;
-        margin: 0;
-        padding: 10px;
-        max-height: 150px;
-    }
-
-    .participant-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 4px 0;
-        border-bottom: 1px solid #dedede;
-    }
-
-    .participant-avatar {
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
-
-    .participant-name {
-        font-size: 0.9rem;
-        color: #333;
-        flex: 1;
-    }
-
-    .view-all-button {
-        background-color: #FFC400;
-        color: #fff;
-        padding: 8px 10px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 0.9rem;
-        width: 100%;
-
-    }
-
-    .view-all-button:hover {
-        background-color: #e0a900;
-    }
-
-    /* assignment */
-    .course-assignments {
-        margin-top: 48px;
-    }
-
-    .assignment-item {
-        border-radius: 12px;
-        border: 1px solid #eee;
-        margin-bottom: 1rem;
-        padding: 5px 20px;
-    }
-
-    .assignment-header {
-        cursor: pointer;
-        padding: 10px 0;
-    }
-
-    .assignment-header h5 {
-        font-size: 16px;
-        margin: 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .assignment-content {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.3s ease-out;
-        padding-left: 20px;
-    }
-
-    .assignment-content.active {
-        max-height: 500px;
-        /* Adjust based on content height */
-    }
-
-    .chevron-icon {
-        transition: transform 0.3s ease;
-        margin-left: 10px;
-    }
-
-    .chevron-icon.rotated {
-        transform: rotate(180deg);
-    }
 </style>
 <section class="course-info-container">
     <div class="course-page-wrapper">
@@ -159,6 +14,7 @@
                 <h1 class="course-info-title"><?php echo e($course['title']); ?></h1>
                 <div class="course-meta">
                     <div class="course-rating">★★★★★ 4.8 (256 reviews)</div>
+                    <pre><?php var_dump($course); ?></pre>
                     <div class="course-info">
                         <span>Duration: <?php echo e($course['duration']); ?> weeks</span> |
                         <span>Level: <?php echo e($course['grade_id']); ?></span> |
@@ -686,3 +542,5 @@
         }
     </script>
 </section>
+
+<?php include $this->resolve("partials/_footer.php"); ?>
