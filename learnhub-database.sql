@@ -85,7 +85,9 @@ CREATE TABLE IF NOT EXISTS courses (
     end_time TIME NULL,
     thumbnail_url TEXT,
     day VARCHAR(20) NULL,
-    price decimal(10,2) NOT NULL,
+    -- The 'price' column is NULL for courses with a recurring billing type
+    -- and is NOT NULL for courses with a one-time billing type.
+    price decimal(10,2) NULL,
     billing_type ENUM('onetime', 'recurring') NOT NULL,   
     location VARCHAR(50) NOT NULL,
     published_date DATE NOT NULL DEFAULT CURRENT_DATE,
