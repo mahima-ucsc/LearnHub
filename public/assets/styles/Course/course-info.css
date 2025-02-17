@@ -274,7 +274,14 @@ body {
   align-items: center;
   padding: 1.25rem;
   cursor: pointer;
+}
+
+.module-header {
   background: var(--white);
+}
+
+.period-header {
+  background: #f8f9fa;
 }
 
 .module-title,
