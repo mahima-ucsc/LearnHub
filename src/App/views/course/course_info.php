@@ -1,7 +1,6 @@
 <?php include $this->resolve("partials/_header.php"); ?>
 <?php include $this->resolve("course/sidebar/sidebar.php"); ?>
 
-
 <link rel="stylesheet" href="/assets/styles/Course/course-info.css">
 
 <style>
@@ -14,7 +13,6 @@
                 <h1 class="course-info-title"><?php echo e($course['title']); ?></h1>
                 <div class="course-meta">
                     <div class="course-rating">★★★★★ 4.8 (256 reviews)</div>
-                    <pre><?php var_dump($course); ?></pre>
                     <div class="course-info">
                         <span>Duration: <?php echo e($course['duration']); ?> weeks</span> |
                         <span>Level: <?php echo e($course['grade_id']); ?></span> |
@@ -37,6 +35,50 @@
                 <p class="course-description">
                     <?php echo e($course['description']); ?>
                 </p>
+            </div>
+
+            <div class="course-section">
+                <h2 class="section-title">Current Content</h2>
+                <p class="course-description">
+                    <?php echo e($course['description']); ?>
+                </p>
+            </div>
+            <div class="course-section">
+                <h2 class="section-title">Past Content</h2>
+                <div class="period-list">
+                    <div class="period-item">
+                        <div class="period-header">
+                            <div class="period-title">
+                                <h4>2024 Jan 01 - 2024 Jan 31</h4>
+                            </div>
+                            <div class="period-toggle">
+                                <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="period-content">
+                            <h3>modules</h3>
+                        </div>
+                    </div>
+                    <div class="period-item">
+                        <div class="period-header">
+                            <div class="period-title">
+                                <h4>2024 Feb 01 - 2024 Feb 28</h4>
+                            </div>
+                            <div class="period-toggle">
+                                <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="period-content">
+                            <h3>modules</h3>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="course-section">
@@ -504,6 +546,8 @@
     </div>
 
 
+    <script src="/assets/js/courses/course-info.js" defer></script>
+    <!-- TODO: Move this script to course-info.js. Do not use inline functions -->
     <script>
         function toggleModule(index) {
             const moduleContent = document.getElementById(`module-${index}`);
