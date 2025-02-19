@@ -34,6 +34,11 @@ function registerRoutes(App $app)
     $app->get('/unauthorized-access', [PageController::class, 'unauthorizedAccess']);
     $app->get('/help-and-support', [PageController::class, 'helpAndSupport']);
     $app->get('/announcements/create', [PageController::class, 'createAnnouncements']);
+    $app->get('/tech', [PageController::class, 'teacher']);
+
+    // Teacher
+    $app->get('/user-managment', [PageController::class, 'teacherUserManagment']);
+
 
 
 

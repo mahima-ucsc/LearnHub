@@ -60,7 +60,7 @@ class AuthController
         } else if ($_SESSION['user_role'] === 'teacher') {
             redirectTo('/dashboard');
         } else {
-            redirectTo('/profile');
+            redirectTo('/');
         }
     }
 
