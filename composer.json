@@ -20,6 +20,6 @@
     ]
   },
   "scripts": {
-    "createdb": "php cli.php"
+    "createdb": "php cli.php --help"
   }
 }
