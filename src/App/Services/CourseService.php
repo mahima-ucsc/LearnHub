@@ -165,7 +165,7 @@ class CourseService
             GROUP_CONCAT(CMR.resource_id ORDER BY CMR.resource_id SEPARATOR ',') AS resource_ids,
             GROUP_CONCAT(CMR.resource_path ORDER BY CMR.resource_id SEPARATOR ',') AS resource_paths
             FROM course_modules CM
-            JOIN course_module_resource CMR 
+            LEFT JOIN course_module_resource CMR 
                 ON CM.module_id = CMR.module_id
             WHERE CM.course_id = :id
             GROUP BY CM.module_id;
