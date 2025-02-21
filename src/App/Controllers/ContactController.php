@@ -19,6 +19,7 @@ class ContactController
     //hadle submission
     public function submitContactForm()
     {
+        dd($_POST);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $data = [
