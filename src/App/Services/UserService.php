@@ -280,4 +280,47 @@ class UserService
             echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }
     }
+
+    public function sendContactMail($data)
+    {
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'learnhubnet@gmail.com';
+            $mail->Password = 'utsd sdge opzv swwx';
+            $mail->SMTPSecure = 'tls';
+            $mail->Port = 587;
+
+            // Email configuration
+            $mail->setFrom('learnhubnet@gmail.com', 'LearnHub Community');
+            $mail->addAddress('learnhubnet@gmail.com', 'LearnHub Support');
+            $mail->addReplyTo($data['email'], $data['name']);
+
+            // Email content
+            $mail->isHTML(true);
+            $mail->Subject = 'New Contact Message from ' . $data['name'];
+
+            // Create HTML body
+            $mailBody = "
+                <h2>New Contact Message</h2>
+                <p><strong>From:</strong> {$data['name']}</p>
+                <p><strong>Email:</strong> {$data['email']}</p>
+                <p><strong>Subject:</strong> {$data['subject']}</p>
+                <hr>
+                <h3>Message:</h3>
+                <p>" . nl2br(htmlspecialchars($data['message'])) . "</p>
+            ";
+
+            $mail->Body = $mailBody;
+            $mail->AltBody = strip_tags($mailBody); // Plain text version
+
+            $mail->send();
+            return true;
+        } catch (Exception $e) {
+            throw new ValidationException(['email' => "Message could not be sent. Mailer Error: {$mail->ErrorInfo}"]);
+        }
+    }
 }

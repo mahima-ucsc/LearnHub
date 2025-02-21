@@ -12,8 +12,6 @@ use App\Middleware\AuthRequiredMiddleware;
 use App\Middleware\GuestOnlyMiddleware;
 use App\Middleware\StudentOnlyMiddleware;
 use App\Middleware\TeacherOnlyMiddleware;
-use App\Services\ContactService;
-use App\Services\UserService;
 use Framework\App;
 
 function registerRoutes(App $app)
@@ -40,8 +38,10 @@ function registerRoutes(App $app)
     $app->get('/denied', [PageController::class, 'denied']);
 
     // Contact
-    $app->get('/contact', [PageController::class, 'contact']);
+    $app->get('/contact', [ContactController::class, 'contact']);
     $app->post('/contact', [ContactController::class, 'submitContactForm']);
+    $app->get('/contact/successfull', [ContactController::class, 'successfull']);
+
 
 
     // User
