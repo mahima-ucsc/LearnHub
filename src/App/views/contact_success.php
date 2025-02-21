@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Success</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+
     <style>
         .success-container {
             text-align: center;
@@ -37,13 +39,25 @@
 
 <body>
     <div class="success-container">
+        <div id="animation-container">
+            <div id="lottie-animation"></div>
+        </div>
         <div class="success-message">
-            <i class="fas fa-check-circle"></i>
             Thank you for contacting us!
         </div>
         <p>Your message has been successfully sent. We will get back to you soon.</p>
         <a href="/" class="home-button">Back to Home</a>
     </div>
+    <script>
+        var animation = lottie.loadAnimation({
+            container: document.getElementById('lottie-animation'),
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: '/assets/icons/icons8-success.json'
+        });
+    </script>
+
 </body>
 
 </html>
