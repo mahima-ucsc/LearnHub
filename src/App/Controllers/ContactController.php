@@ -5,21 +5,28 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\{ContactService, ValidatorService};
+use App\Services\{UserService, ValidatorService};
 use Framework\Container;
 
 class ContactController
 {
     public function __construct(
         private TemplateEngine $view,
-        private ContactService $ContactService,
-        private ValidatorService $validatorService
+        private ValidatorService $validatorService,
+        private UserService $userService
     ) {}
+
+    public function contact()
+    {
+        echo $this->view->render('contact.php', [
+            "title" => "contact-us"
+        ]);
+    }
 
     //hadle submission
     public function submitContactForm()
     {
-        dd($_POST);
+        // dd('submitContactForm');
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $data = [
@@ -29,24 +36,15 @@ class ContactController
             ];
             //validate form data
             $errors = $this->validatorService->validateContactForm($data);
-
-            if (empty($errors)) {
-                $to = 'dinukasahan2020@gmail.com';
-                $subject = 'contact form submission';
-                $message = "name: {$data['name']}\nEmail: {$data['email']}\nMessage: {$data['message']}";
-                $from = $data['email'];
-
-                $success = $this->ContactService->sendMail($to, $subject, $message, $from);
-                if ($success) {
-                    // Redirect to a success page or show a success message
-                    $_SESSION['success_message'] = "Message sent successfully.";
-                    exit;
-                } else {
-                    // Display an error if email sending fails
-                    $_SESSION['error_message'] = "Failed to send the message. Please try again later.";
-                }
-                redirectTo($_SERVER['HTTP_REFERER']);
-            }
+            $this->userService->sendContactMail($data);
+            redirectTo('/contact/successfull');
         }
+    }
+
+    public function successfull()
+    {
+        echo $this->view->render('contact_success.php', [
+            "title" => "contact-success"
+        ]);
     }
 }
