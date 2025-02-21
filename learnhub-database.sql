@@ -135,17 +135,17 @@ CREATE TABLE IF NOT EXISTS course_modules (
     description TEXT,
     course_id BIGINT(20) UNSIGNED NOT NULL,
     title VARCHAR(255) NOT NULL,
+    
     PRIMARY KEY(module_id),
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
 );
+
 -- Resources for each Course module
 CREATE TABLE IF NOT EXISTS course_module_resource (
     resource_id INT AUTO_INCREMENT,
     module_id BIGINT(20) UNSIGNED NOT NULL,
     course_id BIGINT(20) UNSIGNED NOT NULL,
     resource_path VARCHAR(255),
-    
-    PRIMARY KEY (resource_id, module_id, course_id),
     
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
     FOREIGN KEY (module_id) REFERENCES course_modules(module_id) ON DELETE CASCADE
@@ -315,8 +315,6 @@ CREATE TABLE IF NOT EXISTS assignment_resource (
     assignment_id BIGINT(20) UNSIGNED NOT NULL,
     course_id BIGINT(20) UNSIGNED NOT NULL,
     resource_path VARCHAR(255),
-    
-    UNIQUE KEY (course_id, assignment_id),
     
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
     FOREIGN KEY (assignment_id) REFERENCES assignments(assignment_id) ON DELETE CASCADE
