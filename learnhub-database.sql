@@ -133,9 +133,15 @@ CREATE TABLE IF NOT EXISTS onetime_course_payments (
 CREATE TABLE IF NOT EXISTS course_modules (
     module_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
     description TEXT,
+    -- If this module belongs to a one time course:
+    --    The course_id must be entered and subperiodid should be NULL
+    -- If this module belongs to a recurring course:
+    --    Both course_id and subperiodid must be entered
     course_id BIGINT(20) UNSIGNED NOT NULL,
+    sub_period_id BIGINT(20) UNSIGNED,
     title VARCHAR(255) NOT NULL,
     
+    FOREIGN KEY (sub_period_id) REFERENCES recurring_course_sub_periods(sub_period_id) ON DELETE CASCADE,
     PRIMARY KEY(module_id),
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
 );
@@ -147,6 +153,7 @@ CREATE TABLE IF NOT EXISTS course_module_resource (
     course_id BIGINT(20) UNSIGNED NOT NULL,
     resource_path VARCHAR(255),
     
+    PRIMARY KEY(resource_id),
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
     FOREIGN KEY (module_id) REFERENCES course_modules(module_id) ON DELETE CASCADE
 );
