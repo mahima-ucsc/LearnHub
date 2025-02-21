@@ -111,7 +111,7 @@ class CoursesController
         $user = $this->userService->getUserProfile($course['tutor_id']);
 
         echo $this->view->render(
-            'course/course_info.php',
+            'course/course-info/course-info.php',
             [
                 'course' => $course,
                 'title' => $course['title'],
