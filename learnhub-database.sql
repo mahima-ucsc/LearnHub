@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL,
     user_role ENUM('student', 'teacher', 'admin', 'guest') NOT NULL,
     PRIMARY KEY(user_id),
-    UNIQUE KEY(email)
+    UNIQUE KEY(email),
+    is_verified BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 -- Table for grades
@@ -22,23 +23,6 @@ CREATE TABLE IF NOT EXISTS grades (
     grade_name VARCHAR(255) NOT NULL,
     PRIMARY KEY(grade_id)
 );
-
--- Insert grades
-INSERT INTO `grades` (`grade_id`, `grade_name`) VALUES
-(1, 'Grade 1'),
-(2, 'Grade 2'),
-(3, 'Grade 3'),
-(4, 'Grade 4'),
-(5, 'Grade 5'),
-(6, 'Grade 6'),
-(7, 'Grade 7'),
-(8, 'Grade 8'),
-(9, 'Grade 9'),
-(10, 'Grade 10'),
-(11, 'Grade 11'),
-(12, 'Grade 12'),
-(13, 'Grade 13');
-
 
 -- Each student has one grade
 CREATE TABLE IF NOT EXISTS student_grades (
@@ -349,3 +333,16 @@ CREATE TABLE contact_tickets (
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
     PRIMARY KEY (`id`)
 );
+
+-- Table for OTP verification
+CREATE TABLE otp_verification (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    otp VARCHAR(255) NOT NULL,
+    expires_at DATETIME NOT NULL,
+    is_verified TINYINT(1) DEFAULT 0,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+
+

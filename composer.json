@@ -6,7 +6,9 @@
       "email": "mahimaindhot@gmail.com"
     }
   ],
-  "require": {},
+  "require": {
+    "phpmailer/phpmailer": "^6.9"
+  },
   "autoload": {
     "psr-4": {
       "Framework\\": "src/Framework",

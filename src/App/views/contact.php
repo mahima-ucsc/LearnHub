@@ -56,30 +56,9 @@
                     <?php unset($_SESSION['errors']); ?>
                 <?php endif; ?>
             </form>
-
         </div>
-        <!-- <i class="fas fa-envelope"></i>
-        <i class="fas fa-phone"></i> -->
 
     </section>
-
-
-    <!-- <script>
-        document.getElementById('sendButton').addEventListener('click', function() {
-
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const subject = "Contact us";
-            const message = document.getElementById('message').value;
-
-            const body = `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`;
-            const mailtoLink = `mailto:leanhubcontact@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-
-            window.location.href = mailtoLink;
-        });
-    </script> -->
-
 
 </body>
 

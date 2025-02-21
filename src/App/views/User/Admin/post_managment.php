@@ -1,7 +1,7 @@
 <?php 
-use App\views\components\Alert;
+// use App\views\components\Alert;
 
-$alert = new Alert('Course request approved successfully', 'success');
+// $alert = new Alert('Course request approved successfully', 'success');
 
 ?>
 
