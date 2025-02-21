@@ -222,7 +222,7 @@ class CoursesController
     public function deleteCourse(array $params)
     {
         $this->courseService->delete((int)$params['course']);
-        redirectTo('/courses/my-courses');
+        redirectTo($_SERVER['HTTP_REFERER']);
     }
 
     public function courseParticipantStat()

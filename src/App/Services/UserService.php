@@ -159,12 +159,17 @@ class UserService
                 "term" => "%{$searchTerm}%"
             ]
         )->findAll();
-        unset($userData['password']);
+
+        // Remove user  password from the array
+        foreach ($userData as &$user) {
+            unset($user['password']);
+        }
+        unset($user);
 
         return $userData;
     }
 
-    public function getNoOfUsers()
+    public function getUserCount()
     {
         $students =  $this->db->query(
             "SELECT COUNT(*) FROM users WHERE user_role = 'student'"
@@ -173,10 +178,14 @@ class UserService
         $teachers = $this->db->query(
             "SELECT COUNT(*) FROM users WHERE user_role = 'teacher'"
         )->count();
+        $admin = $this->db->query(
+            "SELECT COUNT(*) FROM users WHERE user_role = 'admin'"
+        )->count();
 
         $count = [
             'students' => $students,
-            'teachers' => $teachers
+            'teachers' => $teachers,
+            'admin' => $admin
         ];
 
         return $count;

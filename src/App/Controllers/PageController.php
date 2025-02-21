@@ -20,16 +20,25 @@ class PageController
     public function home()
     {
         $user = $this->userService->getUserProfile();
+        $userCount = $this->userService->getUserCount();
+        $courseCount = $this->courseService->getNoOfCourses();
+        $stat = [
+            "users" => $userCount,
+            "courses" => $courseCount
+        ];
         if ($_SESSION['user_role'] === "student") {
             $path = "User/student/std_index.php";
         } elseif ($_SESSION['user_role'] === "teacher") {
             $path = "User/Tutor/teacher_index.php";
+        } elseif ($_SESSION['user_role'] === "admin") {
+            $path = "User/Admin/admin_dashboard.php";
         } else {
             $path = "index.php";
         }
         echo $this->view->render($path, [
             "title" => "Home",
-            "userData" => $user
+            "userData" => $user,
+            "stat" => $stat
         ]);
     }
     public function helpAndSupportReview()
@@ -92,7 +101,7 @@ class PageController
             $courses = $this->courseService->getAllCourses();
         }
 
-        $userCount = $this->userService->getNoOfUsers();
+        $userCount = $this->userService->getUserCount();
         $courseCount = $this->courseService->getNoOfCourses();
         $stat = [
             "users" => $userCount,
@@ -123,8 +132,12 @@ class PageController
     }
     public function courseManagment()
     {
-        echo $this->view->render('User/Admin/course_managment.php', [
-            'title' => "Course Managment"
+        $courseCount = $this->courseService->getNoOfCourses();
+        $courses = $this->courseService->getCourseList();
+        echo $this->view->render('User/Admin/admin_course_managment.php', [
+            'title' => "Course Managment",
+            'courseCount' => $courseCount,
+            "courses" => $courses
         ]);
     }
     public function unauthorizedAccess()
@@ -227,10 +240,20 @@ class PageController
             "title" => "Teacher"
         ]);
     }
-    public function teacherUserManagment()
+    public function userManagment()
     {
-        echo $this->view->render("User/Tutor/user_managment.php", [
-            "title" => "Teacher"
+        if ($_SESSION['user_role'] === "teacher") {
+            $path = "User/Tutor/user_managment.php";
+        } else {
+            $path = "User/Admin/admin_user_managment.php";
+            $users = $this->userService->getUsers();
+            $userCount = $this->userService->getUserCount();
+            // dd($users[0]['first_name'][0]);
+        }
+        echo $this->view->render($path, [
+            "title" => "Teacher",
+            "users" => $users,
+            "userCount" => $userCount
         ]);
     }
 }

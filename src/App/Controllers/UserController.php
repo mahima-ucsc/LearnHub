@@ -20,14 +20,14 @@ class UserController
             redirectTo('/denied');
         }
         $this->userService->delete((int)$params['user_id']);
-        redirectTo('/admin-dashboard?tab=user-managment');
+        redirectTo($_SERVER['HTTP_REFERER']);
     }
 
     public function addUser()
     {
         $this->userService->isEmailTaken($_POST['email']);
         $this->userService->addUser($_POST);
-        redirectTo('/admin-dashboard?tab=user-managment');
+        redirectTo($_SERVER['HTTP_REFERER']);
     }
 
     public function updateProfile()
