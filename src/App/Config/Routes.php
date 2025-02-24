@@ -12,8 +12,6 @@ use App\Middleware\AuthRequiredMiddleware;
 use App\Middleware\GuestOnlyMiddleware;
 use App\Middleware\StudentOnlyMiddleware;
 use App\Middleware\TeacherOnlyMiddleware;
-use App\Services\ContactService;
-use App\Services\UserService;
 use Framework\App;
 
 function registerRoutes(App $app)
@@ -44,8 +42,10 @@ function registerRoutes(App $app)
     $app->get('/denied', [PageController::class, 'denied']);
 
     // Contact
-    $app->get('/contact', [PageController::class, 'contact']);
+    $app->get('/contact', [ContactController::class, 'contact']);
     $app->post('/contact', [ContactController::class, 'submitContactForm']);
+    $app->get('/contact/successfull', [ContactController::class, 'successfull']);
+
 
 
     // User
@@ -53,6 +53,10 @@ function registerRoutes(App $app)
     $app->get('/register/create-account', [AuthController::class, 'registerView'], [GuestOnlyMiddleware::class]);
     $app->get('/register', [AuthController::class, 'registerRoleView'], [GuestOnlyMiddleware::class]);
     $app->post('/register', [AuthController::class, 'register'], [GuestOnlyMiddleware::class]);
+    $app->get('/register/verification', [AuthController::class, 'verificationView'], [GuestOnlyMiddleware::class]);
+    $app->post('/register/verification', [AuthController::class, 'tempUserSave'], [GuestOnlyMiddleware::class]);
+    $app->post('/verify-otp', [AuthController::class, 'verifyuser'], [GuestOnlyMiddleware::class]);
+    $app->post('/resend-otp', [AuthController::class, 'resendOtp'], [GuestOnlyMiddleware::class]);
     $app->get('/interest', [PageController::class, 'interest'], [AuthRequiredMiddleware::class]);
     $app->get('/interest/skip', [PageController::class, 'interestSkip'], [AuthRequiredMiddleware::class]);
     $app->get('/interest/continue', [PageController::class, 'interestContinue'], [AuthRequiredMiddleware::class]);
@@ -86,7 +90,7 @@ function registerRoutes(App $app)
     $app->get('/courses/my-courses/{course_id}/participant/stats/{participant_id}', [CoursesController::class, 'courseParticipantStat'], [TeacherOnlyMiddleware::class]);
     $app->get('/course/enroll', [CoursesController::class, 'enrollCourse'], [AuthRequiredMiddleware::class]);
     $app->get('/course/create', [CoursesController::class, 'createCourseView'], [TeacherOnlyMiddleware::class]);
-    $app->post('/create-course', [CoursesController::class, 'createCourse'], [TeacherOnlyMiddleware::class]);
+    $app->post('/create-course', [CoursesController::class, 'createCourseNew'], [TeacherOnlyMiddleware::class]);
     $app->post('/save-course-data', [CoursesController::class, 'saveCourseData'], [TeacherOnlyMiddleware::class]);
     $app->get('/courses/my-courses', [CoursesController::class, 'myCourses'], [AuthRequiredMiddleware::class]);
     $app->get('/courses/test', [CoursesController::class, 'myCoursesTest']);
@@ -98,8 +102,8 @@ function registerRoutes(App $app)
     $app->post('/courses/{course_id}/participants/add', [CoursesController::class, 'AddParticipant'], [TeacherOnlyMiddleware::class]);
     $app->get('/course/{course_id}/module/{module_id}/resource/{resource_id}', [CoursesController::class, 'readModuleResources'], [TeacherOnlyMiddleware::class]);
 
-
-    $app->get('/courses/my/registered', [CoursesController::class, 'regCourses'], [AuthRequiredMiddleware::class]);
+    // TODO: Remove or implement this route
+    // $app->get('/courses/my/registered', [CoursesController::class, 'regCourses'], [AuthRequiredMiddleware::class]);
     $app->get('/courses/user', [CoursesController::class, 'userCourses'], [StudentOnlyMiddleware::class]);
     $app->get('/course/create/add-module', [CoursesController::class, 'addModuleView']);
     $app->get('/course/create/success', [CoursesController::class, 'successMessage']);

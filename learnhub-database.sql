@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL,
     user_role ENUM('student', 'teacher', 'admin', 'guest') NOT NULL,
     PRIMARY KEY(user_id),
-    UNIQUE KEY(email)
+    UNIQUE KEY(email),
+    is_verified BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 -- Table for grades
@@ -22,23 +23,6 @@ CREATE TABLE IF NOT EXISTS grades (
     grade_name VARCHAR(255) NOT NULL,
     PRIMARY KEY(grade_id)
 );
-
--- Insert grades
-INSERT INTO `grades` (`grade_id`, `grade_name`) VALUES
-(1, 'Grade 1'),
-(2, 'Grade 2'),
-(3, 'Grade 3'),
-(4, 'Grade 4'),
-(5, 'Grade 5'),
-(6, 'Grade 6'),
-(7, 'Grade 7'),
-(8, 'Grade 8'),
-(9, 'Grade 9'),
-(10, 'Grade 10'),
-(11, 'Grade 11'),
-(12, 'Grade 12'),
-(13, 'Grade 13');
-
 
 -- Each student has one grade
 CREATE TABLE IF NOT EXISTS student_grades (
@@ -81,12 +65,14 @@ CREATE TABLE IF NOT EXISTS courses (
     subject_id BIGINT(20) UNSIGNED NOT NULL,
     grade_id BIGINT(20) UNSIGNED NOT NULL,
     tutor_id BIGINT(20) UNSIGNED NOT NULL,
-    start_time TIME NOT NULL,
-    end_time TIME NOT NULL,
+    start_time TIME NULL,
+    end_time TIME NULL,
     thumbnail_url TEXT,
-    day VARCHAR(20) NOT NULL,
-    price decimal(10,2) NOT NULL,
-    pricing_period VARCHAR(50) NOT NULL,
+    day VARCHAR(20) NULL,
+    -- The 'price' column is NULL for courses with a recurring billing type
+    -- and is NOT NULL for courses with a one-time billing type.
+    price decimal(10,2) NULL,
+    billing_type ENUM('onetime', 'recurring') NOT NULL,   
     location VARCHAR(50) NOT NULL,
     published_date DATE NOT NULL DEFAULT CURRENT_DATE,
     PRIMARY KEY(course_id),
@@ -95,15 +81,55 @@ CREATE TABLE IF NOT EXISTS courses (
     FOREIGN KEY (tutor_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
+-- Table for recurring course subscription periods
+CREATE TABLE IF NOT EXISTS recurring_course_sub_periods (
+    sub_period_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    course_id BIGINT(20) UNSIGNED NOT NULL,
+    start_datetime DATETIME NOT NULL,
+    end_datetime DATETIME NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
+);
+
+-- Table for payments related to subscription periods
+CREATE TABLE IF NOT EXISTS sub_period_payments (
+    payment_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    sub_period_id BIGINT(20) UNSIGNED NOT NULL,
+    user_id BIGINT(20) UNSIGNED NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    payment_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    FOREIGN KEY (sub_period_id) REFERENCES recurring_course_sub_periods(sub_period_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+-- Table for one-time course payments
+CREATE TABLE IF NOT EXISTS onetime_course_payments (
+    payment_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    course_id BIGINT(20) UNSIGNED NOT NULL,
+    user_id BIGINT(20) UNSIGNED NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    payment_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
 -- Course modules for each course
 CREATE TABLE IF NOT EXISTS course_modules (
     module_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
     description TEXT,
+    -- If this module belongs to a one time course:
+    --    The course_id must be entered and subperiodid should be NULL
+    -- If this module belongs to a recurring course:
+    --    Both course_id and subperiodid must be entered
     course_id BIGINT(20) UNSIGNED NOT NULL,
+    sub_period_id BIGINT(20) UNSIGNED,
     title VARCHAR(255) NOT NULL,
+    
+    FOREIGN KEY (sub_period_id) REFERENCES recurring_course_sub_periods(sub_period_id) ON DELETE CASCADE,
     PRIMARY KEY(module_id),
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
 );
+
 -- Resources for each Course module
 CREATE TABLE IF NOT EXISTS course_module_resource (
     resource_id INT AUTO_INCREMENT,
@@ -111,8 +137,7 @@ CREATE TABLE IF NOT EXISTS course_module_resource (
     course_id BIGINT(20) UNSIGNED NOT NULL,
     resource_path VARCHAR(255),
     
-    PRIMARY KEY (resource_id, module_id, course_id),
-    
+    PRIMARY KEY(resource_id),
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
     FOREIGN KEY (module_id) REFERENCES course_modules(module_id) ON DELETE CASCADE
 );
@@ -263,9 +288,8 @@ CREATE TABLE IF NOT EXISTS course_request_comments (
 );
 
 -- Assignments for courses
-
 CREATE TABLE IF NOT EXISTS assignments (
-    assignment_id INT AUTO_INCREMENT PRIMARY KEY,
+    assignment_id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     course_id BIGINT(20) UNSIGNED NOT NULL,
     resource_path varchar(255) DEFAULT NULL,
     upload_date DATE DEFAULT CURRENT_DATE,
@@ -273,26 +297,24 @@ CREATE TABLE IF NOT EXISTS assignments (
     instruction text ,
     tutor_id bigint(20) UNSIGNED NOT NULL,
     
-    FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
+    FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
     FOREIGN KEY (tutor_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS assignment_resource (
-    resource_id INT AUTO_INCREMENT,
-    assignment_id INT,
+    resource_id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    assignment_id BIGINT(20) UNSIGNED NOT NULL,
     course_id BIGINT(20) UNSIGNED NOT NULL,
     resource_path VARCHAR(255),
     
-    PRIMARY KEY (resource_id, assignment_id, course_id),
-    
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
-    FOREIGN KEY (assignment_id) REFERENCES courses(assignments) ON DELETE CASCADE
+    FOREIGN KEY (assignment_id) REFERENCES assignments(assignment_id) ON DELETE CASCADE
 );
 
 
 CREATE TABLE IF NOT EXISTS assignments_submissions(
     submission_id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    assignment_id INT NOT NULL,
+    assignment_id BIGINT(20) UNSIGNED NOT NULL,
     course_id BIGINT(20) UNSIGNED NOT NULL,
     submission_path VARCHAR(255),
     upload_date DATE DEFAULT CURRENT_DATE,
@@ -301,7 +323,7 @@ CREATE TABLE IF NOT EXISTS assignments_submissions(
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
     FOREIGN KEY (student_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (assignment_id) REFERENCES assignments(assignment_id) ON DELETE CASCADE
-)
+);
 
 CREATE TABLE contact_tickets (
     `id` INT(11) NOT NULL AUTO_INCREMENT , 
@@ -311,3 +333,16 @@ CREATE TABLE contact_tickets (
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
     PRIMARY KEY (`id`)
 );
+
+-- Table for OTP verification
+CREATE TABLE otp_verification (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT(20) UNSIGNED NOT NULL,
+    otp VARCHAR(255) NOT NULL,
+    expires_at DATETIME NOT NULL,
+    is_verified TINYINT(1) DEFAULT 0,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+
+

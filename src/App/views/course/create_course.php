@@ -10,7 +10,7 @@
         <p>Share your knowledge with the world</p>
     </div>
 
-    <form class="create-course-form" id="createCourseForm" enctype="multipart/form-data" method="POST" action="/save-course-data">
+    <form class="create-course-form" id="createCourseForm" enctype="multipart/form-data" method="POST" action="/create-course">
         <div class="create-course-section">
             <h2>Basic Information</h2>
             <div class="create-course-form-group">

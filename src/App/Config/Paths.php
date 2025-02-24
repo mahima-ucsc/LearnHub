@@ -8,5 +8,8 @@ class Paths
 {
     public const VIEW = __DIR__ . "/../views";
     public const SOURCE = __DIR__ . "/../../";
+
     public const STORAGE_UPLOADS = __DIR__ . '/../../../public/storage/uploads';
+    // realtive paths to uploads
+    public const RELATIVE_COURSE_THUMBNAIL_UPLOADS = 'courses/thumbnails';
 }

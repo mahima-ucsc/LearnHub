@@ -56,6 +56,7 @@ class ValidatorService
             "day" => ["required"],
             "price" => ["required"],
             "pricing_period" => ["required"],
+            "location" => ["required"],
         ]);
     }
 
@@ -129,4 +130,5 @@ class ValidatorService
         //     ]);
         // }
     }
+
 }
