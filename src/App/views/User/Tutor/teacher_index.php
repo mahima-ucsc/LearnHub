@@ -15,40 +15,91 @@
         --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        background-color: var(--bg-light);
+        color: var(--text-dark);
+        line-height: 1.6;
+    }
+
     .container {
         max-width: 1400px;
         margin: 0 auto;
         padding: 0 20px;
     }
 
+    /* Header */
+    .header {
+        background: var(--white);
+        padding: 1rem 0;
+        box-shadow: var(--shadow);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+    }
 
-    /* dashboard Section */
-    .dashboard {
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--theme-color);
+    }
+
+    .nav-menu {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .nav-link {
+        color: var(--text-dark);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+    }
+
+    .nav-link:hover {
+        color: var(--theme-color);
+    }
+
+    /* teacher-hero Section */
+    .teacher-hero {
         padding: 8rem 0 4rem;
         background: linear-gradient(135deg, var(--theme-color) 0%, var(--theme-dark) 100%);
         color: var(--white);
     }
 
-    .dashboard-content {
+    .teacher-hero-content {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 4rem;
         align-items: center;
     }
 
-    .dashboard-text h1 {
+    .teacher-hero-text h1 {
         font-size: 3rem;
         margin-bottom: 1.5rem;
         line-height: 1.2;
     }
 
-    .dashboard-text p {
+    .teacher-hero-text p {
         font-size: 1.2rem;
         margin-bottom: 2rem;
         opacity: 0.9;
     }
 
-    .dashboard-stats {
+    .teacher-hero-stats {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 2rem;
@@ -470,22 +521,26 @@
             padding: 0 15px;
         }
 
-        .dashboard-content {
+        .teacher-hero-content {
             grid-template-columns: 1fr;
             text-align: center;
             gap: 2rem;
         }
 
-        .dashboard-text h1 {
+        .teacher-hero-text h1 {
             font-size: 2.5rem;
         }
 
-        .dashboard-stats {
+        .teacher-hero-stats {
             grid-template-columns: repeat(2, 1fr);
         }
 
         .features-grid {
             grid-template-columns: 1fr;
+        }
+
+        .nav-menu {
+            display: none;
         }
 
         .courses-grid {
@@ -502,19 +557,19 @@
     }
 
     @media (max-width: 480px) {
-        .dashboard {
+        .teacher-hero {
             padding: 6rem 0 3rem;
         }
 
-        .dashboard-text h1 {
+        .teacher-hero-text h1 {
             font-size: 2rem;
         }
 
-        .dashboard-text p {
+        .teacher-hero-text p {
             font-size: 1rem;
         }
 
-        .dashboard-stats {
+        .teacher-hero-stats {
             grid-template-columns: 1fr;
             padding: 1.5rem;
         }
@@ -581,14 +636,14 @@
     }
 </style>
 <?php include $this->resolve('User/sidebar.php'); ?>
-<section class="dashboard">
-    <div class="container dashboard-content">
-        <div class="dashboard-text">
+<section class="teacher-hero">
+    <div class="container teacher-hero-content">
+        <div class="teacher-hero-text">
             <h1>Transform Your Knowledge Into Income</h1>
             <p>Create, sell, and manage your online courses with our powerful platform designed for educators.</p>
             <a href="#" class="btn btn-primary">Start Teaching Today</a>
         </div>
-        <div class="dashboard-stats">
+        <div class="teacher-hero-stats">
             <div class="stat-item">
                 <h3>50K+</h3>
                 <p>Active Teachers</p>
@@ -614,12 +669,12 @@
         <div class="quick-stats">
             <div class="stat-card">
                 <i class="fas fa-users fa-2x" style="color: var(--theme-color)"></i>
-                <div class="stat-value"><?php echo $stat['users']['students'] ?></div>
+                <div class="stat-value">1,234</div>
                 <p>Active Students</p>
             </div>
             <div class="stat-card">
                 <i class="fas fa-graduation-cap fa-2x" style="color: var(--theme-color)"></i>
-                <div class="stat-value"><?php echo $stat['courses']; ?></div>
+                <div class="stat-value">15</div>
                 <p>Active Courses</p>
             </div>
             <div class="stat-card">
@@ -710,7 +765,7 @@
         <div class="transactions-section">
             <div class="transactions-header">
                 <h2 class="section-title">Recent Transactions</h2>
-                <a href="/billing-and-payment" class="view-all-btn">View All</a>
+                <a href="#" class="view-all-btn">View All</a>
             </div>
             <div class="transactions-list" id="transactionsList">
                 <!-- Transactions will be populated by JavaScript -->
@@ -742,9 +797,20 @@
         </div>
     </div>
 </section>
-[]
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
 <script>
+    // Add scroll effect for header
+    window.addEventListener('scroll', () => {
+        const header = document.querySelector('.header');
+        if (window.scrollY > 50) {
+            header.style.background = '#ffffff';
+            header.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+        } else {
+            header.style.background = '#ffffff';
+            header.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+        }
+    });
+
     // Add animation for feature cards
     const featureCards = document.querySelectorAll('.feature-card');
     featureCards.forEach(card => {

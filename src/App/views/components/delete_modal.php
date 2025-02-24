@@ -17,12 +17,15 @@
     /* Modal Styles */
     .modal {
         display: none;
-        z-index: 1000;
+        position: fixed;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
         background: rgba(0, 0, 0, 0.5);
-        opacity: 0;
-        transition: opacity 0.3s ease;
+        align-items: center;
+        justify-content: center;
+        z-index: 1001;
     }
 
     .modal.show {
@@ -57,34 +60,34 @@
     }
 
     .modal-header {
+        text-align: center;
         margin-bottom: 1.5rem;
     }
 
     .modal-title {
         font-size: 1.25rem;
-        font-weight: bold;
         color: #2d3748;
-        margin: 0;
     }
 
     .modal-body {
+        text-align: center;
         margin-bottom: 1.5rem;
         color: #4a5568;
     }
 
     .modal-footer {
         display: flex;
-        justify-content: flex-end;
-        gap: 0.75rem;
+        justify-content: center;
+        gap: 1rem;
     }
 
     .btn {
-        padding: 0.5rem 1rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.25rem;
         border: none;
-        border-radius: 4px;
         cursor: pointer;
-        font-size: 0.875rem;
-        transition: background-color 0.2s;
+        font-weight: 500;
+        transition: background 0.3s;
     }
 
     .btn-cancel {
@@ -96,12 +99,12 @@
         background-color: #cbd5e0;
     }
 
-    .btn-delete {
-        background-color: #e53e3e;
+    .btn-delete-action {
+        background-color: #FFC400;
         color: white;
     }
 
-    .btn-delete:hover {
+    .btn-delete-action:hover {
         background-color: #c53030;
     }
 
@@ -156,7 +159,7 @@
             <form id="deleteForm" method="POST">
                 <?php include $this->resolve("partials/_csrf.php"); ?>
                 <input type="hidden" name="_METHOD" value="DELETE" />
-                <button type="submit" class="btn btn-delete">Delete</button>
+                <button type="submit" class="btn btn-delete-action">Delete</button>
             </form>
         </div>
     </div>
@@ -185,12 +188,12 @@
     }
 
     // Close modal when clicking outside
-    // window.onclick = function (event) {
-    //   const modal = document.getElementById("deleteModal");
-    //   if (event.target === modal) {
-    //     hideModal();
-    //   }
-    // };
+    window.onclick = function(event) {
+        const modal = document.getElementById("deleteModal");
+        if (event.target === modal) {
+            hideModal();
+        }
+    };
 
     // Close modal on escape key press
     document.addEventListener("keydown", function(event) {

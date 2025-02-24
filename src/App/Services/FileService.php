@@ -12,6 +12,12 @@ class FileService
 {
     public  function __construct(private Database $db) {}
 
+    /**
+     * This function is used only for thumbnail upload when creating new courses of old flow.
+     * This should be removed.
+     * 
+     * @deprecated
+     */
     public function upload(string $dir, array $file)
     {
         $storageDir = Paths::STORAGE_UPLOADS . "/" . $dir;
@@ -45,7 +51,7 @@ class FileService
     {
         $storageDir = Paths::STORAGE_UPLOADS . "/" . $dir;
         $extention = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $fileName = uniqid("", true) . "." . $extention;
+        $fileName = str_replace('.', '-', uniqid("", true)) . "." . $extention;
         $storagePath = $storageDir . "/" . $fileName;
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);
@@ -55,5 +61,7 @@ class FileService
                 "file" => ['Failed to upload.']
             ]);
         }
+
+        return $fileName;
     }
 }

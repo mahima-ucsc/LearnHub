@@ -114,7 +114,7 @@ class CoursesController
         $user = $this->userService->getUserProfile($course['tutor_id']);
 
         echo $this->view->render(
-            'course/course_info.php',
+            'course/course-info/course-info.php',
             [
                 'course' => $course,
                 'title' => $course['title'],
@@ -137,7 +137,15 @@ class CoursesController
         ]);
     }
 
-    // Save course data in SESSION and redirect to next page to add course module
+    /**
+     * This function is used when creating a course. Initially, it saves the course data in the session 
+     * and then redirects to the next page to add course modules. The add module view sends a POST request 
+     * invoking the createCourse function to save both course data and course modules at the same time.
+     * 
+     * However, the new flow allows creating courses without modules. Modules can be added later.
+     * 
+     * @deprecated This function is deprecated due to the new flow that allows creating courses without modules.
+     */
     public function saveCourseData()
     {
         $thumbnail = $_FILES['thumbnail'] ?? null;
@@ -155,9 +163,26 @@ class CoursesController
         ]);
     }
 
+    /**
+     * @deprecated
+     * It was used to save both modules and course details at once when redirected from the add course view to the add modules view.
+     */
     public function createCourse()
     {
         $this->courseService->create($_POST['modules'], $_FILES['modules']);
+        redirectTo('/courses/my-courses');
+    }
+
+    // TODO: Rename this function when the old create course is removed
+    public function createCourseNew()
+    {
+        $thumbnail = $_FILES['thumbnail'] ?? null;
+        $this->validatorService->validateImg($thumbnail);
+        $this->validatorService->validateCourse($_POST);
+        $thumbnailFileName = $this->fileService->uploadFile(Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS, $thumbnail);
+        $formData = $_POST;
+        $formData['thumbnail_filename'] = $thumbnailFileName;
+        $this->courseService->createCourse($formData);
         redirectTo('/courses/my-courses');
     }
 
@@ -226,7 +251,7 @@ class CoursesController
     public function deleteCourse(array $params)
     {
         $this->courseService->delete((int)$params['course']);
-        redirectTo('/courses/my-courses');
+        redirectTo($_SERVER['HTTP_REFERER']);
     }
 
     public function courseParticipantStat()
@@ -238,16 +263,7 @@ class CoursesController
             ]
         );
     }
-    public function regCourses()
-    {
-        $reviews = $this->courseService->getReviews();
-        echo $this->view->render(
-            "course/demo_registered_course.php",
-            [
-                'title' => "ICT 2024 A/L"
-            ]
-        );
-    }
+
     public function userCourses()
     {
         echo $this->view->render(

@@ -19,8 +19,26 @@ class PageController
 
     public function home()
     {
-        echo $this->view->render('index.php', [
-            "title" => "Home"
+        $user = $this->userService->getUserProfile();
+        $userCount = $this->userService->getUserCount();
+        $courseCount = $this->courseService->getNoOfCourses();
+        $stat = [
+            "users" => $userCount,
+            "courses" => $courseCount
+        ];
+        if ($_SESSION['user_role'] === "student") {
+            $path = "User/student/std_index.php";
+        } elseif ($_SESSION['user_role'] === "teacher") {
+            $path = "User/Tutor/teacher_index.php";
+        } elseif ($_SESSION['user_role'] === "admin") {
+            $path = "User/Admin/admin_dashboard.php";
+        } else {
+            $path = "index.php";
+        }
+        echo $this->view->render($path, [
+            "title" => "Home",
+            "userData" => $user,
+            "stat" => $stat
         ]);
     }
     public function helpAndSupportReview()
@@ -83,7 +101,7 @@ class PageController
             $courses = $this->courseService->getAllCourses();
         }
 
-        $userCount = $this->userService->getNoOfUsers();
+        $userCount = $this->userService->getUserCount();
         $courseCount = $this->courseService->getNoOfCourses();
         $stat = [
             "users" => $userCount,
@@ -104,7 +122,7 @@ class PageController
             'title' => "Billing & Payment"
         ]);
     }
-    public function userManagment()
+    public function teacherU()
     {
         $users = $this->userService->getAllUsers();
         echo $this->view->render('User/Admin/user_managment.php', [
@@ -114,8 +132,12 @@ class PageController
     }
     public function courseManagment()
     {
-        echo $this->view->render('User/Admin/course_managment.php', [
-            'title' => "Course Managment"
+        $courseCount = $this->courseService->getNoOfCourses();
+        $courses = $this->courseService->getCourseList();
+        echo $this->view->render('User/Admin/admin_course_managment.php', [
+            'title' => "Course Managment",
+            'courseCount' => $courseCount,
+            "courses" => $courses
         ]);
     }
     public function unauthorizedAccess()
@@ -201,7 +223,7 @@ class PageController
     }
     public function test()
     {
-        echo $this->view->render('User/test-dash.php', [
+        echo $this->view->render('User/test.php', [
             "title" => "Settings",
         ]);
     }
@@ -210,6 +232,28 @@ class PageController
     {
         echo $this->view->render("User/Tutor/create_announcement.php", [
             "title" => "Create Announcement"
+        ]);
+    }
+    public function teacher()
+    {
+        echo $this->view->render("User/Tutor/teacher_index.php", [
+            "title" => "Teacher"
+        ]);
+    }
+    public function userManagment()
+    {
+        if ($_SESSION['user_role'] === "teacher") {
+            $path = "User/Tutor/user_managment.php";
+        } else {
+            $path = "User/Admin/admin_user_managment.php";
+            $users = $this->userService->getUsers();
+            $userCount = $this->userService->getUserCount();
+            // dd($users[0]['first_name'][0]);
+        }
+        echo $this->view->render($path, [
+            "title" => "Teacher",
+            "users" => $users,
+            "userCount" => $userCount
         ]);
     }
 }
