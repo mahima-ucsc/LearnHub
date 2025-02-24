@@ -320,6 +320,19 @@ class CourseService
         return $userReview;
     }
 
+    public function getReviewForcourse(string $courseId)
+    {
+        $userReview = $this->db->query(
+            "SELECT c.*, CONCAT(u.first_name, ' ', u.last_name) AS name, u.profile_picture_url FROM course_review c 
+            JOIN users u on c.user_id = u.user_id 
+            WHERE course_id = :course_id",
+            [
+                'course_id' => $courseId,
+            ]
+        )->findAll();
+        return $userReview;
+    }
+
     public function getAllCourses()
     {
         return $this->db->query(

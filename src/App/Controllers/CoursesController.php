@@ -108,6 +108,9 @@ class CoursesController
             $assignmentsResources[$assignment['assignment_id']] = $resources;
         }
 
+        // get course reviews
+        $userReview = $this->courseService->getReviewForcourse($params['course_id']);
+        // get tutor profile
         $user = $this->userService->getUserProfile($course['tutor_id']);
 
         echo $this->view->render(
@@ -119,7 +122,8 @@ class CoursesController
                 'modules' => $courseModules,
                 'assignments' => $assignments,
                 'assignmentsResources' => $assignmentsResources,
-                'moduleResources' => $moduleResources
+                'moduleResources' => $moduleResources,
+                'userReview' => $userReview
             ]
         );
     }

@@ -11,6 +11,6 @@ class AppConstants
     public const DB_HOST = 'localhost';
     public const DB_PORT = 3306;
     public const DB_NAME = 'learnhub';
-    public const DB_USER = 'learnhub';
-    public const DB_PASS = 'learnhub123';
+    public const DB_USER = 'phpmyadmin';
+    public const DB_PASS = 'phpmyadmin';
 }
