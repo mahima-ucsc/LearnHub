@@ -1,4 +1,23 @@
 <?php include $this->resolve("partials/_header.php"); ?>
+<style>
+    #loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+        display: none;
+        /* Initially hidden */
+        z-index: 9999;
+    }
+</style>
 
 <head>
     <link rel="stylesheet" href="/assets/styles/Course/courses.css">
@@ -7,7 +26,7 @@
 </head>
 
 <section class="courses-container">
-    <form method="GET">
+    <form method="GET" onsubmit="showLoader()">
         <div class="search-container">
             <input name="s" type="text" class="course-search-bar" placeholder="Search for courses..." value="<?php echo e((string)$searchTerm); ?>">
             <button class="course-search-button" type="submit"><i class="fas fa-search"></i>
@@ -19,6 +38,7 @@
             </select>
         </div>
         <div class="course-result-container">
+            <div id="loader">Searching...</div>
             <div class="left-course-container">
                 <div class="filter-section">
                     <div class="filters">
@@ -141,6 +161,10 @@
 
             date.classList.toggle("show");
             chevron.classList.toggle('rotated');
+        }
+
+        function showLoader() {
+            document.getElementById("loader").style.display = "flex";
         }
     </script>
     </div>
