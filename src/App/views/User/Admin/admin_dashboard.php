@@ -356,6 +356,25 @@
         justify-content: center;
     }
 
+    /* Chart Filters */
+    .period-select {
+        background: var(--white);
+        border: 1px solid var(--theme-light);
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        font-weight: 500;
+        color: var(--text-dark);
+        outline: none;
+        transition: all 0.3s ease;
+    }
+
+    .period-select:hover,
+    .period-select:focus {
+        border-color: var(--theme-color);
+        box-shadow: 0 0 0 2px rgba(255, 196, 0, 0.1);
+    }
+
     /* Transaction */
     .transactions-section {
         margin-top: 2rem;
@@ -590,7 +609,7 @@
         </div>
         <div class="dashboard-stats">
             <div class="stat-item">
-                <h3>50K+</h3>
+                <h3><?php echo $stat['users']['teachers'] ?></h3>
                 <p>Active Teachers</p>
             </div>
             <div class="stat-item">
@@ -598,7 +617,7 @@
                 <p>Teacher Earnings</p>
             </div>
             <div class="stat-item">
-                <h3>1M+</h3>
+                <h3><?php echo $stat['users']['students'] ?></h3>
                 <p>Students Taught</p>
             </div>
         </div>
@@ -636,6 +655,13 @@
         <div class="dashboard-grid">
             <div class="chart-container">
                 <h2 class="section-title">Performance Overview</h2>
+                <div class="chart-filters" style="text-align: right; margin-bottom: 1rem;">
+                    <select id="chart-period-filter" class="period-select">
+                        <option value="7days">Last 7 Days</option>
+                        <option value="1month">Last Month</option>
+                        <option value="1year">Last Year</option>
+                    </select>
+                </div>
                 <div class="chart-wrapper">
                     <canvas id="performanceChart"></canvas>
                 </div>
@@ -757,38 +783,89 @@
     });
 
     // Add Chart.js initialization
+    let performanceChart;
     const ctx = document.getElementById('performanceChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            datasets: [{
-                label: 'Student Engagement',
-                data: [65, 78, 90, 85, 92, 88],
-                borderColor: '#2ECC71',
-                tension: 0.4,
-                fill: false
-            }, {
-                label: 'Revenue ($K)',
-                data: [35, 42, 48, 45, 55, 60],
-                borderColor: '#FFC400',
-                tension: 0.4,
-                fill: false
-            }]
+
+    // Different datasets for different time periods
+    const chartData = {
+        '7days': {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            engagement: [62, 73, 68, 82, 76, 65, 88],
+            revenue: [28, 32, 30, 35, 40, 25, 42]
         },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                }
+        '1month': {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+            engagement: [70, 82, 75, 88],
+            revenue: [38, 42, 45, 60]
+        },
+        '1year': {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            engagement: [65, 78, 90, 85, 92, 88, 95, 91, 87, 94, 97, 99],
+            revenue: [35, 42, 48, 45, 55, 60, 58, 63, 59, 68, 72, 80]
+        }
+    };
+
+    // Function to create/update chart
+    function updateChart(period) {
+        const data = chartData[period];
+
+        const config = {
+            type: 'line',
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    label: 'Student Engagement',
+                    data: data.engagement,
+                    borderColor: '#2ECC71',
+                    tension: 0.4,
+                    fill: false
+                }, {
+                    label: 'Revenue ($K)',
+                    data: data.revenue,
+                    borderColor: '#FFC400',
+                    tension: 0.4,
+                    fill: false
+                }]
             },
-            scales: {
-                y: {
-                    beginAtZero: true
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                animation: {
+                    duration: 500
                 }
             }
+        };
+
+        // If chart exists, destroy it before creating a new one
+        if (performanceChart) {
+            performanceChart.destroy();
         }
+
+        // Create new chart
+        performanceChart = new Chart(ctx, config);
+    }
+
+    // Initialize chart with 7-day data
+    document.addEventListener('DOMContentLoaded', function() {
+        updateChart('7days');
+
+        // Add event listener to the dropdown
+        const periodSelect = document.getElementById('chart-period-filter');
+        periodSelect.addEventListener('change', function() {
+            updateChart(this.value);
+        });
+
+        // Also render transactions (keep your existing code)
+        renderTransactions();
     });
 
     // Sample transaction data
