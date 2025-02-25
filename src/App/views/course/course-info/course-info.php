@@ -304,15 +304,26 @@
         <h2 class="section-title">Student Reviews</h2>
         <div class="reviews-summary">
             <div class="overall-rating">
-                <div class="rating-number">4.8</div>
+                <div class="rating-number"><?php echo $summeryOfReviews['avgRating'] ?></div>
                 <div class="rating-stars">
-                    <span class="star active">★</span>
-                    <span class="star active">★</span>
-                    <span class="star active">★</span>
-                    <span class="star active">★</span>
-                    <span class="star half-active">★</span>
+                    <?php
+                    if (($summeryOfReviews['avgRating'] - floor($summeryOfReviews['avgRating'])) > 0.4) {
+                        $flag = true;
+                    }
+                    for ($i = 1; $i <= 5; $i++) {
+
+                        if ($i <= $summeryOfReviews['avgRating']) {
+                            echo '<span class="star active">★</span>';
+                        } else if ($flag) {
+                            echo '<span class="star half-active">★</span>';
+                            $flag = false;
+                        } else {
+                            echo '<span class="star">★</span>';
+                        }
+                    }
+                    ?>
                 </div>
-                <div class="rating-text">256 Total Reviews</div>
+                <div class="rating-text"><?php echo $summeryOfReviews['totalReviews'] ?> Total Reviews</div>
             </div>
             <div class="rating-breakdown">
                 <div class="rating-bar">

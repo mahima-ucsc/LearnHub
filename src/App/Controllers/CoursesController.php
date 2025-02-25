@@ -111,6 +111,19 @@ class CoursesController
         // get course reviews
         $userReview = [];
         $userReview = $this->courseService->getReviewForcourse($params['course_id']);
+
+        //calculate summery of reviews
+        $summeryOfReviews = [];
+        $totalReviews = count($userReview);
+        $starCount = [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0];
+        $totalRating = 0;
+        foreach ($userReview as $review) {
+            $totalRating += $review['rating'];
+            $starCount[$review['rating']]++;
+        }
+        $avgRating = $totalRating / $totalReviews;
+        $summeryOfReviews = ['totalReviews' => $totalReviews, 'avgRating' => $avgRating, 'starCount' => $starCount];
+
         // get tutor profile
         $user = $this->userService->getUserProfile($course['tutor_id']);
 
@@ -124,7 +137,8 @@ class CoursesController
                 'assignments' => $assignments,
                 'assignmentsResources' => $assignmentsResources,
                 'moduleResources' => $moduleResources,
-                'userReview' => $userReview
+                'userReview' => $userReview,
+                'summeryOfReviews' => $summeryOfReviews
             ]
         );
     }
