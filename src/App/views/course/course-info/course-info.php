@@ -326,34 +326,17 @@
                 <div class="rating-text"><?php echo $summeryOfReviews['totalReviews'] ?> Total Reviews</div>
             </div>
             <div class="rating-breakdown">
-                <div class="rating-bar">
-                    <span class="rating-label">5 Stars</span>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 65%"></div>
+                <?php
+                krsort($summeryOfReviews['starCount']); //sort the array in descending order
+                foreach ($summeryOfReviews['starCount'] as $key => $value) : ?>
+                    <div class="rating-bar">
+                        <span class="rating-label"><?php echo $key ?> Stars</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: <?php echo $value / $summeryOfReviews['totalReviews'] * 100 ?>%"></div>
+                        </div>
+                        <span class="rating-percentage"><?php echo $value / $summeryOfReviews['totalReviews'] * 100 ?> %</span>
                     </div>
-                    <span class="rating-percentage">65%</span>
-                </div>
-                <div class="rating-bar">
-                    <span class="rating-label">4 Stars</span>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 25%"></div>
-                    </div>
-                    <span class="rating-percentage">25%</span>
-                </div>
-                <div class="rating-bar">
-                    <span class="rating-label">3 Stars</span>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 8%"></div>
-                    </div>
-                    <span class="rating-percentage">8%</span>
-                </div>
-                <div class="rating-bar">
-                    <span class="rating-label">2 Stars</span>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 2%"></div>
-                    </div>
-                    <span class="rating-percentage">2%</span>
-                </div>
+                <?php endforeach; ?>
             </div>
         </div>
 
