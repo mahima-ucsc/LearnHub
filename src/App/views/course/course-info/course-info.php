@@ -49,16 +49,30 @@
             <?php else: ?>
                 <div class="course-section">
                     <h2 class="section-title">Current Content</h2>
-                    <div class="module-list">
-                        <?php foreach ($modules as $module): ?>
-                            <?php include $this->resolve("course/course-info/course-module.php"); ?>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-                <div class="course-section">
-                    <h2 class="section-title">Past Content</h2>
                     <div class="period-list">
-                        <div class="period-item">
+                        <?php foreach ($currentContent as $period): ?>
+                            <div class="period-item">
+                                <div class="period-header">
+                                    <div class="period-title">
+                                        <h4><?= formatDate($period['start_datetime'], 'Y M j') . " - " . formatDate($period['end_datetime'], 'Y M j') ?></h4>
+                                    </div>
+                                    <div class="period-toggle">
+                                        <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <div class="period-content">
+                                    <div class="module-list">
+                                        <?php foreach ($period['modules'] as $module): ?>
+                                            <?php include $this->resolve("course/course-info/course-module.php"); ?>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                        <!-- <div class="period-item">
                             <div class="period-header">
                                 <div class="period-title">
                                     <h4>2024 Jan 01 - 2024 Jan 31</h4>
@@ -72,28 +86,37 @@
 
                             <div class="period-content">
                                 <div class="module-list">
-                                    <?php foreach ($modules as $module): ?>
-                                        <?php include $this->resolve("course/course-info/course-module.php"); ?>
-                                    <?php endforeach; ?>
+                                    modules
                                 </div>
                             </div>
-                        </div>
-                        <div class="period-item">
-                            <div class="period-header">
-                                <div class="period-title">
-                                    <h4>2024 Feb 01 - 2024 Feb 28</h4>
+                        </div> -->
+                    </div>
+                </div>
+                <div class="course-section">
+                    <h2 class="section-title">Past Content</h2>
+                    <div class="period-list">
+                        <?php foreach ($pastContent as $period): ?>
+                            <div class="period-item">
+                                <div class="period-header">
+                                    <div class="period-title">
+                                        <h4><?= formatDate($period['start_datetime'], 'Y M j') . " - " . formatDate($period['end_datetime'], 'Y M j') ?></h4>
+                                    </div>
+                                    <div class="period-toggle">
+                                        <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
+                                    </div>
                                 </div>
-                                <div class="period-toggle">
-                                    <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polyline points="6 9 12 15 18 9"></polyline>
-                                    </svg>
-                                </div>
-                            </div>
 
-                            <div class="period-content">
-                                <h3>modules</h3>
+                                <div class="period-content">
+                                    <div class="module-list">
+                                        <?php foreach ($period['modules'] as $module): ?>
+                                            <?php include $this->resolve("course/course-info/course-module.php"); ?>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             <?php endif; ?>
@@ -348,34 +371,10 @@
 
         <div class="reviews-list">
             <?php
-            $reviews = [
-                [
-                    'name' => 'Sachith Dhanushka',
-                    'date' => 'November 20, 2024',
-                    'rating' => 5,
-                    'comment' => 'Absolutely amazing course! The instructor explains complex Python concepts in a very clear and understandable way. The assignments are challenging but help reinforce the learning.',
-                    'avatar' => '/assets/images/user.jpeg'
-                ],
-                [
-                    'name' => 'Dinuka Sahan',
-                    'date' => 'November 15, 2024',
-                    'rating' => 4,
-                    'comment' => 'Great introduction to Python programming. The modules are well-structured, and the resources are helpful. Would recommend for beginners.',
-                    'avatar' => '/assets/images/user.jpeg'
-                ],
-                [
-                    'name' => 'Isuru Naveen',
-                    'date' => 'November 10, 2024',
-                    'rating' => 5,
-                    'comment' => 'Comprehensive course that covers everything from basics to advanced Python concepts. The OOP module was particularly enlightening.',
-                    'avatar' => '/assets/images/user.jpeg'
-                ]
-            ];
-
-            foreach ($reviews as $review): ?>
+            foreach ($userReview as $review): ?>
                 <div class="review-item">
                     <div class="review-header">
-                        <img src="<?php echo htmlspecialchars($review['avatar']); ?>" alt="<?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
+                        <img src="<?php echo htmlspecialchars($review['profile_picture_url']); ?>" alt="<?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
                         <div class="review-meta">
                             <span class="review-name"><?php echo htmlspecialchars($review['name']); ?></span>
                             <span class="review-date"><?php echo htmlspecialchars($review['date']); ?></span>
@@ -391,7 +390,7 @@
                         </div>
                     </div>
                     <div class="review-body">
-                        <p><?php echo htmlspecialchars($review['comment']); ?></p>
+                        <p><?php echo htmlspecialchars($review['review']); ?></p>
                     </div>
                 </div>
             <?php endforeach; ?>
