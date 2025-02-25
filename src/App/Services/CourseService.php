@@ -176,6 +176,54 @@ class CourseService
         )->findAll();
     }
 
+    private function getCourseSubPeriodsAndModules(string $courseId)
+    {
+
+        $subPeriods = $this->db->query(
+            "SELECT * FROM recurring_course_sub_periods
+                WHERE course_id = :id
+                ORDER BY start_datetime",
+            [
+                'id' => $courseId
+            ]
+        )->findAll();
+
+        foreach ($subPeriods as &$period) {
+            $subPeriodModules = $this->db->query(
+                "SELECT * FROM course_modules
+                    WHERE sub_period_id = :sub_period_id",
+                [
+                    'sub_period_id' => $period['sub_period_id']
+                ]
+            )->findAll();
+            $period['modules'] = $subPeriodModules;
+        }
+
+        return $subPeriods;
+    }
+
+    public function getCurrentContentAndPastContent(string $courseId)
+    {
+        $allContent = $this->getCourseSubPeriodsAndModules($courseId);
+        $currentContent = [];
+        $pastContent = [];
+
+        $currentDateTime = date('Y-m-d H:i:s');
+
+        foreach ($allContent as $period) {
+            if ($period['end_datetime'] > $currentDateTime) {
+                $currentContent[] = $period;
+            } else {
+                $pastContent[] = $period;
+            }
+        }
+
+        return [
+            'currentContent' => $currentContent,
+            'pastContent' => $pastContent
+        ];
+    }
+
     public function getCourseModule(string $courseId, string $moduleId)
     {
         return $this->db->query(

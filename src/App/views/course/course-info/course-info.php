@@ -49,16 +49,30 @@
             <?php else: ?>
                 <div class="course-section">
                     <h2 class="section-title">Current Content</h2>
-                    <div class="module-list">
-                        <?php foreach ($modules as $module): ?>
-                            <?php include $this->resolve("course/course-info/course-module.php"); ?>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-                <div class="course-section">
-                    <h2 class="section-title">Past Content</h2>
                     <div class="period-list">
-                        <div class="period-item">
+                        <?php foreach ($currentContent as $period): ?>
+                            <div class="period-item">
+                                <div class="period-header">
+                                    <div class="period-title">
+                                        <h4><?= formatDate($period['start_datetime'], 'Y M j') . " - " . formatDate($period['end_datetime'], 'Y M j') ?></h4>
+                                    </div>
+                                    <div class="period-toggle">
+                                        <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <div class="period-content">
+                                    <div class="module-list">
+                                        <?php foreach ($period['modules'] as $module): ?>
+                                            <?php include $this->resolve("course/course-info/course-module.php"); ?>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                        <!-- <div class="period-item">
                             <div class="period-header">
                                 <div class="period-title">
                                     <h4>2024 Jan 01 - 2024 Jan 31</h4>
@@ -72,28 +86,37 @@
 
                             <div class="period-content">
                                 <div class="module-list">
-                                    <?php foreach ($modules as $module): ?>
-                                        <?php include $this->resolve("course/course-info/course-module.php"); ?>
-                                    <?php endforeach; ?>
+                                    modules
                                 </div>
                             </div>
-                        </div>
-                        <div class="period-item">
-                            <div class="period-header">
-                                <div class="period-title">
-                                    <h4>2024 Feb 01 - 2024 Feb 28</h4>
+                        </div> -->
+                    </div>
+                </div>
+                <div class="course-section">
+                    <h2 class="section-title">Past Content</h2>
+                    <div class="period-list">
+                        <?php foreach ($pastContent as $period): ?>
+                            <div class="period-item">
+                                <div class="period-header">
+                                    <div class="period-title">
+                                        <h4><?= formatDate($period['start_datetime'], 'Y M j') . " - " . formatDate($period['end_datetime'], 'Y M j') ?></h4>
+                                    </div>
+                                    <div class="period-toggle">
+                                        <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
+                                    </div>
                                 </div>
-                                <div class="period-toggle">
-                                    <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polyline points="6 9 12 15 18 9"></polyline>
-                                    </svg>
-                                </div>
-                            </div>
 
-                            <div class="period-content">
-                                <h3>modules</h3>
+                                <div class="period-content">
+                                    <div class="module-list">
+                                        <?php foreach ($period['modules'] as $module): ?>
+                                            <?php include $this->resolve("course/course-info/course-module.php"); ?>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             <?php endif; ?>

@@ -88,17 +88,25 @@ class CoursesController
     public function courseInfo(array $params)
     {
         $course = $this->courseService->getByCourseId($params['course_id']);
+
         if (!$course) {
             redirectTo('/courses/my-courses');
         }
-        $courseModules = $this->courseService->getCourseModuleList($params['course_id']);
-
-        // Get module resources based on module ID
-        $moduleResources = [];
-        foreach ($courseModules as $module) {
-            $resources = $this->courseService->courseResourceList($module['course_id'], $module['module_id']);
-            $moduleResources[$module['module_id']] = $resources;
+        if ($course['billing_type'] === 'onetime') {
+            $courseModules = $this->courseService->getCourseModuleList($params['course_id']);
+        } else {
+            $content = $this->courseService->getCurrentContentAndPastContent($params['course_id']);
+            $currentContent = $content['currentContent'];
+            $pastContent = $content['pastContent'];
         }
+
+        // TODO: Fetch module resources based on the updated database schema and course flow.
+        // Get module resources based on module ID
+        // $moduleResources = [];
+        // foreach ($courseModules as $module) {
+        //     $resources = $this->courseService->courseResourceList($module['course_id'], $module['module_id']);
+        //     $moduleResources[$module['module_id']] = $resources;
+        // }
         $assignments = $this->assignmentService->getAssignmentByCourse($params['course_id']);
 
         // Get module resources based on module ID
@@ -116,10 +124,12 @@ class CoursesController
                 'course' => $course,
                 'title' => $course['title'],
                 'user' => $user,
-                'modules' => $courseModules,
+                'modules' => $courseModules ?? [],
+                'currentContent' => $currentContent ?? [],
+                'pastContent' => $pastContent ?? [],
                 'assignments' => $assignments,
                 'assignmentsResources' => $assignmentsResources,
-                'moduleResources' => $moduleResources
+                // 'moduleResources' => $moduleResources
             ]
         );
     }
