@@ -15,40 +15,91 @@
         --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        background-color: var(--bg-light);
+        color: var(--text-dark);
+        line-height: 1.6;
+    }
+
     .container {
         max-width: 1400px;
         margin: 0 auto;
         padding: 0 20px;
     }
 
+    /* Header */
+    .header {
+        background: var(--white);
+        padding: 1rem 0;
+        box-shadow: var(--shadow);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+    }
 
-    /* dashboard Section */
-    .dashboard {
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--theme-color);
+    }
+
+    .nav-menu {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .nav-link {
+        color: var(--text-dark);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+    }
+
+    .nav-link:hover {
+        color: var(--theme-color);
+    }
+
+    /* teacher-hero Section */
+    .teacher-hero {
         padding: 8rem 0 4rem;
         background: linear-gradient(135deg, var(--theme-color) 0%, var(--theme-dark) 100%);
         color: var(--white);
     }
 
-    .dashboard-content {
+    .teacher-hero-content {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 4rem;
         align-items: center;
     }
 
-    .dashboard-text h1 {
+    .teacher-hero-text h1 {
         font-size: 3rem;
         margin-bottom: 1.5rem;
         line-height: 1.2;
     }
 
-    .dashboard-text p {
+    .teacher-hero-text p {
         font-size: 1.2rem;
         margin-bottom: 2rem;
         opacity: 0.9;
     }
 
-    .dashboard-stats {
+    .teacher-hero-stats {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 2rem;
@@ -356,25 +407,6 @@
         justify-content: center;
     }
 
-    /* Chart Filters */
-    .period-select {
-        background: var(--white);
-        border: 1px solid var(--theme-light);
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
-        cursor: pointer;
-        font-weight: 500;
-        color: var(--text-dark);
-        outline: none;
-        transition: all 0.3s ease;
-    }
-
-    .period-select:hover,
-    .period-select:focus {
-        border-color: var(--theme-color);
-        box-shadow: 0 0 0 2px rgba(255, 196, 0, 0.1);
-    }
-
     /* Transaction */
     .transactions-section {
         margin-top: 2rem;
@@ -489,22 +521,26 @@
             padding: 0 15px;
         }
 
-        .dashboard-content {
+        .teacher-hero-content {
             grid-template-columns: 1fr;
             text-align: center;
             gap: 2rem;
         }
 
-        .dashboard-text h1 {
+        .teacher-hero-text h1 {
             font-size: 2.5rem;
         }
 
-        .dashboard-stats {
+        .teacher-hero-stats {
             grid-template-columns: repeat(2, 1fr);
         }
 
         .features-grid {
             grid-template-columns: 1fr;
+        }
+
+        .nav-menu {
+            display: none;
         }
 
         .courses-grid {
@@ -521,19 +557,19 @@
     }
 
     @media (max-width: 480px) {
-        .dashboard {
+        .teacher-hero {
             padding: 6rem 0 3rem;
         }
 
-        .dashboard-text h1 {
+        .teacher-hero-text h1 {
             font-size: 2rem;
         }
 
-        .dashboard-text p {
+        .teacher-hero-text p {
             font-size: 1rem;
         }
 
-        .dashboard-stats {
+        .teacher-hero-stats {
             grid-template-columns: 1fr;
             padding: 1.5rem;
         }
@@ -600,16 +636,16 @@
     }
 </style>
 <?php include $this->resolve('User/sidebar.php'); ?>
-<section class="dashboard">
-    <div class="container dashboard-content">
-        <div class="dashboard-text">
+<section class="teacher-hero">
+    <div class="container teacher-hero-content">
+        <div class="teacher-hero-text">
             <h1>Transform Your Knowledge Into Income</h1>
             <p>Create, sell, and manage your online courses with our powerful platform designed for educators.</p>
             <a href="#" class="btn btn-primary">Start Teaching Today</a>
         </div>
-        <div class="dashboard-stats">
+        <div class="teacher-hero-stats">
             <div class="stat-item">
-                <h3><?php echo $stat['users']['teachers'] ?></h3>
+                <h3>50K+</h3>
                 <p>Active Teachers</p>
             </div>
             <div class="stat-item">
@@ -617,7 +653,7 @@
                 <p>Teacher Earnings</p>
             </div>
             <div class="stat-item">
-                <h3><?php echo $stat['users']['students'] ?></h3>
+                <h3>1M+</h3>
                 <p>Students Taught</p>
             </div>
         </div>
@@ -633,12 +669,12 @@
         <div class="quick-stats">
             <div class="stat-card">
                 <i class="fas fa-users fa-2x" style="color: var(--theme-color)"></i>
-                <div class="stat-value"><?php echo $stat['users']['students'] ?></div>
+                <div class="stat-value">1,234</div>
                 <p>Active Students</p>
             </div>
             <div class="stat-card">
                 <i class="fas fa-graduation-cap fa-2x" style="color: var(--theme-color)"></i>
-                <div class="stat-value"><?php echo $stat['courses']; ?></div>
+                <div class="stat-value">15</div>
                 <p>Active Courses</p>
             </div>
             <div class="stat-card">
@@ -655,13 +691,6 @@
         <div class="dashboard-grid">
             <div class="chart-container">
                 <h2 class="section-title">Performance Overview</h2>
-                <div class="chart-filters" style="text-align: right; margin-bottom: 1rem;">
-                    <select id="chart-period-filter" class="period-select">
-                        <option value="7days">Last 7 Days</option>
-                        <option value="1month">Last Month</option>
-                        <option value="1year">Last Year</option>
-                    </select>
-                </div>
                 <div class="chart-wrapper">
                     <canvas id="performanceChart"></canvas>
                 </div>
@@ -736,7 +765,7 @@
         <div class="transactions-section">
             <div class="transactions-header">
                 <h2 class="section-title">Recent Transactions</h2>
-                <a href="/billing-and-payment" class="view-all-btn">View All</a>
+                <a href="#" class="view-all-btn">View All</a>
             </div>
             <div class="transactions-list" id="transactionsList">
                 <!-- Transactions will be populated by JavaScript -->
@@ -768,9 +797,20 @@
         </div>
     </div>
 </section>
-[]
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
 <script>
+    // Add scroll effect for header
+    window.addEventListener('scroll', () => {
+        const header = document.querySelector('.header');
+        if (window.scrollY > 50) {
+            header.style.background = '#ffffff';
+            header.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+        } else {
+            header.style.background = '#ffffff';
+            header.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+        }
+    });
+
     // Add animation for feature cards
     const featureCards = document.querySelectorAll('.feature-card');
     featureCards.forEach(card => {
@@ -783,89 +823,38 @@
     });
 
     // Add Chart.js initialization
-    let performanceChart;
     const ctx = document.getElementById('performanceChart').getContext('2d');
-
-    // Different datasets for different time periods
-    const chartData = {
-        '7days': {
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-            engagement: [62, 73, 68, 82, 76, 65, 88],
-            revenue: [28, 32, 30, 35, 40, 25, 42]
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Student Engagement',
+                data: [65, 78, 90, 85, 92, 88],
+                borderColor: '#2ECC71',
+                tension: 0.4,
+                fill: false
+            }, {
+                label: 'Revenue ($K)',
+                data: [35, 42, 48, 45, 55, 60],
+                borderColor: '#FFC400',
+                tension: 0.4,
+                fill: false
+            }]
         },
-        '1month': {
-            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-            engagement: [70, 82, 75, 88],
-            revenue: [38, 42, 45, 60]
-        },
-        '1year': {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            engagement: [65, 78, 90, 85, 92, 88, 95, 91, 87, 94, 97, 99],
-            revenue: [35, 42, 48, 45, 55, 60, 58, 63, 59, 68, 72, 80]
-        }
-    };
-
-    // Function to create/update chart
-    function updateChart(period) {
-        const data = chartData[period];
-
-        const config = {
-            type: 'line',
-            data: {
-                labels: data.labels,
-                datasets: [{
-                    label: 'Student Engagement',
-                    data: data.engagement,
-                    borderColor: '#2ECC71',
-                    tension: 0.4,
-                    fill: false
-                }, {
-                    label: 'Revenue ($K)',
-                    data: data.revenue,
-                    borderColor: '#FFC400',
-                    tension: 0.4,
-                    fill: false
-                }]
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
             },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                },
-                animation: {
-                    duration: 500
+            scales: {
+                y: {
+                    beginAtZero: true
                 }
             }
-        };
-
-        // If chart exists, destroy it before creating a new one
-        if (performanceChart) {
-            performanceChart.destroy();
         }
-
-        // Create new chart
-        performanceChart = new Chart(ctx, config);
-    }
-
-    // Initialize chart with 7-day data
-    document.addEventListener('DOMContentLoaded', function() {
-        updateChart('7days');
-
-        // Add event listener to the dropdown
-        const periodSelect = document.getElementById('chart-period-filter');
-        periodSelect.addEventListener('change', function() {
-            updateChart(this.value);
-        });
-
-        // Also render transactions (keep your existing code)
-        renderTransactions();
     });
 
     // Sample transaction data

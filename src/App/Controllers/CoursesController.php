@@ -116,6 +116,9 @@ class CoursesController
             $assignmentsResources[$assignment['assignment_id']] = $resources;
         }
 
+        // get course reviews
+        $userReview = $this->courseService->getReviewForcourse($params['course_id']);
+        // get tutor profile
         $user = $this->userService->getUserProfile($course['tutor_id']);
 
         echo $this->view->render(
@@ -129,7 +132,8 @@ class CoursesController
                 'pastContent' => $pastContent ?? [],
                 'assignments' => $assignments,
                 'assignmentsResources' => $assignmentsResources,
-                // 'moduleResources' => $moduleResources
+                // 'moduleResources' => $moduleResources,
+                'userReview' => $userReview
             ]
         );
     }
@@ -257,7 +261,7 @@ class CoursesController
     public function deleteCourse(array $params)
     {
         $this->courseService->delete((int)$params['course']);
-        redirectTo('/courses/my-courses');
+        redirectTo($_SERVER['HTTP_REFERER']);
     }
 
     public function courseParticipantStat()

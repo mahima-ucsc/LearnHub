@@ -1,3 +1,4 @@
+<?php include $this->resolve('User/sidebar.php'); ?>
 <section class="courses-page">
     <div class="main-container">
         <!-- <div class="main-title">

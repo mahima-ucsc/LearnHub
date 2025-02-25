@@ -125,8 +125,8 @@ class CourseService
     {
         $myCourses = $this->db->query(
             "SELECT * FROM courses
-            WHERE tutor_id = :user_id",
-            ['user_id' => $_SESSION['user']]
+            WHERE tutor_id = :tutor_id",
+            ['tutor_id' => $_SESSION['user']]
         )->findAll();
 
         return $myCourses;
@@ -135,9 +135,8 @@ class CourseService
     {
         return $this->db->query(
             "SELECT * FROM courses
-            WHERE tutor_id = :user_id AND course_id = :id",
+            WHERE course_id = :id",
             [
-                'user_id' => $_SESSION['user'],
                 'id' => $id
             ]
         )->find();
@@ -351,10 +350,9 @@ class CourseService
     public function delete(int $id)
     {
         $this->db->query(
-            "DELETE FROM courses WHERE course_id = :id AND tutor_id = :user_id",
+            "DELETE FROM courses WHERE course_id = :id",
             [
-                "id" => $id,
-                "user_id" => $_SESSION['user']
+                "id" => $id
             ]
         );
     }
@@ -370,11 +368,37 @@ class CourseService
         return $userReview;
     }
 
+    public function getReviewForcourse(string $courseId)
+    {
+        $userReview = $this->db->query(
+            "SELECT c.*, CONCAT(u.first_name, ' ', u.last_name) AS name, u.profile_picture_url FROM course_review c 
+            JOIN users u on c.user_id = u.user_id 
+            WHERE course_id = :course_id",
+            [
+                'course_id' => $courseId,
+            ]
+        )->findAll();
+        return $userReview;
+    }
+
     public function getAllCourses()
     {
         return $this->db->query(
             "SELECT * FROM courses"
         )->findAll();
+    }
+
+    public function getCourseList()
+    {
+        $searchTerm = $_GET['s'] ?? '';
+        $courses = $this->db->query(
+            "SELECT * FROM courses WHERE title LIKE :term ",
+            [
+                "term" => "%{$searchTerm}%"
+            ]
+        )->findAll();
+
+        return $courses;
     }
 
     public function getNoOfCourses()
