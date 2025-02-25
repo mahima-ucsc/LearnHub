@@ -304,7 +304,7 @@
         <h2 class="section-title">Student Reviews</h2>
         <div class="reviews-summary">
             <div class="overall-rating">
-                <div class="rating-number"><?php echo $summeryOfReviews['avgRating'] ?></div>
+                <div class="rating-number"><?php echo $summeryOfReviews['avgRating'] ?> / 5</div>
                 <div class="rating-stars">
                     <?php
                     if (($summeryOfReviews['avgRating'] - floor($summeryOfReviews['avgRating'])) > 0.4) {
@@ -373,7 +373,7 @@
         </div>
 
         <div class="addFeadback">
-            <button class="add-review-button" onclick="document.getElementById('add-review-modal').style.display='block'">Add Review</button>
+            <a href="/course/enroll" class="add-review-button">Add Review</a>
         </div>
 
     </div>

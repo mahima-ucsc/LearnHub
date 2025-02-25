@@ -123,6 +123,10 @@ function registerRoutes(App $app)
     // Resources
     $app->get('/resource', [ResourceController::class, 'resource']);
 
+    // Course Reviews
+    $app->get('/courses/{courseId}/reviews', [ReviewController::class, 'courseReviews']);
+    $app->post('/courses/{courseId}/reviews', [ReviewController::class, 'addCourseReview'], [AuthRequiredMiddleware::class]);
+
     // Reviews
     $app->post('/add-review', [ReviewController::class, 'addReview'], [AuthRequiredMiddleware::class]);
     $app->get('/review/edit/{review}', [ReviewController::class, 'editView'], [AuthRequiredMiddleware::class]);
