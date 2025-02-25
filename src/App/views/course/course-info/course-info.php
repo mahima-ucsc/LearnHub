@@ -372,6 +372,10 @@
             <?php endforeach; ?>
         </div>
 
+        <div class="addFeadback">
+            <button class="add-review-button" onclick="document.getElementById('add-review-modal').style.display='block'">Add Review</button>
+        </div>
+
     </div>
 
 
