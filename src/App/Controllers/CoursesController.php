@@ -109,6 +109,7 @@ class CoursesController
         }
 
         // get course reviews
+        $userReview = [];
         $userReview = $this->courseService->getReviewForcourse($params['course_id']);
         // get tutor profile
         $user = $this->userService->getUserProfile($course['tutor_id']);

@@ -348,37 +348,18 @@
 
         <div class="reviews-list">
             <?php
-            $reviews = [
-                [
-                    'name' => 'Sachith Dhanushka',
-                    'date' => 'November 20, 2024',
-                    'rating' => 5,
-                    'comment' => 'Absolutely amazing course! The instructor explains complex Python concepts in a very clear and understandable way. The assignments are challenging but help reinforce the learning.',
-                    'avatar' => '/assets/images/user.jpeg'
-                ],
-                [
-                    'name' => 'Dinuka Sahan',
-                    'date' => 'November 15, 2024',
-                    'rating' => 4,
-                    'comment' => 'Great introduction to Python programming. The modules are well-structured, and the resources are helpful. Would recommend for beginners.',
-                    'avatar' => '/assets/images/user.jpeg'
-                ],
-                [
-                    'name' => 'Isuru Naveen',
-                    'date' => 'November 10, 2024',
-                    'rating' => 5,
-                    'comment' => 'Comprehensive course that covers everything from basics to advanced Python concepts. The OOP module was particularly enlightening.',
-                    'avatar' => '/assets/images/user.jpeg'
-                ]
-            ];
-
-            foreach ($reviews as $review): ?>
+            foreach ($userReview as $review): ?>
+                <?php $datetime = new DateTime($review['date']);
+                $date = $datetime->format('F j, Y');
+                $time = $datetime->format('g:i A');
+                ?>
                 <div class="review-item">
                     <div class="review-header">
-                        <img src="<?php echo htmlspecialchars($review['avatar']); ?>" alt="<?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
+                        <img src="<?php echo htmlspecialchars($review['profile_picture_url']); ?>" alt="<?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
                         <div class="review-meta">
                             <span class="review-name"><?php echo htmlspecialchars($review['name']); ?></span>
-                            <span class="review-date"><?php echo htmlspecialchars($review['date']); ?></span>
+                            <span class="review-date"><?php echo htmlspecialchars($time); ?></span>
+                            <span class="review-date"><?php echo htmlspecialchars($date); ?></span>
                         </div>
                         <div class="review-rating">
                             <?php
@@ -391,7 +372,7 @@
                         </div>
                     </div>
                     <div class="review-body">
-                        <p><?php echo htmlspecialchars($review['comment']); ?></p>
+                        <p><?php echo htmlspecialchars($review['review']); ?></p>
                     </div>
                 </div>
             <?php endforeach; ?>
