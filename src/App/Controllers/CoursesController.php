@@ -121,7 +121,7 @@ class CoursesController
             $totalRating += $review['rating'];
             $starCount[$review['rating']]++;
         }
-        $avgRating = $totalRating / $totalReviews;
+        $avgRating = $totalReviews > 0 ? ($totalRating / $totalReviews) : 0;
         $summeryOfReviews = ['totalReviews' => $totalReviews, 'avgRating' => $avgRating, 'starCount' => $starCount];
 
         // get tutor profile

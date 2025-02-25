@@ -327,14 +327,14 @@
             </div>
             <div class="rating-breakdown">
                 <?php
-                krsort($summeryOfReviews['starCount']); //sort the array in descending order
+                krsort($summeryOfReviews['starCount']);
                 foreach ($summeryOfReviews['starCount'] as $key => $value) : ?>
                     <div class="rating-bar">
                         <span class="rating-label"><?php echo $key ?> Stars</span>
                         <div class="progress-bar">
-                            <div class="progress" style="width: <?php echo $value / $summeryOfReviews['totalReviews'] * 100 ?>%"></div>
+                            <div class="progress" style="width: <?php echo $summeryOfReviews['totalReviews'] > 0 ? ($value / $summeryOfReviews['totalReviews']) * 100 : 0; ?>%"></div>
                         </div>
-                        <span class="rating-percentage"><?php echo $value / $summeryOfReviews['totalReviews'] * 100 ?> %</span>
+                        <span class="rating-percentage"><?php echo $summeryOfReviews['totalReviews'] > 0 ? ($value / $summeryOfReviews['totalReviews']) * 100 : 0; ?> %</span>
                     </div>
                 <?php endforeach; ?>
             </div>
