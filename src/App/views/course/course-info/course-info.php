@@ -327,57 +327,56 @@
         <h2 class="section-title">Student Reviews</h2>
         <div class="reviews-summary">
             <div class="overall-rating">
-                <div class="rating-number">4.8</div>
+                <div class="rating-number"><?php echo $summeryOfReviews['avgRating'] ?> / 5</div>
                 <div class="rating-stars">
-                    <span class="star active">★</span>
-                    <span class="star active">★</span>
-                    <span class="star active">★</span>
-                    <span class="star active">★</span>
-                    <span class="star half-active">★</span>
+                    <?php
+                    if (($summeryOfReviews['avgRating'] - floor($summeryOfReviews['avgRating'])) > 0.4) {
+                        $flag = true;
+                    }
+                    for ($i = 1; $i <= 5; $i++) {
+
+                        if ($i <= $summeryOfReviews['avgRating']) {
+                            echo '<span class="star active">★</span>';
+                        } else if ($flag) {
+                            echo '<span class="star half-active">★</span>';
+                            $flag = false;
+                        } else {
+                            echo '<span class="star">★</span>';
+                        }
+                    }
+                    ?>
                 </div>
-                <div class="rating-text">256 Total Reviews</div>
+                <div class="rating-text"><?php echo $summeryOfReviews['totalReviews'] ?> Total Reviews</div>
             </div>
             <div class="rating-breakdown">
-                <div class="rating-bar">
-                    <span class="rating-label">5 Stars</span>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 65%"></div>
+                <?php
+                krsort($summeryOfReviews['starCount']);
+                foreach ($summeryOfReviews['starCount'] as $key => $value) : ?>
+                    <div class="rating-bar">
+                        <span class="rating-label"><?php echo $key ?> Stars</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: <?php echo $summeryOfReviews['totalReviews'] > 0 ? ($value / $summeryOfReviews['totalReviews']) * 100 : 0; ?>%"></div>
+                        </div>
+                        <span class="rating-percentage"><?php echo $summeryOfReviews['totalReviews'] > 0 ? ($value / $summeryOfReviews['totalReviews']) * 100 : 0; ?> %</span>
                     </div>
-                    <span class="rating-percentage">65%</span>
-                </div>
-                <div class="rating-bar">
-                    <span class="rating-label">4 Stars</span>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 25%"></div>
-                    </div>
-                    <span class="rating-percentage">25%</span>
-                </div>
-                <div class="rating-bar">
-                    <span class="rating-label">3 Stars</span>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 8%"></div>
-                    </div>
-                    <span class="rating-percentage">8%</span>
-                </div>
-                <div class="rating-bar">
-                    <span class="rating-label">2 Stars</span>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 2%"></div>
-                    </div>
-                    <span class="rating-percentage">2%</span>
-                </div>
+                <?php endforeach; ?>
             </div>
         </div>
 
         <div class="reviews-list">
             <?php
             foreach ($userReview as $review): ?>
+                <?php $datetime = new DateTime($review['date']);
+                $date = $datetime->format('F j, Y');
+                $time = $datetime->format('g:i A');
+                ?>
                 <div class="review-item">
                     <div class="review-header">
                         <img src="<?php echo htmlspecialchars($review['profile_picture_url']); ?>" alt="<?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
                         <div class="review-meta">
                             <span class="review-name"><?php echo htmlspecialchars($review['name']); ?></span>
-                            <span class="review-date"><?php echo htmlspecialchars($review['date']); ?></span>
+                            <span class="review-date"><?php echo htmlspecialchars($time); ?></span>
+                            <span class="review-date"><?php echo htmlspecialchars($date); ?></span>
                         </div>
                         <div class="review-rating">
                             <?php
@@ -394,6 +393,10 @@
                     </div>
                 </div>
             <?php endforeach; ?>
+        </div>
+
+        <div class="addFeadback">
+            <a href="/course/enroll" class="add-review-button">Add Review</a>
         </div>
 
     </div>
