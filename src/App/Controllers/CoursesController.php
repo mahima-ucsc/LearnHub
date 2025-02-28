@@ -87,7 +87,12 @@ class CoursesController
 
     public function courseInfo(array $params)
     {
-        $course = $this->courseService->getByCourseId($params['course_id']);
+        $course = $this->courseService->getCourseById($params['course_id']);
+        /**
+         * 'isPaid' property based on the course type:
+         * - For one-time courses: Boolean value (true or false)
+         * - For recurring courses: Null value
+         */
 
         if (!$course) {
             redirectTo('/courses/my-courses');
@@ -146,7 +151,7 @@ class CoursesController
                 'pastContent' => $pastContent ?? [],
                 'assignments' => $assignments,
                 'assignmentsResources' => $assignmentsResources,
-                'moduleResources' => $moduleResources,
+                // 'moduleResources' => $moduleResources,
                 'userReview' => $userReview,
                 'summeryOfReviews' => $summeryOfReviews
 
