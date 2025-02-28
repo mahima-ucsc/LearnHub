@@ -158,17 +158,26 @@ body {
   gap: 1rem;
 }
 
-.enroll-button {
+.enroll-button,
+.pay-button {
   background: var(--primary-color);
   color: var(--white);
-  padding: 0.75rem 1.5rem;
   border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
   transition: all 0.3s ease;
 }
 
-.enroll-button:hover {
+.enroll-button {
+  padding: 0.75rem 1.5rem;
+}
+
+.pay-button {
+  padding: 0.5rem 0.75rem;
+}
+
+.enroll-button:hover,
+.pay-button:hover {
   background: #2980b9;
   transform: translateY(-3px);
 }

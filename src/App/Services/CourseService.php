@@ -203,15 +203,19 @@ class CourseService
             }
             $period['is_paid'] = $isPaid;
 
-            // Set modules for each sub period
-            $subPeriodModules = $this->db->query(
-                "SELECT * FROM course_modules
-                    WHERE sub_period_id = :sub_period_id",
-                [
-                    'sub_period_id' => $period['sub_period_id']
-                ]
-            )->findAll();
-            $period['modules'] = $subPeriodModules;
+            // Set modules for each sub period only if paid
+            if ($isPaid) {
+                $subPeriodModules = $this->db->query(
+                    "SELECT * FROM course_modules
+                        WHERE sub_period_id = :sub_period_id",
+                    [
+                        'sub_period_id' => $period['sub_period_id']
+                    ]
+                )->findAll();
+                $period['modules'] = $subPeriodModules;
+            } else {
+                $period['modules'] = [];
+            }
         }
 
         return $subPeriods;
