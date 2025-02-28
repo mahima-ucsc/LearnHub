@@ -93,6 +93,7 @@ CREATE TABLE IF NOT EXISTS recurring_course_sub_periods (
 
 -- Table for payments related to subscription periods
 CREATE TABLE IF NOT EXISTS payments (
+    payment_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     -- Payment for a course can be either:
     -- 1. For a one-time course: sub_period_id should be NULL
     -- 2. For a recurring course: sub_period_id must NOT be NULL 
