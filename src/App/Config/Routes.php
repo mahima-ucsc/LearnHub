@@ -21,8 +21,8 @@ function registerRoutes(App $app)
     $app->get('/profile', [ProfileController::class, 'profile'], [AuthRequiredMiddleware::class]);
     $app->get('/dashboard', [PageController::class, 'dashboard'], [AuthRequiredMiddleware::class]);
     $app->get('/admin-dashboard', [PageController::class, 'adminDashboard'], [AdminOnlyMiddleware::class]);
-    $app->post('/admin-dashboard/course-managment/approve', [PostController::class, 'approveCourseRequest']);
-    $app->post('/admin-dashboard/course-managment/reject', [PostController::class, 'rejectCourseRequest']);
+    $app->post('/approve-post', [PostController::class, 'approveCourseRequest']);
+    $app->post('/reject-post', [PostController::class, 'rejectCourseRequest']);
     $app->get('/admin-dashboard/user-managment', [PageController::class, 'userManagment'], [AdminOnlyMiddleware::class]);
     $app->get('/settings', [PageController::class, 'settings'], [AuthRequiredMiddleware::class]);
     $app->get('/tutor', [TutorProfileController::class, 'tutorProfile'], [AuthRequiredMiddleware::class]);
@@ -35,6 +35,7 @@ function registerRoutes(App $app)
 
     $app->get('/user-managment', [PageController::class, 'userManagment']);
     $app->get('/course-managment', [PageController::class, 'courseManagment']);
+    $app->get('/post-managment', [PageController::class, 'postManagment']);
 
 
 

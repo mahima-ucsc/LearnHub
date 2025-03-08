@@ -1,4 +1,4 @@
-<?php 
+<?php
 // use App\views\components\Alert;
 
 // $alert = new Alert('Course request approved successfully', 'success');
@@ -48,7 +48,7 @@
                         </div>
                         <!-- buttons  -->
                         <div class="button-container">
-                            <form action="/admin-dashboard/course-managment/approve" method="POST" class="approve-form" onsubmit="return confirm('Are you sure you want to approve this request?')">
+                            <form action="/approve-post" method="POST" class="approve-form">
                                 <input type="hidden" name="requestId" value="<?= e($request['request_id']) ?>">
                                 <button type="submit" class="btn approve">Approve</button>
                             </form>
