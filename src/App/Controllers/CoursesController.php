@@ -368,4 +368,14 @@ class CoursesController
 
         $this->courseService->readResource($resource);
     }
+
+    public function myCoursesTest()
+    {
+        echo $this->view->render(
+            "course/test.php",
+            [
+                'title' => "Course Participants",
+            ]
+        );
+    }
 }
