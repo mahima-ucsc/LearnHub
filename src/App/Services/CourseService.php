@@ -142,15 +142,22 @@ class CourseService
         )->find();
     }
 
-    public function getByCourseId(string $id)
+    public function getCourseById(string $id)
     {
-        return $this->db->query(
+        $course =  $this->db->query(
             "SELECT * FROM courses
             WHERE course_id = :id",
             [
                 'id' => $id
             ]
         )->find();
+
+        $isPaid = null;
+        if (isset($_SESSION['user']) && $course['billing_type'] == 'onetime') {
+            $isPaid = $this->isOneTimeCoursePaid($_SESSION['user'], $id);
+        }
+        $course['is_paid'] = $isPaid;
+        return $course;
     }
 
     public function getCourseModuleList(string $courseId)
@@ -173,6 +180,63 @@ class CourseService
                 'id' => $courseId
             ]
         )->findAll();
+    }
+
+    private function getCourseSubPeriodsAndModules(string $courseId)
+    {
+
+        $subPeriods = $this->db->query(
+            "SELECT * FROM recurring_course_sub_periods
+                WHERE course_id = :id
+                ORDER BY start_datetime",
+            [
+                'id' => $courseId
+            ]
+        )->findAll();
+
+        foreach ($subPeriods as &$period) {
+            // Check if the user has paid for the course
+            $isPaid = null;
+
+            if (isset($_SESSION['user'])) {
+                $isPaid = $this->isReuccringCourseSubPeriodPaid($_SESSION['user'], $courseId, $period['sub_period_id']);
+            }
+            $period['is_paid'] = $isPaid;
+
+            // Set modules for each sub period
+            $subPeriodModules = $this->db->query(
+                "SELECT * FROM course_modules
+                    WHERE sub_period_id = :sub_period_id",
+                [
+                    'sub_period_id' => $period['sub_period_id']
+                ]
+            )->findAll();
+            $period['modules'] = $subPeriodModules;
+        }
+
+        return $subPeriods;
+    }
+
+    public function getCurrentContentAndPastContent(string $courseId)
+    {
+        $allContent = $this->getCourseSubPeriodsAndModules($courseId);
+        $currentContent = [];
+        $pastContent = [];
+
+        $currentDateTime = date('Y-m-d H:i:s');
+
+        foreach ($allContent as $period) {
+            if ($period['end_datetime'] > $currentDateTime) {
+                $currentContent[] = $period;
+            } else {
+                $pastContent[] = $period;
+            }
+        }
+
+        return [
+            'currentContent' => $currentContent,
+            'pastContent' => $pastContent
+        ];
     }
 
     public function getCourseModule(string $courseId, string $moduleId)
@@ -459,5 +523,52 @@ class CourseService
         }
 
         return $fileName;
+    }
+
+    private function isOneTimeCoursePaid($userId, $courseId)
+    {
+        $paid = $this->db->query(
+            "SELECT SUM(amount) as total_paid FROM payments
+            WHERE user_id = :user_id AND course_id = :course_id",
+            [
+                "user_id" => $userId,
+                "course_id" => $courseId
+            ]
+        )->find();
+
+        $courseFee = $this->db->query(
+            "SELECT price FROM courses
+            WHERE course_id = :course_id",
+            [
+                "course_id" => $courseId
+            ]
+        )->find();
+
+        $isPaid = $paid && $paid['total_paid'] >= $courseFee['price'];
+        return $isPaid;
+    }
+
+    private function isReuccringCourseSubPeriodPaid($userId, $courseId, $subPeriodId)
+    {
+        $paid = $this->db->query(
+            "SELECT SUM(amount) as total_paid FROM payments
+            WHERE user_id = :user_id AND course_id = :course_id AND sub_period_id = :sub_period_id",
+            [
+                "user_id" => $userId,
+                "course_id" => $courseId,
+                "sub_period_id" => $subPeriodId
+            ]
+        )->find();
+
+        $subPeriodFee = $this->db->query(
+            "SELECT price FROM recurring_course_sub_periods
+            WHERE sub_period_id = :sub_period_id",
+            [
+                "sub_period_id" => $subPeriodId
+            ]
+        )->find();
+
+        $isPaid = $paid && $paid['total_paid'] >= $subPeriodFee['price'];
+        return $isPaid;
     }
 }

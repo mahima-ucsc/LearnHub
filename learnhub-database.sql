@@ -92,23 +92,18 @@ CREATE TABLE IF NOT EXISTS recurring_course_sub_periods (
 );
 
 -- Table for payments related to subscription periods
-CREATE TABLE IF NOT EXISTS sub_period_payments (
+CREATE TABLE IF NOT EXISTS payments (
     payment_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    sub_period_id BIGINT(20) UNSIGNED NOT NULL,
-    user_id BIGINT(20) UNSIGNED NOT NULL,
-    amount DECIMAL(10,2) NOT NULL,
-    payment_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    FOREIGN KEY (sub_period_id) REFERENCES recurring_course_sub_periods(sub_period_id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-);
-
--- Table for one-time course payments
-CREATE TABLE IF NOT EXISTS onetime_course_payments (
-    payment_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    -- Payment for a course can be either:
+    -- 1. For a one-time course: sub_period_id should be NULL
+    -- 2. For a recurring course: sub_period_id must NOT be NULL 
     course_id BIGINT(20) UNSIGNED NOT NULL,
+    sub_period_id BIGINT(20) UNSIGNED,
     user_id BIGINT(20) UNSIGNED NOT NULL,
     amount DECIMAL(10,2) NOT NULL,
     payment_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+
+    FOREIGN KEY (sub_period_id) REFERENCES recurring_course_sub_periods(sub_period_id) ON DELETE CASCADE,
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );

@@ -49,16 +49,30 @@
             <?php else: ?>
                 <div class="course-section">
                     <h2 class="section-title">Current Content</h2>
-                    <div class="module-list">
-                        <?php foreach ($modules as $module): ?>
-                            <?php include $this->resolve("course/course-info/course-module.php"); ?>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-                <div class="course-section">
-                    <h2 class="section-title">Past Content</h2>
                     <div class="period-list">
-                        <div class="period-item">
+                        <?php foreach ($currentContent as $period): ?>
+                            <div class="period-item">
+                                <div class="period-header">
+                                    <div class="period-title">
+                                        <h4><?= formatDate($period['start_datetime'], 'Y M j') . " - " . formatDate($period['end_datetime'], 'Y M j') ?></h4>
+                                    </div>
+                                    <div class="period-toggle">
+                                        <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <div class="period-content">
+                                    <div class="module-list">
+                                        <?php foreach ($period['modules'] as $module): ?>
+                                            <?php include $this->resolve("course/course-info/course-module.php"); ?>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                        <!-- <div class="period-item">
                             <div class="period-header">
                                 <div class="period-title">
                                     <h4>2024 Jan 01 - 2024 Jan 31</h4>
@@ -72,28 +86,37 @@
 
                             <div class="period-content">
                                 <div class="module-list">
-                                    <?php foreach ($modules as $module): ?>
-                                        <?php include $this->resolve("course/course-info/course-module.php"); ?>
-                                    <?php endforeach; ?>
+                                    modules
                                 </div>
                             </div>
-                        </div>
-                        <div class="period-item">
-                            <div class="period-header">
-                                <div class="period-title">
-                                    <h4>2024 Feb 01 - 2024 Feb 28</h4>
+                        </div> -->
+                    </div>
+                </div>
+                <div class="course-section">
+                    <h2 class="section-title">Past Content</h2>
+                    <div class="period-list">
+                        <?php foreach ($pastContent as $period): ?>
+                            <div class="period-item">
+                                <div class="period-header">
+                                    <div class="period-title">
+                                        <h4><?= formatDate($period['start_datetime'], 'Y M j') . " - " . formatDate($period['end_datetime'], 'Y M j') ?></h4>
+                                    </div>
+                                    <div class="period-toggle">
+                                        <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
+                                    </div>
                                 </div>
-                                <div class="period-toggle">
-                                    <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polyline points="6 9 12 15 18 9"></polyline>
-                                    </svg>
-                                </div>
-                            </div>
 
-                            <div class="period-content">
-                                <h3>modules</h3>
+                                <div class="period-content">
+                                    <div class="module-list">
+                                        <?php foreach ($period['modules'] as $module): ?>
+                                            <?php include $this->resolve("course/course-info/course-module.php"); ?>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             <?php endif; ?>
@@ -304,81 +327,56 @@
         <h2 class="section-title">Student Reviews</h2>
         <div class="reviews-summary">
             <div class="overall-rating">
-                <div class="rating-number">4.8</div>
+                <div class="rating-number"><?php echo $summeryOfReviews['avgRating'] ?> / 5</div>
                 <div class="rating-stars">
-                    <span class="star active">★</span>
-                    <span class="star active">★</span>
-                    <span class="star active">★</span>
-                    <span class="star active">★</span>
-                    <span class="star half-active">★</span>
+                    <?php
+                    if (($summeryOfReviews['avgRating'] - floor($summeryOfReviews['avgRating'])) > 0.4) {
+                        $flag = true;
+                    }
+                    for ($i = 1; $i <= 5; $i++) {
+
+                        if ($i <= $summeryOfReviews['avgRating']) {
+                            echo '<span class="star active">★</span>';
+                        } else if ($flag) {
+                            echo '<span class="star half-active">★</span>';
+                            $flag = false;
+                        } else {
+                            echo '<span class="star">★</span>';
+                        }
+                    }
+                    ?>
                 </div>
-                <div class="rating-text">256 Total Reviews</div>
+                <div class="rating-text"><?php echo $summeryOfReviews['totalReviews'] ?> Total Reviews</div>
             </div>
             <div class="rating-breakdown">
-                <div class="rating-bar">
-                    <span class="rating-label">5 Stars</span>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 65%"></div>
+                <?php
+                krsort($summeryOfReviews['starCount']);
+                foreach ($summeryOfReviews['starCount'] as $key => $value) : ?>
+                    <div class="rating-bar">
+                        <span class="rating-label"><?php echo $key ?> Stars</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: <?php echo $summeryOfReviews['totalReviews'] > 0 ? ($value / $summeryOfReviews['totalReviews']) * 100 : 0; ?>%"></div>
+                        </div>
+                        <span class="rating-percentage"><?php echo $summeryOfReviews['totalReviews'] > 0 ? ($value / $summeryOfReviews['totalReviews']) * 100 : 0; ?> %</span>
                     </div>
-                    <span class="rating-percentage">65%</span>
-                </div>
-                <div class="rating-bar">
-                    <span class="rating-label">4 Stars</span>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 25%"></div>
-                    </div>
-                    <span class="rating-percentage">25%</span>
-                </div>
-                <div class="rating-bar">
-                    <span class="rating-label">3 Stars</span>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 8%"></div>
-                    </div>
-                    <span class="rating-percentage">8%</span>
-                </div>
-                <div class="rating-bar">
-                    <span class="rating-label">2 Stars</span>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 2%"></div>
-                    </div>
-                    <span class="rating-percentage">2%</span>
-                </div>
+                <?php endforeach; ?>
             </div>
         </div>
 
         <div class="reviews-list">
             <?php
-            $reviews = [
-                [
-                    'name' => 'Sachith Dhanushka',
-                    'date' => 'November 20, 2024',
-                    'rating' => 5,
-                    'comment' => 'Absolutely amazing course! The instructor explains complex Python concepts in a very clear and understandable way. The assignments are challenging but help reinforce the learning.',
-                    'avatar' => '/assets/images/user.jpeg'
-                ],
-                [
-                    'name' => 'Dinuka Sahan',
-                    'date' => 'November 15, 2024',
-                    'rating' => 4,
-                    'comment' => 'Great introduction to Python programming. The modules are well-structured, and the resources are helpful. Would recommend for beginners.',
-                    'avatar' => '/assets/images/user.jpeg'
-                ],
-                [
-                    'name' => 'Isuru Naveen',
-                    'date' => 'November 10, 2024',
-                    'rating' => 5,
-                    'comment' => 'Comprehensive course that covers everything from basics to advanced Python concepts. The OOP module was particularly enlightening.',
-                    'avatar' => '/assets/images/user.jpeg'
-                ]
-            ];
-
-            foreach ($reviews as $review): ?>
+            foreach ($userReview as $review): ?>
+                <?php $datetime = new DateTime($review['date']);
+                $date = $datetime->format('F j, Y');
+                $time = $datetime->format('g:i A');
+                ?>
                 <div class="review-item">
                     <div class="review-header">
-                        <img src="<?php echo htmlspecialchars($review['avatar']); ?>" alt="<?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
+                        <img src="<?php echo htmlspecialchars($review['profile_picture_url']); ?>" alt="<?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
                         <div class="review-meta">
                             <span class="review-name"><?php echo htmlspecialchars($review['name']); ?></span>
-                            <span class="review-date"><?php echo htmlspecialchars($review['date']); ?></span>
+                            <span class="review-date"><?php echo htmlspecialchars($time); ?></span>
+                            <span class="review-date"><?php echo htmlspecialchars($date); ?></span>
                         </div>
                         <div class="review-rating">
                             <?php
@@ -391,10 +389,14 @@
                         </div>
                     </div>
                     <div class="review-body">
-                        <p><?php echo htmlspecialchars($review['comment']); ?></p>
+                        <p><?php echo htmlspecialchars($review['review']); ?></p>
                     </div>
                 </div>
             <?php endforeach; ?>
+        </div>
+
+        <div class="addFeadback">
+            <a href="/course/enroll" class="add-review-button">Add Review</a>
         </div>
 
     </div>

@@ -87,18 +87,31 @@ class CoursesController
 
     public function courseInfo(array $params)
     {
-        $course = $this->courseService->getByCourseId($params['course_id']);
+        $course = $this->courseService->getCourseById($params['course_id']);
+        /**
+         * 'isPaid' property based on the course type:
+         * - For one-time courses: Boolean value (true or false)
+         * - For recurring courses: Null value
+         */
+
         if (!$course) {
             redirectTo('/courses/my-courses');
         }
-        $courseModules = $this->courseService->getCourseModuleList($params['course_id']);
-
-        // Get module resources based on module ID
-        $moduleResources = [];
-        foreach ($courseModules as $module) {
-            $resources = $this->courseService->courseResourceList($module['course_id'], $module['module_id']);
-            $moduleResources[$module['module_id']] = $resources;
+        if ($course['billing_type'] === 'onetime') {
+            $courseModules = $this->courseService->getCourseModuleList($params['course_id']);
+        } else {
+            $content = $this->courseService->getCurrentContentAndPastContent($params['course_id']);
+            $currentContent = $content['currentContent'];
+            $pastContent = $content['pastContent'];
         }
+
+        // TODO: Fetch module resources based on the updated database schema and course flow.
+        // Get module resources based on module ID
+        // $moduleResources = [];
+        // foreach ($courseModules as $module) {
+        //     $resources = $this->courseService->courseResourceList($module['course_id'], $module['module_id']);
+        //     $moduleResources[$module['module_id']] = $resources;
+        // }
         $assignments = $this->assignmentService->getAssignmentByCourse($params['course_id']);
 
         // Get module resources based on module ID
@@ -109,7 +122,21 @@ class CoursesController
         }
 
         // get course reviews
+        $userReview = [];
         $userReview = $this->courseService->getReviewForcourse($params['course_id']);
+
+        //calculate summery of reviews
+        $summeryOfReviews = [];
+        $totalReviews = count($userReview);
+        $starCount = [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0];
+        $totalRating = 0;
+        foreach ($userReview as $review) {
+            $totalRating += $review['rating'];
+            $starCount[$review['rating']]++;
+        }
+        $avgRating = $totalReviews > 0 ? ($totalRating / $totalReviews) : 0;
+        $summeryOfReviews = ['totalReviews' => $totalReviews, 'avgRating' => $avgRating, 'starCount' => $starCount];
+
         // get tutor profile
         $user = $this->userService->getUserProfile($course['tutor_id']);
 
@@ -119,11 +146,15 @@ class CoursesController
                 'course' => $course,
                 'title' => $course['title'],
                 'user' => $user,
-                'modules' => $courseModules,
+                'modules' => $courseModules ?? [],
+                'currentContent' => $currentContent ?? [],
+                'pastContent' => $pastContent ?? [],
                 'assignments' => $assignments,
                 'assignmentsResources' => $assignmentsResources,
-                'moduleResources' => $moduleResources,
-                'userReview' => $userReview
+                // 'moduleResources' => $moduleResources,
+                'userReview' => $userReview,
+                'summeryOfReviews' => $summeryOfReviews
+
             ]
         );
     }
