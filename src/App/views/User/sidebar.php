@@ -336,6 +336,13 @@
                 Add Course
             </a>
         </div>
+        <div class="sidebar-section">
+            <h4 class="section-title">Post Management</h4>
+            <a href="/post-managment" class="menu-item">
+                <span class="menu-icon"><i class="fa-solid fa-file"></i></i></span>
+                Pending Posts
+            </a>
+        </div>
 
         <div class="sidebar-section">
             <h4 class="section-title">Transactions</h4>
