@@ -221,45 +221,6 @@ class PageController
             "userDetails" => $userDetails
         ]);
     }
-    public function test()
-    {
-        $users = [];
-        $courses = [];
-        $courseRequests = [];
-
-        // Handle user data
-        if ($_GET['tab'] == 'user-managment') {
-
-            // $users = $this->userService->getAllUsers();
-            $users = $this->userService->getUsers();
-        }
-
-        // handle posts
-        if ($_GET['tab'] == 'post-managment') {
-            $courseRequests = $this->courseRequestService->getPendingCourseRequests();
-        }
-
-        if ($_GET['tab'] == 'course-managment') {
-            $courses = $this->courseService->getAllCourses();
-        }
-
-        $userCount = $this->userService->getUserCount();
-        $courseCount = $this->courseService->getNoOfCourses();
-        $stat = [
-            "users" => $userCount,
-            "courses" => $courseCount
-        ];
-        echo $this->view->render('User/Admin/old_admin_dashboard.php', [
-            "title" => "Admin Dashboard",
-            'users' => $users ?? '',
-            "courses" => $courses ?? '',
-            "stat" => $stat,
-            "courseRequests" => $courseRequests
-        ]);
-        // echo $this->view->render('User/Admin/old_admin_dashboard.php', [
-        //     "title" => "Settings",
-        // ]);
-    }
 
     public function createAnnouncements()
     {
