@@ -53,15 +53,33 @@ class PostController
 
     public function approveCourseRequest()
     {
-        // dd($_POST);
-        $this->courseRequestService->approveCourseRequestById($_POST['requestId']);
-        redirectTo('/admin-dashboard?tab=post-managment');
+        header('Content-Type: application/json');
+
+        $input = file_get_contents('php://input');
+        $req = json_decode($input, true);
+        $postId = $req['postId'];
+        $this->courseRequestService->approveCourseRequestById($postId);
+        $data = [
+            'success' => true,
+            'message' => 'Post approved successfully'
+        ];
+        echo json_encode($data);
     }
 
     public function rejectCourseRequest()
     {
-        $this->courseRequestService->rejectCourseRequestById($_POST['requestId']);
-        redirectTo('/admin-dashboard?tab=post-managment');
+
+        header('Content-Type: application/json');
+
+        $input = file_get_contents('php://input');
+        $req = json_decode($input, true);
+        $postId = $req['postId'];
+        $this->courseRequestService->rejectCourseRequestById($postId);
+        $data = [
+            'success' => true,
+            'message' => 'Post rejected successfully'
+        ];
+        echo json_encode($data);
     }
 
     public function createCourseRequestView()

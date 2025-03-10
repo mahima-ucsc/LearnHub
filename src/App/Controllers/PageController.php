@@ -221,12 +221,6 @@ class PageController
             "userDetails" => $userDetails
         ]);
     }
-    public function test()
-    {
-        echo $this->view->render('User/test.php', [
-            "title" => "Settings",
-        ]);
-    }
 
     public function createAnnouncements()
     {
@@ -248,12 +242,19 @@ class PageController
             $path = "User/Admin/admin_user_managment.php";
             $users = $this->userService->getUsers();
             $userCount = $this->userService->getUserCount();
-            // dd($users[0]['first_name'][0]);
         }
         echo $this->view->render($path, [
             "title" => "Teacher",
             "users" => $users,
             "userCount" => $userCount
+        ]);
+    }
+    public function postManagment()
+    {
+        $courseRequests = $this->courseRequestService->getPendingCourseRequests();
+        echo $this->view->render("User/Admin/admin_post_managment.php", [
+            "title" => "Post Managment",
+            "posts" => $courseRequests
         ]);
     }
 }
