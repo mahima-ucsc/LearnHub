@@ -85,7 +85,7 @@ class PostController
     public function createCourseRequestView()
     {
         $subjects = $this->subjectService->getSubjects();
-        echo $this->view->render('post/createCourseRequest.php', [
+        echo $this->view->render('post/create.php', [
             'title' => 'Create Course Request',
             'subjects' => $subjects
         ]);
@@ -119,9 +119,22 @@ class PostController
 
     public function createCourseRequest()
     {
-        $this->validatorService->validateCourseRequest($_POST);
-        $this->courseRequestService->create($_POST);
-        redirectTo('/course/request');
+        $rawData = file_get_contents('php://input');
+
+        // Decode the JSON data into a PHP array/object
+        $data = json_decode($rawData, true);
+
+
+        header('Content-Type: text/plain'); // To make the output readable in browser or API tool
+        // $this->validatorService->validateCourseRequest($_POST);
+        $this->courseRequestService->create($data);
+        // redirectTo('/course/request');
+
+        $res = [
+            'success' => true,
+            'message' => 'Post approved successfully'
+        ];
+        echo json_encode($data);
     }
 
     public function createComment(array $params)
