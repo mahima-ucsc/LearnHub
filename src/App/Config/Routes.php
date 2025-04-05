@@ -145,7 +145,7 @@ function registerRoutes(App $app)
 
     $app->get('/courses/{courseId}/assignment/{assignment_id}/test', [AssignmentController::class, 'getData']);
     $app->get('/courses/{courseId}/assignment/submit', [AssignmentController::class, 'submitAssignment']);
-    $app->get('/courses/{courseId}/assignment/review', [AssignmentController::class, 'review']);
+    $app->get('/assignment/review', [AssignmentController::class, 'review']);
 
     $app->get('/test/help', [PageController::class, 'helpAndSupportReview']);
 
