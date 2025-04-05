@@ -25,12 +25,13 @@ class ReviewService
 
     public function getTutorReview(string $id)
     {
-        $this->db->query(
+        $tutorReview = $this->db->query(
             "SELECT * FROM tutor_review WHERE tutor_id = :tutor_id",
             [
                 'tutor_id' => $id
             ]
-        );
+        )->findAll();
+        return $tutorReview;
     }
 
     public function getUserReview()

@@ -25,7 +25,7 @@ function registerRoutes(App $app)
     $app->post('/admin-dashboard/course-managment/reject', [PostController::class, 'rejectCourseRequest']);
     $app->get('/admin-dashboard/user-managment', [PageController::class, 'userManagment'], [AdminOnlyMiddleware::class]);
     $app->get('/settings', [PageController::class, 'settings'], [AuthRequiredMiddleware::class]);
-    $app->get('/tutor', [TutorProfileController::class, 'tutorProfile'], [AuthRequiredMiddleware::class]);
+    $app->get('/tutor/{id}', [TutorProfileController::class, 'tutorProfile'], [AuthRequiredMiddleware::class]);
     $app->get('/alert', [AlertController::class, 'alert']);
     $app->get('/error', [PageController::class, 'error']);
     $app->get('/unauthorized-access', [PageController::class, 'unauthorizedAccess']);

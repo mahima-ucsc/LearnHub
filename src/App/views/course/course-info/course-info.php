@@ -369,8 +369,9 @@
         <div class="reviews-list">
             <?php
             foreach ($userReview as $review): ?>
+
                 <?php $datetime = new DateTime($review['date']);
-                $date = $datetime->format('F j, Y');
+                $date = $datetime->format('Y-m-d');
                 $time = $datetime->format('g:i A');
                 ?>
                 <div class="review-item">
@@ -378,7 +379,7 @@
                         <img src="<?php echo htmlspecialchars($review['profile_picture_url']); ?>" alt="<?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
                         <div class="review-meta">
                             <span class="review-name"><?php echo htmlspecialchars($review['name']); ?></span>
-                            <span class="review-date"><?php echo htmlspecialchars($date); ?></span>
+                            <span class="review-date" id="review-date-<?php echo $review['review_id']; ?>"></span>
                             <span class="review-date"><?php echo htmlspecialchars($time); ?></span>
                         </div>
                         <div class="review-rating">
@@ -484,3 +485,85 @@
 </section>
 
 <?php include $this->resolve("partials/_footer.php"); ?>
+<script>
+    function calcDateDiff(startDate) {
+        const start = new Date(startDate);
+        const end = new Date();
+
+        const yearDifference = end.getFullYear() - start.getFullYear();
+        const monthDifference = end.getMonth() - start.getMonth();
+        const dayDifference = end.getDate() - start.getDate();
+
+        if (yearDifference === 0 && monthDifference === 0 && dayDifference === 0) {
+            return {
+                years: 0,
+                months: 0,
+                days: 0
+            };
+        }
+
+        let years = yearDifference;
+        let months = monthDifference;
+        let days = dayDifference;
+
+        return {
+            years: Math.max(0, years),
+            months: Math.max(0, months),
+            days: Math.max(0, days)
+        };
+    }
+
+    function toggleCartMenu(button) {
+        const cartOptions = button.nextElementSibling;
+        cartOptions.style.display = cartOptions.style.display === 'block' ? 'none' : 'block';
+
+        // Close the menu if clicked outside
+        window.onclick = function(event) {
+            if (!button.contains(event.target) && !cartOptions.contains(event.target)) {
+                cartOptions.style.display = 'none';
+            }
+        }
+    }
+
+    function editCourse() {
+        alert('Edit course clicked!');
+        // Add your edit logic here
+    }
+
+    //Delete confirmation
+    const modal = document.getElementById('deleteModal');
+
+    function showModal() {
+        modal.style.display = 'block';
+
+        // Prevent scrolling of background content
+        document.body.style.overflow = 'hidden';
+    }
+
+    function hideModal() {
+        modal.style.display = 'none';
+
+        // Restore scrolling
+        document.body.style.overflow = 'auto';
+    }
+
+    function confirmDelete() {
+        // Add your delete logic here
+        console.log('Item deleted!');
+        hideModal();
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            hideModal();
+        }
+    }
+
+    // Close modal on escape key press
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && modal.style.display === 'block') {
+            hideModal();
+        }
+    });
+</script>

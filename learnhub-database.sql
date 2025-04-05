@@ -236,6 +236,9 @@ CREATE TABLE IF NOT EXISTS tutor_review(
     FOREIGN KEY(tutor_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
+
+ALTER TABLE `tutor_review` ADD `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `user_id`;
+
 -- Reviews for courses
 CREATE TABLE IF NOT EXISTS course_review(
     review_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
