@@ -3,7 +3,7 @@
         'name' => 'mahim/sample-project',
         'pretty_version' => 'dev-develop',
         'version' => 'dev-develop',
-        'reference' => 'ad71750b3633c461899edc03b44c8d87927ae235',
+        'reference' => 'f048def2b0f5dd0ad358989f1a29aff8fec9ce81',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'mahim/sample-project' => array(
             'pretty_version' => 'dev-develop',
             'version' => 'dev-develop',
-            'reference' => 'ad71750b3633c461899edc03b44c8d87927ae235',
+            'reference' => 'f048def2b0f5dd0ad358989f1a29aff8fec9ce81',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

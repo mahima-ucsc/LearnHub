@@ -1,6 +1,8 @@
 :root {
   /* Color palette */
-  --primary-color: #ffc400;
+  --primary: #ffc400;
+  --primary-dark: #E6B000;
+  --primary-light: #FFDF80;
   --primary-hover: #ffcd33;
   --text-primary: #171a1f;
   --text-secondary: #4b5563;
@@ -71,7 +73,7 @@
 
 .hamburger-menu:hover {
   transform: scale(1.1);
-  color: var(--primary-color);
+  color: var(--primary);
 }
 
 .site-logo {
@@ -143,7 +145,7 @@
   position: absolute;
   top: -5px;
   right: -5px;
-  background-color: var(--primary-color);
+  background-color: var(--primary);
   color: var(--text-primary);
   font-weight: 700;
   font-size: var(--font-size-xs);
@@ -162,7 +164,7 @@
 }
 
 .current-user-picture:hover {
-  box-shadow: 0 0 0 2px var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary);
 }
 
 /* Container for user picture */
@@ -228,7 +230,7 @@
   display: block;
   padding: var(--spacing-sm) var(--spacing-md);
   border: none;
-  background-color: var(--primary-color);
+  background-color: var(--primary);
   width: 40%;
   border-radius: var(--border-radius-md);
   cursor: pointer;
@@ -253,7 +255,7 @@
 /* Hover state */
 .dropdown-content a:hover {
   background-color: var(--background-secondary);
-  color: var(--primary-color);
+  color: var(--primary);
 }
 
 /* Active state */
@@ -308,13 +310,13 @@
   left: 50%;
   width: 0;
   height: 2px;
-  background-color: var(--primary-color);
+  background-color: var(--primary);
   transition: all var(--transition-slow);
   transform: translateX(-50%);
 }
 
 .desktop-menu li a:hover {
-  color: var(--primary-color);
+  color: var(--primary);
 }
 
 .desktop-menu li a:hover::after {
@@ -356,7 +358,7 @@
 
 .close-menu:hover {
   transform: rotate(90deg);
-  color: var(--primary-color);
+  color: var(--primary);
 }
 
 .side-menu-content {
@@ -375,8 +377,8 @@
 
 .side-menu-content a:hover {
   background-color: var(--background-secondary);
-  color: var(--primary-color);
-  border-left: 3px solid var(--primary-color);
+  color: var(--primary);
+  border-left: 3px solid var(--primary);
 }
 
 .side-menu-content svg {

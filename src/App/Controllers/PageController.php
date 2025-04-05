@@ -257,4 +257,10 @@ class PageController
             "posts" => $courseRequests
         ]);
     }
+    public function test()
+    {
+        echo $this->view->render("test.php", [
+            "title" => "Post Managment"
+        ]);
+    }
 }
