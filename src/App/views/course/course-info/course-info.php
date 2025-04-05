@@ -12,7 +12,7 @@
             <div class="course-header">
                 <h1 class="course-info-title"><?php echo e($course['title']); ?></h1>
                 <div class="course-meta">
-                    <div class="course-rating">★★★★★ 4.8 (256 reviews)</div>
+                    <div class="course-rating">★★★★★ 4.8 (<?php echo $summeryOfReviews['totalReviews'] ?>)</div>
                     <div class="course-info">
                         <span>Duration: <?php echo e($course['duration']); ?> weeks</span> |
                         <span>Level: <?php echo e($course['grade_id']); ?></span> |
@@ -326,8 +326,9 @@
     <div class="course-section reviews-section">
         <h2 class="section-title">Student Reviews</h2>
         <div class="reviews-summary">
+            <!-- summary of reating -->
             <div class="overall-rating">
-                <div class="rating-number"><?php echo $summeryOfReviews['avgRating'] ?> / 5</div>
+                <div class="rating-number"><?php echo number_format($summeryOfReviews['avgRating'], 1) ?> / 5</div>
                 <div class="rating-stars">
                     <?php
                     if (($summeryOfReviews['avgRating'] - floor($summeryOfReviews['avgRating'])) > 0.4) {
@@ -348,6 +349,7 @@
                 </div>
                 <div class="rating-text"><?php echo $summeryOfReviews['totalReviews'] ?> Total Reviews</div>
             </div>
+            <!-- all ratings with percentage -->
             <div class="rating-breakdown">
                 <?php
                 krsort($summeryOfReviews['starCount']);
@@ -357,12 +359,13 @@
                         <div class="progress-bar">
                             <div class="progress" style="width: <?php echo $summeryOfReviews['totalReviews'] > 0 ? ($value / $summeryOfReviews['totalReviews']) * 100 : 0; ?>%"></div>
                         </div>
-                        <span class="rating-percentage"><?php echo $summeryOfReviews['totalReviews'] > 0 ? ($value / $summeryOfReviews['totalReviews']) * 100 : 0; ?> %</span>
+                        <span class="rating-percentage"><?php echo number_format($summeryOfReviews['totalReviews'], 2) > 0 ? number_format($value / $summeryOfReviews['totalReviews'], 2) * 100 : 0; ?> %</span>
                     </div>
                 <?php endforeach; ?>
             </div>
         </div>
 
+        <!-- user review list -->
         <div class="reviews-list">
             <?php
             foreach ($userReview as $review): ?>
@@ -375,8 +378,8 @@
                         <img src="<?php echo htmlspecialchars($review['profile_picture_url']); ?>" alt="<?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
                         <div class="review-meta">
                             <span class="review-name"><?php echo htmlspecialchars($review['name']); ?></span>
-                            <span class="review-date"><?php echo htmlspecialchars($time); ?></span>
                             <span class="review-date"><?php echo htmlspecialchars($date); ?></span>
+                            <span class="review-date"><?php echo htmlspecialchars($time); ?></span>
                         </div>
                         <div class="review-rating">
                             <?php
@@ -387,6 +390,18 @@
                             }
                             ?>
                         </div>
+                        <div class="cart-menu">
+                            <div class="cart-btn" onclick="toggleCartMenu(this)">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+                                </svg>
+                            </div>
+                            <!-- Option menu-->
+                            <div class="cart-options">
+                                <a class="menu-button" href="/review/edit/<?php echo e($review['review_id']); ?>">Edit</a>
+                                <a href="#" class="menu-button" onclick="showModal()">Delete</a>
+                            </div>
+                        </div>
                     </div>
                     <div class="review-body">
                         <p><?php echo htmlspecialchars($review['review']); ?></p>
@@ -394,10 +409,45 @@
                 </div>
             <?php endforeach; ?>
         </div>
+        <!-- Add review -->
+        <div class="add-review-section">
+            <h3>Add Your Review</h3>
+            <form class="review-form" id="newReviewForm" method="POST" action="/add-review">
+                <div class="rating-input">
+                    <div class="star-rating">
+                        <input type="radio" id="star5" name="rating" value="5" required>
+                        <label for="star5"><i class="fas fa-star"></i></label>
+                        <input type="radio" id="star4" name="rating" value="4">
+                        <label for="star4"><i class="fas fa-star"></i></label>
+                        <input type="radio" id="star3" name="rating" value="3">
+                        <label for="star3"><i class="fas fa-star"></i></label>
+                        <input type="radio" id="star2" name="rating" value="2">
+                        <label for="star2"><i class="fas fa-star"></i></label>
+                        <input type="radio" id="star1" name="rating" value="1">
+                        <label for="star1"><i class="fas fa-star"></i></label>
+                    </div>
+                </div>
 
-        <div class="addFeadback">
-            <a href="/course/enroll" class="add-review-button">Add Review</a>
+                <div class="form-group">
+                    <label for="reviewText">Your Review:</label>
+                    <textarea
+                        id="reviewText"
+                        name="review"
+                        rows="4"
+                        placeholder="Share your experience with this course..."
+                        required></textarea>
+                </div>
+                <input type="hidden" name="tutor_id" value="1" />
+
+                <button type="submit" class="submit-review-btn">
+                    Submit Review
+                </button>
+            </form>
         </div>
+
+        <!-- <div class="addFeadback">
+            <a href="/course/enroll" class="add-review-button">Add Review</a>
+        </div> -->
 
     </div>
 

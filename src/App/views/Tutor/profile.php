@@ -165,7 +165,10 @@
             </div>
             <!-- Review Cards -->
             <!-- Current user reviews-->
-            <?php foreach ($userReview as $review) : ?>
+
+            <?php
+            // dd($userReview);
+            foreach ($userReview as $review) : ?>
                 <div class="review-card">
                     <div class="review-header">
                         <div class="reviewer-info">
