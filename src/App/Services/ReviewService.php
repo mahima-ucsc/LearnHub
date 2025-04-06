@@ -84,9 +84,9 @@ class ReviewService
     }
 
     // course review
+
     public function createCourseReview(array $formData)
     {
-        // dd($formData);
         $this->db->query(
             "INSERT INTO course_review(review, rating, course_id, user_id)VALUES(:review, :rating, :course_id, :user_id)",
             [
@@ -94,6 +94,43 @@ class ReviewService
                 'rating' => $formData['rating'],
                 'course_id' => $formData['course_id'],
                 'user_id' => $_SESSION['user']
+            ]
+        );
+    }
+
+    public function deleteCourseReview(int $id)
+    {
+        $this->db->query(
+            "DELETE FROM course_review WHERE review_id = :review_id AND user_id = :user_id",
+            [
+                "review_id" => $id,
+                "user_id" => $_SESSION['user']
+            ]
+        );
+    }
+
+    public function getCourseReviewById(string $id)
+    {
+        return $this->db->query(
+            "SELECT * FROM course_review WHERE review_id = :review_id AND user_id = :user_id",
+            [
+                "review_id" => $id,
+                "user_id" => $_SESSION['user']
+            ]
+        )->find();
+    }
+
+    public function updateCourseRequest(array $formData, int $id)
+    {
+        $this->db->query(
+            "UPDATE course_review
+            SET review = :review,rating = :rating
+            WHERE review_id = :review_id AND user_id = :user_id",
+            [
+                "review" => $formData['review'],
+                "rating" => $formData['rating'],
+                "review_id" => $id,
+                "user_id" => $_SESSION['user']
             ]
         );
     }

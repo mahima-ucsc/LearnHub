@@ -18,9 +18,8 @@ class ReviewController
     public function editView(array $params)
     {
         $review = $this->reviewService->getReviewById($params['review']);
-
         if (!$review) {
-            redirectTo('/profile');
+            redirectTo($_SERVER['HTTP_REFERER']);
         }
 
         echo $this->view->render(
@@ -65,5 +64,36 @@ class ReviewController
     {
         $this->reviewService->createCourseReview($_POST);
         redirectTo($_SERVER['HTTP_REFERER']);
+    }
+    public function deleteCourseReview()
+    {
+        $this->reviewService->deleteCourseReview((int)$_POST['review_id']);
+        redirectTo($_SERVER['HTTP_REFERER']);
+    }
+
+    public function editCourseReviewView(array $params)
+    {
+        $review = $this->reviewService->getCourseReviewById($params['review']);
+
+        if (!$review) {
+            redirectTo($_SERVER['HTTP_REFERER']);
+        }
+        echo $this->view->render(
+            "course/course-info/course-review-edit.php",
+            [
+                "title" => "Edit Course Review",
+                'review' => $review
+            ]
+        );
+    }
+
+    public function editCourseReview($params)
+    {
+        $review = $this->reviewService->getCourseReviewById($params['review']);
+        if (!$review) {
+            redirectTo('/course');
+        }
+        $this->reviewService->updateCourseRequest($_POST, (int)$params['review']);
+        redirectTo("/courses/" . $review['course_id']);
     }
 }

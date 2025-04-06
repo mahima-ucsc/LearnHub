@@ -419,18 +419,24 @@ function calcDateDiff($startDate)
                             }
                             ?>
                         </div>
-                        <div class="cart-menu">
-                            <div class="cart-btn" onclick="toggleCartMenu(this)">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
-                                </svg>
+                        <?php
+                        if ($review['user_id'] === $_SESSION['user'] || $_SESSION['user_role'] === "admin") : ?>
+                            <div class="cart-menu">
+                                <div class="cart-btn" onclick="toggleCartMenu(this)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+                                    </svg>
+                                </div>
+                                <!-- Option menu-->
+                                <div class="cart-options">
+                                    <a class="menu-button" href="/course/review/edit/<?php echo e($review['review_id']); ?>">Edit</a>
+                                    <form action="/delete-course-review" method="POST" class="menu-button">
+                                        <input type="hidden" name="review_id" value="<?php echo e($review['review_id']); ?>">
+                                        <button type="submit" class="menu-button">Delete</button>
+                                    </form>
+                                </div>
                             </div>
-                            <!-- Option menu-->
-                            <div class="cart-options">
-                                <a class="menu-button" href="/review/edit/<?php echo e($review['review_id']); ?>">Edit</a>
-                                <a href="#" class="menu-button" onclick="showModal()">Delete</a>
-                            </div>
-                        </div>
+                        <?php endif; ?>
                     </div>
                     <div class="review-body">
                         <p><?php echo htmlspecialchars($review['review']); ?></p>
