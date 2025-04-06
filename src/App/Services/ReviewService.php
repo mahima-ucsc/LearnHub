@@ -82,4 +82,19 @@ class ReviewService
             ]
         );
     }
+
+    // course review
+    public function createCourseReview(array $formData)
+    {
+        // dd($formData);
+        $this->db->query(
+            "INSERT INTO course_review(review, rating, course_id, user_id)VALUES(:review, :rating, :course_id, :user_id)",
+            [
+                'review' => $formData['review'],
+                'rating' => $formData['rating'],
+                'course_id' => $formData['course_id'],
+                'user_id' => $_SESSION['user']
+            ]
+        );
+    }
 }

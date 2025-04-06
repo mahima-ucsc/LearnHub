@@ -59,4 +59,11 @@ class ReviewController
         $this->reviewService->delete((int)$params['review']);
         redirectTo('/tutor');
     }
+
+    //course review
+    public function addCourseReview()
+    {
+        $this->reviewService->createCourseReview($_POST);
+        redirectTo($_SERVER['HTTP_REFERER']);
+    }
 }

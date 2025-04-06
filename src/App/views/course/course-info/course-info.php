@@ -6,6 +6,22 @@
 <style>
 
 </style>
+<?php
+function calcDateDiff($startDate)
+{
+    $start = new DateTime($startDate);
+    $end = new DateTime();
+
+    $diff = $start->diff($end);
+
+    return [
+        'years' => $diff->y,
+        'months' => $diff->m,
+        'days' => $diff->d
+    ];
+}
+?>
+
 <section class="course-info-container">
     <div class="course-page-wrapper">
         <div class="main-content">
@@ -366,21 +382,33 @@
         </div>
 
         <!-- user review list -->
+
         <div class="reviews-list">
             <?php
             foreach ($userReview as $review): ?>
 
                 <?php $datetime = new DateTime($review['date']);
                 $date = $datetime->format('Y-m-d');
-                $time = $datetime->format('g:i A');
                 ?>
                 <div class="review-item">
                     <div class="review-header">
                         <img src="<?php echo htmlspecialchars($review['profile_picture_url']); ?>" alt="<?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
                         <div class="review-meta">
                             <span class="review-name"><?php echo htmlspecialchars($review['name']); ?></span>
-                            <span class="review-date" id="review-date-<?php echo $review['review_id']; ?>"></span>
-                            <span class="review-date"><?php echo htmlspecialchars($time); ?></span>
+                            <span class="review-date" id="review-date-<?php echo $review['review_id']; ?>">
+                                <?php
+                                $days = calcDateDiff($date);
+                                if ($days['years'] > 0) {
+                                    echo ($days['years']) . " years ago";
+                                } else if ($days['months'] > 0) {
+                                    echo ($days['months']) . " months ago";
+                                } else if ($days['days'] > 0) {
+                                    echo ($days['days']) . " days ago";
+                                } else {
+                                    echo "Today";
+                                }
+                                ?>
+                            </span>
                         </div>
                         <div class="review-rating">
                             <?php
@@ -413,7 +441,7 @@
         <!-- Add review -->
         <div class="add-review-section">
             <h3>Add Your Review</h3>
-            <form class="review-form" id="newReviewForm" method="POST" action="/add-review">
+            <form class="review-form" id="newReviewForm" method="POST" action="/add-course-review">
                 <div class="rating-input">
                     <div class="star-rating">
                         <input type="radio" id="star5" name="rating" value="5" required>
@@ -438,7 +466,7 @@
                         placeholder="Share your experience with this course..."
                         required></textarea>
                 </div>
-                <input type="hidden" name="tutor_id" value="1" />
+                <input type="hidden" name="course_id" value=<?php echo ($course['course_id']) ?> />
 
                 <button type="submit" class="submit-review-btn">
                     Submit Review
@@ -486,33 +514,7 @@
 
 <?php include $this->resolve("partials/_footer.php"); ?>
 <script>
-    function calcDateDiff(startDate) {
-        const start = new Date(startDate);
-        const end = new Date();
-
-        const yearDifference = end.getFullYear() - start.getFullYear();
-        const monthDifference = end.getMonth() - start.getMonth();
-        const dayDifference = end.getDate() - start.getDate();
-
-        if (yearDifference === 0 && monthDifference === 0 && dayDifference === 0) {
-            return {
-                years: 0,
-                months: 0,
-                days: 0
-            };
-        }
-
-        let years = yearDifference;
-        let months = monthDifference;
-        let days = dayDifference;
-
-        return {
-            years: Math.max(0, years),
-            months: Math.max(0, months),
-            days: Math.max(0, days)
-        };
-    }
-
+    // Toggle the display of the cart options
     function toggleCartMenu(button) {
         const cartOptions = button.nextElementSibling;
         cartOptions.style.display = cartOptions.style.display === 'block' ? 'none' : 'block';
