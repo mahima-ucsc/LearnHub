@@ -17,7 +17,7 @@
 
 
     .assignment-container {
-        max-width: 900px;
+        max-width: 1000px;
         margin: 3rem auto;
         padding: 0 24px;
     }
@@ -404,7 +404,6 @@
                         </div>
                         <div class="attachment-details">
                             <div class="attachment-name"><?php echo e($resource['resource_path']); ?></div>
-                            <div class="attachment-size">245 KB</div>
                         </div>
                         <button class="btn btn-outline" onclick="window.location.href='/assignment/<?php echo e($resource['assignment_id']) ?>/resource/<?php echo e($resource['resource_id']) ?>'">
                             <i class="fas fa-download"></i>
@@ -415,29 +414,33 @@
             </div>
 
             <!-- TODO: Assignment Submission-->
-            <div class="upload-zone" id="dropZone">
-                <div class="upload-icon">
-                    <i class="fas fa-cloud-upload-alt"></i>
+            <!-- Updated Assignment Submission Section -->
+            <form id="assignmentForm" method="post" enctype="multipart/form-data" action="submit">
+                <div class="upload-zone" id="dropZone">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3 class="upload-text">Drag and drop your files here</h3>
+                    <p class="upload-subtext">or click to browse files from your computer</p>
+                    <input type="file" id="fileInput" class="file-input" name="files[]" multiple>
+                    <button class="btn">
+                        <i class="fas fa-upload"></i>
+                        Select Files
+                    </button>
                 </div>
-                <h3 class="upload-text">Drag and drop your file here</h3>
-                <p class="upload-subtext">or click to browse files from your computer</p>
-                <input type="file" id="fileInput" class="file-input">
-                <button class="btn">
-                    <i class="fas fa-upload"></i>
-                    Select File
-                </button>
-            </div>
 
-            <div class="selected-file" id="selectedFile">
-                <p><i class="fas fa-file"></i> <span id="fileName">portfolio-project.zip</span></p>
-            </div>
+                <div class="selected-files" id="selectedFiles" style="margin-top: 1.5rem; display: none;">
+                    <h4 style="margin-bottom: 1rem; color: var(--text-primary);">Selected Files</h4>
+                    <ul id="fileList" style="list-style: none; padding: 0;"></ul>
+                </div>
 
-            <div class="submit-section">
-                <button class="btn" id="submitButton">
-                    <i class="fas fa-paper-plane"></i>
-                    Submit Assignment
-                </button>
-            </div>
+                <div class="submit-section">
+                    <button type="submit" class="btn" id="submitButton">
+                        <i class="fas fa-paper-plane"></i>
+                        Submit Assignment
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -472,13 +475,17 @@
     </div>
 </div>
 
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
-        const selectedFile = document.getElementById('selectedFile');
-        const fileName = document.getElementById('fileName');
+        const selectedFiles = document.getElementById('selectedFiles');
+        const fileList = document.getElementById('fileList');
         const submitButton = document.getElementById('submitButton');
+
+        // Use DataTransfer to maintain a mutable list of files
+        let dataTransfer = new DataTransfer();
 
         // Handle file selection via button
         dropZone.addEventListener('click', function() {
@@ -488,7 +495,7 @@
         // Handle file selection
         fileInput.addEventListener('change', function() {
             if (this.files.length > 0) {
-                displayFile(this.files[0]);
+                handleFiles(this.files);
             }
         });
 
@@ -507,31 +514,166 @@
             dropZone.classList.remove('dragover');
 
             if (e.dataTransfer.files.length > 0) {
-                displayFile(e.dataTransfer.files[0]);
+                handleFiles(e.dataTransfer.files);
             }
         });
 
-        // Display selected file
-        function displayFile(file) {
-            fileName.textContent = file.name;
-            selectedFile.style.display = 'block';
+        function handleFiles(files) {
+            for (let i = 0; i < files.length; i++) {
+                dataTransfer.items.add(files[i]);
+            }
+            // Update the file input with our DataTransfer files
+            fileInput.files = dataTransfer.files;
+            updateFileList();
         }
 
-        // Handle file download (placeholder)
-        window.downloadFile = function(filename) {
-            alert('Downloading ' + filename + '...');
-            // In a real app, this would trigger the file download
-        };
+        // Update file list display
+        function updateFileList() {
+            // Clear current list
+            fileList.innerHTML = '';
+
+            // Show selected files container if we have files
+            if (dataTransfer.files.length > 0) {
+                selectedFiles.style.display = 'block';
+
+                // Create list items for each file
+                Array.from(dataTransfer.files).forEach((file, index) => {
+                    const li = document.createElement('li');
+                    li.style.display = 'flex';
+                    li.style.justifyContent = 'space-between';
+                    li.style.alignItems = 'center';
+                    li.style.padding = '0.75rem 1rem';
+                    li.style.marginBottom = '0.5rem';
+                    li.style.backgroundColor = 'rgba(99, 102, 241, 0.05)';
+                    li.style.borderRadius = '8px';
+                    li.style.border = '1px solid var(--primary-light)';
+
+                    // File info
+                    const fileInfo = document.createElement('div');
+                    fileInfo.style.display = 'flex';
+                    fileInfo.style.alignItems = 'center';
+                    fileInfo.style.gap = '10px';
+
+                    // File icon
+                    const fileIcon = document.createElement('i');
+                    fileIcon.className = 'fas fa-file';
+                    fileIcon.style.color = 'var(--primary)';
+
+                    // File name and size
+                    const fileDetails = document.createElement('div');
+                    const fileName = document.createElement('div');
+                    fileName.textContent = file.name;
+                    fileName.style.fontWeight = '500';
+                    fileName.style.color = 'var(--text-primary)';
+
+                    const fileSize = document.createElement('div');
+                    fileSize.textContent = formatFileSize(file.size);
+                    fileSize.style.fontSize = '0.75rem';
+                    fileSize.style.color = 'var(--text-light)';
+
+                    fileDetails.appendChild(fileName);
+                    fileDetails.appendChild(fileSize);
+
+                    fileInfo.appendChild(fileIcon);
+                    fileInfo.appendChild(fileDetails);
+
+                    // Remove button
+                    const removeBtn = document.createElement('button');
+                    removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    removeBtn.style.background = 'none';
+                    removeBtn.style.border = 'none';
+                    removeBtn.style.color = 'var(--danger)';
+                    removeBtn.style.cursor = 'pointer';
+                    removeBtn.style.fontSize = '1rem';
+                    removeBtn.style.padding = '5px';
+                    removeBtn.title = 'Remove file';
+
+                    removeBtn.addEventListener('click', function() {
+                        removeFile(index);
+                    });
+
+                    li.appendChild(fileInfo);
+                    li.appendChild(removeBtn);
+                    fileList.appendChild(li);
+                });
+            } else {
+                selectedFiles.style.display = 'none';
+            }
+        }
+
+        // Remove a file from the DataTransfer list
+        function removeFile(index) {
+            // Create a new DataTransfer object and add back every file except the one to remove
+            const newDataTransfer = new DataTransfer();
+            Array.from(dataTransfer.files).forEach((file, i) => {
+                if (i !== index) {
+                    newDataTransfer.items.add(file);
+                }
+            });
+            // Update our global DataTransfer and file input
+            dataTransfer = newDataTransfer;
+            fileInput.files = dataTransfer.files;
+            updateFileList();
+        }
+
+        // Format file size to human-readable format
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(1024));
+
+            return parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + ' ' + sizes[i];
+        }
 
         // Handle form submission
-        submitButton.addEventListener('click', function() {
-            if (fileInput.files.length > 0) {
-                alert('Assignment submitted successfully!');
-                // In a real app, this would submit the file to the server
-            } else {
-                alert('Please select a file to submit.');
-            }
-        });
+        // submitButton.addEventListener('click', function() {
+        //     if (dataTransfer.files.length > 0) {
+        //         // Create FormData object
+        //         const formData = new FormData();
+
+        //         // Add all files
+        //         Array.from(dataTransfer.files).forEach((file, index) => {
+        //             formData.append(`file${index}`, file);
+        //         });
+
+        //         // Disable button and show loading state
+        //         submitButton.disabled = true;
+        //         submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+        //         // Send POST request to server
+        //         const courseId = <?php echo json_encode($course['id'] ?? $course['course_id']); ?>;
+        //         const assignmentId = <?php echo json_encode($assignment['id'] ?? $assignment['assignment_id']); ?>;
+
+        //         fetch(`/courses/${courseId}/assignment/${assignmentId}/submit`, {
+        //                 method: 'POST',
+        //                 body: formData,
+        //             })
+        //             .then(response => {
+        //                 if (!response.ok) {
+        //                     throw new Error('Network response was not ok');
+        //                 }
+        //                 return response.json();
+        //             })
+        //             .then(data => {
+        //                 alert('Assignment submitted successfully!');
+        //                 console.log('Submission response:', data.files);
+        //                 // Optionally refresh the page or update UI to show submission status
+        //                 // location.reload();
+        //             })
+        //             .catch(error => {
+        //                 console.error('Error submitting assignment:', error);
+        //                 alert('Error submitting assignment. Please try again.');
+        //             })
+        //             .finally(() => {
+        //                 // Re-enable button and restore original text
+        //                 submitButton.disabled = false;
+        //                 submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Assignment';
+        //             });
+        //     } else {
+        //         alert('Please select at least one file to submit.');
+        //     }
+        // });
     });
 </script>
 
