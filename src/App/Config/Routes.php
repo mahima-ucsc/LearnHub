@@ -136,17 +136,22 @@ function registerRoutes(App $app)
 
     // Assignments
     $app->get('/courses/{courseId}/assignment/create', [AssignmentController::class, 'createAssignmentView']);
+    $app->post('/courses/{courseId}/assignment/create', [AssignmentController::class, 'createAssignment']);
     $app->get('/courses/{courseId}/assignment/{assignment_id}/edit', [AssignmentController::class, 'editAssignment']);
     $app->post('/courses/{courseId}/assignment/{assignment_id}/update', [AssignmentController::class, 'updateAssignment']);
-    $app->post('/courses/{courseId}/assignment/create', [AssignmentController::class, 'createAssignment']);
     $app->get('/courses/{courseId}/assignment/{assignment_id}', [AssignmentController::class, 'assignmentView']);
+    $app->post('/courses/{courseId}/assignment/{assignment_id}/submit', [AssignmentController::class, 'submitAssignment']);
+
     $app->get('/assignment/{assignment_id}/resource/{resource_id}', [AssignmentController::class, 'getResource']);
 
 
     $app->get('/courses/{courseId}/assignment/{assignment_id}/test', [AssignmentController::class, 'getData']);
-    $app->get('/courses/{courseId}/assignment/submit', [AssignmentController::class, 'submitAssignment']);
-    $app->get('/courses/{courseId}/assignment/review', [AssignmentController::class, 'review']);
+    $app->get('/courses/{courseId}/assignment/{assignment_id}/review', [AssignmentController::class, 'review']);
+    $app->get('/submission/{submission_id}/attachment/{attachment_id}', [AssignmentController::class, 'getSubmissionFile']);
+    $app->post('/submit/review', [AssignmentController::class, 'submit']);
 
+    $app->get('/test', [PageController::class, 'test']);
+    $app->get('/post', [PageController::class, 'post']);
     $app->get('/test/help', [PageController::class, 'helpAndSupportReview']);
 
     // Payments

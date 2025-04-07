@@ -285,6 +285,7 @@ CREATE TABLE IF NOT EXISTS course_request_comments (
 -- Assignments for courses
 CREATE TABLE IF NOT EXISTS assignments (
     assignment_id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL;
     course_id BIGINT(20) UNSIGNED NOT NULL,
     resource_path varchar(255) DEFAULT NULL,
     upload_date DATE DEFAULT CURRENT_DATE,
@@ -307,17 +308,24 @@ CREATE TABLE IF NOT EXISTS assignment_resource (
 );
 
 
-CREATE TABLE IF NOT EXISTS assignments_submissions(
+CREATE TABLE IF NOT EXISTS assignment_submission(
     submission_id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     assignment_id BIGINT(20) UNSIGNED NOT NULL,
     course_id BIGINT(20) UNSIGNED NOT NULL,
-    submission_path VARCHAR(255),
-    upload_date DATE DEFAULT CURRENT_DATE,
+    upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     student_id BIGINT(20) UNSIGNED NoT NULL,
+    status ENUM('pending', 'graded') DEFAULT 'pending',
+    grade INT DEFAULT 0 CHECK (mark >= 0 AND mark <= 100),
 
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
     FOREIGN KEY (student_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (assignment_id) REFERENCES assignments(assignment_id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS assignment_submission_attachment(
+    attachment_id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    submission_id BIGINT(20) UNSIGNED NOT NULL,
+    attachment_path VARCHAR(255),
+    FOREIGN KEY (submission_id) REFERENCES assignment_submission(submission_id) ON DELETE CASCADE
 );
 
 CREATE TABLE contact_tickets (
