@@ -429,10 +429,12 @@ function calcDateDiff($startDate)
                                 </div>
                                 <!-- Option menu-->
                                 <div class="cart-options">
-                                    <a class="menu-button" href="/course/review/edit/<?php echo e($review['review_id']); ?>">Edit</a>
+                                    <div class="menu-button">
+                                        <a href="/course/review/edit/<?php echo e($review['review_id']); ?>">Edit</a>
+                                    </div>
                                     <form action="/delete-course-review" method="POST" class="menu-button">
                                         <input type="hidden" name="review_id" value="<?php echo e($review['review_id']); ?>">
-                                        <button type="submit" class="menu-button">Delete</button>
+                                        <button type="submit" class="menu-button-delete">Delete</button>
                                     </form>
                                 </div>
                             </div>

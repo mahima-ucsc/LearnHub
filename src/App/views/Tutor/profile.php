@@ -228,53 +228,6 @@
                     </div>
                 </div>
             <?php endforeach; ?>
-            <div class="review-card">
-                <div class="review-header">
-                    <div class="reviewer-info">
-                        <img src="/assets/images/user.jpeg" alt="Sarah Johnson" class="reviewer-avatar">
-                        <div>
-                            <div class="reviewer-name">Sarah Johnson</div>
-                            <div class="review-course">
-                                <i class="fas fa-graduation-cap"></i>
-                                Advanced JavaScript Mastery
-                            </div>
-                        </div>
-                    </div>
-                    <span class="review-date">2 weeks ago</span>
-                </div>
-                <p class="review-text">This course exceeded my expectations! John's teaching style is clear and engaging. The practical examples really helped me understand complex concepts.</p>
-                <div class="review-rating">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                </div>
-            </div>
-
-            <div class="review-card">
-                <div class="review-header">
-                    <div class="reviewer-info">
-                        <img src="/assets/images/user.jpeg" alt="Michael Chen" class="reviewer-avatar">
-                        <div>
-                            <div class="reviewer-name">Michael Chen</div>
-                            <div class="review-course">
-                                <i class="fas fa-graduation-cap"></i>
-                                React & Redux for Beginners
-                            </div>
-                        </div>
-                    </div>
-                    <span class="review-date">1 month ago</span>
-                </div>
-                <p class="review-text">Great introduction to React! The course structure is well thought out and the projects are very practical. John is always quick to respond to questions.</p>
-                <div class="review-rating">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="far fa-star"></i>
-                </div>
-            </div>
 
             <!-- Load More Button -->
             <div class="load-more-container">
