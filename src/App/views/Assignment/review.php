@@ -1,24 +1,38 @@
-<?php include $this->resolve("partials/_header.php"); ?>
-
+<?php include $this->resolve('/partials/_header.php'); ?>
+<link rel="stylesheet" href="/assets/styles/components/toast.css">
 <style>
+    :root {
+        --primary: #ffc400;
+        --primary-dark: #ffaa00;
+        --primary-light: #fff8e0;
+        --text-dark: #333333;
+        --text-light: #777777;
+        --white: #ffffff;
+        --bg-light: #f9f9f9;
+        --border-radius: 16px;
+        --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+        --hover-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
     .assignment-header {
-        background: linear-gradient(135deg, #ffaa00 0%, #ffc400 100%);
-        padding: 30px;
-        border-radius: 16px;
-        margin-bottom: 30px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+        padding: 40px 30px;
+        border-radius: var(--border-radius);
+        margin-bottom: 35px;
+        box-shadow: var(--card-shadow);
         position: relative;
         overflow: hidden;
-        color: white;
+        color: var(--white);
     }
 
     .assignment-header:before {
         content: "";
         position: absolute;
-        top: -20px;
+        top: -40px;
         right: -20px;
-        width: 140px;
-        height: 140px;
+        width: 180px;
+        height: 180px;
         background: rgba(255, 255, 255, 0.1);
         border-radius: 50%;
     }
@@ -26,107 +40,116 @@
     .assignment-header:after {
         content: "";
         position: absolute;
-        bottom: -40px;
+        bottom: -50px;
         left: 10%;
-        width: 80px;
-        height: 80px;
+        width: 120px;
+        height: 120px;
         background: rgba(255, 255, 255, 0.1);
         border-radius: 50%;
     }
 
     h1 {
-        color: white;
+        color: var(--white);
         text-align: center;
-        font-weight: 700;
+        font-weight: 800;
         letter-spacing: -0.5px;
-        font-size: 2.2rem;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        font-size: 2.4rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        margin: 0;
     }
 
     .assignment-main-container {
         max-width: 1300px;
         margin: 0 auto;
+        padding: 0 20px;
     }
 
     .assignments {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-        gap: 25px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
     }
 
     .assignment-card {
-        background: white;
-        border-radius: 16px;
+        background: var(--white);
+        border-radius: var(--border-radius);
         padding: 25px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        transition: all 0.3s ease;
+        box-shadow: var(--card-shadow);
+        transition: var(--transition);
         border: 1px solid rgba(0, 0, 0, 0.03);
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            "header status"
+            "date date"
+            "title title"
+            "content content"
+            "attachments attachments"
+            "actions actions";
+        column-gap: 20px;
+        row-gap: 10px;
     }
 
     .assignment-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+        box-shadow: var(--hover-shadow);
     }
 
     .assignment-card-header {
+        grid-area: header;
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        margin-bottom: 15px;
     }
 
     .student-name {
         font-weight: 600;
-        font-size: 1.1em;
-        color: #222;
+        font-size: 1.15em;
+        color: var(--text-dark);
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
     }
 
     .student-name i {
-        color: #ffc400;
+        color: var(--primary);
+        font-size: 1.1em;
     }
 
     .submission-date {
-        color: #777;
-        font-size: 0.9em;
-        margin-bottom: 12px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-    .submission-date i {
-        color: #ffc400;
-        font-size: 0.9em;
-    }
-
-    .assignment-title {
-        color: #222;
-        margin-bottom: 12px;
-        font-weight: 600;
-        font-size: 1.05em;
+        grid-area: date;
+        color: var(--text-light);
+        font-size: 0.95em;
         display: flex;
         align-items: center;
         gap: 8px;
     }
 
+    .submission-date i {
+        color: var(--primary);
+    }
+
+    .assignment-title {
+        grid-area: title;
+        margin: 10px 0;
+        font-size: 1.2em;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
     .assignment-title i {
-        color: #ffaa00;
+        color: var(--primary-dark);
     }
 
     .assignment-content {
-        color: #555;
-        margin-bottom: 20px;
-        max-height: 100px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        line-height: 1.6;
-        font-size: 0.95em;
+        grid-area: content;
+        margin-bottom: 15px;
         position: relative;
+        max-height: 65px;
+        overflow: hidden;
+        color: var(--text-light);
+        line-height: 1.65;
     }
 
     .assignment-content:after {
@@ -135,72 +158,74 @@
         bottom: 0;
         left: 0;
         right: 0;
-        height: 30px;
-        background: linear-gradient(to top, white, transparent);
+        height: 35px;
+        background: linear-gradient(to top, var(--white), transparent);
     }
 
     .status {
-        padding: 8px 14px;
+        grid-area: status;
+        justify-self: end;
+        padding: 8px 16px;
         border-radius: 30px;
-        font-size: 0.8em;
+        font-size: 0.9em;
         font-weight: 600;
-        display: inline-flex;
+        display: flex;
         align-items: center;
         gap: 6px;
     }
 
     .pending {
-        background-color: #FFF3CD;
-        color: #856404;
+        background-color: rgba(255, 196, 0, 0.15);
+        color: var(--primary-dark);
     }
 
     .graded {
-        background-color: #D4EDDA;
+        background-color: rgba(21, 87, 36, 0.1);
         color: #155724;
     }
 
     .attachments-section {
-        margin: 15px 0;
-        padding-top: 15px;
-        border-top: 1px solid #eee;
+        grid-area: attachments;
+        margin-bottom: 15px;
     }
 
     .attachment-title {
         font-size: 0.9em;
         font-weight: 600;
-        margin-bottom: 10px;
-        color: #555;
+        margin-bottom: 12px;
+        color: var(--text-light);
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 8px;
     }
 
     .attachment-list {
         display: flex;
         flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 15px;
+        gap: 10px;
     }
 
     .attachment-item {
-        background-color: #fff8e0;
-        padding: 6px 12px;
+        background-color: var(--primary-light);
+        padding: 8px 16px;
         border-radius: 30px;
-        font-size: 0.8em;
-        color: #ffaa00;
+        font-size: 0.85em;
+        color: var(--primary-dark);
         display: inline-flex;
         align-items: center;
-        gap: 5px;
-        transition: all 0.2s;
+        gap: 8px;
+        transition: var(--transition);
+        text-decoration: none;
     }
 
     .attachment-item:hover {
-        background-color: #fff0c0;
-        transform: translateY(-2px);
+        background-color: rgba(255, 196, 0, 0.25);
+        transform: translateY(-3px);
+        box-shadow: 0 4px 10px rgba(255, 196, 0, 0.2);
     }
 
     .attachment-item i {
-        font-size: 0.9em;
+        font-size: 0.95em;
     }
 
     .review-modal {
@@ -210,7 +235,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.7);
+        background-color: rgba(0, 0, 0, 0.75);
         justify-content: center;
         align-items: center;
         backdrop-filter: blur(8px);
@@ -218,26 +243,26 @@
     }
 
     .assignment-modal-content {
-        background-color: white;
-        padding: 30px;
-        border-radius: 20px;
-        width: 85%;
-        max-width: 800px;
+        background-color: var(--white);
+        padding: 35px;
+        border-radius: 24px;
+        width: 90%;
+        max-width: 850px;
         max-height: 90vh;
         overflow-y: auto;
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-        animation: modal-in 0.3s ease;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        animation: modal-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     @keyframes modal-in {
         from {
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(40px) scale(0.95);
         }
 
         to {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
     }
 
@@ -245,8 +270,8 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 25px;
-        padding-bottom: 15px;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
         border-bottom: 1px solid #eee;
     }
 
@@ -255,10 +280,10 @@
         cursor: pointer;
         background: none;
         border: none;
-        color: #777;
-        transition: color 0.3s;
-        width: 40px;
-        height: 40px;
+        color: var(--text-light);
+        transition: var(--transition);
+        width: 45px;
+        height: 45px;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -266,35 +291,46 @@
     }
 
     .close-button:hover {
-        color: #333;
+        color: var(--text-dark);
         background-color: #f5f5f5;
     }
 
     .full-submission {
-        margin-bottom: 25px;
-        padding: 20px;
+        margin-bottom: 30px;
+        padding: 25px;
         background-color: #f8f9fa;
-        border-radius: 12px;
-        border-left: 4px solid #ffc400;
-        line-height: 1.6;
+        border-radius: 16px;
+        border-left: 5px solid var(--primary);
+        line-height: 1.7;
+        font-size: 1.05em;
     }
 
     .feedback-section {
-        margin-bottom: 25px;
+        margin-bottom: 30px;
+    }
+
+    .feedback-section h3,
+    .modal-attachments h3 {
+        font-size: 1.25em;
+        color: var(--text-dark);
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 
     textarea {
         width: 100%;
-        min-height: 140px;
-        padding: 15px;
-        border: 1px solid #ddd;
-        border-radius: 12px;
-        margin-bottom: 15px;
+        min-height: 150px;
+        padding: 18px;
+        border: 1px solid #e0e0e0;
+        border-radius: 16px;
+        margin-bottom: 20px;
         resize: vertical;
-        font-family: inherit;
-        transition: all 0.3s;
-        font-size: 0.95em;
-        line-height: 1.5;
+        transition: var(--transition);
+        font-size: 1em;
+        line-height: 1.6;
+        color: var(--text-dark);
     }
 
     textarea:focus {
@@ -304,17 +340,20 @@
     .grade-section {
         display: flex;
         align-items: center;
-        gap: 12px;
-        margin-bottom: 25px;
+        gap: 15px;
+        margin-bottom: 30px;
+        font-size: 1.05em;
     }
 
     .grade-section input {
-        width: 70px;
-        padding: 10px 14px;
-        border: 1px solid #ddd;
+        width: 80px;
+        padding: 12px 18px;
+        border: 1px solid #e0e0e0;
         border-radius: 12px;
-        transition: all 0.3s;
-        font-size: 1em;
+        transition: var(--transition);
+        font-size: 1.1em;
+        text-align: center;
+        font-weight: 600;
     }
 
     .grade-section input:focus {
@@ -324,164 +363,217 @@
     textarea:focus,
     .search-box:focus,
     .grade-section input:focus {
-        border-color: #ffc400;
-        box-shadow: 0 0 0 3px rgba(255, 196, 0, 0.2);
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(255, 196, 0, 0.15);
     }
 
     .submit-review {
-        background: linear-gradient(135deg, #ffaa00 0%, #ffc400 100%);
-        color: white;
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+        color: var(--white);
         border: none;
-        padding: 14px 28px;
-        border-radius: 12px;
+        padding: 16px 32px;
+        border-radius: 14px;
         cursor: pointer;
         font-weight: 600;
-        transition: all 0.3s;
-        font-size: 1em;
+        transition: var(--transition);
+        font-size: 1.05em;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        justify-content: center;
     }
 
     .submit-review:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 15px rgba(255, 196, 0, 0.3);
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(255, 196, 0, 0.35);
     }
 
     .filter-section {
-        margin-bottom: 30px;
+        margin-bottom: 35px;
         display: flex;
         gap: 15px;
         flex-wrap: wrap;
         align-items: center;
-        background-color: white;
-        padding: 15px 20px;
-        border-radius: 16px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        background-color: var(--white);
+        padding: 20px 25px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--card-shadow);
     }
 
     .filter-button {
-        background-color: #f0f0f0;
+        background-color: #f5f5f5;
         border: none;
-        padding: 10px 20px;
+        padding: 12px 24px;
         border-radius: 30px;
         cursor: pointer;
-        transition: all 0.3s;
+        transition: var(--transition);
         font-weight: 500;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
+        font-size: 0.95em;
     }
 
     .filter-button.active {
-        background: linear-gradient(135deg, #ffaa00 0%, #ffc400 100%);
-        color: white;
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+        color: var(--white);
         font-weight: 600;
-        box-shadow: 0 4px 10px rgba(71, 118, 230, 0.3);
+        box-shadow: 0 6px 15px rgba(255, 196, 0, 0.3);
     }
 
     .filter-button:not(.active):hover {
-        background-color: #e0e0e0;
-        transform: translateY(-2px);
+        background-color: #eaeaea;
+        transform: translateY(-3px);
     }
 
     .search-box {
         flex-grow: 1;
-        padding: 14px 20px;
-        border: 1px solid #ddd;
+        padding: 16px 24px;
+        border: 1px solid #eaeaea;
         border-radius: 30px;
         outline: none;
-        transition: all 0.3s;
+        transition: var(--transition);
         font-size: 0.95em;
+        color: var(--text-dark);
+        background-color: #f5f5f5;
     }
 
+    .search-box:focus {
+        background-color: var(--white);
+    }
 
     .view-details {
-        background: linear-gradient(135deg, #ffaa00 0%, #ffc400 100%);
-        color: white;
+        grid-area: actions;
+        width: 200px;
+        margin-left: auto;
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+        color: var(--white);
         border: none;
-        padding: 12px 18px;
+        padding: 14px 0;
         border-radius: 12px;
         cursor: pointer;
-        display: block;
-        width: 100%;
         font-weight: 600;
-        transition: all 0.3s;
-        margin-top: auto;
+        transition: var(--transition);
+        font-size: 0.95em;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
+        gap: 10px;
     }
 
     .view-details:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 15px rgba(255, 196, 0, 0.3);
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(255, 196, 0, 0.3);
     }
 
     #modal-student,
     #modal-date {
-        color: #666;
-        margin-bottom: 8px;
+        color: var(--text-light);
+        margin-bottom: 10px;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
+        font-size: 1.05em;
     }
 
-    h2,
-    h3 {
-        color: #222;
-        margin-bottom: 15px;
+    h2 {
+        color: var(--text-dark);
+        margin: 0;
+        font-size: 1.6em;
+        font-weight: 700;
     }
 
     .modal-attachments {
-        margin-bottom: 25px;
-    }
-
-    .modal-attachments h3 {
-        margin-bottom: 12px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
+        margin-bottom: 30px;
     }
 
     .modal-attachment-list {
         display: flex;
         flex-wrap: wrap;
-        gap: 10px;
+        gap: 12px;
     }
 
     .modal-attachment-item {
-        background-color: #fff8e0;
-        padding: 10px 16px;
-        border-radius: 8px;
-        font-size: 0.9em;
-        color: #ffaa00;
+        background-color: var(--primary-light);
+        padding: 12px 20px;
+        border-radius: 12px;
+        font-size: 0.95em;
+        color: var(--primary-dark);
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        transition: all 0.2s;
+        gap: 10px;
+        transition: var(--transition);
         cursor: pointer;
+        text-decoration: none;
+        font-weight: 500;
+        border: 1px solid rgba(255, 196, 0, 0.2);
     }
 
     .modal-attachment-item:hover {
-        background-color: #fff0c0;
-        transform: translateY(-2px);
+        background-color: rgba(255, 196, 0, 0.25);
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(255, 196, 0, 0.2);
     }
 
     .no-assignments {
         text-align: center;
         padding: 40px;
-        color: #777;
-        font-size: 1.1em;
-        grid-column: 1 / -1;
+        color: var(--text-light);
+        font-size: 1.15em;
+        background: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--card-shadow);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .no-assignments i {
+        font-size: 2.5em;
+        color: var(--primary);
+        margin-bottom: 10px;
+    }
+
+    @media (max-width: 768px) {
+        .filter-section {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .search-box {
+            order: -1;
+            margin-bottom: 10px;
+        }
+
+        .filter-button {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .assignment-card {
+            padding: 20px;
+        }
+
+        .view-details {
+            width: 100%;
+        }
+
+        .assignment-modal-content {
+            padding: 25px;
+            width: 95%;
+        }
     }
 </style>
+
 <div class="assignment-main-container">
     <div class="assignment-header">
-        <h1>Assignment Review Dashboard</h1>
+        <h1>Review Assignments</h1>
     </div>
 
     <div class="filter-section">
-        <input type="text" class="search-box" placeholder="Search by student name or assignment title">
-        <button class="filter-button active" data-filter="all"><i class="fas fa-th-list"></i> All</button>
+        <input type="text" class="search-box" placeholder="Search by student name or submission number...">
+        <button class="filter-button active" data-filter="all"><i class="fas fa-th-list"></i> All Assignments</button>
         <button class="filter-button" data-filter="pending"><i class="fas fa-clock"></i> Pending Review</button>
         <button class="filter-button" data-filter="graded"><i class="fas fa-check-circle"></i> Graded</button>
     </div>
@@ -508,119 +600,48 @@
         </div>
         <div class="feedback-section">
             <h3><i class="fas fa-comment-alt"></i> Feedback</h3>
-            <textarea id="feedback-text" placeholder="Enter your feedback here..."></textarea>
+            <textarea id="feedback-text" placeholder="Provide helpful feedback to the student here..."></textarea>
         </div>
         <div class="grade-section">
             <label for="grade"><i class="fas fa-star"></i> Grade:</label>
             <input type="number" id="grade" min="0" max="100" value="0">
             <span>/100</span>
         </div>
-        <button class="submit-review" id="submit-review"><i class="fas fa-paper-plane"></i> Submit Review</button>
+        <button type="submit" class="submit-review" id="submit-review"><i class="fas fa-paper-plane"></i> Submit Review</button>
     </div>
 </div>
+<script src="/assets/js/components/toast.js"></script>
 
 <script>
-    // Sample data for assignments
-    const assignments = [{
-            id: 1,
-            studentName: "John Doe",
-            title: "JavaScript Basics Quiz",
-            content: "In this assignment, I've implemented the required functions for array manipulation. I've created functions for mapping, filtering, and reducing arrays as requested. All test cases pass successfully.",
-            submissionDate: "2023-06-15",
-            status: "pending",
-            grade: null,
-            feedback: "",
-            attachments: [{
-                    name: "javascript_basics.zip",
-                    url: "#"
-                },
-                {
-                    name: "test_results.pdf",
-                    url: "#"
-                }
-            ]
-        },
-        {
-            id: 2,
-            studentName: "Jane Smith",
-            title: "CSS Layout Project",
-            content: "I've created a responsive layout using CSS Grid and Flexbox as per the requirements. The website works well on mobile, tablet, and desktop sizes. I've also implemented the dark mode toggle as requested in the bonus section.",
-            submissionDate: "2023-06-14",
-            status: "graded",
-            grade: 92,
-            feedback: "Excellent work on the responsive design! Your CSS organization is clean and well-structured. For future projects, consider adding some comments to explain complex layout decisions.",
-            attachments: [{
-                name: "layout_project.zip",
-                url: "#"
-            }]
-        },
-        {
-            id: 3,
-            studentName: "Mike Johnson",
-            title: "HTML Form Validation",
-            content: "I've built the form with client-side validation using JavaScript. The form validates email, password strength, and ensures matching passwords for confirmation. I've also implemented custom error messages as required.",
-            submissionDate: "2023-06-16",
-            status: "pending",
-            grade: null,
-            feedback: "",
-            attachments: []
-        },
-        {
-            id: 4,
-            studentName: "Sarah Williams",
-            title: "Node.js API Development",
-            content: "I've created a REST API with Express.js that connects to a MongoDB database. The API has endpoints for CRUD operations on user resources and includes authentication with JWT. All required endpoints have been tested with Postman.",
-            submissionDate: "2023-06-10",
-            status: "graded",
-            grade: 88,
-            feedback: "Good implementation of the REST API. Authentication works well. Consider adding more error handling for edge cases. Your code structure is clean and follows best practices.",
-            attachments: [{
-                    name: "api_source.zip",
-                    url: "#"
-                },
-                {
-                    name: "postman_collection.json",
-                    url: "#"
-                }
-            ]
-        },
-        {
-            id: 5,
-            studentName: "Alex Brown",
-            title: "React State Management",
-            content: "I've built the React application using Context API for state management as required. The app includes the user authentication flow, product listing, and shopping cart functionality. I've also implemented local storage to persist the cart items.",
-            submissionDate: "2023-06-12",
-            status: "pending",
-            grade: null,
-            feedback: "",
-            attachments: [{
-                name: "react_app.zip",
-                url: "#"
-            }]
+    const assignments = <?php echo json_encode($submissions); ?>;
+    const processedAssignments = assignments.map(assignment => {
+        // Parse the attachments JSON string
+        let parsedAttachments = [];
+        try {
+            parsedAttachments = JSON.parse(assignment.attachments);
+            // Add URL property to each attachment
+            parsedAttachments = parsedAttachments.map(attachment => ({
+                ...attachment,
+                url: `/submission/${assignment.id}/attachment/${attachment.attachment_id}`
+            }));
+        } catch (e) {
+            console.error("Error parsing attachments:", e);
         }
-    ];
 
-    // Function to get icon based on file extension
-    function getFileIcon(filename) {
-        const ext = filename.split('.').pop().toLowerCase();
+        // Return processed assignment with required fields
+        return {
+            ...assignment,
+            title: assignment.title || `Submission #${assignment.id}`, // Default title if missing
+            content: assignment.content || "No content provided", // Default content if missing
+            attachments: parsedAttachments
+        };
+    });
 
-        if (['zip', 'rar', '7z'].includes(ext)) return 'fas fa-file-archive';
-        if (['pdf'].includes(ext)) return 'fas fa-file-pdf';
-        if (['doc', 'docx'].includes(ext)) return 'fas fa-file-word';
-        if (['xls', 'xlsx'].includes(ext)) return 'fas fa-file-excel';
-        if (['jpg', 'jpeg', 'png', 'gif', 'svg'].includes(ext)) return 'fas fa-file-image';
-        if (['js', 'jsx', 'ts', 'tsx', 'html', 'css', 'php'].includes(ext)) return 'fas fa-file-code';
-        if (['txt', 'md'].includes(ext)) return 'fas fa-file-alt';
-
-        return 'fas fa-file';
-    }
-
-    // Function to render assignment cards
     function renderAssignments(filter = 'all', searchTerm = '') {
         const container = document.getElementById('assignments-container');
         container.innerHTML = '';
 
-        const filteredAssignments = assignments.filter(assignment => {
+        const filteredAssignments = processedAssignments.filter(assignment => {
             const matchesFilter = filter === 'all' || assignment.status === filter;
             const matchesSearch = assignment.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 assignment.title.toLowerCase().includes(searchTerm.toLowerCase());
@@ -628,7 +649,11 @@
         });
 
         if (filteredAssignments.length === 0) {
-            container.innerHTML = '<div class="no-assignments"><i class="fas fa-search"></i> No assignments found matching your criteria.</div>';
+            container.innerHTML = `
+                <div class="no-assignments">
+                    <i class="fas fa-search"></i>
+                    <p>No assignments found matching your criteria.</p>
+                </div>`;
             return;
         }
 
@@ -644,30 +669,30 @@
             let attachmentsHTML = '';
             if (assignment.attachments && assignment.attachments.length > 0) {
                 attachmentsHTML = `
-                        <div class="attachments-section">
-                            <div class="attachment-title"><i class="fas fa-paperclip"></i> Attachments:</div>
-                            <div class="attachment-list">
-                                ${assignment.attachments.map(file => `
-                                    <a href="${file.url}" class="attachment-item" title="${file.name}">
-                                        <i class="${getFileIcon(file.name)}"></i> ${file.name}
-                                    </a>
-                                `).join('')}
-                            </div>
-                        </div>
-                    `;
+                <div class="attachments-section">
+                    <div class="attachment-title"><i class="fas fa-paperclip"></i> Attachments:</div>
+                    <div class="attachment-list">
+                        ${assignment.attachments.map(file => `
+                            <a href="${file.url}" class="attachment-item" title="${file.name}">
+                                <i class="fas fa-file"></i> ${file.name}
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
             }
 
             card.innerHTML = `
-                    <div class="assignment-card-header">
-                        <span class="student-name"><i class="fas fa-user-graduate"></i> ${assignment.studentName}</span>
-                        <span class="status ${statusClass}"><i class="${statusIcon}"></i> ${statusText}</span>
-                    </div>
-                    <div class="submission-date"><i class="far fa-calendar-alt"></i> Submitted: ${assignment.submissionDate}</div>
-                    <div class="assignment-title"><i class="fas fa-book"></i> ${assignment.title}</div>
-                    <div class="assignment-content">${assignment.content}</div>
-                    ${attachmentsHTML}
-                    <button class="view-details" data-id="${assignment.id}"><i class="fas fa-eye"></i> Review Assignment</button>
-                `;
+            <div class="assignment-card-header">
+                <span class="student-name"><i class="fas fa-user-graduate"></i> ${assignment.studentName}</span>
+            </div>
+            <span class="status ${statusClass}"><i class="${statusIcon}"></i> ${statusText}</span>
+            <div class="submission-date"><i class="far fa-calendar-alt"></i> Submitted: ${assignment.upload_date}</div>
+            <div class="assignment-title"><i class="fas fa-book"></i> ${assignment.title}</div>
+            <div class="assignment-content">${assignment.content}</div>
+            ${attachmentsHTML}
+            <button class="view-details" data-id="${assignment.id}"><i class="fas fa-eye"></i> Review Assignment</button>
+        `;
 
             container.appendChild(card);
         });
@@ -683,12 +708,12 @@
 
     // Function to open the review modal
     function openReviewModal(id) {
-        const assignment = assignments.find(a => a.id === id);
+        const assignment = processedAssignments.find(a => a.id === id);
         if (!assignment) return;
 
         document.getElementById('modal-title').textContent = assignment.title;
         document.getElementById('modal-student').innerHTML = `<i class="fas fa-user-graduate"></i> Student: ${assignment.studentName}`;
-        document.getElementById('modal-date').innerHTML = `<i class="far fa-calendar-alt"></i> Submitted: ${assignment.submissionDate}`;
+        document.getElementById('modal-date').innerHTML = `<i class="far fa-calendar-alt"></i> Submitted: ${assignment.upload_date}`;
         document.getElementById('full-submission').textContent = assignment.content;
 
         // Render attachments in modal
@@ -699,7 +724,7 @@
                     <div class="modal-attachment-list">
                         ${assignment.attachments.map(file => `
                             <a href="${file.url}" class="modal-attachment-item" title="Download ${file.name}">
-                                <i class="${getFileIcon(file.name)}"></i> ${file.name}
+                                <i class="fas fa-file"></i> ${file.name}
                             </a>
                         `).join('')}
                     </div>
@@ -731,30 +756,56 @@
         const feedback = document.getElementById('feedback-text').value.trim();
         const grade = parseInt(document.getElementById('grade').value);
 
-        if (!feedback) {
-            alert('Please provide feedback for the student.');
-            return;
-        }
-
         if (isNaN(grade) || grade < 0 || grade > 100) {
             alert('Please enter a valid grade between 0 and 100.');
             return;
         }
 
-        // Update the assignment in our data
-        const assignmentIndex = assignments.findIndex(a => a.id === id);
-        if (assignmentIndex !== -1) {
-            assignments[assignmentIndex].status = 'graded';
-            assignments[assignmentIndex].grade = grade;
-            assignments[assignmentIndex].feedback = feedback;
-        }
+        // Show loading state
+        const submitButton = document.getElementById('submit-review');
+        const originalButtonText = submitButton.innerHTML;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+        submitButton.disabled = true;
 
-        // Close the modal and re-render assignments
-        closeReviewModal();
-        renderAssignments(currentFilter, document.querySelector('.search-box').value);
+        // Prepare data for submission
+        const formData = new FormData();
+        formData.append('submission_id', id);
+        formData.append('feedback', feedback);
+        formData.append('grade', grade);
 
-        // Show confirmation
-        alert('Review submitted successfully!');
+        // Send POST request to server
+        fetch('/submit/review', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response;
+            })
+            .then(data => {
+                // Close the modal and re-render assignments
+                console.log(data);
+
+                closeReviewModal();
+                renderAssignments(currentFilter, document.querySelector('.search-box').value);
+                // Show confirmation
+                showToast('Review submitted', 'The review has been submitted successfully.', 'success');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            })
+            .catch(error => {
+                console.error('Error submitting review:', error);
+                showToast('Failed to submit review', 'TThere was a problem submitting review. Please try again.', 'error');
+            })
+            .finally(() => {
+                // Reset button state
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+            });
+
     }
 
     // Track current filter
@@ -801,3 +852,5 @@
         });
     });
 </script>
+
+<?php include $this->resolve('/partials/_footer.php'); ?>
