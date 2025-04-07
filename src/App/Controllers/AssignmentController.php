@@ -6,14 +6,15 @@ namespace App\Controllers;
 
 use Framework\TemplateEngine;
 
-use App\Services\{AssignmentService};
+use App\Services\{AssignmentService, CourseService};
 use PDO;
 
 class AssignmentController
 {
     public function __construct(
         private TemplateEngine $view,
-        private AssignmentService $assignmentService
+        private AssignmentService $assignmentService,
+        private CourseService $courseService
     ) {}
 
     public function createAssignmentView()
@@ -40,12 +41,14 @@ class AssignmentController
     }
     public function assignmentView(array $params)
     {
+        $course = $this->courseService->getCourseById($params['courseId']);
         $assignment = $this->assignmentService->getAssignment($params['assignment_id']);
         $resources = $this->assignmentService->getAssignmentResource($assignment['assignment_id']);
-        echo $this->view->render("Assignment/assignment.php", [
+        echo $this->view->render("Assignment/assignment_view.php", [
             "title" => $assignment['title'],
             "assignment" => $assignment,
-            'resources' => $resources
+            'resources' => $resources,
+            'course' => $course
         ]);
     }
     public function getData(array $params)
