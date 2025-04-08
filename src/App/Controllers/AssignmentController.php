@@ -42,11 +42,14 @@ class AssignmentController
         $course = $this->courseService->getCourseById($params['courseId']);
         $assignment = $this->assignmentService->getAssignment($params['assignment_id']);
         $resources = $this->assignmentService->getAssignmentResource($assignment['assignment_id']);
+        $submission = $this->assignmentService->getUserSubmission();
+        // dd($assignment);
         echo $this->view->render("Assignment/assignment_view.php", [
             "title" => $assignment['title'],
             "assignment" => $assignment,
             'resources' => $resources,
-            'course' => $course
+            'course' => $course,
+            'submission' => $submission
         ]);
     }
     public function getData(array $params)
@@ -126,5 +129,10 @@ class AssignmentController
         } catch (\Exception $e) {
             echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         }
+    }
+
+    public function removeSubmissionFile(array $param)
+    {
+        $this->assignmentService->removeSubmissionFile($param['submission_id'], $param['attachment_id']);
     }
 }

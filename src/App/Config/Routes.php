@@ -148,6 +148,7 @@ function registerRoutes(App $app)
     $app->get('/courses/{courseId}/assignment/{assignment_id}/test', [AssignmentController::class, 'getData']);
     $app->get('/courses/{courseId}/assignment/{assignment_id}/review', [AssignmentController::class, 'review']);
     $app->get('/submission/{submission_id}/attachment/{attachment_id}', [AssignmentController::class, 'getSubmissionFile']);
+    $app->post('/submission/{submission_id}/attachment/{attachment_id}/remove', [AssignmentController::class, 'removeSubmissionFile']);
     $app->post('/submit/review', [AssignmentController::class, 'submit']);
 
     $app->get('/test', [PageController::class, 'test']);
