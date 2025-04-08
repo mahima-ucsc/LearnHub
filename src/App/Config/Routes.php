@@ -103,6 +103,7 @@ function registerRoutes(App $app)
     $app->get('/course/{course_id}/module/{module_id}/resource/{resource_id}', [CoursesController::class, 'readModuleResources'], [TeacherOnlyMiddleware::class]);
 
     // course Reviews
+    $app->get('/course/review/{course}', [ReviewController::class, 'getcourseReviewView']);
     $app->post('/add-course-review', [ReviewController::class, 'addCourseReview'], [AuthRequiredMiddleware::class]);
     $app->post('/delete-course-review', [ReviewController::class, 'deleteCourseReview'], [AuthRequiredMiddleware::class]);
     $app->get('/course/review/edit/{review}', [ReviewController::class, 'editCourseReviewView'], [AuthRequiredMiddleware::class]);

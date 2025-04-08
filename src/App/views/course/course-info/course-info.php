@@ -385,16 +385,17 @@ function calcDateDiff($startDate)
         <div class="reviews-list">
             <?php
             foreach ($userReview as $review): ?>
-                <?php $datetime = new DateTime($review['date']);
-                $date = $datetime->format('Y-m-d');
-                ?>
                 <div class="review-item">
                     <div class="review-header">
+                        <!-- avatar -->
                         <img src="<?php echo htmlspecialchars($review['profile_picture_url']); ?>" alt="<?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
+                        <!-- since when-->
                         <div class="review-meta">
                             <span class="review-name"><?php echo htmlspecialchars($review['name']); ?></span>
                             <span class="review-date" id="review-date-<?php echo $review['review_id']; ?>">
                                 <?php
+                                $datetime = new DateTime($review['date']);
+                                $date = $datetime->format('Y-m-d');
                                 $days = calcDateDiff($date);
                                 if ($days['years'] > 0) {
                                     echo ($days['years']) . " years ago";
@@ -408,6 +409,7 @@ function calcDateDiff($startDate)
                                 ?>
                             </span>
                         </div>
+                        <!-- review rate -->
                         <div class="review-rating">
                             <?php
                             for ($i = 1; $i <= 5; $i++) {
@@ -417,6 +419,7 @@ function calcDateDiff($startDate)
                             }
                             ?>
                         </div>
+                        <!-- edit and delete menue -->
                         <?php
                         if ($review['user_id'] === $_SESSION['user'] || $_SESSION['user_role'] === "admin") : ?>
                             <div class="cart-menu">
@@ -438,34 +441,41 @@ function calcDateDiff($startDate)
                             </div>
                         <?php endif; ?>
                     </div>
+                    <!-- user review text -->
                     <div class="review-body">
                         <p><?php echo htmlspecialchars($review['review']); ?></p>
                     </div>
                 </div>
-
-                <!-- delete comformation and submit -->
-                <div id="deleteModal" class="modal">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3 class="modal-title">Confirm Delete</h3>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure you want to delete this item? This action cannot be undone.
-                        </div>
-                        <div class="modal-footer">
-                            <button onclick="hideModal()" class="btn btn-cancel">Cancel</button>
-                            <form id='submit' method="POST" action="/delete-course-review">
-
-                                <?php include $this->resolve("partials/_csrf.php"); ?>
-                                <input type="hidden" id="delete-review_id" name="review_id" value="" />
-                                <button type="submit" class="btn btn-delete">Delete</button>
-
-                            </form>
-                        </div>
-                    </div>
-                </div>
             <?php endforeach; ?>
         </div>
+
+        <!-- delete comformation allert -->
+        <div id="deleteModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Confirm Delete</h3>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this item? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <button onclick="hideModal()" class="btn btn-cancel">Cancel</button>
+                    <form id='submit' method="POST" action="/delete-course-review">
+
+                        <?php include $this->resolve("partials/_csrf.php"); ?>
+                        <input type="hidden" id="delete-review_id" name="review_id" value="" />
+                        <button type="submit" class="btn btn-delete">Delete</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- pagination -->
+        <div class="pagination">
+            <button class="btn" onclick="getmorereview()">Show more</button>
+        </div>
+
         <!-- Add review -->
         <div class="add-review-section">
             <h3>Add Your Review</h3>
@@ -501,11 +511,6 @@ function calcDateDiff($startDate)
                 </button>
             </form>
         </div>
-
-        <!-- <div class="addFeadback">
-            <a href="/course/enroll" class="add-review-button">Add Review</a>
-        </div> -->
-
     </div>
 
 
@@ -541,6 +546,7 @@ function calcDateDiff($startDate)
 </section>
 
 <?php include $this->resolve("partials/_footer.php"); ?>
+<!-- for review -->
 <script>
     // Toggle the display of the cart options
     function toggleCartMenu(button) {
@@ -597,4 +603,12 @@ function calcDateDiff($startDate)
             hideModal();
         }
     });
+
+    // Show more reviews
+    function getmorereview() {
+        event.preventDefault();
+        const reviewList = document.querySelector('.reviews-list');
+
+        console.log(reviewList);
+    }
 </script>
