@@ -230,6 +230,9 @@ class CourseService
         $currentDateTime = date('Y-m-d H:i:s');
 
         foreach ($allContent as $period) {
+            if ($period['start_datetime'] > $currentDateTime) {
+                continue; // Skip future periods
+            }
             if ($period['end_datetime'] > $currentDateTime) {
                 $currentContent[] = $period;
             } else {
