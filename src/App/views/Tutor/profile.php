@@ -160,9 +160,6 @@
                 </div>
             </div>
 
-            <?php
-            // dd($userReview); 
-            ?>
 
             <!-- Review Cards -->
             <!-- Current user reviews-->
@@ -192,7 +189,7 @@
                             <!-- Option menu-->
                             <div class="cart-options">
                                 <a class="menu-button" href="/review/edit/<?php echo e($review['review_id']); ?>">Edit</a>
-                                <a href="#" class="menu-button" onclick="showModal()">Delete</a>
+                                <a href="#" class="menu-button" onclick="showModal(<?php echo $review['review_id']; ?>)">Delete</a>
                             </div>
                         </div>
                     </div>
@@ -294,9 +291,11 @@
         //Delete confirmation
         const modal = document.getElementById('deleteModal');
 
-        function showModal() {
+        function showModal(review_id) {
             modal.style.display = 'block';
 
+            document.getElementById('submit').action = '/course/review/delete/' + review_id;
+            console.log("hello", review_id);
             // Prevent scrolling of background content
             document.body.style.overflow = 'hidden';
         }

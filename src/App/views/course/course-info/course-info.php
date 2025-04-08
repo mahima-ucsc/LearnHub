@@ -382,11 +382,9 @@ function calcDateDiff($startDate)
         </div>
 
         <!-- user review list -->
-
         <div class="reviews-list">
             <?php
             foreach ($userReview as $review): ?>
-
                 <?php $datetime = new DateTime($review['date']);
                 $date = $datetime->format('Y-m-d');
                 ?>
@@ -432,16 +430,38 @@ function calcDateDiff($startDate)
                                     <div class="menu-button">
                                         <a href="/course/review/edit/<?php echo e($review['review_id']); ?>">Edit</a>
                                     </div>
-                                    <form action="/delete-course-review" method="POST" class="menu-button">
-                                        <input type="hidden" name="review_id" value="<?php echo e($review['review_id']); ?>">
-                                        <button type="submit" class="menu-button-delete">Delete</button>
-                                    </form>
+                                    <div class="menu-button">
+                                        <button onclick="showModal(<?php echo e($review['review_id']); ?>)">delete</button>
+                                    </div>
+
                                 </div>
                             </div>
                         <?php endif; ?>
                     </div>
                     <div class="review-body">
                         <p><?php echo htmlspecialchars($review['review']); ?></p>
+                    </div>
+                </div>
+
+                <!-- delete comformation and submit -->
+                <div id="deleteModal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Confirm Delete</h3>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to delete this item? This action cannot be undone.
+                        </div>
+                        <div class="modal-footer">
+                            <button onclick="hideModal()" class="btn btn-cancel">Cancel</button>
+                            <form id='submit' method="POST" action="/delete-course-review">
+
+                                <?php include $this->resolve("partials/_csrf.php"); ?>
+                                <input type="hidden" id="delete-review_id" name="review_id" value="" />
+                                <button type="submit" class="btn btn-delete">Delete</button>
+
+                            </form>
+                        </div>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -543,11 +563,12 @@ function calcDateDiff($startDate)
     //Delete confirmation
     const modal = document.getElementById('deleteModal');
 
-    function showModal() {
-        modal.style.display = 'block';
-
-        // Prevent scrolling of background content
-        document.body.style.overflow = 'hidden';
+    function showModal(reviewId) {
+        event.preventDefault(); // Prevent the form from submitting immediately
+        modal.style.display = 'block'; // show comform allert
+        console.log(reviewId);
+        document.getElementById('delete-review_id').value = reviewId; // set the review id to the hidden input
+        document.body.style.overflow = 'hidden'; // Prevent scrolling of background content
     }
 
     function hideModal() {

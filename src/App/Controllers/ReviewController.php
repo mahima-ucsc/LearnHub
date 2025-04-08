@@ -65,9 +65,12 @@ class ReviewController
         $this->reviewService->createCourseReview($_POST);
         redirectTo($_SERVER['HTTP_REFERER']);
     }
+
     public function deleteCourseReview()
     {
-        $this->reviewService->deleteCourseReview((int)$_POST['review_id']);
+        if ($_POST['token'] === $_SESSION['token']) {
+            $this->reviewService->deleteCourseReview((int)$_POST['review_id']);
+        }
         redirectTo($_SERVER['HTTP_REFERER']);
     }
 
