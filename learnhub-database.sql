@@ -88,6 +88,8 @@ CREATE TABLE IF NOT EXISTS recurring_course_sub_periods (
     start_datetime DATETIME NOT NULL,
     end_datetime DATETIME NOT NULL,
     price DECIMAL(10,2) NOT NULL,
+    free_access_start_datetime DATETIME NULL,
+    free_access_end_datetime DATETIME NULL,
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
 );
 
@@ -285,7 +287,7 @@ CREATE TABLE IF NOT EXISTS course_request_comments (
 -- Assignments for courses
 CREATE TABLE IF NOT EXISTS assignments (
     assignment_id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(100) NOT NULL;
+    title VARCHAR(100) NOT NULL,
     course_id BIGINT(20) UNSIGNED NOT NULL,
     resource_path varchar(255) DEFAULT NULL,
     upload_date DATE DEFAULT CURRENT_DATE,

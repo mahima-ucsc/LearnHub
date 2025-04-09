@@ -203,8 +203,14 @@ class CourseService
             }
             $period['is_paid'] = $isPaid;
 
-            // Set modules for each sub period only if paid
-            if ($isPaid) {
+            $currentDateTime = date('Y-m-d H:i:s');
+            $freeAccessStartDateTime = $period['free_access_start_datetime'];
+            $freeAccessEndDateTime = $period['free_access_end_datetime'];
+            $isFreeAccessPeriod = $freeAccessStartDateTime <= $currentDateTime && $freeAccessEndDateTime >= $currentDateTime;
+            $period['is_free_access_period'] = $isFreeAccessPeriod;
+
+            // Set modules for each sub period only if paid or in free access period
+            if ($isPaid || $isFreeAccessPeriod) {
                 $subPeriodModules = $this->db->query(
                     "SELECT * FROM course_modules
                         WHERE sub_period_id = :sub_period_id",
@@ -230,6 +236,9 @@ class CourseService
         $currentDateTime = date('Y-m-d H:i:s');
 
         foreach ($allContent as $period) {
+            if ($period['start_datetime'] > $currentDateTime) {
+                continue; // Skip future periods
+            }
             if ($period['end_datetime'] > $currentDateTime) {
                 $currentContent[] = $period;
             } else {
