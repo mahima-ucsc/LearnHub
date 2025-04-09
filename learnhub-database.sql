@@ -347,5 +347,22 @@ CREATE TABLE otp_verification (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
+-- Table for resources shared by users
+-- Resources associated with course module dates
+CREATE TABLE IF NOT EXISTS shared_resources (
+    resource_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    category VARCHAR(50) NOT NULL,
+    resource_type VARCHAR(50) NOT NULL,
+    is_free TINYINT(1) NOT NULL DEFAULT 1,
+    price DECIMAL(10,2) DEFAULT 0,
+    resource_url TEXT,
+    user_id BIGINT(20) UNSIGNED NOT NULL,
+    
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    PRIMARY KEY(resource_id)
+);
+
 
 
