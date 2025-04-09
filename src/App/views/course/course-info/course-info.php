@@ -431,7 +431,7 @@ function calcDateDiff($startDate)
                                 <!-- Option menu-->
                                 <div class="cart-options">
                                     <div class="menu-button">
-                                        <a href="/course/review/edit/<?php echo e($review['review_id']); ?>">Edit</a>
+                                        <a href="/courses/review/edit/<?php echo e($review['review_id']); ?>">Edit</a>
                                     </div>
                                     <div class="menu-button">
                                         <button onclick="showModal(<?php echo e($review['review_id']); ?>)">delete</button>
@@ -461,11 +461,9 @@ function calcDateDiff($startDate)
                 <div class="modal-footer">
                     <button onclick="hideModal()" class="btn btn-cancel">Cancel</button>
                     <form id='submit' method="POST" action="/delete-course-review">
-
                         <?php include $this->resolve("partials/_csrf.php"); ?>
                         <input type="hidden" id="delete-review_id" name="review_id" value="" />
                         <button type="submit" class="btn btn-delete">Delete</button>
-
                     </form>
                 </div>
             </div>
@@ -605,10 +603,103 @@ function calcDateDiff($startDate)
     });
 
     // Show more reviews
+    let counter = 0;
+
     function getmorereview() {
         event.preventDefault();
-        const reviewList = document.querySelector('.reviews-list');
+        const courseID = <?php echo json_encode($course['course_id']); ?>;
+        console.log()
+        fetch(`/course/review/${courseID}/${counter}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    data.forEach(element => {
+                        document.querySelector('.reviews-list')
+                            .insertAdjacentHTML('beforeend', `
+                                <div class="review-item">
+                                    <div class="review-header">
+                                        <!-- avatar -->
+                                        <img src="${element.profile_picture_url}" alt="${element.name}" class="review-avatar">
+                                        <!-- since when-->
+                                        <div class="review-meta">
+                                            <span class="review-name">${element.name}</span>
+                                            <span class="review-date" id="review-date-${element.review_id}">${getDateDifference(element.date)}</span>
+                                        </div>
+                                        <!-- review rate -->
+                                        <div class="review-rating">
+                                            ${generateStarRating(element.rating)} 
+                                        </div>
+                                        <!-- edit and delete menue -->
+                                        <?php
+                                        if ($review['user_id'] === $_SESSION['user'] || $_SESSION['user_role'] === "admin") : ?>
+                                            <div class="cart-menu">
+                                                <div class="cart-btn" onclick="toggleCartMenu(this)">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+                                                    </svg>
+                                                </div>
+                                                <!-- Option menu-->
+                                                <div class="cart-options">
+                                                    <div class="menu-button">
+                                                        <a href="/course/review/edit/${element.review_id}">Edit</a>
+                                                    </div>
+                                                    <div class="menu-button">
+                                                        <button onclick="showModal(${element.review_id})">delete</button>
+                                                    </div>
 
-        console.log(reviewList);
+                                                </div>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <!-- user review text -->
+                                    <div class="review-body">
+                                        <p><?php echo $element['rating'] ?></p>  
+                                    </div>
+                                </div>
+                            `);
+                    });
+                } else {
+                    alert('No more reviews to load');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching reviews:', error);
+                alert('An error occurred while loading more reviews.');
+            });
+
+        counter++;
+    }
+
+    // Function to calculate the difference between two dates
+    function getDateDifference(dateString) {
+        const inputDate = new Date(dateString);
+        const today = new Date();
+
+        // Calculate the time difference in milliseconds
+        const diffTime = today - inputDate;
+
+        // Calculate days difference
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        const diffMonths = Math.floor(diffDays / 30);
+        const diffYears = Math.floor(diffDays / 365);
+
+        if (diffYears > 0) {
+            return `${diffYears} year${diffYears > 1 ? 's' : ''} ago`;
+        } else if (diffMonths > 0) {
+            return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
+        } else if (diffDays > 0) {
+            return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+        } else {
+            return "Today";
+        }
+    }
+
+    // Function to generate star rating HTML
+    function generateStarRating(rating) {
+        let stars = '';
+        for (let i = 1; i <= 5; i++) {
+            stars += `<span class="star ${i <= rating ? 'active' : ''}">★</span>`;
+        }
+        return stars;
     }
 </script>

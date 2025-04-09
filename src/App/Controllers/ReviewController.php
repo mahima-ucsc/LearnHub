@@ -69,7 +69,7 @@ class ReviewController
     public function deleteCourseReview()
     {
         if ($_POST['token'] === $_SESSION['token']) {
-            $this->reviewService->deleteCourseReview((int)$_POST['review_id']);
+            $this->reviewService->deleteCourseReview($_POST['review_id']);
         }
         redirectTo($_SERVER['HTTP_REFERER']);
     }
@@ -98,5 +98,13 @@ class ReviewController
         }
         $this->reviewService->updateCourseRequest($_POST, (int)$params['review']);
         redirectTo("/courses/" . $review['course_id']);
+    }
+
+    public function getCourseReview($params)
+    {
+        header('Content-Type: application/json');
+        $courseReview = $this->reviewService->getCourseReview($params['course'], $params['page']);
+        echo json_encode($courseReview);
+        exit;
     }
 }

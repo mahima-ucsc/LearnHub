@@ -98,13 +98,12 @@ class ReviewService
         );
     }
 
-    public function deleteCourseReview(int $id)
+    public function deleteCourseReview(string $id)
     {
         $this->db->query(
-            "DELETE FROM course_review WHERE review_id = :review_id AND user_id = :user_id",
+            "DELETE FROM course_review WHERE review_id = :review_id ",
             [
                 "review_id" => $id,
-                "user_id" => $_SESSION['user']
             ]
         );
     }
@@ -112,10 +111,9 @@ class ReviewService
     public function getCourseReviewById(string $id)
     {
         return $this->db->query(
-            "SELECT * FROM course_review WHERE review_id = :review_id AND user_id = :user_id",
+            "SELECT * FROM course_review WHERE review_id = :review_id",
             [
                 "review_id" => $id,
-                "user_id" => $_SESSION['user']
             ]
         )->find();
     }
@@ -133,5 +131,25 @@ class ReviewService
                 "user_id" => $_SESSION['user']
             ]
         );
+    }
+
+    public function getCourseReview(string $courseId, string $page)
+    {
+        $limit = 3;
+        $offset = $page * $limit + 5;
+
+        $userReview = $this->db->query(
+            "SELECT c.*, CONCAT(u.first_name, ' ', u.last_name) AS name, u.profile_picture_url 
+            FROM course_review c 
+            JOIN users u on c.user_id = u.user_id 
+            WHERE course_id = :course_id
+            ORDER BY c.date 
+            DESC
+            LIMIT $offset, $limit",
+            [
+                'course_id' => $courseId,
+            ]
+        )->findAll();
+        return $userReview;
     }
 }
