@@ -69,7 +69,7 @@
 
                                 <div class="period-content">
                                     <div class="module-list">
-                                        <?php if ($period['is_paid']): ?>
+                                        <?php if ($period['is_paid'] || $period['is_free_access_period']): ?>
                                             <?php foreach ($period['modules'] as $module): ?>
                                                 <?php include $this->resolve("course/course-info/course-module.php"); ?>
                                             <?php endforeach; ?>
