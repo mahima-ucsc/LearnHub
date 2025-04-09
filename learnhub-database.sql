@@ -287,7 +287,7 @@ CREATE TABLE IF NOT EXISTS course_request_comments (
 -- Assignments for courses
 CREATE TABLE IF NOT EXISTS assignments (
     assignment_id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(100) NOT NULL;
+    title VARCHAR(100) NOT NULL,
     course_id BIGINT(20) UNSIGNED NOT NULL,
     resource_path varchar(255) DEFAULT NULL,
     upload_date DATE DEFAULT CURRENT_DATE,
