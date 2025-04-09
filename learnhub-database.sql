@@ -88,6 +88,8 @@ CREATE TABLE IF NOT EXISTS recurring_course_sub_periods (
     start_datetime DATETIME NOT NULL,
     end_datetime DATETIME NOT NULL,
     price DECIMAL(10,2) NOT NULL,
+    free_access_start_datetime DATETIME NULL,
+    free_access_end_datetime DATETIME NULL,
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
 );
 
