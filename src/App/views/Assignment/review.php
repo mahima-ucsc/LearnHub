@@ -798,7 +798,7 @@
             })
             .catch(error => {
                 console.error('Error submitting review:', error);
-                showToast('Failed to submit review', 'TThere was a problem submitting review. Please try again.', 'error');
+                showToast('Failed to submit review', 'There was a problem submitting review. Please try again.', 'error');
             })
             .finally(() => {
                 // Reset button state

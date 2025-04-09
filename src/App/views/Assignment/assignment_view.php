@@ -1,4 +1,5 @@
 <?php include $this->resolve("partials/_header.php"); ?>
+<link rel="stylesheet" href="/assets/styles/components/toast.css">
 
 <style>
     :root {
@@ -342,6 +343,95 @@
         opacity: 0.5;
     }
 
+    /* Submitted files */
+    .no-submissions {
+        padding: 3rem 1.5rem;
+        text-align: center;
+        color: var(--text-light);
+    }
+
+    .no-submissions i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        display: block;
+        opacity: 0.5;
+    }
+
+    .submission-info {
+        margin-bottom: 1.5rem;
+    }
+
+    .submission-files {
+        margin-top: 1.5rem;
+    }
+
+    .file-list {
+        list-style: none;
+        padding: 0;
+        margin: 1rem 0;
+    }
+
+    .submitted-file-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+        background-color: rgba(99, 102, 241, 0.05);
+        border-radius: 10px;
+        border: 1px solid var(--primary-light);
+    }
+
+    .file-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .file-info i {
+        color: var(--primary);
+    }
+
+    .file-details {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .file-name {
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+
+    .file-size {
+        font-size: 0.75rem;
+        color: var(--text-light);
+    }
+
+    .file-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-sm {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .btn-danger {
+        background-color: var(--danger);
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background-color: #dc2626;
+    }
+
+    .submission-actions {
+        margin-top: 1.5rem;
+        display: flex;
+        justify-content: center;
+    }
+
     @media (max-width: 768px) {
         .assignment-card-header {
             flex-direction: column;
@@ -413,9 +503,8 @@
                 <?php endforeach; ?>
             </div>
 
-            <!-- TODO: Assignment Submission-->
-            <!-- Updated Assignment Submission Section -->
-            <form id="assignmentForm" method="post" enctype="multipart/form-data" action="submit">
+            <!-- Assignment Submission Section -->
+            <form id="assignmentForm" method="post" enctype="multipart/form-data" action="/courses/<?php echo e($course['course_id']); ?>/assignment/<?php echo e($assignment['assignment_id']); ?>/submit">
                 <div class="upload-zone" id="dropZone">
                     <div class="upload-icon">
                         <i class="fas fa-cloud-upload-alt"></i>
@@ -423,7 +512,7 @@
                     <h3 class="upload-text">Drag and drop your files here</h3>
                     <p class="upload-subtext">or click to browse files from your computer</p>
                     <input type="file" id="fileInput" class="file-input" name="files[]" multiple>
-                    <button class="btn">
+                    <button class="btn" onclick="preventDefault();">
                         <i class="fas fa-upload"></i>
                         Select Files
                     </button>
@@ -435,7 +524,7 @@
                 </div>
 
                 <div class="submit-section">
-                    <button type="submit" class="btn" id="submitButton">
+                    <button type="submit" class="btn" id="submitButton" onclick="preventDefault();">
                         <i class="fas fa-paper-plane"></i>
                         Submit Assignment
                     </button>
@@ -443,7 +532,73 @@
             </form>
         </div>
     </div>
+    <!-- New Submitted Files Section -->
+    <div class="assignment-card">
+        <div class="assignment-card-header">
+            <div class="assignment-card-title">
+                <i class="fas fa-file-upload"></i>
+                Your Submissions
+            </div>
+        </div>
+        <div class="assignment-card-body">
+            <?php if (empty($submission)): ?>
+                <div class="no-submissions">
+                    <i class="fas fa-folder-open"></i>
+                    <h3>No Files Submitted</h3>
+                    <p>You haven't submitted any files for this assignment yet.</p>
+                </div>
+            <?php else: ?>
+                <div class="submission-info">
+                    <div class="meta-item">
+                        <i class="fas fa-calendar-check"></i>
+                        <span class="meta-label">Submitted on:</span>
+                        <span><?php echo e(formatDate($submission['upload_date'])); ?></span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span class="meta-label">Status:</span>
+                        <span><?php echo e(ucfirst($submission['status'])); ?></span>
+                    </div>
 
+                    <div class="submission-files">
+                        <h4>Submitted Files</h4>
+                        <ul class="file-list">
+                            <?php
+                            $attachments = json_decode($submission['attachments'], true);
+                            foreach ($attachments as $file):
+                            ?>
+                                <li class="submitted-file-item">
+                                    <div class="file-info">
+                                        <i class="fas fa-file"></i>
+                                        <div class="file-details">
+                                            <div class="file-name"><?php echo e($file['name']); ?></div>
+                                        </div>
+                                    </div>
+                                    <div class="file-actions">
+                                        <button class="btn btn-outline btn-sm" onclick="window.location.href='/assignment/<?php echo e($assignment['assignment_id']); ?>/submission/<?php echo e($submission['submission_id']); ?>/attachment/<?php echo e($file['attachment_id']); ?>'">
+                                            <i class="fas fa-download"></i>
+                                            Download
+                                        </button>
+                                        <button class="btn btn-danger btn-sm" id="remove-attachment" data-attachment-id="<?php echo e($file['attachment_id']); ?>">
+                                            <i class="fas fa-trash"></i>
+                                            Remove
+                                        </button>
+                                    </div>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+
+                        <div class="submission-actions">
+                            <button class="btn btn-outline" id="replaceSubmissionBtn">
+                                <i class="fas fa-sync-alt"></i>
+                                Replace Submission
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
     <div class="assignment-card">
         <div class="assignment-card-header">
             <div class="assignment-card-title">
@@ -452,29 +607,30 @@
             </div>
         </div>
         <div class="assignment-card-body">
-            <div class="no-grade">
-                <i class="fas fa-clipboard-list"></i>
-                <h3>No Grades Yet</h3>
-                <p>Your submission hasn't been graded yet. Check back later.</p>
-            </div>
-
-            <!-- This section will be displayed after grading -->
-
-            <div class="grade-section">
-                <h3>Your Score</h3>
-                <div class="grade-display">
-                    85 <span class="grade-total">/ 100</span>
+            <?php if (empty($submission) || $submission['status'] !== 'graded'): ?>
+                <div class="no-grade">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>No Grades Yet</h3>
+                    <p>Your submission hasn't been graded yet. Check back later.</p>
                 </div>
-                <div class="feedback-box">
-                    <h4>Instructor Feedback:</h4>
-                    <p>Great work on your portfolio website! The design is clean and your projects are well-presented. You could improve the mobile responsiveness of the navigation menu and add more detailed project descriptions. Keep up the good work!</p>
+            <?php else: ?>
+                <!-- This section will be displayed after grading -->
+                <div class="grade-section">
+                    <h3>Your Score</h3>
+                    <div class="grade-display">
+                        <?php echo e($submission['grade']); ?><span class="grade-total">/ 100</span>
+                    </div>
+                    <div class="feedback-box">
+                        <h4>Instructor Feedback:</h4>
+                        <p><?php echo e($submission['feedback']); ?></p>
+                    </div>
                 </div>
-            </div>
-
+            <?php endif; ?>
         </div>
     </div>
 </div>
 
+<script src="/assets/js/components/toast.js"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -483,6 +639,7 @@
         const selectedFiles = document.getElementById('selectedFiles');
         const fileList = document.getElementById('fileList');
         const submitButton = document.getElementById('submitButton');
+        const removeButtons = document.querySelectorAll('.btn-danger[id="remove-attachment"]');
 
         // Use DataTransfer to maintain a mutable list of files
         let dataTransfer = new DataTransfer();
@@ -567,7 +724,6 @@
                     fileName.style.color = 'var(--text-primary)';
 
                     const fileSize = document.createElement('div');
-                    fileSize.textContent = formatFileSize(file.size);
                     fileSize.style.fontSize = '0.75rem';
                     fileSize.style.color = 'var(--text-light)';
 
@@ -616,64 +772,53 @@
             updateFileList();
         }
 
-        // Format file size to human-readable format
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
+        removeButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                // Prevent default navigation
+                e.preventDefault();
 
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(1024));
+                // Get the attachment ID and submission ID from the button's data or the URL
+                const attachmentId = this.getAttribute('data-attachment-id');
+                const submissionId = '<?php echo e($submission['submission_id'] ?? ""); ?>';
 
-            return parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + ' ' + sizes[i];
-        }
+                if (!submissionId || !attachmentId) {
+                    console.error('Missing submission ID or attachment ID');
+                    return;
+                }
 
-        // Handle form submission
-        // submitButton.addEventListener('click', function() {
-        //     if (dataTransfer.files.length > 0) {
-        //         // Create FormData object
-        //         const formData = new FormData();
+                // Confirm before removing
+                if (confirm('Are you sure you want to remove this file?')) {
+                    // Create and send the POST request
+                    fetch(`/submission/${submissionId}/attachment/${attachmentId}/remove`, {
+                            method: 'POST',
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.text();
+                        })
+                        .then(data => {
+                            console.log(data);
+                            showToast('File removed', 'The file has been removed successfully.', 'success');
 
-        //         // Add all files
-        //         Array.from(dataTransfer.files).forEach((file, index) => {
-        //             formData.append(`file${index}`, file);
-        //         });
+                            // Reload page to reflect changes
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
+                        })
+                        .catch(error => {
+                            console.error('Error removing file:', error);
+                            showToast('Error removing file', 'There was a problem removing file. Please try again.', 'error');
+                            alert('Error removing file. Please try again.');
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
+                        });
+                }
+            });
+        });
 
-        //         // Disable button and show loading state
-        //         submitButton.disabled = true;
-        //         submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
-
-        //         // Send POST request to server
-        //         const courseId = <?php echo json_encode($course['id'] ?? $course['course_id']); ?>;
-        //         const assignmentId = <?php echo json_encode($assignment['id'] ?? $assignment['assignment_id']); ?>;
-
-        //         fetch(`/courses/${courseId}/assignment/${assignmentId}/submit`, {
-        //                 method: 'POST',
-        //                 body: formData,
-        //             })
-        //             .then(response => {
-        //                 if (!response.ok) {
-        //                     throw new Error('Network response was not ok');
-        //                 }
-        //                 return response.json();
-        //             })
-        //             .then(data => {
-        //                 alert('Assignment submitted successfully!');
-        //                 console.log('Submission response:', data.files);
-        //                 // Optionally refresh the page or update UI to show submission status
-        //                 // location.reload();
-        //             })
-        //             .catch(error => {
-        //                 console.error('Error submitting assignment:', error);
-        //                 alert('Error submitting assignment. Please try again.');
-        //             })
-        //             .finally(() => {
-        //                 // Re-enable button and restore original text
-        //                 submitButton.disabled = false;
-        //                 submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Assignment';
-        //             });
-        //     } else {
-        //         alert('Please select at least one file to submit.');
-        //     }
-        // });
     });
 </script>
 

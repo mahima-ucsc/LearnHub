@@ -214,17 +214,35 @@ class AssignmentService
     {
         $this->db->beginTransaction();
         try {
-            $this->db->query(
-                "INSERT INTO assignment_submission(assignment_id, course_id, student_id)
-                VALUES(:assignment_id, :course_id, :student_id)",
+            $submission = $this->db->query(
+                "SELECT * FROM assignment_submission
+                WHERE assignment_id = :assignmentId
+                AND course_id = :courseId
+                AND student_id = :student_id",
                 [
-                    'assignment_id' => $assignmentId,
-                    'course_id' => $courseId,
-                    'student_id' => $_SESSION['user']
+                    "assignmentId" => $assignmentId,
+                    "courseId" => $courseId,
+                    "student_id" => $_SESSION['user']
                 ]
-            );
+            )->find();
+            // dd($$submission);
 
-            $submissionId = $this->db->lastInsertId();
+            if (empty($submission)) {
+                $this->db->query(
+                    "INSERT INTO assignment_submission(assignment_id, course_id, student_id)
+                    VALUES(:assignment_id, :course_id, :student_id)",
+                    [
+                        'assignment_id' => $assignmentId,
+                        'course_id' => $courseId,
+                        'student_id' => $_SESSION['user']
+                    ]
+                );
+
+                $submissionId = $this->db->lastInsertId();
+            } else {
+                $submissionId = $submission['submission_id'];
+            }
+
             if (!empty($files['files']['name'][0])) {
                 foreach ($files['files']['tmp_name'] as $key => $tmpName) {
                     // Build the individual file array
@@ -294,6 +312,30 @@ class AssignmentService
             ]
         );
     }
+    public function getUserSubmission()
+    {
+        return $this->db->query(
+            "SELECT a.submission_id ,
+            a.status,
+            a.grade,
+            a.upload_date,
+            a.feedback,
+            a.upload_date,
+            JSON_ARRAYAGG(
+                JSON_OBJECT(
+                    'attachment_id', ast.attachment_id,
+                    'name', ast.attachment_path
+                    )
+            ) AS attachments
+            FROM assignment_submission a
+            JOIN assignment_submission_attachment ast ON a.submission_id = ast.submission_id
+            WHERE a.student_id = :id
+            GROUP BY a.submission_id",
+            [
+                "id" => $_SESSION['user']
+            ]
+        )->find();
+    }
 
     public function getSubmissionAttachment(string $id)
     {
@@ -329,5 +371,34 @@ class AssignmentService
                 "status" => "graded"
             ]
         );
+    }
+
+    public function removeSubmissionFile(string $submissionId, string $attachmentId)
+    {
+        $attachment = $this->db->query(
+            "SELECT 
+            attachment_id,
+            attachment_path 
+            FROM assignment_submission_attachment
+            WHERE submission_id = :submissionId 
+            AND attachment_id = :attachmentId",
+            [
+                "submissionId" => $submissionId,
+                "attachmentId" => $attachmentId
+            ]
+        )->find();
+        if (!empty($attachment)) {
+            $filePath = Paths::STORAGE_UPLOADS . '/assignments_submission/' . $attachment['attachment_path'];
+            if (file_exists($filePath)) {
+                unlink($filePath); // Delete the file from server
+            }
+            $this->db->query(
+                "DELETE FROM assignment_submission_attachment 
+                WHERE attachment_id = :attachmentId",
+                [
+                    "attachmentId" => $attachment['attachment_id']
+                ]
+            );
+        }
     }
 }
