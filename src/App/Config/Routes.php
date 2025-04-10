@@ -123,6 +123,8 @@ function registerRoutes(App $app)
 
     // Resources
     $app->get('/resource', [ResourceController::class, 'resource']);
+    $app->get('/resource/create', [ResourceController::class, 'createView']);
+    $app->post('/resource/create', [ResourceController::class, 'create']);
 
     // Course Reviews
     $app->get('/courses/{courseId}/reviews', [ReviewController::class, 'courseReviews']);
