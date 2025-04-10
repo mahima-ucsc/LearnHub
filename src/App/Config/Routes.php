@@ -158,7 +158,7 @@ function registerRoutes(App $app)
     $app->get('/test/help', [PageController::class, 'helpAndSupportReview']);
 
     // Payments
-    $app->get('payment/courses/{course_id}/{subperiod_id}', [PaymentController::class, 'courserSubPeriodPaymentView']);
+    $app->get('/payment/courses/{course_id}/{subperiod_id}', [PaymentController::class, 'courserSubPeriodPaymentView']);
 
     // Catch-all route for 404 page
     $app->get('/{any:.*}', [PageController::class, 'notFound']);

@@ -118,7 +118,7 @@
                                             </svg>
                                         </div>
                                     <?php else: ?>
-                                        <a class="pay-button">Pay Now</a>
+                                        <a class="pay-button" href="<?= "/payment/courses/" . $course['course_id'] . "/" . $period['sub_period_id'] ?>">Pay Now</a>
                                     <?php endif; ?>
                                 </div>
 
