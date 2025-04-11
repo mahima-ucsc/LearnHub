@@ -107,7 +107,7 @@ class CoursesController
 
         // TODO: Fetch module resources based on the updated database schema and course flow.
         // Get module resources based on module ID
-        // $moduleResources = [];
+        $moduleResources = [];
         // foreach ($courseModules as $module) {
         //     $resources = $this->courseService->courseResourceList($module['course_id'], $module['module_id']);
         //     $moduleResources[$module['module_id']] = $resources;
@@ -135,7 +135,7 @@ class CoursesController
             $starCount[$review['rating']]++;
         }
         $avgRating = $totalReviews > 0 ? ($totalRating / $totalReviews) : 0;
-        $summeryOfReviews = ['totalReviews' => $totalReviews, 'avgRating' => $avgRating, 'starCount' => $starCount];
+        $summeryOfReviews = ['totalReviews' => $totalReviews, 'avgRating' => number_format($avgRating, 2), 'starCount' => $starCount];
 
         // get tutor profile
         $user = $this->userService->getUserProfile($course['tutor_id']);
