@@ -222,12 +222,6 @@ class PageController
         ]);
     }
 
-    public function createAnnouncements()
-    {
-        echo $this->view->render("User/Tutor/create_announcement.php", [
-            "title" => "Create Announcement"
-        ]);
-    }
     public function teacher()
     {
         echo $this->view->render("User/Tutor/teacher_index.php", [
