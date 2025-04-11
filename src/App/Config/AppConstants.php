@@ -23,4 +23,8 @@ class AppConstants
     public const PAYMENT_STATUS_CANCELED = -1;
     public const PAYMENT_STATUS_FAILED = -2;
     public const PAYMENT_STATUS_CHARGEDBACK = -3;
+    // PayHere Course Payment URLs
+    public const COURSE_PAYMENT_RETURN_URL = 'http://learnhub.local';
+    public const COURSE_PAYMENT_CANCEL_URL = 'http://learnhub.local';
+    public const COURSE_PAYMENT_NOTIFY_URL = 'https://7017-192-248-16-125.ngrok-free.app/payment/notify';
 }
