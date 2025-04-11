@@ -19,7 +19,7 @@
 
         <div id="alertMessage" class="alert"></div>
 
-        <form id="announcementForm">
+        <form id="announcementForm" action="/announcements/create" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="title"><i class="fas fa-heading"></i> Announcement Title</label>
                 <input type="text" id="title" name="title" placeholder="Enter a clear title for your announcement" required>
@@ -63,7 +63,7 @@
                 <label for="attachments"><i class="fas fa-paperclip"></i> Attachments (Optional)</label>
                 <div class="file-upload">
                     <span class="upload-btn"><i class="fas fa-upload"></i> Choose Files</span>
-                    <input type="file" id="attachments" name="attachments[]" multiple>
+                    <input type="file" id="attachments" name="attachments" multiple>
                 </div>
                 <div id="fileInfo" class="file-info"></div>
             </div>
@@ -300,37 +300,17 @@
                     return;
                 }
 
-                // Create FormData object to handle the form data
-                const formData = new FormData(form);
-
                 // Add the collected emails if specific visibility is selected
                 if (visibilitySelect.value === 'specific') {
-                    // Convert Set to Array and add to formData
-                    formData.append('specific_emails', JSON.stringify(Array.from(addedEmails)));
+                    const emailInputField = document.createElement('input');
+                    emailInputField.type = 'hidden';
+                    emailInputField.name = 'specific_emails';
+                    emailInputField.value = JSON.stringify(Array.from(addedEmails));
+                    form.appendChild(emailInputField);
                 }
 
-                // Send the POST request
-                fetch('/announcements/create', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            showAlert('Announcement published successfully!', 'success');
-                            form.reset();
-                            previewSection.style.display = 'none';
-                            fileInfo.innerHTML = '';
-                            emailList.innerHTML = '';
-                            addedEmails.clear();
-                        } else {
-                            showAlert(data.message || 'Error publishing announcement', 'danger');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        showAlert('An error occurred while publishing the announcement', 'danger');
-                    });
+                // Submit the form
+                form.submit();
             });
 
             // Helper functions

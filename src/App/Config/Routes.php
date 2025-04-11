@@ -40,7 +40,7 @@ function registerRoutes(App $app)
 
     // announcement
     $app->get('/announcements/create', [AnnouncementController::class, 'announcementsFormView'], [AuthRequiredMiddleware::class]);
-    $app->post('/announcements/create', [AnnouncementController::class, 'createAnnouncements'], [AuthRequiredMiddleware::class]);
+    $app->post('/announcements/create', [AnnouncementController::class, 'createAnnouncements']);
 
     // Contact
     $app->get('/contact', [ContactController::class, 'contact']);
