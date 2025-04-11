@@ -6,14 +6,15 @@ namespace App\Controllers;
 
 use Framework\TemplateEngine;
 
-use App\Services\{AssignmentService};
+use App\Services\{AssignmentService, CourseService};
 use PDO;
 
 class AssignmentController
 {
     public function __construct(
         private TemplateEngine $view,
-        private AssignmentService $assignmentService
+        private AssignmentService $assignmentService,
+        private CourseService $courseService
     ) {}
 
     public function createAssignmentView()
@@ -26,26 +27,29 @@ class AssignmentController
     {
         $this->assignmentService->create($_POST, $params['courseId'], $_FILES);
     }
-    public function submitAssignment()
+    public function review(array $param)
     {
-        echo $this->view->render("Assignment/assingment.php", [
-            "title" => "Submit Assignment"
-        ]);
-    }
-    public function review()
-    {
+        $courseId = $param["courseId"];
+        $assignmentId = $param["assignment_id"];
+        $submissions = $this->assignmentService->getSubmission($courseId, $assignmentId);
         echo $this->view->render("Assignment/review.php", [
-            "title" => "Review Assignment"
+            "title" => "Review Assignment",
+            "submissions" => $submissions
         ]);
     }
     public function assignmentView(array $params)
     {
+        $course = $this->courseService->getCourseById($params['courseId']);
         $assignment = $this->assignmentService->getAssignment($params['assignment_id']);
         $resources = $this->assignmentService->getAssignmentResource($assignment['assignment_id']);
-        echo $this->view->render("Assignment/assignment.php", [
+        $submission = $this->assignmentService->getUserSubmission();
+        // dd($assignment);
+        echo $this->view->render("Assignment/assignment_view.php", [
             "title" => $assignment['title'],
             "assignment" => $assignment,
-            'resources' => $resources
+            'resources' => $resources,
+            'course' => $course,
+            'submission' => $submission
         ]);
     }
     public function getData(array $params)
@@ -87,5 +91,48 @@ class AssignmentController
     public function updateAssignment(array $params)
     {
         $this->assignmentService->update($_POST, $params['courseId'], $params['assignment_id'], $_FILES);
+    }
+
+
+    public function submitAssignment(array $params)
+    {
+        $this->assignmentService->submitAssignment($params['courseId'], $params['assignment_id'], $_FILES);
+    }
+
+    public function getSubmissionFile(array $params)
+    {
+        $submission = $this->assignmentService->getSubmissionById($params['submission_id']);
+        if (empty($submission)) {
+            redirectTo($_SERVER['HTTP_REFERER']);
+        }
+
+        $attachment = $this->assignmentService->getSubmissionAttachment($params['attachment_id']);
+        if (empty($attachment)) {
+            redirectTo($_SERVER['HTTP_REFERER']);
+        }
+
+        $this->assignmentService->readAttachment($attachment);
+    }
+
+    public function submit()
+    {
+
+        try {
+            // Validate required POST data
+            if (!isset($_POST['submission_id']) || !isset($_POST['feedback']) || !isset($_POST['grade'])) {
+                echo json_encode(['success' => false, 'message' => 'Missing required data']);
+                return;
+            }
+
+            $res = $this->assignmentService->submissionReview($_POST['submission_id'], $_POST['feedback'], (int)$_POST['grade']);
+            echo json_encode(['success' => true, 'data' => $res]);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function removeSubmissionFile(array $param)
+    {
+        $this->assignmentService->removeSubmissionFile($param['submission_id'], $param['attachment_id']);
     }
 }

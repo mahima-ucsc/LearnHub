@@ -53,21 +53,39 @@ class PostController
 
     public function approveCourseRequest()
     {
-        // dd($_POST);
-        $this->courseRequestService->approveCourseRequestById($_POST['requestId']);
-        redirectTo('/admin-dashboard?tab=post-managment');
+        header('Content-Type: application/json');
+
+        $input = file_get_contents('php://input');
+        $req = json_decode($input, true);
+        $postId = $req['postId'];
+        $this->courseRequestService->approveCourseRequestById($postId);
+        $data = [
+            'success' => true,
+            'message' => 'Post approved successfully'
+        ];
+        echo json_encode($data);
     }
 
     public function rejectCourseRequest()
     {
-        $this->courseRequestService->rejectCourseRequestById($_POST['requestId']);
-        redirectTo('/admin-dashboard?tab=post-managment');
+
+        header('Content-Type: application/json');
+
+        $input = file_get_contents('php://input');
+        $req = json_decode($input, true);
+        $postId = $req['postId'];
+        $this->courseRequestService->rejectCourseRequestById($postId);
+        $data = [
+            'success' => true,
+            'message' => 'Post rejected successfully'
+        ];
+        echo json_encode($data);
     }
 
     public function createCourseRequestView()
     {
         $subjects = $this->subjectService->getSubjects();
-        echo $this->view->render('post/createCourseRequest.php', [
+        echo $this->view->render('post/create.php', [
             'title' => 'Create Course Request',
             'subjects' => $subjects
         ]);
@@ -101,9 +119,22 @@ class PostController
 
     public function createCourseRequest()
     {
-        $this->validatorService->validateCourseRequest($_POST);
-        $this->courseRequestService->create($_POST);
-        redirectTo('/course/request');
+        $rawData = file_get_contents('php://input');
+
+        // Decode the JSON data into a PHP array/object
+        $data = json_decode($rawData, true);
+
+
+        header('Content-Type: text/plain'); // To make the output readable in browser or API tool
+        // $this->validatorService->validateCourseRequest($_POST);
+        $this->courseRequestService->create($data);
+        // redirectTo('/course/request');
+
+        $res = [
+            'success' => true,
+            'message' => 'Post approved successfully'
+        ];
+        echo json_encode($data);
     }
 
     public function createComment(array $params)
