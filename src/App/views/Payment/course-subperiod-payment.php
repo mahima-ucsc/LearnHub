@@ -18,11 +18,11 @@
         </div>
         <div class="detail-item">
             <span class="label">Amount:</span>
-            <span class="value">$299.99</span>
+            <span class="value"><?= $amount ?></span>
         </div>
     </div>
 
-    <form class="create-form" id="coursePaymentForm" method="POST" action="https://sandbox.payhere.lk/pay/checkout">
+    <form class="create-form" id="coursePaymentForm" method="POST" action=<?= "/payment/courses/" . $courseId . "/" . $subperiodId ?>>
         <div class="create-section">
             <div class="create-form-group">
                 <label for="first_name">First Name *</label>
@@ -53,18 +53,6 @@
                 <label for="city">City *</label>
                 <input type="text" id="city" name="city" required>
             </div>
-
-            <!-- Hidden inputs -->
-            <input type="hidden" name="merchant_id" value="<?= $merchant_id ?>">
-            <input type="hidden" name="return_url" value="<?= $return_url ?>">
-            <input type="hidden" name="cancel_url" value="<?= $cancel_url ?>">
-            <input type="hidden" name="notify_url" value="<?= $notify_url ?>">
-            <input type="hidden" name="country" value="<?= $country ?>">
-            <input type="hidden" name="items" value="<?= $items ?>">
-            <input type="hidden" name="order_id" value="<?= $order_id ?>">
-            <input type="hidden" name="currency" value="<?= $currency ?>">
-            <input type="hidden" name="amount" value="<?= $amount ?>">
-            <input type="hidden" name="hash" value="<?= $hash ?>">
         </div>
 
         <button type="submit" class="create-submit">Proceed to Pay</button>

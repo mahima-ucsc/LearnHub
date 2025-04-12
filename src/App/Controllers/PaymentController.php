@@ -5,43 +5,56 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Config\AppConstants;
+use App\Services\PaymentService;
+use Framework\App;
 use Framework\TemplateEngine;
 
 class PaymentController
 {
     public function __construct(
-        private TemplateEngine $view
+        private TemplateEngine $view,
+        private PaymentService $paymentService
     ) {}
 
     public function courserSubPeriodPaymentView(array $params)
     {
+        $amount = $this->paymentService->getCousreSubperiodAmount($params["course_id"], $params["subperiod_id"]);
+
         echo $this->view->render('Payment/course-subperiod-payment.php', [
             "title" => "Course Payment",
-            "merchant_id" => AppConstants::PAYHERE_MERCHANT_ID,
-            "return_url" => "http://localhost:8000/payment/success",
-            "cancel_url" => "http://localhost:8000/payment/cancel",
-            "notify_url" => "http://shouldnotbelocalhost:8000/payment/notify",
-            "country" => "Sri Lanka",
-            "items" => "678",
-            "order_id" => "12345",
-            "currency" => "LKR",
-            "amount" => 1000.00,
-            "hash" => $this->createPaymantHash("12345", 1000.00, "LKR")
+            "amount" => $amount,
+            "courseId" => $params["course_id"],
+            "subperiodId" => $params["subperiod_id"],
         ]);
     }
 
-    private function createPaymantHash(string $orderId, float $amount, string $currency): string
+    public function courseSubperiodPayment(array $params)
     {
-        $hash = strtoupper(
-            md5(
-                AppConstants::PAYHERE_MERCHANT_ID .
-                    $orderId .
-                    number_format($amount, 2, '.', '') .
-                    $currency .
-                    strtoupper(md5(AppConstants::PAYHERE_MERCHANT_SECRET))
-            )
-        );
 
-        return $hash;
+        $orderId = $this->paymentService->createSubPeriodOrderId($params["course_id"], $params["subperiod_id"]);
+        $amount = $this->paymentService->getCousreSubperiodAmount($params["course_id"], $params["subperiod_id"]);
+        $currency = "LKR";
+
+        $this->paymentService->createPayment($orderId, $params["course_id"], $params["subperiod_id"], (string) $_SESSION["user"], (float)$amount);
+
+        echo $this->view->render('Payment/course-subperiod-payment-autosubmit.php', [
+            "title" => "Course Payment",
+            "first_name" => $_POST["first_name"],
+            "last_name" => $_POST["last_name"],
+            "email" => $_POST["email"],
+            "phone" => $_POST["phone"],
+            "address" => $_POST["address"],
+            "city" => $_POST["city"],
+            "merchant_id" => AppConstants::PAYHERE_MERCHANT_ID,
+            "return_url" => AppConstants::COURSE_PAYMENT_RETURN_URL,
+            "cancel_url" => AppConstants::COURSE_PAYMENT_CANCEL_URL,
+            "notify_url" => AppConstants::COURSE_PAYMENT_NOTIFY_URL,
+            "country" => "Sri Lanka",
+            "items" => $orderId,
+            "order_id" => $orderId,
+            "currency" => $currency,
+            "amount" => $amount,
+            "hash" => $this->paymentService->createPaymentHash($orderId, (float)$amount, $currency)
+        ]);
     }
 }
