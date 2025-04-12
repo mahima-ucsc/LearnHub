@@ -25,13 +25,12 @@ class ReviewService
 
     public function getTutorReview(string $id)
     {
-        $tutorReview = $this->db->query(
+        $this->db->query(
             "SELECT * FROM tutor_review WHERE tutor_id = :tutor_id",
             [
                 'tutor_id' => $id
             ]
-        )->findAll();
-        return $tutorReview;
+        );
     }
 
     public function getUserReview()
@@ -81,75 +80,5 @@ class ReviewService
                 "user_id" => $_SESSION['user']
             ]
         );
-    }
-
-    // course review
-
-    public function createCourseReview(array $formData)
-    {
-        $this->db->query(
-            "INSERT INTO course_review(review, rating, course_id, user_id)VALUES(:review, :rating, :course_id, :user_id)",
-            [
-                'review' => $formData['review'],
-                'rating' => $formData['rating'],
-                'course_id' => $formData['course_id'],
-                'user_id' => $_SESSION['user']
-            ]
-        );
-    }
-
-    public function deleteCourseReview(string $id)
-    {
-        $this->db->query(
-            "DELETE FROM course_review WHERE review_id = :review_id ",
-            [
-                "review_id" => $id,
-            ]
-        );
-    }
-
-    public function getCourseReviewById(string $id)
-    {
-        return $this->db->query(
-            "SELECT * FROM course_review WHERE review_id = :review_id",
-            [
-                "review_id" => $id,
-            ]
-        )->find();
-    }
-
-    public function updateCourseRequest(array $formData, int $id)
-    {
-        $this->db->query(
-            "UPDATE course_review
-            SET review = :review,rating = :rating
-            WHERE review_id = :review_id AND user_id = :user_id",
-            [
-                "review" => $formData['review'],
-                "rating" => $formData['rating'],
-                "review_id" => $id,
-                "user_id" => $_SESSION['user']
-            ]
-        );
-    }
-
-    public function getCourseReview(string $courseId, string $page)
-    {
-        $limit = 3;
-        $offset = $page * $limit + 5;
-
-        $userReview = $this->db->query(
-            "SELECT c.*, CONCAT(u.first_name, ' ', u.last_name) AS name, u.profile_picture_url 
-            FROM course_review c 
-            JOIN users u on c.user_id = u.user_id 
-            WHERE course_id = :course_id
-            ORDER BY c.date 
-            DESC
-            LIMIT $offset, $limit",
-            [
-                'course_id' => $courseId,
-            ]
-        )->findAll();
-        return $userReview;
     }
 }

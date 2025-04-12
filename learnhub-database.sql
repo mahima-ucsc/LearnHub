@@ -88,28 +88,35 @@ CREATE TABLE IF NOT EXISTS recurring_course_sub_periods (
     start_datetime DATETIME NOT NULL,
     end_datetime DATETIME NOT NULL,
     price DECIMAL(10,2) NOT NULL,
+    free_access_start_datetime DATETIME NULL,
+    free_access_end_datetime DATETIME NULL,
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
 );
 
--- Table for payments related to subscription periods
-CREATE TABLE IF NOT EXISTS sub_period_payments (
+-- Base table for all payment types
+CREATE TABLE IF NOT EXISTS payments (
     payment_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    sub_period_id BIGINT(20) UNSIGNED NOT NULL,
-    user_id BIGINT(20) UNSIGNED NOT NULL,
     amount DECIMAL(10,2) NOT NULL,
-    payment_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    FOREIGN KEY (sub_period_id) REFERENCES recurring_course_sub_periods(sub_period_id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+    order_id VARCHAR(50) NOT NULL UNIQUE,
+    payment_status TINYINT NOT NULL DEFAULT 0, -- 2=success, 0=pending, -1=canceled, -2=failed, -3=chargedback
+    created_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- Table for one-time course payments
-CREATE TABLE IF NOT EXISTS onetime_course_payments (
-    payment_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    course_id BIGINT(20) UNSIGNED NOT NULL,
+-- Specialized table for course payment details
+CREATE TABLE IF NOT EXISTS course_payments (
+    course_payment_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT(20) UNSIGNED NOT NULL,
-    amount DECIMAL(10,2) NOT NULL,
-    payment_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    payment_id BIGINT(20) UNSIGNED NOT NULL,
+    course_id BIGINT(20) UNSIGNED NOT NULL,
+    -- Payment for a course can be either:
+    -- 1. For a one-time course: sub_period_id should be NULL
+    -- 2. For a recurring course: sub_period_id must NOT be NULL
+    sub_period_id BIGINT(20) UNSIGNED,
+    
+    FOREIGN KEY (payment_id) REFERENCES payments(payment_id) ON DELETE CASCADE,
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
+    FOREIGN KEY (sub_period_id) REFERENCES recurring_course_sub_periods(sub_period_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
@@ -236,9 +243,6 @@ CREATE TABLE IF NOT EXISTS tutor_review(
     FOREIGN KEY(tutor_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
-
-ALTER TABLE `tutor_review` ADD `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `user_id`;
-
 -- Reviews for courses
 CREATE TABLE IF NOT EXISTS course_review(
     review_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -293,6 +297,7 @@ CREATE TABLE IF NOT EXISTS course_request_comments (
 -- Assignments for courses
 CREATE TABLE IF NOT EXISTS assignments (
     assignment_id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
     course_id BIGINT(20) UNSIGNED NOT NULL,
     resource_path varchar(255) DEFAULT NULL,
     upload_date DATE DEFAULT CURRENT_DATE,
@@ -315,17 +320,24 @@ CREATE TABLE IF NOT EXISTS assignment_resource (
 );
 
 
-CREATE TABLE IF NOT EXISTS assignments_submissions(
+CREATE TABLE IF NOT EXISTS assignment_submission(
     submission_id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     assignment_id BIGINT(20) UNSIGNED NOT NULL,
     course_id BIGINT(20) UNSIGNED NOT NULL,
-    submission_path VARCHAR(255),
-    upload_date DATE DEFAULT CURRENT_DATE,
+    upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     student_id BIGINT(20) UNSIGNED NoT NULL,
+    status ENUM('pending', 'graded') DEFAULT 'pending',
+    grade INT DEFAULT 0 CHECK (grade >= 0 AND grade <= 100),
 
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
     FOREIGN KEY (student_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (assignment_id) REFERENCES assignments(assignment_id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS assignment_submission_attachment(
+    attachment_id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    submission_id BIGINT(20) UNSIGNED NOT NULL,
+    attachment_path VARCHAR(255),
+    FOREIGN KEY (submission_id) REFERENCES assignment_submission(submission_id) ON DELETE CASCADE
 );
 
 CREATE TABLE contact_tickets (
@@ -346,4 +358,23 @@ CREATE TABLE otp_verification (
     is_verified TINYINT(1) DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
+
+-- Table for resources shared by users
+-- Resources associated with course module dates
+CREATE TABLE IF NOT EXISTS shared_resources (
+    resource_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    category VARCHAR(50) NOT NULL,
+    resource_type VARCHAR(50) NOT NULL,
+    is_free TINYINT(1) NOT NULL DEFAULT 1,
+    price DECIMAL(10,2) DEFAULT 0,
+    resource_url TEXT,
+    user_id BIGINT(20) UNSIGNED NOT NULL,
+    
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    PRIMARY KEY(resource_id)
+);
+
+
 
