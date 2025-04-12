@@ -14,6 +14,9 @@ class AppConstants
     public const DB_USER = 'learnhub';
     public const DB_PASS = 'learnhub123';
 
+    // Log Folder
+    public const LOG_FOLDER = __DIR__ . '/../../../logs/';
+
     // PayHere
     public const PAYHERE_MERCHANT_ID = '121XXXX';
     public const PAYHERE_MERCHANT_SECRET = '4sdXXXXXXXXXXXXXXXXXXXXXXXXX';
@@ -26,5 +29,6 @@ class AppConstants
     // PayHere Course Payment URLs
     public const COURSE_PAYMENT_RETURN_URL = 'http://learnhub.local';
     public const COURSE_PAYMENT_CANCEL_URL = 'http://learnhub.local';
-    public const COURSE_PAYMENT_NOTIFY_URL = 'https://7017-192-248-16-125.ngrok-free.app/payment/notify';
+    public const COURSE_PAYMENT_RELATIVE_NOTIFY_URL = '/payment/notify';
+    public const COURSE_PAYMENT_NOTIFY_URL = 'https://7017-192-248-16-125.ngrok-free.app' . self::COURSE_PAYMENT_RELATIVE_NOTIFY_URL;
 }
