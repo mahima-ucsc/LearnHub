@@ -57,4 +57,25 @@ class PaymentController
             "hash" => $this->paymentService->createPaymentHash($orderId, (float)$amount, $currency)
         ]);
     }
+
+    public function handlePaymentNotification()
+    {
+        $requestData = file_get_contents('php://input');
+        $logFile = AppConstants::LOG_FOLDER . 'payment_notification_log.txt';
+
+        file_put_contents($logFile, $requestData . PHP_EOL, FILE_APPEND);
+
+        // Optionally, you can decode JSON if the request is in JSON format
+        $decodedData = json_decode($requestData, true);
+
+        // Process the payment notification here
+        if ($decodedData) {
+            // Example: Log decoded data
+            file_put_contents($logFile, print_r($decodedData, true) . PHP_EOL, FILE_APPEND);
+        }
+
+        // Respond to the notification
+        http_response_code(200);
+        echo "Notification received";
+    }
 }
