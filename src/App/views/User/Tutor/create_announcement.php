@@ -63,7 +63,7 @@
                 <label for="attachments"><i class="fas fa-paperclip"></i> Attachments (Optional)</label>
                 <div class="file-upload">
                     <span class="upload-btn"><i class="fas fa-upload"></i> Choose Files</span>
-                    <input type="file" id="attachments" name="attachments" multiple>
+                    <input type="file" id="attachments" name="attachments[]" multiple>
                 </div>
                 <div id="fileInfo" class="file-info"></div>
             </div>

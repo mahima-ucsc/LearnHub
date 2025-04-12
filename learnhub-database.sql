@@ -377,4 +377,19 @@ CREATE TABLE IF NOT EXISTS shared_resources (
 );
 
 
+-- table for announcements
+CREATE TABLE IF NOT EXISTS announcements (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    priority ENUM('low', 'medium', 'high') NOT NULL DEFAULT 'low',
+    visibility ENUM('all', 'specific') NOT NULL DEFAULT 'all',
+    specific_emails JSON DEFAULT NULL, -- Stores specific emails as JSON
+    attachments TEXT DEFAULT NULL, -- Stores file paths of uploaded attachments
+    send_email BOOLEAN NOT NULL DEFAULT FALSE, -- Indicates if email notifications are sent
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
 
