@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Config\AppConstants;
+use Framework\App;
 use Framework\Database;
 
 class PaymentService
@@ -66,6 +67,66 @@ class PaymentService
                     'subperiodId' => $subperiodId,
                     'userId' => $userId,
                     'paymentId' => $paymentId
+                ]
+            );
+
+            $this->db->commit();
+        } catch (\Exception $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
+    }
+
+    public function isPaymentVerified(array $paymentData)
+    {
+        $merchant_id         = $paymentData['merchant_id'] ?? '';
+        $order_id            = $paymentData['order_id'] ?? '';
+        $payhere_amount      = $paymentData['payhere_amount'] ?? '';
+        $payhere_currency    = $paymentData['payhere_currency'] ?? '';
+        $status_code         = $paymentData['status_code'] ?? '';
+        $md5sig              = $paymentData['md5sig'] ?? '';
+
+        $merchant_secret = AppConstants::PAYHERE_MERCHANT_SECRET;
+
+        $local_md5sig = strtoupper(
+            md5(
+                $merchant_id .
+                    $order_id .
+                    $payhere_amount .
+                    $payhere_currency .
+                    $status_code .
+                    strtoupper(md5($merchant_secret))
+            )
+        );
+
+        return ($local_md5sig === $md5sig);
+    }
+
+    public function handleVerifiedPayment(array $paymentData)
+    {
+        // Important Note: The payment_id from the payment data and the database table are different.
+        $orderId = $paymentData['order_id'] ?? '';
+        $statusCode = $paymentData['status_code'] ?? 0;
+        $payhereAmount = $paymentData['payhere_amount'] ?? 0.00;
+
+        if (empty($orderId)) {
+            throw new \InvalidArgumentException("Order ID is missing in payment data.");
+        }
+
+        try {
+            $this->db->beginTransaction();
+
+            // Update the payment record in the database
+            $this->db->query(
+                "UPDATE payments 
+            SET payment_status = :payment_status, 
+                amount = :payhere_amount, 
+                updated_date = CURRENT_TIMESTAMP 
+            WHERE order_id = :order_id",
+                [
+                    'payment_status' => $statusCode,
+                    'payhere_amount' => $payhereAmount,
+                    'order_id' => $orderId
                 ]
             );
 

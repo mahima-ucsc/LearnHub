@@ -60,19 +60,21 @@ class PaymentController
 
     public function handlePaymentNotification()
     {
-        $requestData = file_get_contents('php://input');
+        $isPaymnetVerified = $this->paymentService->isPaymentVerified($_POST);
+
         $logFile = AppConstants::LOG_FOLDER . 'payment_notification_log.txt';
+        file_put_contents(
+            $logFile,
+            "Payment Notification Received:\n" . print_r($_POST, true) .
+                "\nVerification Result: " . ($isPaymnetVerified ? "Verified" : "Not Verified") .
+                PHP_EOL . str_repeat("-", 50) . PHP_EOL,
+            FILE_APPEND
+        );
 
-        file_put_contents($logFile, $requestData . PHP_EOL, FILE_APPEND);
-
-        // Optionally, you can decode JSON if the request is in JSON format
-        $decodedData = json_decode($requestData, true);
-
-        // Process the payment notification here
-        if ($decodedData) {
-            // Example: Log decoded data
-            file_put_contents($logFile, print_r($decodedData, true) . PHP_EOL, FILE_APPEND);
+        if ($isPaymnetVerified) {
+            $this->paymentService->handleVerifiedPayment($_POST);
         }
+
 
         // Respond to the notification
         http_response_code(200);
