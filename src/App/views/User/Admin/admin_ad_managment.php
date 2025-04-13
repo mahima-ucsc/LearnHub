@@ -740,6 +740,7 @@
                 <button class="filter-button">Pending</button>
                 <button class="filter-button">Approved</button>
                 <button class="filter-button">Rejected</button>
+                <button class="filter-button">Expired</button>
             </div>
             <select class="sort-dropdown">
                 <option>Newest First</option>
@@ -841,7 +842,7 @@
 
         // Check if no advertisements
         if (advertisements.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="6">No pending advertisements</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="6">No advertisements to show</td></tr>';
             return;
         }
 

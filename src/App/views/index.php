@@ -1819,7 +1819,7 @@
     <div class="section-header">
         <div>
             <h2 class="section-title">Premium Offers</h2>
-            <p class="section-description">Exclusive limited-time deals on top-rated certification courses</p>
+            <p class="section-description">Exclusive limited-time deals</p>
         </div>
     </div>
     <div class="ad-carousel">
