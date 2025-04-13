@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\{CourseRequestService, UserService, CourseService};
+use App\Services\{CourseRequestService, UserService, CourseService, AdvertisementService};
 
 
 class PageController
@@ -14,7 +14,8 @@ class PageController
         private TemplateEngine $view,
         private UserService $userService,
         private CourseService $courseService,
-        private CourseRequestService $courseRequestService
+        private CourseRequestService $courseRequestService,
+        private AdvertisementService $advertisementService
     ) {}
 
     public function home()
@@ -26,6 +27,8 @@ class PageController
             "users" => $userCount,
             "courses" => $courseCount
         ];
+        $advertisements = $this->advertisementService->getApprovedAds();
+        // dd($advertisements);
         if ($_SESSION['user_role'] === "student") {
             $path = "User/student/std_index.php";
         } elseif ($_SESSION['user_role'] === "teacher") {
@@ -38,7 +41,8 @@ class PageController
         echo $this->view->render($path, [
             "title" => "Home",
             "userData" => $user,
-            "stat" => $stat
+            "stat" => $stat,
+            "advertisements" => $advertisements
         ]);
     }
     public function helpAndSupportReview()
@@ -257,10 +261,23 @@ class PageController
             "posts" => $courseRequests
         ]);
     }
+    public function adManagment()
+    {
+        $advertisements = $this->advertisementService->getAdvertisements();
+        // dd($advertisements);
+        echo $this->view->render("User/Admin/admin_ad_managment.php", [
+            "title" => "Ad Managment",
+            "advertisements" => $advertisements
+        ]);
+    }
     public function test()
     {
         echo $this->view->render("test.php", [
             "title" => "Post Managment"
         ]);
+    }
+    public function testPost()
+    {
+        dd($_POST);
     }
 }

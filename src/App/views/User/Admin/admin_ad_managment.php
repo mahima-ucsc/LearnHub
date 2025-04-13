@@ -129,7 +129,6 @@
         border: 1px solid var(--gray-200);
     }
 
-
     .post-stat-icon {
         width: 48px;
         height: 48px;
@@ -173,14 +172,6 @@
         font-weight: 700;
         color: var(--text-primary);
         margin-bottom: 8px;
-    }
-
-    .post-stat-card {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 13px;
-        font-weight: 500;
     }
 
     .content-header {
@@ -317,11 +308,6 @@
         color: var(--text-primary);
     }
 
-    .author-type {
-        font-size: 12px;
-        color: var(--text-secondary);
-    }
-
     .badge {
         display: inline-flex;
         align-items: center;
@@ -332,14 +318,19 @@
         gap: 6px;
     }
 
-    .badge.course {
+    .badge.banner {
         background-color: #E0F2FE;
         color: #0369A1;
     }
 
-    .badge.requirement {
+    .badge.sidebar {
         background-color: #ECFDF5;
         color: #047857;
+    }
+
+    .badge.popup {
+        background-color: #FEF3C7;
+        color: #92400E;
     }
 
     .post-title {
@@ -613,32 +604,42 @@
         background-color: #DC2626;
     }
 
-    .empty-state {
+    .ad-preview {
+        margin-top: 16px;
+        border: 1px dashed var(--gray-300);
+        padding: 16px;
+        border-radius: var(--radius);
+        background-color: var(--gray-100);
+        text-align: center;
+    }
+
+    .ad-preview img {
+        max-width: 100%;
+        height: auto;
+        max-height: 300px;
+        object-fit: contain;
+    }
+
+    .ad-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-top: 16px;
+    }
+
+    .ad-detail-item {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 48px;
-        text-align: center;
+    }
+
+    .ad-detail-label {
+        font-size: 12px;
         color: var(--text-secondary);
     }
 
-    .empty-icon {
-        font-size: 48px;
-        color: var(--gray-400);
-        margin-bottom: 16px;
-    }
-
-    .empty-title {
-        font-size: 18px;
+    .ad-detail-value {
         font-weight: 600;
-        margin-bottom: 8px;
         color: var(--text-primary);
-    }
-
-    .empty-description {
-        max-width: 400px;
-        margin-bottom: 24px;
     }
 
     /* Loading skeleton animation */
@@ -655,80 +656,10 @@
         border-radius: var(--radius);
     }
 
-
-    /* Date badge */
-    .date-badge {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        background-color: var(--gray-100);
-        border-radius: var(--radius);
-        padding: 4px 8px;
-        font-size: 12px;
-        line-height: 1.2;
-    }
-
-    .date-day {
-        font-weight: 700;
-        color: var(--text-primary);
-    }
-
-    .date-month {
-        font-size: 10px;
-        color: var(--text-secondary);
-        text-transform: uppercase;
-    }
-
-    @keyframes fadeOut {
-        from {
-            opacity: 1;
-        }
-
-        to {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-    }
-
-    .row-fade-out {
-        animation: fadeOut 0.5s forwards;
-    }
-
-    /* Responsive Styles */
+    /* Responsive styles */
     @media (max-width: 1200px) {
         .post-stats {
             grid-template-columns: repeat(2, 1fr);
-        }
-    }
-
-    @media (max-width: 1024px) {
-        .sidebar {
-            width: 80px;
-        }
-
-        .logo-text,
-        .menu-item span,
-        .menu-category,
-        .user-info {
-            display: none;
-        }
-
-        .main-post-content {
-            margin-left: 80px;
-        }
-
-        .user-profile {
-            justify-content: center;
-            padding: 16px 0;
-        }
-
-        .logo {
-            justify-content: center;
-        }
-
-        .menu-item {
-            justify-content: center;
-            padding: 16px 0;
         }
     }
 
@@ -746,53 +677,6 @@
             align-items: flex-start;
             gap: 16px;
         }
-
-        .post-header-actions {
-            width: 100%;
-        }
-
-        .search-bar {
-            width: 100%;
-        }
-
-        .posts-table th:nth-child(3),
-        .posts-table td:nth-child(3),
-        .posts-table th:nth-child(4),
-        .posts-table td:nth-child(4) {
-            display: none;
-        }
-
-        .modal-content {
-            width: 90%;
-            padding: 24px;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .filter-bar {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 12px;
-        }
-
-        .filter-options {
-            width: 100%;
-            overflow-x: auto;
-            padding-bottom: 8px;
-        }
-
-        .sort-dropdown {
-            width: 100%;
-        }
-
-        .posts-table th:nth-child(5),
-        .posts-table td:nth-child(5) {
-            display: none;
-        }
-
-        .action-buttons {
-            flex-direction: column;
-        }
     }
 </style>
 <?php include $this->resolve('User/sidebar.php') ?>
@@ -802,15 +686,15 @@
     <div class="main-post-content">
         <div class="post-header">
             <div class="post-header-title">
-                <h1>Pending Posts</h1>
-                <div class="post-header-subtitle">Review and moderate user-submitted content</div>
+                <h1>Pending Advertisements</h1>
+                <div class="post-header-subtitle">Review and approve advertiser submissions</div>
             </div>
             <div class="post-header-actions">
                 <div class="search-bar">
                     <button>
                         <i class="fas fa-search"></i>
                     </button>
-                    <input type="text" placeholder="Search posts...">
+                    <input type="text" placeholder="Search advertisements...">
                 </div>
             </div>
         </div>
@@ -818,43 +702,51 @@
         <div class="post-stats">
             <div class="post-stat-card">
                 <div class="post-stat-icon icon-primary">
-                    <i class="fas fa-clipboard-list"></i>
+                    <i class="fas fa-clock"></i>
                 </div>
-                <h3>Pending Posts</h3>
-                <div class="value">15</div>
+                <h3>Pending Ads</h3>
+                <div class="value">12</div>
             </div>
             <div class="post-stat-card">
                 <div class="post-stat-icon icon-success">
                     <i class="fas fa-check-circle"></i>
                 </div>
-                <h3>Approved</h3>
-                <div class="value">189</div>
+                <h3>Active Ads</h3>
+                <div class="value">45</div>
+            </div>
+            <div class="post-stat-card">
+                <div class="post-stat-icon icon-info">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <h3>Revenue (This Month)</h3>
+                <div class="value">$3,250</div>
             </div>
             <div class="post-stat-card">
                 <div class="post-stat-icon icon-warning">
                     <i class="fas fa-times-circle"></i>
                 </div>
-                <h3>Rejected</h3>
-                <div class="value">15</div>
+                <h3>Rejected Ads</h3>
+                <div class="value">8</div>
             </div>
         </div>
 
         <div class="content-header">
-            <h2 class="content-title">Posts awaiting review</h2>
+            <h2 class="content-title">Advertisements pending review</h2>
         </div>
 
         <div class="filter-bar">
             <div class="filter-options">
-                <button class="filter-button active">All Posts</button>
-                <button class="filter-button">Courses</button>
-                <button class="filter-button">Requirements</button>
-                <button class="filter-button">Reviews</button>
+                <button class="filter-button active">All</button>
+                <button class="filter-button">Pending</button>
+                <button class="filter-button">Approved</button>
+                <button class="filter-button">Rejected</button>
             </div>
             <select class="sort-dropdown">
                 <option>Newest First</option>
                 <option>Oldest First</option>
-                <option>Author Name (A-Z)</option>
-                <option>Author Name (Z-A)</option>
+                <option>Company Name (A-Z)</option>
+                <option>Price (High to Low)</option>
+                <option>Price (Low to High)</option>
             </select>
         </div>
 
@@ -862,58 +754,15 @@
             <table class="posts-table">
                 <thead>
                     <tr>
-                        <th>Author</th>
-                        <th>Post</th>
-                        <th>Type</th>
-                        <th>Date</th>
+                        <th>Advertiser</th>
+                        <th>Ad Details</th>
+                        <th>Status</th>
+                        <th>Package</th>
+                        <th>Price</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (empty($posts)): ?>
-                        <tr>
-                            <td colspan="8">No pending posts</td>
-                        </tr>
-                    <?php endif; ?>
-                    <?php foreach ($posts as $post): ?>
-                        <tr data-post-id="<?php echo e($post['request_id']); ?>">
-                            <td>
-                                <div class="author">
-                                    <img src="/assets/images/user_placeholder.jpg" alt="Author">
-                                    <div class="author-info">
-                                        <div class="author-name"><?php echo e($post['author']); ?></div>
-                                        <div class="author-type"><?php echo e($post['user_role']); ?></div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="post-title"><?php echo e($post['title']); ?></div>
-                                <div class="post-excerpt"><?php echo e($post['description']); ?></div>
-                            </td>
-                            <td>
-                                <div class="badge course"><?php echo e($post['subject']); ?></div>
-                            </td>
-                            <td>
-                                <div class="date-badge">
-                                    <div class="date-day"><?php echo e(formatDate($post['created_date'], 'j')); ?></div>
-                                    <div class="date-month"><?php echo e(formatDate($post['created_date'], 'M')); ?></div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn btn-sm btn-approve">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-reject">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-preview">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
@@ -932,23 +781,46 @@
     </div>
 </div>
 
-<!-- Post Preview Modal -->
-<div id="postPreviewModal" class="post-preview-modal" style="display: none;">
+<!-- Advertisement Preview Modal -->
+<div id="adPreviewModal" class="post-preview-modal" style="display: none;">
     <div class="modal-content">
         <div class="close-modal">&times;</div>
         <div class="modal-header">
             <h2 class="modal-post-title"></h2>
             <div class="modal-post-meta"></div>
         </div>
-        <div class="modal-post-content"></div>
+        <div class="modal-post-content">
+            <div class="ad-preview">
+                <img src="" alt="Advertisement Preview" id="thumbnailImg">
+            </div>
+            <div class="ad-details">
+                <div class="ad-detail-item">
+                    <span class="ad-detail-label">Status</span>
+                    <span class="ad-detail-value" id="adStatus"></span>
+                </div>
+                <div class="ad-detail-item">
+                    <span class="ad-detail-label">Package</span>
+                    <span class="ad-detail-value" id="adPackage"></span>
+                </div>
+                <div class="ad-detail-item">
+                    <span class="ad-detail-label">Price</span>
+                    <span class="ad-detail-value" id="adPrice"></span>
+                </div>
+                <div class="ad-detail-item">
+                    <span class="ad-detail-label">Submitted On</span>
+                    <span class="ad-detail-value" id="adSubmittedDate"></span>
+                </div>
+            </div>
+            <p class="ad-description" id="adDescription"></p>
+        </div>
         <div class="modal-actions">
             <button class="btn btn-approve-lg btn-text">
                 <i class="fas fa-check"></i>
-                <span>Approve Post</span>
+                <span>Approve Advertisement</span>
             </button>
             <button class="btn btn-reject-lg btn-text">
                 <i class="fas fa-times"></i>
-                <span>Reject Post</span>
+                <span>Reject Advertisement</span>
             </button>
         </div>
     </div>
@@ -957,194 +829,283 @@
 <script src="/assets/js/components/toast.js"></script>
 
 <script>
-    const previewButtons = document.querySelectorAll('.btn-preview');
-    const modal = document.getElementById('postPreviewModal');
-    const closeModal = document.querySelector('.close-modal');
-    const modalTitle = modal.querySelector('.modal-post-title');
-    const modalMeta = modal.querySelector('.modal-post-meta');
-    const modalContent = modal.querySelector('.modal-post-content');
+    // The data provided in PHP array format converted to JavaScript object
+    const advertisementData = <?php echo json_encode($advertisements); ?>;
 
-    previewButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Get the parent row
-            const row = button.closest('tr');
-            const postId = row.dataset.postId;
+    // Function to render the advertisements table
+    function renderAdvertisements(advertisements) {
+        const tableBody = document.querySelector('.posts-table tbody');
 
-            // Store post ID in the modal for reference
-            modal.setAttribute('data-post-id', postId);
+        // Clear existing table content
+        tableBody.innerHTML = '';
 
-            // Extract data from the row
-            const authorName = row.querySelector('.author-name').textContent;
-            const postTitle = row.querySelector('.post-title').textContent;
-            const postExcerpt = row.querySelector('.post-excerpt').textContent;
-            const postType = row.querySelector('.badge').textContent;
-            const dateDay = row.querySelector('.date-day').textContent;
-            const dateMonth = row.querySelector('.date-month').textContent;
-            const userRole = row.querySelector('.author-type').textContent;
+        // Check if no advertisements
+        if (advertisements.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="6">No pending advertisements</td></tr>';
+            return;
+        }
 
-            // Update modal content with real data
-            modalTitle.textContent = postTitle;
+        // Loop through advertisements and create table rows
+        advertisements.forEach(ad => {
+            const row = document.createElement('tr');
+            row.setAttribute('data-ad-id', ad.advertisement_id);
+            row.setAttribute('data-thumbnail', ad.thumbnail_url);
 
-            modalMeta.innerHTML = `
-            <div>
-                <i class="fas fa-user"></i>
-                <span>${authorName}</span>
-            </div>
-            <div>
-                <i class="fas fa-calendar"></i>
-                <span>${dateDay} ${dateMonth}, 2025</span>
-            </div>
-            <div>
-                <i class="fas fa-tag"></i>
-                <span>${postType}</span>
-            </div>
-        `;
+            // Add HTML content for the row
+            row.innerHTML = `
+      <td>
+        <div class="author">
+          <div class="author-info">
+            <div class="author-name">${ad.user_name || ''}</div>
+          </div>
+        </div>
+      </td>
+      <td>
+        <div class="post-title">${ad.title || ''}</div>
+        <div class="post-excerpt">${ad.description || ''}</div>
+      </td>
+      <td>
+        <div class="status ${(ad.status).toLowerCase()}">
+          ${ad.status}
+        </div>
+      </td>
+      <td>
+        ${ad.package}
+      </td>
+      <td>
+        Rs. ${ad.price || '0'}
+      </td>
+      <td>
+        <div class="action-buttons">
+        ${ad.status != 'approved' ? '<button class="btn btn-sm btn-approve"><i class="fas fa-check"></i></button>': ''}
+        ${ad.status != 'rejected' ? ' <button class="btn btn-sm btn-reject"><i class="fas fa-times"></i></button>': ''}
+          <button class="btn btn-sm btn-preview">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+      </td>
+    `;
 
-            modalContent.innerHTML = `
-            <p>${postExcerpt}</p>
-            <p><strong>Author Role:</strong> ${userRole}</p>
-            <p>This is a preview of the post submitted by ${authorName}.</p>
-        `;
-
-            modal.style.display = 'block';
+            tableBody.appendChild(row);
         });
-    });
 
-    closeModal.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
+        // Re-attach event listeners to new buttons
+        attachEventListeners();
+    }
 
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.style.display = 'none';
+    // Function to attach event listeners to buttons
+    function attachEventListeners() {
+        // Preview buttons
+        document.querySelectorAll('.btn-preview').forEach(button => {
+            button.addEventListener('click', () => {
+                const row = button.closest('tr');
+                const adId = row.dataset.adId;
+                const modal = document.getElementById('adPreviewModal');
+
+                // Find the ad data
+                const ad = advertisementData.find(item => item.advertisement_id == adId);
+                if (!ad) return;
+
+                // Store ad ID in the modal for reference
+                modal.setAttribute('data-ad-id', adId);
+
+                // Update modal content
+                modal.querySelector('.modal-post-title').textContent = ad.title;
+                modal.querySelector('.modal-post-meta').innerHTML = `
+                        <div>
+                        <i class="fas fa-building"></i>
+                        <span>${ad.user_name}</span>
+                        </div>
+                    `;
+
+                document.getElementById('thumbnailImg').src =
+                    `/storage/uploads/advertisement/thumbnail/${ad.thumbnail_url}`;
+
+                document.getElementById('adStatus').textContent = ad.status;
+                document.getElementById('adPackage').textContent = ad.package;
+                document.getElementById('adPrice').textContent = `Rs. ${ad.price}`;
+                document.getElementById('adSubmittedDate').textContent =
+                    new Date(ad.start_date).toLocaleDateString('en-US', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric'
+                    });
+                document.getElementById('adDescription').textContent = ad.description;
+
+                modal.style.display = 'block';
+            });
+        });
+        // Close priview
+        const closeModalBtn = document.querySelector('.close-modal');
+        if (closeModalBtn) {
+            closeModalBtn.addEventListener('click', () => {
+                document.getElementById('adPreviewModal').style.display = 'none';
+            });
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (event) => {
+            const modal = document.getElementById('adPreviewModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Approve buttons
+        document.querySelectorAll('.btn-approve').forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                const row = this.closest('tr');
+                const adId = row.dataset.adId;
+                handleApproveReject(adId, true);
+            });
+        });
+
+        // Reject buttons
+        document.querySelectorAll('.btn-reject').forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                const row = this.closest('tr');
+                const adId = row.dataset.adId;
+                handleApproveReject(adId, false);
+            });
+        });
+
+        // Filter button functionality
+        document.querySelectorAll('.filter-button').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.filter-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+
+                this.classList.add('active');
+
+                const status = this.textContent.trim().toLowerCase();
+
+                filterAdvertisements(status);
+            });
+        });
+    }
+
+    // Function to filter advertisements by status
+    function filterAdvertisements(status) {
+        let filteredAds;
+
+        if (status === 'all') {
+            filteredAds = advertisementData;
+        } else {
+            filteredAds = advertisementData.filter(ad => ad.status.toLowerCase() === status);
+        }
+
+        renderAdvertisements(filteredAds);
+    }
+
+    // Function to handle approve/reject actions
+    function handleApproveReject(adId, isApprove) {
+        // Find the row associated with this ad ID
+        const row = document.querySelector(`tr[data-ad-id="${adId}"]`);
+        const endpoint = isApprove ? '/approve-advertisement' : '/reject-advertisement';
+        // Add loading state
+        if (row) {
+            row.classList.add('loading');
+        }
+        fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    adId: adId
+                })
+            })
+            .then(response => {
+                if (response.ok) return response.json();
+                throw new Error('Network response was not ok');
+            })
+            .then(data => {
+                if (data.success) {
+                    console.log(data);
+
+                    showToast(
+                        isApprove ? 'Advertisement Approved' : 'Advertisement Rejected',
+                        isApprove ?
+                        'The advertisement has been approved and will now be displayed on the site.' :
+                        'The advertisement has been rejected and the advertiser has been notified.',
+                        isApprove ? 'success' : 'error'
+                    );
+
+                    // Add fade-out animation and update UI
+                    if (row) {
+                        row.style.opacity = '0';
+                        row.style.transition = 'opacity 0.5s';
+                        setTimeout(() => row.remove(), 500);
+                    }
+
+                    // Close modal if open
+                    const modal = document.getElementById('adPreviewModal');
+                    if (modal.style.display === 'block') modal.style.display = 'none';
+
+                    // Update the data list to reflect changes
+                    const index = advertisementData.findIndex(ad => ad.advertisement_id == adId);
+                    if (index !== -1) {
+                        advertisementData[index].status = isApprove ? 'approved' : 'rejected';
+                    }
+                } else {
+                    console.log(data);
+                    showToast('Error', data.message || `Failed to ${isApprove ? 'approve' : 'reject'} advertisement.`, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Error', `There was a problem ${isApprove ? 'approving' : 'rejecting'} the advertisement. Please try again.`, 'error');
+                // Remove loading state if failed
+                if (row) {
+                    row.classList.remove('loading');
+                }
+            });
+    }
+
+    // Initialize the table with the data
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof advertisementData !== 'undefined' && advertisementData.length > 0) {
+            renderAdvertisements(advertisementData);
+            attachEventListeners();
+
+            // Add modal action buttons event listeners
+            document.querySelector('.btn-approve-lg').addEventListener('click', function() {
+                const modal = document.getElementById('adPreviewModal');
+                const adId = modal.getAttribute('data-ad-id');
+                handleApproveReject(adId, true);
+            });
+
+            document.querySelector('.btn-reject-lg').addEventListener('click', function() {
+                const modal = document.getElementById('adPreviewModal');
+                const adId = modal.getAttribute('data-ad-id');
+                handleApproveReject(adId, false);
+            });
+
+            updateStatistics();
+
+            updateStatistics();
+        } else {
+            // No data is available
+            const tableBody = document.querySelector('.posts-table tbody');
+            tableBody.innerHTML = '<tr><td colspan="6">No advertisements data available</td></tr>';
         }
     });
+    // Update statistics
+    function updateStatistics() {
+        if (!advertisementData) return;
 
-    // Action Buttons Functionality
-    const approveButtons = document.querySelectorAll('.btn-approve, .btn-approve-lg');
-    const rejectButtons = document.querySelectorAll('.btn-reject, .btn-reject-lg');
+        const pendingCount = advertisementData.filter(ad => ad.status.toLowerCase() === 'pending').length;
+        const approvedCount = advertisementData.filter(ad => ad.status.toLowerCase() === 'approved').length;
+        const rejectedCount = advertisementData.filter(ad => ad.status.toLowerCase() === 'rejected').length;
 
-    approveButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            event.preventDefault();
-            // Get the post ID
-            let row = button.closest('tr');
-            let postId;
-
-            if (row) {
-                // Button is in the table
-                postId = row.dataset.postId;
-            } else {
-                // Button is in the modal
-                postId = modal.getAttribute('data-post-id');
-                // Find the corresponding row in the table
-                row = document.querySelector(`tr[data-post-id="${postId}"]`);
-            }
-
-
-            // Send POST request to approve the post
-            fetch('/approve-post', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify({
-                        postId: postId
-                    })
-                })
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    }
-                    throw new Error('Network response was not ok');
-                })
-                .then(data => {
-
-                    if (data.success) {
-                        showToast('Post Approved', 'The post has been approved and published successfully.', 'success');
-
-                        // Close modal if open
-                        if (modal) modal.style.display = 'none';
-
-                        if (row) {
-                            row.classList.add('row-fade-out');
-                            setTimeout(() => row.remove(), 500);
-                        }
-                    } else {
-                        showToast('Error', data.message || 'Failed to approve post.', 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('Error', 'There was a problem approving the post. Please try again.', 'error');
-                });
-        });
-    });
-
-    rejectButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            event.preventDefault();
-            // Get the post ID
-            let row = button.closest('tr');
-            let postId;
-
-            if (row) {
-                // Button is in the table
-                postId = row.dataset.postId;
-            } else {
-                // Button is in the modal
-                postId = modal.getAttribute('data-post-id');
-                // Find the corresponding row in the table
-                row = document.querySelector(`tr[data-post-id="${postId}"]`);
-            }
-
-            // Send POST request to reject the post
-            fetch('/reject-post', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify({
-                        postId: postId
-                    })
-                })
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    }
-                    throw new Error('Network response was not ok');
-                })
-                .then(data => {
-                    if (data.success) {
-                        showToast('Post Rejected', 'The post has been rejected and the author has been notified.', 'error');
-                        if (modal) modal.style.display = 'none';
-                        if (row) {
-                            row.classList.add('row-fade-out');
-                            setTimeout(() => row.remove(), 500);
-                        }
-                    } else {
-                        showToast('Error', data.message || 'Failed to reject post.', 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('Error', 'There was a problem rejecting the post. Please try again.', 'error');
-                });
-        });
-    });
-
-    // Filter and Sort Functionality
-    const filterButtons = document.querySelectorAll('.filter-button');
-
-    filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            // TODO: Here you would add filtering logic
-        });
-    });
+        document.querySelector('.post-stat-card:nth-child(1) .value').textContent = pendingCount;
+        document.querySelector('.post-stat-card:nth-child(2) .value').textContent = approvedCount;
+        document.querySelector('.post-stat-card:nth-child(4) .value').textContent = rejectedCount;
+    }
 </script>
 
 <?php include $this->resolve("partials/_footer.php"); ?>
