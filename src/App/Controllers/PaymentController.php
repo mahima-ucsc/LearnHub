@@ -57,4 +57,27 @@ class PaymentController
             "hash" => $this->paymentService->createPaymentHash($orderId, (float)$amount, $currency)
         ]);
     }
+
+    public function handlePaymentNotification()
+    {
+        $isPaymnetVerified = $this->paymentService->isPaymentVerified($_POST);
+
+        $logFile = AppConstants::LOG_FOLDER . 'payment_notification_log.txt';
+        file_put_contents(
+            $logFile,
+            "Payment Notification Received:\n" . print_r($_POST, true) .
+                "\nVerification Result: " . ($isPaymnetVerified ? "Verified" : "Not Verified") .
+                PHP_EOL . str_repeat("-", 50) . PHP_EOL,
+            FILE_APPEND
+        );
+
+        if ($isPaymnetVerified) {
+            $this->paymentService->handleVerifiedPayment($_POST);
+        }
+
+
+        // Respond to the notification
+        http_response_code(200);
+        echo "Notification received";
+    }
 }
