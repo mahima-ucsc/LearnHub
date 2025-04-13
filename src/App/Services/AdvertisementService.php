@@ -17,17 +17,17 @@ class AdvertisementService
     {
         $this->db->beginTransaction();
         $thumbnail_url = $this->uploadFile($thumbnail['thumbnail'], 'advertisement/thumbnail');
+
         try {
             $this->db->query(
-                "INSERT INTO advertisement(description, package, discount, remark, thumbnail_url, start_date, course_id, user_id)
-                VALUES(:description, :package, :discount, :remark, :thumbnail_url, :start_date, :course_id, :user_id)",
+                "INSERT INTO advertisement(description, package, discount, remark, thumbnail_url, course_id, user_id)
+                VALUES(:description, :package, :discount, :remark, :thumbnail_url, :course_id, :user_id)",
                 [
                     "description" => $formData['description'],
                     "package" => $formData['package'],
                     "discount" => $formData['discount'],
                     "remark" => $formData['remark'],
                     "thumbnail_url" => $thumbnail_url,
-                    "start_date" => $formData['startDate'],
                     "course_id" => $formData['courseId'],
                     "user_id" => $_SESSION['user']
                 ]
@@ -128,15 +128,41 @@ class AdvertisementService
         )->findAll();
     }
 
+    public function getAdvertisement(string $id)
+    {
+        return $this->db->query(
+            "SELECT * FROM advertisement WHERE advertisement_id = :id",
+            [
+                'id' => $id
+            ]
+        );
+    }
     public function approve($id)
     {
+        $advertisement = $this->getAdvertisement($id);
+        $package = $advertisement['package'];
+        switch (strtolower($package)) {
+            case 'basic':
+                $endDate = date('Y-m-d H:i:s', strtotime('+7 days'));
+                break;
+            case 'standard':
+                $endDate = date('Y-m-d H:i:s', strtotime('+14 days'));
+                break;
+            case 'gold':
+                $endDate = date('Y-m-d H:i:s', strtotime('+30 days'));
+                break;
+            default:
+                $endDate = date('Y-m-d H:i:s');
+        }
         try {
             $this->db->query(
                 "UPDATE advertisement 
-                SET status = 'approved'
+                SET status = 'approved',
+                end_date = :endDate
                 WHERE advertisement_id = :id",
                 [
-                    'id' => $id
+                    'id' => $id,
+                    'endDate' => $endDate
                 ]
             );
             return true;

@@ -155,8 +155,8 @@ function registerRoutes(App $app)
     $app->post('/submit/review', [AssignmentController::class, 'submit']);
 
     // Advertisement
-    $app->get('/ad/create', [AdvertisementController::class, 'createView']);
-    $app->post('/ad/create', [AdvertisementController::class, 'create']);
+    $app->get('/advertisement/create', [AdvertisementController::class, 'createView']);
+    $app->post('/advertisement/create', [AdvertisementController::class, 'create']);
     $app->post('/approve-advertisement', [AdvertisementController::class, 'approve']);
     $app->post('/reject-advertisement', [AdvertisementController::class, 'reject']);
 

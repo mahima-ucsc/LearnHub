@@ -5,18 +5,24 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\AdvertisementService;
+use App\Services\{AdvertisementService, CourseService};
 
 class AdvertisementController
 {
-    public function __construct(private TemplateEngine $view, private AdvertisementService $advertisementService) {}
+    public function __construct(
+        private TemplateEngine $view,
+        private AdvertisementService $advertisementService,
+        private CourseService $courseService
+    ) {}
 
     public function createView()
     {
+        $courses = $this->courseService->getMyCourses();
         echo $this->view->render(
             "Advertisement/create.php",
             [
-                'title' => "Create Advertisement"
+                'title' => "Create Advertisement",
+                'courses' => $courses
             ]
         );
     }

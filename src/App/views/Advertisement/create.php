@@ -405,13 +405,14 @@
                     <label for="existingCourse" class="form-label">Your Courses *</label>
                     <select id="existingCourse" name="courseId" class="form-control" required>
                         <option value="">Select a course</option>
-                        <!-- In a real application, these would be dynamically populated from database -->
-                        <option value="1">Advanced JavaScript Development</option>
-                        <option value="2">Introduction to UI/UX Design</option>
+                        <?php foreach ($courses as $course): ?>
+                            <option value="<?php echo e($course['course_id']) ?>"><?php echo e($course['title']) ?></option>
+                        <?php endforeach; ?>
+                        <!-- <option value="2">Introduction to UI/UX Design</option>
                         <option value="3">Data Science with Python</option>
                         <option value="4">Digital Marketing Fundamentals</option>
                         <option value="5">Photography Masterclass</option>
-                        <option value="6">Excel for Business Analytics</option>
+                        <option value="6">Excel for Business Analytics</option> -->
                     </select>
                     <p class="hint-text">Choose one of your existing courses that you want to promote.</p>
                     <div class="error-message" id="existingCourseError">Please select a course</div>
@@ -431,9 +432,9 @@
                     <label for="selectedPackage" class="form-label">Promotion Package *</label>
                     <select id="selectedPackage" name="package" class="form-control" required>
                         <option value="">Select a package</option>
-                        <option value="basic">Basic - Rs. 400 (Homepage feature for 1 week)</option>
-                        <option value="standard">Standard - Rs. 800 (Homepage feature for 30 days)</option>
-                        <option value="gold">Gold - Rs. 1400 (Homepage feature for 60 days)</option>
+                        <option value="basic">Basic - Rs. 400 (Homepage feature for 7 days)</option>
+                        <option value="standard">Standard - Rs. 800 (Homepage feature for 14 days)</option>
+                        <option value="gold">Gold - Rs. 1500 (Homepage feature for 30 days)</option>
                     </select>
                     <p class="hint-text">Choose the best promotion package to showcase your course to potential students.</p>
                     <div class="error-message" id="selectedPackageError">Please select a promotion package</div>
@@ -460,12 +461,6 @@
             <!-- Promotion Settings Section -->
             <div class="form-section">
                 <h3 class="section-title">Promotion Settings</h3>
-
-                <div class="form-group">
-                    <label for="promotionStartDate" class="form-label">Start Date *</label>
-                    <input type="date" id="promotionStartDate" name="startDate" class="form-control" required>
-                    <div class="error-message" id="promotionStartDateError">Please select a start date</div>
-                </div>
 
                 <div class="form-group">
                     <label for="discountPercentage" class="form-label">Discount Percentage (Optional)</label>

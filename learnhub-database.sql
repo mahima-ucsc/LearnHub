@@ -383,15 +383,27 @@ CREATE TABLE IF NOT EXISTS advertisement (
     discount INT CHECK(discount >= 0 AND discount <= 100),
     remark TEXT,
     thumbnail_url TEXT NOT NULL,
-    start_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    end_date TIMESTAMP,
     course_id BIGINT(20) UNSIGNED NOT NULL,
     user_id BIGINT(20) UNSIGNED NOT NULL,
-    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    status ENUM('pending', 'approved', 'rejected', 'expired') DEFAULT 'pending',
     
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
     PRIMARY KEY(advertisement_id)
 );
+
+-- Enable Event Scheduler
+SET GLOBAL event_scheduler = ON;
+
+-- Scheduled Event which will run once a day and update rows where the end_date is in the past and status is 'approved'.
+CREATE EVENT IF NOT EXISTS update_status_event
+ON SCHEDULE EVERY 1 DAY
+DO
+  UPDATE advertisement
+  SET status = 'expired'
+  WHERE end_date < CURDATE() AND status = 'approved';
+
 
 -- Table to store features of ad
 CREATE TABLE IF NOT EXISTS advertisement_feature(
