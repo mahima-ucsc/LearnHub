@@ -1142,7 +1142,7 @@
         button.addEventListener('click', () => {
             filterButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
-            // Here you would add filtering logic
+            // TODO: Here you would add filtering logic
         });
     });
 </script>
