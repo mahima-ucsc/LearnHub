@@ -198,4 +198,63 @@ class PaymentService
 
         return $_SESSION['payhere_access_token'];
     }
+
+    public function isRecurringCourseSubPeriodPaid($userId, $courseId, $subPeriodId)
+    {
+        $this->processPendingRecurringCourseSubPeriodPayments($userId, $courseId, $subPeriodId);
+
+        $paid = $this->db->query(
+            "SELECT SUM(p.amount) as total_paid FROM payments p INNER JOIN course_payments cp ON p.payment_id = cp.payment_id
+            WHERE cp.user_id = :user_id AND cp.course_id = :course_id AND cp.sub_period_id = :sub_period_id AND p.payment_status = " .
+                AppConstants::PAYMENT_STATUS_SUCCESS,
+            [
+                "user_id" => $userId,
+                "course_id" => $courseId,
+                "sub_period_id" => $subPeriodId
+            ]
+        )->find();
+
+        $subPeriodFee = $this->db->query(
+            "SELECT price FROM recurring_course_sub_periods
+            WHERE sub_period_id = :sub_period_id",
+            [
+                "sub_period_id" => $subPeriodId
+            ]
+        )->find();
+
+        $isPaid = $paid && $paid['total_paid'] >= $subPeriodFee['price'];
+        return $isPaid;
+    }
+
+    private function processPendingRecurringCourseSubPeriodPayments($userId, $courseId, $subPeriodId)
+    {
+        $pendingPayments = $this->db->query(
+            "SELECT p.order_id FROM payments p INNER JOIN course_payments cp ON p.payment_id = cp.payment_id
+            WHERE cp.user_id = :user_id AND cp.course_id = :course_id AND cp.sub_period_id = :sub_period_id AND p.payment_status = " .
+                AppConstants::PAYMENT_STATUS_PENDING,
+            [
+                "user_id" => $userId,
+                "course_id" => $courseId,
+                "sub_period_id" => $subPeriodId
+            ]
+        )->findAll();
+
+        foreach ($pendingPayments as $payment) {
+            $orderDetails = $this->getOrderDetails($payment['order_id']);
+
+            if (
+                isset($orderDetails['status']) &&
+                isset($orderDetails['data'][0]['amount']) &&
+                isset($orderDetails['data'][0]['order_id']) &&
+                AppConstants::RETRIEVAL_API_TO_CHECKOUT_API_STATUS_MAP[$orderDetails['status']] !== AppConstants::PAYMENT_STATUS_PENDING &&
+                $orderDetails['data'][0]['order_id'] === $payment['order_id']
+            ) {
+                $this->handleVerifiedPayment(
+                    (string) $orderDetails['data'][0]['order_id'],
+                    (int) AppConstants::RETRIEVAL_API_TO_CHECKOUT_API_STATUS_MAP[$orderDetails['status']],
+                    (float) $orderDetails['data'][0]['amount']
+                );
+            }
+        }
+    }
 }
