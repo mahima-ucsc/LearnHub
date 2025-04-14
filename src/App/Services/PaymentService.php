@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Config\AppConstants;
+use App\Exceptions\PayhereException;
 use Framework\App;
 use Framework\Database;
 
@@ -125,5 +126,76 @@ class PaymentService
             $this->db->rollBack();
             throw $e;
         }
+    }
+
+    public function getOrderDetails(string $orderId)
+    {
+
+
+        $accessToken = $this->getRetrievalApiAccessToken(AppConstants::PAYHERE_AUTHORIZATION_CODE);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, AppConstants::PAYHERE_RETRIEVAL_API_URL . $orderId);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer ' . $accessToken,
+        ]);
+
+        $response = curl_exec($ch);
+        $orderResponse = json_decode($response, true);
+
+        if (curl_errno($ch)) {
+            throw new PayhereException('Error: ' . curl_error($ch));
+        } else if (isset($orderResponse['error']) && $orderResponse['error'] = 'invalid_token') {
+            throw new PayhereException('Error: Invalid access token.');
+        } else {
+            return $orderResponse;
+        }
+
+        curl_close($ch);
+    }
+
+    private function getRetrievalApiAccessToken(string $apiKey)
+    {
+        if (
+            isset($_SESSION['payhere_access_token']) &&
+            isset($_SESSION['payhere_token_expiry']) &&
+            time() < $_SESSION['payhere_token_expiry'] - 10
+        ) {
+            return $_SESSION['payhere_access_token'];
+        }
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, AppConstants::PAYHERE_AUTHORIZATION_API_URL);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/x-www-form-urlencoded',
+            'Authorization: Basic ' . $apiKey,
+        ]);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+            'grant_type' => 'client_credentials'
+        ]));
+
+        $response = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            throw new PayhereException('Error: ' . curl_error($ch));
+            curl_close($ch);
+            return;
+        }
+
+        $tokenData = json_decode($response, true);
+        curl_close($ch);
+
+        if (!isset($tokenData['access_token']) || !isset($tokenData['expires_in'])) {
+            throw new PayhereException('Error: Unable to retrieve access token.');
+            return;
+        }
+
+        $_SESSION['payhere_access_token'] = $tokenData['access_token'];
+        $_SESSION['payhere_token_expiry'] = time() + $tokenData['expires_in'];
+
+        return $_SESSION['payhere_access_token'];
     }
 }
