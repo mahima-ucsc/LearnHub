@@ -27,6 +27,7 @@ class AnnouncementController
     public function createAnnouncements()
     {
         $this->AnnouncementService->createAnnouncements($_POST, $_FILES);
-        dd($_POST);
     }
+
+    public function announcementsListView() {}
 }
