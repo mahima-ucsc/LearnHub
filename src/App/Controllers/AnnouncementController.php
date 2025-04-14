@@ -32,10 +32,12 @@ class AnnouncementController
     public function announcementsListView()
     {
         $announcements = $this->AnnouncementService->getAnnouncements();
+        // dd($announcements);
         echo $this->view->render(
             "course/course-info/announcements.php",
             [
                 'title' => 'Announcements',
+                'announcements' => $announcements,
             ]
         );
     }

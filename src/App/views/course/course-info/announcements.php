@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -285,19 +282,22 @@
     </style>
 </head>
 
-<body>
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">EduLearn</div>
-                <div class="user-info">
-                    <span>Welcome, John Doe</span>
-                    <div class="user-avatar">JD</div>
-                </div>
-            </div>
-        </div>
-    </header>
+<!-- array(10) {
+    ["id"]=>    int(11)
+    ["title"]=>    string(4) "anno"
+    ["content"]=>    string(4) "disc"
+    ["priority"]=>    string(3) "low"
+    ["visibility"]=>    string(3) "all"
+    ["specific_emails"]=>    NULL
+    ["attachments"]=>    string(59) "["67f9f1d8d0b9a_SCS 2204.pdf","67f9f1d8d0ced_SCS 2203.pdf"]"
+    ["send_email"]=>    int(0)
+    ["created_at"]=>    string(19) "2025-04-12 10:23:44"
+    ["updated_at"]=>    string(19) "2025-04-12 10:23:44"
+    ["tutor_name"]=>    string(12) "tutor-name"
+    ["course_id"]=>    string(10) "course-id"
+  } -->
 
+<body>
     <div class="container">
         <div class="announcements-container">
             <div class="announcements-header">
@@ -306,27 +306,20 @@
                 </div>
                 <div class="filter-controls">
                     <button class="filter-button active" data-filter="all">All</button>
-                    <button class="filter-button" data-filter="assignments">
-                        Assignments
-                    </button>
+                    <button class="filter-button" data-filter="assignments">Assignments</button>
                     <button class="filter-button" data-filter="events">Events</button>
-                    <button class="filter-button" data-filter="updates">
-                        System Updates
-                    </button>
+                    <button class="filter-button" data-filter="updates">System Updates</button>
                     <button class="filter-button" data-filter="unread">Unread</button>
                 </div>
             </div>
 
             <div class="announcement-list">
-                <div
-                    class="announcement-item"
-                    data-type="assignment"
-                    data-read="false">
+                <div class="announcement-item" data-type="assignment" data-read="false">
                     <div class="announcement-header">
                         <div class="announcement-source">
                             <div class="unread-indicator"></div>
                             <div class="source-icon source-tutor">T</div>
-                            <div class="source-name">Dr. Sarah Johnson</div>
+                            <div class="source-name"><?php echo htmlspecialchars($announcement['tutor_name']); ?></div>
                         </div>
                         <div class="announcement-time">Today, 10:35 AM</div>
                     </div>
@@ -404,10 +397,7 @@
                     </div>
                 </div>
 
-                <div
-                    class="announcement-item read"
-                    data-type="assignment"
-                    data-read="true">
+                <div class="announcement-item read" data-type="assignment" data-read="true">
                     <div class="announcement-header">
                         <div class="announcement-source">
                             <div class="source-icon source-tutor">T</div>
@@ -432,10 +422,7 @@
                     </div>
                 </div>
 
-                <div
-                    class="announcement-item read"
-                    data-type="event"
-                    data-read="true">
+                <div class="announcement-item read" data-type="event" data-read="true">
                     <div class="announcement-header">
                         <div class="announcement-source">
                             <div class="source-icon source-admin">A</div>
@@ -606,5 +593,3 @@
         });
     </script>
 </body>
-
-</html>
