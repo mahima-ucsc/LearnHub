@@ -22,7 +22,7 @@ return [
     CourseService::class => function (Container $container) {
         // return $container->resolve(CourseService::class);
         $db = $container->get(Database::class);
-        return new CourseService($db);
+        return new CourseService($db, new PaymentService($db));
     },
     ReviewService::class => function (Container $container) {
         $db = $container->get(Database::class);

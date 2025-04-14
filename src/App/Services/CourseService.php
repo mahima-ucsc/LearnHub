@@ -12,7 +12,10 @@ use Framework\Exceptions\ValidationException;
 
 class CourseService
 {
-    public function __construct(private Database $db) {}
+    public function __construct(
+        private Database $db,
+        private PaymentService $paymentService
+    ) {}
 
     /**
      * @deprecated
