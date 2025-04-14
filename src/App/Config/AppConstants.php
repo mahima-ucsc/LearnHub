@@ -23,12 +23,25 @@ class AppConstants
     public const PAYHERE_AUTHORIZATION_API_URL = 'https://sandbox.payhere.lk/merchant/v1/oauth/token';
     public const PAYHERE_RETRIEVAL_API_URL = 'https://sandbox.payhere.lk/merchant/v1/payment/search?order_id=';
     public const PAYHERE_AUTHORIZATION_CODE = 'base64(AppID:AppSecret)';
-    // Payment Statuses
+    // Payment Statuses - PayHere Checkout API
+    /**
+     * PayHere retrieval API and checkout API use different status codes.
+     * This implementation uses a mapping of status codes, aligning with 
+     * the checkout API status codes for internal logic consistency.
+     */
     public const PAYMENT_STATUS_SUCCESS = 2;
     public const PAYMENT_STATUS_PENDING = 0;
     public const PAYMENT_STATUS_CANCELED = -1;
     public const PAYMENT_STATUS_FAILED = -2;
     public const PAYMENT_STATUS_CHARGEDBACK = -3;
+    public const PAYMENT_STATUS_NOT_FOUND = -4; // This status is not used in the Checkout API but is used only in internal logic
+    // Mapping of Retrieval API payment statuses to Checkout API payment statuses
+    public const RETRIEVAL_API_TO_CHECKOUT_API_STATUS_MAP = [
+        0 => self::PAYMENT_STATUS_PENDING,       // Payment pending
+        1 => self::PAYMENT_STATUS_SUCCESS,       // Payment successful
+        -1 => self::PAYMENT_STATUS_NOT_FOUND,     // No records found
+        -2 => self::PAYMENT_STATUS_FAILED,       // Payment declined
+    ];
     // PayHere Course Payment URLs
     public const COURSE_PAYMENT_RETURN_URL = 'http://learnhub.local';
     public const COURSE_PAYMENT_CANCEL_URL = 'http://learnhub.local';
