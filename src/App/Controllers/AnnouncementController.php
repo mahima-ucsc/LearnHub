@@ -29,5 +29,14 @@ class AnnouncementController
         $this->AnnouncementService->createAnnouncements($_POST, $_FILES);
     }
 
-    public function announcementsListView() {}
+    public function announcementsListView()
+    {
+        $announcements = $this->AnnouncementService->getAnnouncements();
+        echo $this->view->render(
+            "course/course-info/announcements.php",
+            [
+                'title' => 'Announcements',
+            ]
+        );
+    }
 }

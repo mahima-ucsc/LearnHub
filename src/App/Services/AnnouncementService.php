@@ -60,4 +60,11 @@ class AnnouncementService
             throw $e;
         }
     }
+
+    public function getAnnouncements()
+    {
+        return $this->db->query(
+            "SELECT * FROM announcements ORDER BY created_at DESC"
+        )->findAll();
+    }
 }

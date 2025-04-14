@@ -38,9 +38,6 @@ function registerRoutes(App $app)
 
     $app->get('/denied', [PageController::class, 'denied']);
 
-    // announcement
-    $app->get('/announcements/create', [AnnouncementController::class, 'announcementsFormView'], [AuthRequiredMiddleware::class]);
-    $app->post('/announcements/create', [AnnouncementController::class, 'createAnnouncements']);
 
     // Contact
     $app->get('/contact', [ContactController::class, 'contact']);
@@ -102,6 +99,12 @@ function registerRoutes(App $app)
     $app->delete('/courses/{course_id}/participants/remove/{user_id}', [CoursesController::class, 'RemoveCourseParticipant'], [TeacherOnlyMiddleware::class]);
     $app->post('/courses/{course_id}/participants/add', [CoursesController::class, 'AddParticipant'], [TeacherOnlyMiddleware::class]);
     $app->get('/course/{course_id}/module/{module_id}/resource/{resource_id}', [CoursesController::class, 'readModuleResources'], [TeacherOnlyMiddleware::class]);
+
+    // announcement
+    $app->get('/announcements/create', [AnnouncementController::class, 'announcementsFormView'], [AuthRequiredMiddleware::class]);
+    $app->post('/announcements/create', [AnnouncementController::class, 'createAnnouncements']);
+    $app->get('/courses/{course_id}/announcements', [AnnouncementController::class, 'announcementsListView'], [AuthRequiredMiddleware::class]);
+
 
     // TODO: Remove or implement this route
     // $app->get('/courses/my/registered', [CoursesController::class, 'regCourses'], [AuthRequiredMiddleware::class]);
