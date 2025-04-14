@@ -88,4 +88,11 @@ class ResourceController
         $this->resourceService->update($id, $formData);
         redirectTo('/resource/my-resources');
     }
+
+    public function resourceSeeMore()
+    {
+        echo $this->view->render('Resource/resource_see_more.php', [
+            'title' => 'Resource Details'
+        ]);
+    }
 }

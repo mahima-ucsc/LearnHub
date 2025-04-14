@@ -111,6 +111,9 @@ function registerRoutes(App $app)
     $app->delete('resource/delete/{resource}', [ResourceController::class, 'deleteResource']);
     $app->get('/resource/edit/{id}', [ResourceController::class, 'editView']);
     $app->post('/resource/edit/{id}', [ResourceController::class, 'edit']);
+    $app->get('/resource/see-more{id}', [ResourceController::class, 'resourceSeeMore']);
+
+
 
 
     // Reviews

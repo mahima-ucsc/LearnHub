@@ -32,7 +32,6 @@
                             <div class="resource-header">
                                 <div class="resource-title-container">
                                     <h4 class="resource-title"><?php echo e($resource['title']); ?></h4>
-                                    <span class="resource-type"><?php echo e($resource['type']); ?></span>
                                 </div>
                                 <div class="resource-price-container">
                                     <?php if ($resource['price']): ?>
@@ -51,7 +50,7 @@
                                                 <img src="/assets/images/user.jpeg" alt="owner">
                                                 <span><?php echo e($resource['first_name'] . ' ' . $resource['last_name']); ?></span>
                                             </div>
-                                            <a href="/resource/<?php echo e($resource['resource_id']); ?>" class="see-more-btn">See More Details</a>
+                                            <a href="/resource/see-more<?php echo e($resource['resource_id']); ?>" class="see-more-btn">See More Details</a>
                                         </div>
                                     </div>
                                 </div>

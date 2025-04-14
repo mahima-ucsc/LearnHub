@@ -1,0 +1,128 @@
+.first-container {
+  margin-left: 120px;
+  margin-right: 120px;
+  padding-top: 50px;
+}
+
+.resource-detail-header {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+}
+
+.header-title {
+  font-size: 32px;
+  color: gray;
+  margin-bottom: 24px;
+}
+
+.resource-owner {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.owner-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.owner-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.owner-name {
+  color: gray;
+  font-size: 16px;
+}
+
+.post-date {
+  color: black;
+  font-size: 13px;
+}
+
+.second-container {
+  margin-left: 120px;
+  margin-right: 120px;
+  padding-top: 20px;
+}
+
+.description-part {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+}
+
+.description-title h2 {
+  font-size: 20px;
+  color: rgb(73, 72, 72);
+}
+
+.resource-section {
+  padding-top: 30px;
+  border-top: 1px solid #e7e6e6;
+  margin-bottom: 20px;
+}
+
+.resource-title h2 {
+  font-size: 20px;
+  color: rgb(73, 72, 72);
+}
+
+.description-essay {
+  font-size: 15px;
+  color: rgb(93, 88, 130);
+  padding-top: 15px;
+  font-family: "Courier New", Courier, monospace;
+  line-height: 25px;
+  margin-bottom: 30px;
+}
+
+.resource-file {
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.resource-name {
+  margin-left: 15px;
+}
+
+.download-button {
+  height: 40px;
+  width: 120px;
+  border-radius: 12px;
+  margin-left: auto;
+  background-color: #ffda22;
+  border: none;
+  color: #4a4a4a;
+}
+
+.download-button :hover {
+  background: #fff0a5;
+}
+
+@media (max-width: 768px) {
+  .resource-meta-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .resource-title {
+    font-size: 24px;
+  }
+
+  .resource-detail-header,
+  .resource-detail-body {
+    padding: 24px;
+  }
+}
