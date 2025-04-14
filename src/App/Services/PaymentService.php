@@ -102,20 +102,10 @@ class PaymentService
         return ($local_md5sig === $md5sig);
     }
 
-    public function handleVerifiedPayment(array $paymentData)
+    public function handleVerifiedPayment(string $orderId, int $statusCode, float $amount)
     {
-        // Important Note: The payment_id from the payment data and the database table are different.
-        $orderId = $paymentData['order_id'] ?? '';
-        $statusCode = $paymentData['status_code'] ?? 0;
-        $payhereAmount = $paymentData['payhere_amount'] ?? 0.00;
-
-        if (empty($orderId)) {
-            throw new \InvalidArgumentException("Order ID is missing in payment data.");
-        }
-
         try {
             $this->db->beginTransaction();
-
             // Update the payment record in the database
             $this->db->query(
                 "UPDATE payments 
@@ -125,7 +115,7 @@ class PaymentService
             WHERE order_id = :order_id",
                 [
                     'payment_status' => $statusCode,
-                    'payhere_amount' => $payhereAmount,
+                    'payhere_amount' => $amount,
                     'order_id' => $orderId
                 ]
             );

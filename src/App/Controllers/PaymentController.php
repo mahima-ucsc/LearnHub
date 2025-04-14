@@ -60,21 +60,33 @@ class PaymentController
 
     public function handlePaymentNotification()
     {
-        $isPaymnetVerified = $this->paymentService->isPaymentVerified($_POST);
+        $isPaymentVerified = $this->paymentService->isPaymentVerified($_POST);
 
         $logFile = AppConstants::LOG_FOLDER . 'payment_notification_log.txt';
         file_put_contents(
             $logFile,
             "Payment Notification Received:\n" . print_r($_POST, true) .
-                "\nVerification Result: " . ($isPaymnetVerified ? "Verified" : "Not Verified") .
+                "\nVerification Result: " . ($isPaymentVerified ? "Verified" : "Not Verified") .
                 PHP_EOL . str_repeat("-", 50) . PHP_EOL,
             FILE_APPEND
         );
 
-        if ($isPaymnetVerified) {
-            $this->paymentService->handleVerifiedPayment($_POST);
+        if ($isPaymentVerified) {
+            try {
+                $this->paymentService->handleVerifiedPayment(
+                    (string) ($_POST['order_id'] ?? ''),
+                    (int) ($_POST['status_code'] ?? 0),
+                    (float) ($_POST['payhere_amount'] ?? 0.00)
+                );
+            } catch (\Exception $e) {
+                file_put_contents(
+                    $logFile,
+                    "Error handling verified payment: " . $e->getMessage() . PHP_EOL .
+                        "Stack trace:\n" . $e->getTraceAsString() . PHP_EOL,
+                    FILE_APPEND
+                );
+            }
         }
-
 
         // Respond to the notification
         http_response_code(200);
