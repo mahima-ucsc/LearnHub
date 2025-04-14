@@ -20,6 +20,9 @@ class AppConstants
     // PayHere
     public const PAYHERE_MERCHANT_ID = '121XXXX';
     public const PAYHERE_MERCHANT_SECRET = '4sdXXXXXXXXXXXXXXXXXXXXXXXXX';
+    public const PAYHERE_AUTHORIZATION_API_URL = 'https://sandbox.payhere.lk/merchant/v1/oauth/token';
+    public const PAYHERE_RETRIEVAL_API_URL = 'https://sandbox.payhere.lk/merchant/v1/payment/search?order_id=';
+    public const PAYHERE_AUTHORIZATION_CODE = 'base64(AppID:AppSecret)';
     // Payment Statuses
     public const PAYMENT_STATUS_SUCCESS = 2;
     public const PAYMENT_STATUS_PENDING = 0;
