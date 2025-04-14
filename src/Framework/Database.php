@@ -31,11 +31,20 @@ class Database
 
     public function query(string $query, array $params = [])
     {
-        $this->stmt = $this->connection->prepare($query);
+        try {
+            $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $this->stmt->execute($params);
+            $this->stmt = $this->connection->prepare($query);
+            $this->stmt->execute($params);
 
-        return $this;
+            return $this;
+        } catch (PDOException $e) {
+            // Log the error with query details for debugging
+            error_log("Database error: " . $e->getMessage());
+
+            // Re-throw the exception so it can be caught by the calling method
+            throw $e;
+        }
     }
 
     public function count()

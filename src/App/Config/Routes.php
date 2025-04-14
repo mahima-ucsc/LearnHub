@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace App\Config;
 
-use App\Controllers\{AlertController, AssignmentController, AuthController, ContactController, ProfileController, CoursesController, TutorProfileController, SettingController, PageController, PaymentController, ResourceController, PostController, ReviewController, UserController};
+use App\Controllers\{AdvertisementController, AlertController, AssignmentController, AuthController, ContactController, ProfileController, CoursesController, TutorProfileController, SettingController, PageController, PaymentController, ResourceController, PostController, ReviewController, UserController};
 use App\Middleware\AdminOnlyMiddleware;
 use App\Middleware\AuthRequiredMiddleware;
 use App\Middleware\GuestOnlyMiddleware;
@@ -36,6 +36,7 @@ function registerRoutes(App $app)
     $app->get('/user-managment', [PageController::class, 'userManagment']);
     $app->get('/course-managment', [PageController::class, 'courseManagment']);
     $app->get('/post-managment', [PageController::class, 'postManagment']);
+    $app->get('/advertisement-managment', [PageController::class, 'adManagment']);
 
 
 
@@ -153,7 +154,14 @@ function registerRoutes(App $app)
     $app->post('/submission/{submission_id}/attachment/{attachment_id}/remove', [AssignmentController::class, 'removeSubmissionFile']);
     $app->post('/submit/review', [AssignmentController::class, 'submit']);
 
+    // Advertisement
+    $app->get('/advertisement/create', [AdvertisementController::class, 'createView']);
+    $app->post('/advertisement/create', [AdvertisementController::class, 'create']);
+    $app->post('/approve-advertisement', [AdvertisementController::class, 'approve']);
+    $app->post('/reject-advertisement', [AdvertisementController::class, 'reject']);
+
     $app->get('/test', [PageController::class, 'test']);
+    $app->post('/test', [PageController::class, 'testPost']);
     $app->get('/post', [PageController::class, 'post']);
     $app->get('/test/help', [PageController::class, 'helpAndSupportReview']);
 
