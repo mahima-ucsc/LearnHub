@@ -12,7 +12,10 @@ use Framework\Exceptions\ValidationException;
 
 class CourseService
 {
-    public function __construct(private Database $db) {}
+    public function __construct(
+        private Database $db,
+        private PaymentService $paymentService
+    ) {}
 
     /**
      * @deprecated
@@ -200,7 +203,7 @@ class CourseService
             $isPaid = null;
 
             if (isset($_SESSION['user'])) {
-                $isPaid = $this->isRecurringCourseSubPeriodPaid($_SESSION['user'], $courseId, $period['sub_period_id']);
+                $isPaid = $this->paymentService->isRecurringCourseSubPeriodPaid($_SESSION['user'], $courseId, $period['sub_period_id']);
             }
             $period['is_paid'] = $isPaid;
 
@@ -559,31 +562,6 @@ class CourseService
             ]
         )->find();
         $isPaid = $paid && $paid['total_paid'] >= $courseFee['price'];
-        return $isPaid;
-    }
-
-    private function isRecurringCourseSubPeriodPaid($userId, $courseId, $subPeriodId)
-    {
-        $paid = $this->db->query(
-            "SELECT SUM(p.amount) as total_paid FROM payments p INNER JOIN course_payments cp ON p.payment_id = cp.payment_id
-            WHERE cp.user_id = :user_id AND cp.course_id = :course_id AND cp.sub_period_id = :sub_period_id AND p.payment_status = " .
-                AppConstants::PAYMENT_STATUS_SUCCESS,
-            [
-                "user_id" => $userId,
-                "course_id" => $courseId,
-                "sub_period_id" => $subPeriodId
-            ]
-        )->find();
-
-        $subPeriodFee = $this->db->query(
-            "SELECT price FROM recurring_course_sub_periods
-            WHERE sub_period_id = :sub_period_id",
-            [
-                "sub_period_id" => $subPeriodId
-            ]
-        )->find();
-
-        $isPaid = $paid && $paid['total_paid'] >= $subPeriodFee['price'];
         return $isPaid;
     }
 }

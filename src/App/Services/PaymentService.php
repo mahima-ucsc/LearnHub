@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Config\AppConstants;
+use App\Exceptions\PayhereException;
 use Framework\App;
 use Framework\Database;
 
@@ -102,20 +103,10 @@ class PaymentService
         return ($local_md5sig === $md5sig);
     }
 
-    public function handleVerifiedPayment(array $paymentData)
+    public function handleVerifiedPayment(string $orderId, int $statusCode, float $amount)
     {
-        // Important Note: The payment_id from the payment data and the database table are different.
-        $orderId = $paymentData['order_id'] ?? '';
-        $statusCode = $paymentData['status_code'] ?? 0;
-        $payhereAmount = $paymentData['payhere_amount'] ?? 0.00;
-
-        if (empty($orderId)) {
-            throw new \InvalidArgumentException("Order ID is missing in payment data.");
-        }
-
         try {
             $this->db->beginTransaction();
-
             // Update the payment record in the database
             $this->db->query(
                 "UPDATE payments 
@@ -125,7 +116,7 @@ class PaymentService
             WHERE order_id = :order_id",
                 [
                     'payment_status' => $statusCode,
-                    'payhere_amount' => $payhereAmount,
+                    'payhere_amount' => $amount,
                     'order_id' => $orderId
                 ]
             );
@@ -134,6 +125,136 @@ class PaymentService
         } catch (\Exception $e) {
             $this->db->rollBack();
             throw $e;
+        }
+    }
+
+    public function getOrderDetails(string $orderId)
+    {
+
+
+        $accessToken = $this->getRetrievalApiAccessToken(AppConstants::PAYHERE_AUTHORIZATION_CODE);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, AppConstants::PAYHERE_RETRIEVAL_API_URL . $orderId);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer ' . $accessToken,
+        ]);
+
+        $response = curl_exec($ch);
+        $orderResponse = json_decode($response, true);
+
+        if (curl_errno($ch)) {
+            throw new PayhereException('Error: ' . curl_error($ch));
+        } else if (isset($orderResponse['error']) && $orderResponse['error'] = 'invalid_token') {
+            throw new PayhereException('Error: Invalid access token.');
+        } else {
+            return $orderResponse;
+        }
+
+        curl_close($ch);
+    }
+
+    private function getRetrievalApiAccessToken(string $apiKey)
+    {
+        if (
+            isset($_SESSION['payhere_access_token']) &&
+            isset($_SESSION['payhere_token_expiry']) &&
+            time() < $_SESSION['payhere_token_expiry'] - 10
+        ) {
+            return $_SESSION['payhere_access_token'];
+        }
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, AppConstants::PAYHERE_AUTHORIZATION_API_URL);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/x-www-form-urlencoded',
+            'Authorization: Basic ' . $apiKey,
+        ]);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+            'grant_type' => 'client_credentials'
+        ]));
+
+        $response = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            throw new PayhereException('Error: ' . curl_error($ch));
+            curl_close($ch);
+            return;
+        }
+
+        $tokenData = json_decode($response, true);
+        curl_close($ch);
+
+        if (!isset($tokenData['access_token']) || !isset($tokenData['expires_in'])) {
+            throw new PayhereException('Error: Unable to retrieve access token.');
+            return;
+        }
+
+        $_SESSION['payhere_access_token'] = $tokenData['access_token'];
+        $_SESSION['payhere_token_expiry'] = time() + $tokenData['expires_in'];
+
+        return $_SESSION['payhere_access_token'];
+    }
+
+    public function isRecurringCourseSubPeriodPaid($userId, $courseId, $subPeriodId)
+    {
+        $this->processPendingRecurringCourseSubPeriodPayments($userId, $courseId, $subPeriodId);
+
+        $paid = $this->db->query(
+            "SELECT SUM(p.amount) as total_paid FROM payments p INNER JOIN course_payments cp ON p.payment_id = cp.payment_id
+            WHERE cp.user_id = :user_id AND cp.course_id = :course_id AND cp.sub_period_id = :sub_period_id AND p.payment_status = " .
+                AppConstants::PAYMENT_STATUS_SUCCESS,
+            [
+                "user_id" => $userId,
+                "course_id" => $courseId,
+                "sub_period_id" => $subPeriodId
+            ]
+        )->find();
+
+        $subPeriodFee = $this->db->query(
+            "SELECT price FROM recurring_course_sub_periods
+            WHERE sub_period_id = :sub_period_id",
+            [
+                "sub_period_id" => $subPeriodId
+            ]
+        )->find();
+
+        $isPaid = $paid && $paid['total_paid'] >= $subPeriodFee['price'];
+        return $isPaid;
+    }
+
+    private function processPendingRecurringCourseSubPeriodPayments($userId, $courseId, $subPeriodId)
+    {
+        $pendingPayments = $this->db->query(
+            "SELECT p.order_id FROM payments p INNER JOIN course_payments cp ON p.payment_id = cp.payment_id
+            WHERE cp.user_id = :user_id AND cp.course_id = :course_id AND cp.sub_period_id = :sub_period_id AND p.payment_status = " .
+                AppConstants::PAYMENT_STATUS_PENDING,
+            [
+                "user_id" => $userId,
+                "course_id" => $courseId,
+                "sub_period_id" => $subPeriodId
+            ]
+        )->findAll();
+
+        foreach ($pendingPayments as $payment) {
+            $orderDetails = $this->getOrderDetails($payment['order_id']);
+
+            if (
+                isset($orderDetails['status']) &&
+                isset($orderDetails['data'][0]['amount']) &&
+                isset($orderDetails['data'][0]['order_id']) &&
+                AppConstants::RETRIEVAL_API_TO_CHECKOUT_API_STATUS_MAP[$orderDetails['status']] !== AppConstants::PAYMENT_STATUS_PENDING &&
+                $orderDetails['data'][0]['order_id'] === $payment['order_id']
+            ) {
+                $this->handleVerifiedPayment(
+                    (string) $orderDetails['data'][0]['order_id'],
+                    (int) AppConstants::RETRIEVAL_API_TO_CHECKOUT_API_STATUS_MAP[$orderDetails['status']],
+                    (float) $orderDetails['data'][0]['amount']
+                );
+            }
         }
     }
 }
