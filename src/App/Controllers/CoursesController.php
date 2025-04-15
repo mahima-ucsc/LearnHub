@@ -7,6 +7,9 @@ namespace App\Controllers;
 use Framework\TemplateEngine;
 use App\Services\{AssignmentService, ValidatorService, CourseService, UserService, FileService, SubjectService};
 use App\Config\Paths;
+use Exception;
+use Framework\Exceptions\ValidationException;
+
 
 class CoursesController
 {
@@ -206,7 +209,7 @@ class CoursesController
         $thumbnailFileName = $this->fileService->uploadFile(Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS, $thumbnail);
         $formData = $_POST;
         $formData['thumbnail_filename'] = $thumbnailFileName;
-        $this->courseService->createCourse($formData);
+        // $this->courseService->createCourse($formData);
         redirectTo('/courses/my-courses');
     }
 
@@ -370,5 +373,108 @@ class CoursesController
                 'title' => "Course Participants",
             ]
         );
+    }
+
+    // New functions after update the table
+    public function createView()
+    {
+        $subjects = $this->subjectService->getSubjects();
+        $grades = $this->courseService->getGrades();
+        echo $this->view->render(
+            'course/create.php',
+            [
+                'title' => "Create Course",
+                'subjects' => $subjects,
+                'grades' => $grades
+            ]
+        );
+    }
+
+    public function create()
+    {
+        try {
+            // Upload course thumbnail
+            $courseThumbnail = $_FILES['courseThumbnail'] ?? null;
+            $this->validatorService->validateImg($courseThumbnail);
+            $thumbnailFileName = $this->fileService->uploadFile(Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS, $courseThumbnail);
+
+            // Process module attachments
+            $moduleAttachments = [];
+            if (isset($_FILES['modules']['name'][0]['attachments'])) {
+                foreach ($_FILES['modules']['name'][0]['attachments'] as $index => $filename) {
+                    if (!empty($filename)) {
+                        $moduleAttachments[] = [
+                            'name' => $_FILES['modules']['name'][0]['attachments'][$index],
+                            'type' => $_FILES['modules']['type'][0]['attachments'][$index],
+                            'tmp_name' => $_FILES['modules']['tmp_name'][0]['attachments'][$index],
+                            'error' => $_FILES['modules']['error'][0]['attachments'][$index],
+                            'size' => $_FILES['modules']['size'][0]['attachments'][$index]
+                        ];
+                    }
+                }
+            }
+
+            // Prepare modules data
+            $modulesData = [];
+            if (isset($_POST['modules']) && is_array($_POST['modules'])) {
+                foreach ($_POST['modules'] as $index => $module) {
+                    $moduleData = [
+                        'title' => $module['title'],
+                        'description' => $module['description'],
+                        'price' => floatval($module['price']),
+                        'start_date' => $module['moduleStartTime'],
+                        'end_date' => $module['moduleEndTime'],
+                        'has_free_trial' => isset($module['hasFreeTrial']) && $module['hasFreeTrial'] === 'on',
+                        'free_trial_start_date' => $module['freeTrialStartDate'] ?? null,
+                        'free_trial_end_date' => $module['freeTrialEndDate'] ?? null,
+                        'duration_minutes' => (isset($module['hours']) ? intval($module['hours']) * 60 : 0) +
+                            (isset($module['minutes']) ? intval($module['minutes']) : 0),
+                        'attachments' => $moduleAttachments
+                    ];
+
+                    $modulesData[] = $moduleData;
+                }
+            }
+
+
+            // Prepare course data
+            $courseData = [
+                'title' => $_POST['courseTitle'],
+                'description' => $_POST['courseDescription'],
+                'subject_id' => intval($_POST['subject']),
+                'grade_id' => intval($_POST['grade']),
+                'tutor_id' => 1,
+                'start_time' => $_POST['courseStartTime'],
+                'end_time' => $_POST['courseEndTime'],
+                'day' => $_POST['courseday'],
+                'billing_type' => $_POST['courseType'],
+                'price' => isset($_POST['fullCoursePrice']) ? floatval($_POST['fullCoursePrice']) : null,
+                'location' => $_POST['location'],
+                'thumbnail_url' => $thumbnailFileName,
+                'modules' => $modulesData
+            ];
+
+            // Create the course with modules
+            $courseId = $this->courseService->createCourseWithModules($courseData, $_FILES);
+
+            // Redirect to my courses page
+            if ($courseId) {
+                echo json_encode("Success");
+            } else {
+                // Handle error
+                echo json_encode("Error");
+                // redirectTo('/courses/create?error=failed');
+            }
+        } catch (ValidationException $e) {
+            // Handle validation errors
+            // $errors = $e->getErrors();
+            // You could store errors in session and redirect back to form
+            // $_SESSION['errors'] = $errors;
+            // redirectTo('/courses/create');
+        } catch (Exception $e) {
+            // Handle general errors
+            error_log('Course creation failed: ' . $e->getMessage());
+            $_SESSION['error'] = 'Failed to create course. Please try again.';
+        }
     }
 }
