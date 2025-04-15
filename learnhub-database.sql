@@ -328,6 +328,7 @@ CREATE TABLE IF NOT EXISTS assignment_submission(
     student_id BIGINT(20) UNSIGNED NoT NULL,
     status ENUM('pending', 'graded') DEFAULT 'pending',
     grade INT DEFAULT 0 CHECK (grade >= 0 AND grade <= 100),
+    feedback TEXT,
 
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
     FOREIGN KEY (student_id) REFERENCES users(user_id) ON DELETE CASCADE,

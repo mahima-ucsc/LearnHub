@@ -3,9 +3,6 @@
 
 <link rel="stylesheet" href="/assets/styles/Course/course-info.css">
 
-<style>
-
-</style>
 <section class="course-info-container">
     <div class="course-page-wrapper">
         <div class="main-content">
@@ -28,7 +25,6 @@
                     <p><?php echo e($user['description']); ?></p>
                 </div>
             </div>
-
 
             <div class="course-section">
                 <h2 class="section-title">Course Description</h2>
@@ -82,24 +78,6 @@
                                 </div>
                             </div>
                         <?php endforeach; ?>
-                        <!-- <div class="period-item">
-                            <div class="period-header">
-                                <div class="period-title">
-                                    <h4>2024 Jan 01 - 2024 Jan 31</h4>
-                                </div>
-                                <div class="period-toggle">
-                                    <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polyline points="6 9 12 15 18 9"></polyline>
-                                    </svg>
-                                </div>
-                            </div>
-
-                            <div class="period-content">
-                                <div class="module-list">
-                                    modules
-                                </div>
-                            </div>
-                        </div> -->
                     </div>
                 </div>
                 <div class="course-section">
@@ -193,153 +171,8 @@
                         </div>
                     </div>
                 <?php endforeach; ?>
-
-                <!-- Assignment Item 1 -->
-                <div class="assignment-item">
-                    <div class="assignment-header" onclick="toggleAssignment(this)">
-                        <h5>Assignment 1: Basic Calculator Program
-                            <span class="chevron-icon">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="6 9 12 15 18 9"></polyline>
-                                </svg>
-                            </span>
-                        </h5>
-                    </div>
-
-                    <div class="assignment-content">
-                        <div class="assignment-details">
-                            <p>Create a simple calculator program using Python that can perform basic arithmetic operations.</p>
-                            <div class="assignment-meta">
-                                <span class="deadline">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <polyline points="12 6 12 12 16 14"></polyline>
-                                    </svg>
-                                    Deadline: December 31, 2024
-                                </span>
-                            </div>
-                            <form class="assignment-upload" action="/submit-assignment" method="POST" enctype="multipart/form-data">
-                                <input type="hidden" name="module_id" value="1">
-                                <div class="file-upload">
-                                    <input type="file" name="assignment_file" id="assignment-1" required>
-                                    <label for="assignment-1" class="file-label">
-                                        Choose File
-                                    </label>
-                                </div>
-                                <button type="submit" class="submit-assignment">Submit Assignment</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Assignment Item 2 -->
-                <div class="assignment-item">
-                    <div class="assignment-header" onclick="toggleAssignment(this)">
-                        <h5>Assignment 2: Banking System
-                            <span class="chevron-icon">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="6 9 12 15 18 9"></polyline>
-                                </svg>
-                            </span>
-                        </h5>
-                    </div>
-
-                    <div class="assignment-content">
-                        <div class="assignment-details">
-                            <p>Design and implement a simple banking system using OOP principles.</p>
-                            <div class="assignment-meta">
-                                <span class="deadline">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <polyline points="12 6 12 12 16 14"></polyline>
-                                    </svg>
-                                    Deadline: January 15, 2025
-                                </span>
-                            </div>
-                            <div class="assignment-submitted">
-                                <span class="success-message">✓ Assignment submitted</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
-    </div>
-    <?php if (isset($_SESSION['user_role'])): ?>
-        <?php if ($_SESSION['user_role'] === "teacher" || $_SESSION['user_role'] === "admin"): ?>
-
-            <!-- <div class="course-section course-participant">
-                    <h3>Course Participants</h3>
-                    <div class="participant-dropdown">
-                        <div class="participant-dropdown-content" id="participant-list">
-                            <ul class="participant-list">
-                                <li class="participant-item">
-                                    <img src="/assets/images/user.jpeg" alt="User 1" class="participant-avatar">
-                                    <span class="participant-name">Sachith Dhanushka</span>
-                                </li>
-                                <li class="participant-item">
-                                    <img src="/assets/images/user.jpeg" alt="User 2" class="participant-avatar">
-                                    <span class="participant-name">Dinuka Sahan</span>
-                                </li>
-                                <li class="participant-item">
-                                    <img src="/assets/images/user.jpeg" alt="User 3" class="participant-avatar">
-                                    <span class="participant-name">Isuru Naveen</span>
-                                </li>
-                                <li class="participant-item">
-                                    <img src="/assets/images/user.jpeg" alt="User 4" class="participant-avatar">
-                                    <span class="participant-name">Amanda Perera</span>
-                                </li>
-                                <li class="participant-item">
-                                    <img src="/assets/images/user.jpeg" alt="User 1" class="participant-avatar">
-                                    <span class="participant-name">Sachith Dhanushka</span>
-                                </li>
-                                <li class="participant-item">
-                                    <img src="/assets/images/user.jpeg" alt="User 2" class="participant-avatar">
-                                    <span class="participant-name">Dinuka Sahan</span>
-                                </li>
-                                <li class="participant-item">
-                                    <img src="/assets/images/user.jpeg" alt="User 3" class="participant-avatar">
-                                    <span class="participant-name">Isuru Naveen</span>
-                                </li>
-                                <li class="participant-item">
-                                    <img src="/assets/images/user.jpeg" alt="User 4" class="participant-avatar">
-                                    <span class="participant-name">Amanda Perera</span>
-                                </li>
-                                <button class="view-all-button" onclick="window.location.href = '/courses/<?php echo ($course['course_id']); ?>/participants'">View All</button>
-                            </ul>
-                        </div>
-                        <button class="participant-dropdown-button" onclick="toggleParticipantList()">
-                            View Participants <i class="fas fa-chevron-down dropdown-chevron"></i>
-                        </button>
-                    </div>
-                </div> -->
-        <?php endif; ?>
-    <?php endif; ?>
-
-    </div>
-    <div>
-
-    </div>
-    <div class="course-section">
-        <h2 class="section-title">Course Resources</h2>
-        <ul class="resource-list">
-            <li class="resource-item">
-                <div class="resource-icon">📚</div>
-                <p>Course Textbook</p>
-            </li>
-            <li class="resource-item">
-                <div class="resource-icon">💻</div>
-                <p>Coding Examples</p>
-            </li>
-            <li class="resource-item">
-                <div class="resource-icon">🎥</div>
-                <p>Video Tutorials</p>
-            </li>
-            <li class="resource-item">
-                <div class="resource-icon">📝</div>
-                <p>Practice Quizzes</p>
-            </li>
-        </ul>
     </div>
 
     <!-- Review Section -->
@@ -350,11 +183,8 @@
                 <div class="rating-number"><?php echo $summeryOfReviews['avgRating'] ?> / 5</div>
                 <div class="rating-stars">
                     <?php
-                    if (($summeryOfReviews['avgRating'] - floor($summeryOfReviews['avgRating'])) > 0.4) {
-                        $flag = true;
-                    }
+                    $flag = ($summeryOfReviews['avgRating'] - floor($summeryOfReviews['avgRating'])) > 0.4;
                     for ($i = 1; $i <= 5; $i++) {
-
                         if ($i <= $summeryOfReviews['avgRating']) {
                             echo '<span class="star active">★</span>';
                         } else if ($flag) {
@@ -384,9 +214,9 @@
         </div>
 
         <div class="reviews-list">
-            <?php
-            foreach ($userReview as $review): ?>
-                <?php $datetime = new DateTime($review['date']);
+            <?php foreach ($userReview as $review): ?>
+                <?php
+                $datetime = new DateTime($review['date']);
                 $date = $datetime->format('F j, Y');
                 $time = $datetime->format('g:i A');
                 ?>
@@ -418,39 +248,30 @@
         <div class="addFeadback">
             <a href="/course/enroll" class="add-review-button">Add Review</a>
         </div>
-
     </div>
 
-
     <script src="/assets/js/courses/course-info.js" defer></script>
-    <!-- TODO: Move this script to course-info.js. Do not use inline functions -->
-    <script>
-        function toggleParticipantList() {
-            const participantList = document.getElementById('participant-list');
-            participantList.classList.toggle('active');
-
-            document.querySelector('.dropdown-chevron').classList.toggle('rotated');
-        }
-
-        function viewAllParticipants() {
-            alert('Redirecting to view all participants...');
-            // Add logic here to redirect or display all participants
-        }
-
-        function viewAllParticipants() {
-            // Redirect to a page or open a modal displaying all participants
-            window.location.href = '/course/participants';
-        }
-
-        function toggleAssignment(headerElement) {
-            const assignmentItem = headerElement.closest('.assignment-item');
-            const content = assignmentItem.querySelector('.assignment-content');
-            const chevron = headerElement.querySelector('.chevron-icon');
-
-            content.classList.toggle('active');
-            chevron.classList.toggle('rotated');
-        }
-    </script>
 </section>
+<script>
+    // Functions for course-info.php
 
+    function toggleParticipantList() {
+        const participantList = document.getElementById('participant-list');
+        participantList.classList.toggle('active');
+        document.querySelector('.dropdown-chevron').classList.toggle('rotated');
+    }
+
+    function viewAllParticipants() {
+        window.location.href = '/course/participants';
+    }
+
+    function toggleAssignment(headerElement) {
+        const assignmentItem = headerElement.closest('.assignment-item');
+        const content = assignmentItem.querySelector('.assignment-content');
+        const chevron = headerElement.querySelector('.chevron-icon');
+
+        content.classList.toggle('active');
+        chevron.classList.toggle('rotated');
+    }
+</script>
 <?php include $this->resolve("partials/_footer.php"); ?>

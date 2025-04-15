@@ -14,7 +14,8 @@ class CourseService
 {
     public function __construct(
         private Database $db,
-        private PaymentService $paymentService
+        private PaymentService $paymentService,
+        private FileService $fileService,
     ) {}
 
     /**
@@ -101,29 +102,34 @@ class CourseService
         unset($_SESSION['thumbnail']);
     }
 
-    public function createCourse(array $formData)
-    {
-        $tutor_id = $_SESSION['user'];
+    /**
+     * @deprecated
+     * This function is deprecated.
+     * It was used to save course data before developing the payment function.
+     */
+    // public function createCourse(array $formData)
+    // {
+    //     $tutor_id = $_SESSION['user'];
 
-        $this->db->query(
-            "INSERT INTO courses(title, description, subject_id, grade_id, tutor_id, start_time, end_time, day, price, pricing_period, location, thumbnail_url)
-                VALUES (:title, :description, :subject_id, :grade_id, :tutor_id, :start_time, :end_time, :day, :price, :pricing_period, :location, :thumbnail_url)",
-            [
-                "title" => $formData['title'],
-                "description" => $formData['description'],
-                "subject_id" => $formData['subject_id'],
-                "grade_id" => $formData['grade_id'],
-                "tutor_id" => $tutor_id,
-                "start_time" => $formData['start_time'],
-                "end_time" => $formData['end_time'],
-                "day" => $formData['day'],
-                "price" => $formData['price'],
-                "pricing_period" => $formData['pricing_period'],
-                "location" => $formData['location'],
-                "thumbnail_url" => $formData['thumbnail_filename'],
-            ]
-        );
-    }
+    //     $this->db->query(
+    //         "INSERT INTO courses(title, description, subject_id, grade_id, tutor_id, start_time, end_time, day, price, pricing_period, location, thumbnail_url)
+    //             VALUES (:title, :description, :subject_id, :grade_id, :tutor_id, :start_time, :end_time, :day, :price, :pricing_period, :location, :thumbnail_url)",
+    //         [
+    //             "title" => $formData['title'],
+    //             "description" => $formData['description'],
+    //             "subject_id" => $formData['subject_id'],
+    //             "grade_id" => $formData['grade_id'],
+    //             "tutor_id" => $tutor_id,
+    //             "start_time" => $formData['start_time'],
+    //             "end_time" => $formData['end_time'],
+    //             "day" => $formData['day'],
+    //             "price" => $formData['price'],
+    //             "pricing_period" => $formData['pricing_period'],
+    //             "location" => $formData['location'],
+    //             "thumbnail_url" => $formData['thumbnail_filename'],
+    //         ]
+    //     );
+    // }
 
     public function getMyCourses()
     {
@@ -563,5 +569,234 @@ class CourseService
         )->find();
         $isPaid = $paid && $paid['total_paid'] >= $courseFee['price'];
         return $isPaid;
+    }
+
+    public function getGrades()
+    {
+        $subjects = $this->db->query(
+            "SELECT * FROM grades"
+        )->findAll();
+
+        return $subjects;
+    }
+
+
+    /**
+     * Creates a new course with associated modules, subscription periods, and resources.
+     * 
+     * This method handles the creation of both one-time and recurring payment courses with their
+     * respective modules. For recurring courses, it also creates subscription periods with pricing 
+     * and optional free trial periods. Course resources (attachments) are uploaded and linked to 
+     * their respective modules.
+     * 
+     * The entire process is wrapped in a transaction to ensure data integrity.
+     *
+     * @param array $courseData An associative array containing course details
+     * 
+     * @param array $files Array of file data for course resources/attachments
+     * 
+     */
+    public function createCourseWithModules(array $courseData, array $files)
+    {
+        $this->db->beginTransaction();
+        try {
+            // 1. Insert course data
+            $this->db->query(
+                "INSERT INTO courses(
+                title, 
+                description, 
+                subject_id, 
+                grade_id, 
+                tutor_id, 
+                start_time, 
+                end_time, 
+                day, 
+                billing_type,
+                price,
+                location, 
+                thumbnail_url
+            ) VALUES (
+                :title, 
+                :description, 
+                :subject_id, 
+                :grade_id, 
+                :tutor_id, 
+                :start_time, 
+                :end_time, 
+                :day, 
+                :billing_type,
+                :price,
+                :location, 
+                :thumbnail_url
+            )",
+                [
+                    "title" => $courseData['title'],
+                    "description" => $courseData['description'],
+                    "subject_id" => $courseData['subject_id'],
+                    "grade_id" => $courseData['grade_id'],
+                    "tutor_id" => $courseData['tutor_id'],
+                    "start_time" => $courseData['start_time'],
+                    "end_time" => $courseData['end_time'],
+                    "day" => $courseData['day'],
+                    "billing_type" => $courseData['billing_type'],
+                    "price" => $courseData['billing_type'] === 'onetime' ? $courseData['price'] : null,
+                    "location" => $courseData['location'],
+                    "thumbnail_url" => $courseData['thumbnail_url'],
+                ]
+            );
+
+            $courseId = $this->db->lastInsertId();
+
+            // If it's a recurring course, create subscription period
+            if ($courseData['billing_type'] === 'recurring') {
+
+                // For each module, create a subscription period
+                foreach ($courseData['modules'] as $moduleData) {
+                    $this->db->query(
+                        "INSERT INTO recurring_course_sub_periods(
+                        course_id, 
+                        start_datetime, 
+                        end_datetime, 
+                        price,
+                        free_access_start_datetime,
+                        free_access_end_datetime
+                    ) VALUES (
+                        :course_id, 
+                        :start_datetime, 
+                        :end_datetime, 
+                        :price,
+                        :free_access_start_datetime,
+                        :free_access_end_datetime
+                    )",
+                        [
+                            "course_id" => $courseId,
+                            "start_datetime" => $moduleData['start_date'],
+                            "end_datetime" => $moduleData['end_date'],
+                            "price" => $moduleData['price'],
+                            "free_access_start_datetime" => isset($moduleData['has_free_trial']) && $moduleData['has_free_trial'] ?
+                                $moduleData['free_trial_start_date'] . ' 00:00:00' : null,
+                            "free_access_end_datetime" => isset($moduleData['has_free_trial']) && $moduleData['has_free_trial'] ?
+                                $moduleData['free_trial_end_date'] . ' 23:59:59' : null
+                        ]
+                    );
+
+                    $subPeriodId = $this->db->lastInsertId();
+                    error_log("***********Sub period id created");
+                    error_log($subPeriodId);
+
+                    // Create module for this subscription period
+                    $this->db->query(
+                        "INSERT INTO course_modules(
+                        course_id, 
+                        sub_period_id,
+                        title, 
+                        description
+                    ) VALUES (
+                        :course_id, 
+                        :sub_period_id,
+                        :title, 
+                        :description
+                    )",
+                        [
+                            "course_id" => $courseId,
+                            "sub_period_id" => $subPeriodId,
+                            "title" => $moduleData['title'],
+                            "description" => $moduleData['description']
+                        ]
+                    );
+
+                    $moduleId = $this->db->lastInsertId();
+                    error_log("***********module id created");
+
+                    // Upload and insert module resources if any
+                    if (isset($moduleData['attachments']) && !empty($moduleData['attachments'])) {
+                        foreach ($moduleData['attachments'] as $attachment) {
+                            if ($attachment['error'] === 0) {
+                                try {
+                                    $newFileName = $this->uploadFile($attachment, 'course_module_resource');
+                                    $this->db->query(
+                                        "INSERT INTO course_module_resource(
+                                        module_id, 
+                                        course_id, 
+                                        resource_path
+                                    ) VALUES (
+                                        :module_id, 
+                                        :course_id, 
+                                        :resource_path
+                                    )",
+                                        [
+                                            "module_id" => $moduleId,
+                                            "course_id" => $courseId,
+                                            "resource_path" => $newFileName
+                                        ]
+                                    );
+                                } catch (ValidationException $e) {
+                                    // Log the error but continue with the rest of the resources
+                                    error_log('Failed to upload resource: ' . $e->getMessage());
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                // If it's a onetime course insert module and resources 
+                foreach ($courseData['modules'] as $moduleData) {
+                    $this->db->query(
+                        "INSERT INTO course_modules(
+                        course_id, 
+                        title, 
+                        description
+                    ) VALUES (
+                        :course_id, 
+                        :title, 
+                        :description
+                    )",
+                        [
+                            "course_id" => $courseId,
+                            "title" => $moduleData['title'],
+                            "description" => $moduleData['description']
+                        ]
+                    );
+
+                    $moduleId = $this->db->lastInsertId();
+
+                    // Upload and insert module resources if any
+                    if (isset($moduleData['attachments']) && !empty($moduleData['attachments'])) {
+                        foreach ($moduleData['attachments'] as $attachment) {
+                            if ($attachment['error'] === 0) {
+                                try {
+                                    $newFileName = $this->uploadFile($attachment, 'course_module_resource');
+                                    $this->db->query(
+                                        "INSERT INTO course_module_resource(
+                                        module_id, 
+                                        course_id, 
+                                        resource_path
+                                    ) VALUES (
+                                        :module_id, 
+                                        :course_id, 
+                                        :resource_path
+                                    )",
+                                        [
+                                            "module_id" => $moduleId,
+                                            "course_id" => $courseId,
+                                            "resource_path" => $newFileName
+                                        ]
+                                    );
+                                } catch (ValidationException $e) {
+                                    // Log the error but continue with the rest of the resources
+                                    error_log('Failed to upload resource: ' . $e->getMessage());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            $this->db->commit();
+            return $courseId;
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            error_log('Failed to create course: ' . $e->getMessage());
+            throw $e;
+        }
     }
 }
