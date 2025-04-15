@@ -26,6 +26,10 @@ class PaymentController
             "amount" => $amount,
             "courseId" => $params["course_id"],
             "subperiodId" => $params["subperiod_id"],
+            "course_title" => $checkoutData["course_title"],
+            "start_date" => $checkoutData["start_date"],
+            "end_date" => $checkoutData["end_date"],
+            "billing_type" => "recurring",
         ]);
     }
 
