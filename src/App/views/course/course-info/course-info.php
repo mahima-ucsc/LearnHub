@@ -15,7 +15,9 @@
                         <span>Level: <?php echo e($course['grade_id']); ?></span> |
                         <span>Price: Rs. <?php echo e($course['price']); ?></span>
                     </div>
-                    <a href="/course/enroll" class="enroll-button">Enroll Now</a>
+                    <?php if ($course['billing_type'] === 'onetime' && !$course['is_paid']): ?>
+                        <a href="/course/enroll" class="enroll-button">Enroll Now</a>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="teacher-section">
@@ -33,7 +35,7 @@
                 </p>
             </div>
 
-            <?php if ($course['billing_type'] === 'onetime'): ?>
+            <?php if ($course['billing_type'] === 'onetime' && $course['is_paid']): ?>
                 <div class="course-section">
                     <h2 class="section-title">Course Modules</h2>
                     <div class="module-list">
@@ -42,7 +44,7 @@
                         <?php endforeach; ?>
                     </div>
                 </div>
-            <?php else: ?>
+            <?php elseif ($course['billing_type'] === 'recurring'): ?>
                 <div class="course-section">
                     <h2 class="section-title">Current Content</h2>
                     <div class="period-list">
