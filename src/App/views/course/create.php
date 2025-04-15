@@ -529,7 +529,7 @@
             Your course has been created successfully! You can now add more content or publish it.
         </div>
 
-        <form id="createCourseForm" method="POST" enctype="multipart/form-data">
+        <form id="createCourseForm" method="POST" enctype="multipart/form-data" action="/course/create">
             <!-- Basic Course Information Card -->
             <div class="card">
                 <h2 class="section-title">Course Information</h2>
@@ -568,10 +568,40 @@
                             <?php endforeach; ?>
                             <option value="-1">Other</option>
                         </select>
-                        <div class="error-message" id="courseGradeError">Please select a difficulty level</div>
+                        <div class="error-message" id="courseGradeError">Please select a grade</div>
                     </div>
                 </div>
-
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="courseStartTime" class="form-label">Start Time*</label>
+                        <input type="time" name="courseStartTime" id="courseStartTime" class="form-control">
+                        <div class="error-message" id="courseStartTimeError">Please enter a start time</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="courseEndTime" class="form-label">End Time*</label>
+                        <input type="time" name="courseEndTime" id="courseEndTime" class="form-control">
+                        <div class="error-message" id="courseEndTimeError">Please enter a end time</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="courseDay" class="form-label">Day*</label>
+                        <select id="courseDay" name="courseday" class="form-control" required>
+                            <option value="">Select Day</option>
+                            <option value="Sunday">Sunday</option>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednsday">Wednsday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                            <option value="Saturday">Saturday</option>
+                        </select>
+                        <div class="error-message" id="courseDayError">Please enter a day</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="location" class="form-label">Location*</label>
+                    <input type="text" name="location" id="location" class="form-control">
+                    <div class="error-message" id="locationError">Please enter a location</div>
+                </div>
                 <div class="form-group">
                     <label for="courseThumbnail" class="form-label">Course Thumbnail Image*</label>
                     <input type="file" id="courseThumbnail" name="courseThumbnail" class="form-control" accept="image/*" required>
@@ -607,24 +637,6 @@
                         <label for="fullCoursePrice" class="form-label">Course Price*</label>
                         <input type="number" id="fullCoursePrice" name="fullCoursePrice" class="form-control" placeholder="Enter price (in $)" step="0.01" min="0">
                         <div class="error-message" id="fullCoursePriceError">Please enter a valid price</div>
-                    </div>
-
-                    <div class="toggle-container">
-                        <label class="toggle-switch">
-                            <input type="checkbox" name="fullCourseFreeTrial" id="hasFreeTrialPeriod">
-                            <span class="toggle-slider"></span>
-                        </label>
-                        <span class="toggle-label">Enable free trial period</span>
-                    </div>
-
-                    <div id="freeTrialPeriodInput" class="collapse-content">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="freeTrialDays" class="form-label">Free Trial Period (days)*</label>
-                                <input type="number" name="fullCourseFreeTrialDays" id="freeTrialDays" class="form-control" placeholder="e.g., 7" min="1">
-                                <div class="error-message" id="freeTrialDaysError">Please enter a valid number of days</div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -685,6 +697,18 @@
                         <label class="form-label">Module Price*</label>
                         <input type="number" name="modulePrice" class="form-control module-price-input" placeholder="Enter price (in $)" step="0.01" min="0">
                     </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="moduleStartTime">Start Time*</label>
+                            <input type="date" name="moduleStartTime" id="moduleStartTime" class="form-control module-start-time">
+                            <div class="error-message" id="moduleStartTimeError">Please enter a start time</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="moduleEndTime">End Time*</label>
+                            <input type="date" name="moduleEndTime" id="moduleEndTime" class="form-control module-end-time">
+                            <div class="error-message" id="moduleEndTimeError">Please enter a end time</div>
+                        </div>
+                    </div>
 
                     <div class="toggle-container">
                         <label class="toggle-switch">
@@ -695,9 +719,17 @@
                     </div>
 
                     <div class="module-free-trial-input collapse-content">
-                        <div class="form-group">
-                            <label class="form-label">Free Trial Period (days)*</label>
-                            <input type="number" name="moduleFreeTrialDays" class="form-control module-free-trial-days" placeholder="e.g., 7" min="1">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Free Trial Start Date*</label>
+                                <input type="date" name="moduleFreeTrialStartDate" class="form-control module-free-trial-start-date">
+                                <div class="error-message">Please enter a valid start date</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Free Trial End Date*</label>
+                                <input type="date" name="moduleFreeTrialEndDate" class="form-control module-free-trial-end-date">
+                                <div class="error-message">Please enter a valid end date</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -734,8 +766,6 @@
             const monthlyCourseOption = document.getElementById('monthlyCourseOption');
             const courseTypeInput = document.getElementById('courseType');
             const fullCoursePricing = document.getElementById('fullCoursePricing');
-            const hasFreeTrialPeriod = document.getElementById('hasFreeTrialPeriod');
-            const freeTrialPeriodInput = document.getElementById('freeTrialPeriodInput');
             const addModuleBtn = document.getElementById('addModuleBtn');
             const modulesList = document.getElementById('modulesList');
             const successMessage = document.getElementById('successMessage');
@@ -760,7 +790,7 @@
                 if (type === 'full') {
                     fullCourseOption.classList.add('selected');
                     fullCoursePricing.classList.add('show');
-                    courseTypeInput.value = 'full';
+                    courseTypeInput.value = 'onetime';
 
                     // Hide pricing in modules for full course
                     document.querySelectorAll('.monthly-module-pricing').forEach(el => {
@@ -769,7 +799,7 @@
                 } else {
                     monthlyCourseOption.classList.add('selected');
                     fullCoursePricing.classList.remove('show');
-                    courseTypeInput.value = 'monthly';
+                    courseTypeInput.value = 'recurring';
 
                     // Show pricing in modules for monthly course
                     document.querySelectorAll('.monthly-module-pricing').forEach(el => {
@@ -784,15 +814,6 @@
                     addModule();
                 }
             }
-
-            // Toggle Free Trial Period
-            hasFreeTrialPeriod.addEventListener('change', function() {
-                if (this.checked) {
-                    freeTrialPeriodInput.classList.add('show');
-                } else {
-                    freeTrialPeriodInput.classList.remove('show');
-                }
-            });
 
             // Add New Module
             addModuleBtn.addEventListener('click', addModule);
@@ -812,11 +833,14 @@
                 moduleNode.querySelector('.module-description-input').name = `modules[${moduleIndex}][description]`;
                 moduleNode.querySelector('.module-hours').name = `modules[${moduleIndex}][hours]`;
                 moduleNode.querySelector('.module-minutes').name = `modules[${moduleIndex}][minutes]`;
+                moduleNode.querySelector('.module-start-time').name = `modules[${moduleIndex}][moduleStartTime]`;
+                moduleNode.querySelector('.module-end-time').name = `modules[${moduleIndex}][moduleEndTime]`;
 
 
                 moduleNode.querySelector('.module-price-input').name = `modules[${moduleIndex}][price]`;
                 moduleNode.querySelector('.module-free-trial-checkbox').name = `modules[${moduleIndex}][hasFreeTrial]`;
-                moduleNode.querySelector('.module-free-trial-days').name = `modules[${moduleIndex}][freeTrialDays]`;
+                moduleNode.querySelector('.module-free-trial-start-date').name = `modules[${moduleIndex}][freeTrialStartDate]`;
+                moduleNode.querySelector('.module-free-trial-end-date').name = `modules[${moduleIndex}][freeTrialEndDate]`;
 
                 moduleNode.querySelector('.module-file-input').name = `modules[${moduleIndex}][attachments][]`;
 
@@ -926,38 +950,6 @@
                     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
                 }
 
-                // Get appropriate icon for file type
-                function getFileIcon(fileName) {
-                    const extension = fileName.split('.').pop().toLowerCase();
-                    const iconMap = {
-                        pdf: 'fa-file-pdf',
-                        doc: 'fa-file-word',
-                        docx: 'fa-file-word',
-                        xls: 'fa-file-excel',
-                        xlsx: 'fa-file-excel',
-                        ppt: 'fa-file-powerpoint',
-                        pptx: 'fa-file-powerpoint',
-                        jpg: 'fa-file-image',
-                        jpeg: 'fa-file-image',
-                        png: 'fa-file-image',
-                        gif: 'fa-file-image',
-                        svg: 'fa-file-image',
-                        zip: 'fa-file-archive',
-                        rar: 'fa-file-archive',
-                        txt: 'fa-file-alt',
-                        mp4: 'fa-file-video',
-                        mov: 'fa-file-video',
-                        avi: 'fa-file-video',
-                        mp3: 'fa-file-audio',
-                        wav: 'fa-file-audio',
-                        html: 'fa-file-code',
-                        css: 'fa-file-code',
-                        js: 'fa-file-code'
-                    };
-
-                    return iconMap[extension] || 'fa-file';
-                }
-
                 // Render the attachments preview
                 function renderPreview() {
                     // Clear the current list
@@ -969,7 +961,7 @@
 
                         // Add file icon
                         const icon = document.createElement('i');
-                        icon.className = `fas ${getFileIcon(file.name)} file-icon`;
+                        icon.className = `fas fa-file file-icon`;
                         listItem.appendChild(icon);
 
                         // Add file name
@@ -1054,16 +1046,32 @@
 
                     // Validate free trial period if enabled
                     if (hasFreeTrialPeriod.checked) {
-                        const daysField = document.getElementById('freeTrialDays');
-                        const daysError = document.getElementById('freeTrialDaysError');
+                        const startDateField = document.getElementById('freeTrialStartDate');
+                        const endDateField = document.getElementById('freeTrialEndDate');
+                        const startDateError = document.getElementById('freeTrialStartDateError');
+                        const endDateError = document.getElementById('freeTrialEndDateError');
 
-                        if (!daysField.value || parseInt(daysField.value) < 1) {
-                            daysError.style.display = 'block';
-                            daysField.classList.add('error');
+                        if (!startDateField.value) {
+                            startDateError.style.display = 'block';
+                            startDateField.classList.add('error');
                             isValid = false;
                         } else {
-                            daysError.style.display = 'none';
-                            daysField.classList.remove('error');
+                            startDateError.style.display = 'none';
+                            startDateField.classList.remove('error');
+                        }
+
+                        if (!endDateField.value) {
+                            endDateError.style.display = 'block';
+                            endDateField.classList.add('error');
+                            isValid = false;
+                        } else if (new Date(endDateField.value) <= new Date(startDateField.value)) {
+                            endDateError.textContent = 'End date must be after start date';
+                            endDateError.style.display = 'block';
+                            endDateField.classList.add('error');
+                            isValid = false;
+                        } else {
+                            endDateError.style.display = 'none';
+                            endDateField.classList.remove('error');
                         }
                     }
                 }
@@ -1098,13 +1106,31 @@
                             // Validate free trial period if enabled for this module
                             const freeTrialCheckbox = module.querySelector('.module-free-trial-checkbox');
                             if (freeTrialCheckbox.checked) {
-                                const daysInput = module.querySelector('.module-free-trial-days');
+                                const startDateInput = module.querySelector('.module-free-trial-start-date');
+                                const endDateInput = module.querySelector('.module-free-trial-end-date');
+                                const errorElements = module.querySelectorAll('.module-free-trial-input .error-message');
 
-                                if (!daysInput.value || parseInt(daysInput.value) < 1) {
-                                    daysInput.classList.add('error');
+                                if (!startDateInput.value) {
+                                    startDateInput.classList.add('error');
+                                    errorElements[0].style.display = 'block';
                                     isValid = false;
                                 } else {
-                                    daysInput.classList.remove('error');
+                                    startDateInput.classList.remove('error');
+                                    errorElements[0].style.display = 'none';
+                                }
+
+                                if (!endDateInput.value) {
+                                    endDateInput.classList.add('error');
+                                    errorElements[1].style.display = 'block';
+                                    isValid = false;
+                                } else if (new Date(endDateInput.value) <= new Date(startDateInput.value)) {
+                                    endDateInput.classList.add('error');
+                                    errorElements[1].textContent = 'End date must be after start date';
+                                    errorElements[1].style.display = 'block';
+                                    isValid = false;
+                                } else {
+                                    endDateInput.classList.remove('error');
+                                    errorElements[1].style.display = 'none';
                                 }
                             }
                         }
@@ -1125,7 +1151,7 @@
                     createCourseBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
 
                     // Use fetch API to submit the form
-                    fetch(form.action, {
+                    fetch('/course/create', {
                             method: 'POST',
                             body: new FormData(form)
                         })
