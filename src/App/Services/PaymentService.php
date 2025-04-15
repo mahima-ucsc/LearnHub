@@ -40,7 +40,7 @@ class PaymentService
 
     public function createSubPeriodOrderId(string $courseId, string $subperiodId)
     {
-        return 'cid_' . $courseId . '_spid_' . $subperiodId . '_' . time();
+        return 'cid_' . $courseId . '_spid_' . $subperiodId . '_' . time() . '_' . $_SESSION['user'];
     }
 
     public function createPayment(string $orderId, string $courseId, string $subperiodId, string $userId, float $amount)
