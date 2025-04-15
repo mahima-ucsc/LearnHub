@@ -59,7 +59,7 @@
                                 <div class="source-icon source-tutor">T</div>
                                 <div class="source-name"><?php echo htmlspecialchars($announcement['tutor_name']); ?></div>
                             </div>
-                            <div class="announcement-time">Today, 10:35 AM</div>
+                            <div class="announcement-time"><?php echo date("F j, Y, g:i A", strtotime($announcement['created_at'])); ?></div>
                         </div>
                         <div class="announcement-title">
                             <?php echo htmlspecialchars($announcement['title']); ?>
