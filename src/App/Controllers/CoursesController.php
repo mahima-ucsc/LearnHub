@@ -77,17 +77,10 @@ class CoursesController
         ]);
     }
 
-
-    public function enrollCourse()
-    {
-        echo $this->view->render('course/CourseEnroll.php', [
-            "title" => "Enroll"
-        ]);
-    }
-
     public function courseInfo(array $params)
     {
         $course = $this->courseService->getCourseById($params['course_id']);
+        var_dump($course);
         /**
          * 'isPaid' property based on the course type:
          * - For one-time courses: Boolean value (true or false)

@@ -90,7 +90,6 @@ function registerRoutes(App $app)
     $app->get('/courses/my-courses/{course_id}', [CoursesController::class, 'courseInfo'], [AuthRequiredMiddleware::class]);
     $app->get('/courses/my-courses/{course_id}/participant', [CoursesController::class, 'courseParticipant'], [TeacherOnlyMiddleware::class]);
     $app->get('/courses/my-courses/{course_id}/participant/stats/{participant_id}', [CoursesController::class, 'courseParticipantStat'], [TeacherOnlyMiddleware::class]);
-    $app->get('/course/enroll', [CoursesController::class, 'enrollCourse'], [AuthRequiredMiddleware::class]);
     $app->get('/course/create', [CoursesController::class, 'createCourseView'], [TeacherOnlyMiddleware::class]);
     $app->post('/create-course', [CoursesController::class, 'createCourseNew'], [TeacherOnlyMiddleware::class]);
     $app->post('/save-course-data', [CoursesController::class, 'saveCourseData'], [TeacherOnlyMiddleware::class]);
