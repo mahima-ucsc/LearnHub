@@ -10,12 +10,18 @@
     <div class="course-details">
         <div class="detail-item">
             <span class="label">Course:</span>
-            <span class="value">Introduction to Web Development</span>
+            <span class="value"><?= e($course_title) ?></span>
         </div>
-        <div class="detail-item">
-            <span class="label">Duration:</span>
-            <span class="value">3 Months</span>
-        </div>
+        <?php if ($billing_type === 'recurring'): ?>
+            <div class="detail-item">
+                <span class="label">Start Date:</span>
+                <span class="value"><?= e(formatDate($start_date, 'F j, Y')) ?></span>
+            </div>
+            <div class="detail-item">
+                <span class="label">End Date:</span>
+                <span class="value"><?= e(formatDate($end_date, 'F j, Y')) ?></span>
+            </div>
+        <?php endif; ?>
         <div class="detail-item">
             <span class="label">Amount:</span>
             <span class="value"><?= $amount ?></span>

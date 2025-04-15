@@ -288,4 +288,30 @@ class PaymentService
             }
         }
     }
+
+
+
+    public function getViewDetailsForCourseSubPeriodCheckout(string $courseId, string $subperiodId)
+    {
+        $course = $this->db->query(
+            "SELECT * FROM courses WHERE course_id = :course_id",
+            [
+                "course_id" => $courseId
+            ]
+        )->find();
+
+        $subPeriod = $this->db->query(
+            "SELECT * FROM recurring_course_sub_periods WHERE sub_period_id = :sub_period_id AND course_id = :course_id",
+            [
+                "course_id" => $courseId,
+                "sub_period_id" => $subperiodId
+            ]
+        )->find();
+
+        return [
+            "course_title" => $course['title'],
+            "start_date" => $subPeriod['start_datetime'],
+            "end_date" => $subPeriod['end_datetime'],
+        ];
+    }
 }

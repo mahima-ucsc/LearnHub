@@ -19,6 +19,7 @@ class PaymentController
     public function courserSubPeriodPaymentView(array $params)
     {
         $amount = $this->paymentService->getCousreSubperiodAmount($params["course_id"], $params["subperiod_id"]);
+        $checkoutData = $this->paymentService->getViewDetailsForCourseSubPeriodCheckout($params["course_id"], $params["subperiod_id"]);
 
         echo $this->view->render('Payment/course-subperiod-payment.php', [
             "title" => "Course Payment",
