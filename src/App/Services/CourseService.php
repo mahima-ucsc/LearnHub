@@ -586,4 +586,16 @@ class CourseService
         $isPaid = $paid && $paid['total_paid'] >= $subPeriodFee['price'];
         return $isPaid;
     }
+
+    public function getGrades()
+    {
+        $grades = $this->db->query(
+            "SELECT * FROM grades"
+        )->findAll();
+
+        return $grades;
+    }
+
+    // New Course creation functions
+
 }

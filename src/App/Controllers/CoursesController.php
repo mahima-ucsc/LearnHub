@@ -378,4 +378,92 @@ class CoursesController
             ]
         );
     }
+
+    // New functions after update the table
+    public function createView()
+    {
+        $subjects = $this->subjectService->getSubjects();
+        $grades = $this->courseService->getGrades();
+        echo $this->view->render(
+            'course/create.php',
+            [
+                'title' => "Create Course",
+                'subjects' => $subjects,
+                'grades' => $grades
+            ]
+        );
+    }
+
+    // New Course creation with modules
+    // public function create()
+    // {
+    //     // Upload course thumbnail
+    //     $courseThumbnail = $_FILES['courseThumbnail'] ?? null;
+    //     $this->validatorService->validateImg($courseThumbnail);
+    //     $thumbnailFileName = $this->fileService->uploadFile(Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS, $courseThumbnail);
+
+    //     // Prepare course data
+    //     $courseData = [
+    //         'title' => $_POST['courseTitle'],
+    //         'description' => $_POST['courseDescription'],
+    //         'subject_id' => (int)$_POST['subject'],
+    //         'grade_id' => (int)$_POST['grade'],
+    //         'billing_type' => $_POST['courseType'],
+    //         'thumbnail_filename' => $thumbnailFileName,
+    //     ];
+
+    //     // Add price and free trial days for one-time payment courses
+    //     if ($_POST['courseType'] === 'onetime' && !empty($_POST['fullCoursePrice'])) {
+    //         $courseData['price'] = (float)$_POST['fullCoursePrice'];
+    //         $courseData['free_trial_days'] = !empty($_POST['fullCourseFreeTrialDays']) ?
+    //             (int)$_POST['fullCourseFreeTrialDays'] : 0;
+    //     }
+
+    //     // Prepare modules data
+    //     $modulesData = [];
+    //     $modules = $_POST['modules'] ?? [];
+    //     $moduleFiles = $_FILES['modules'] ?? [];
+
+    //     foreach ($modules as $index => $module) {
+    //         $moduleAttachments = [];
+
+    //         // Process module attachments if any
+    //         if (isset($moduleFiles['name'][$index]['attachments'])) {
+    //             $attachments = $moduleFiles['name'][$index]['attachments'];
+
+    //             foreach ($attachments as $attachmentIndex => $attachmentName) {
+    //                 $moduleAttachments[] = [
+    //                     'name' => $attachmentName,
+    //                     'type' => $moduleFiles['type'][$index]['attachments'][$attachmentIndex],
+    //                     'tmp_name' => $moduleFiles['tmp_name'][$index]['attachments'][$attachmentIndex],
+    //                     'error' => $moduleFiles['error'][$index]['attachments'][$attachmentIndex],
+    //                     'size' => $moduleFiles['size'][$index]['attachments'][$attachmentIndex],
+    //                 ];
+    //             }
+    //         }
+
+    //         // Add module with its attachments to the modules array
+    //         $modulesData[] = [
+    //             'data' => [
+    //                 'title' => $module['title'],
+    //                 'description' => $module['description'],
+    //                 'price' => (float)$module['price'],
+    //                 'duration' => ((int)$module['hours'] * 60) + (int)$module['minutes'], // Convert to minutes
+    //                 'has_free_trial' => isset($module['hasFreeTrial']) && $module['hasFreeTrial'] === 'on',
+    //                 'free_trial_days' => !empty($module['freeTrialDays']) ? (int)$module['freeTrialDays'] : 0
+    //             ],
+    //             'attachments' => $moduleAttachments
+    //         ];
+    //     }
+
+    //     // Create course with modules and attachments
+    //     $courseId = $this->courseService->createCourseWithModules($courseData, $modulesData);
+
+    //     if ($courseId) {
+    //         redirectTo('/courses/my-courses');
+    //     } else {
+    //         // Handle error
+    //         redirectTo('/courses/create?error=failed');
+    //     }
+    // }
 }

@@ -529,55 +529,52 @@
             Your course has been created successfully! You can now add more content or publish it.
         </div>
 
-        <form id="createCourseForm">
+        <form id="createCourseForm" method="POST" enctype="multipart/form-data">
             <!-- Basic Course Information Card -->
             <div class="card">
                 <h2 class="section-title">Course Information</h2>
 
                 <div class="form-group">
                     <label for="courseTitle" class="form-label">Course Title*</label>
-                    <input type="text" id="courseTitle" class="form-control" placeholder="e.g., Advanced Web Development with React" required>
+                    <input type="text" name="courseTitle" id="courseTitle" class="form-control" placeholder="e.g., Advanced Web Development with React" required>
                     <div class="error-message" id="courseTitleError">Please enter a course title</div>
                 </div>
 
                 <div class="form-group">
                     <label for="courseDescription" class="form-label">Course Description*</label>
-                    <textarea id="courseDescription" class="form-control textarea-control" placeholder="Describe what students will learn in your course..." required></textarea>
+                    <textarea name="courseDescription" id="courseDescription" class="form-control textarea-control" placeholder="Describe what students will learn in your course..." required></textarea>
                     <div class="error-message" id="courseDescriptionError">Please enter a course description</div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="courseCategory" class="form-label">Category*</label>
-                        <select id="courseCategory" class="form-control" required>
-                            <option value="">Select Category</option>
-                            <option value="programming">Programming & Development</option>
-                            <option value="business">Business & Entrepreneurship</option>
-                            <option value="design">Design & Creativity</option>
-                            <option value="marketing">Marketing & Communications</option>
-                            <option value="personal">Personal Development</option>
-                            <option value="health">Health & Fitness</option>
-                            <option value="academics">Academics</option>
+                        <label for="courseSubject" class="form-label">Subject*</label>
+                        <select id="courseSubject" name="subject" class="form-control" required>
+                            <option value="">Select Subject</option>
+                            <?php foreach ($subjects as $subject): ?>
+                                <option value="<?php echo e($subject['subject_id']); ?>"><?php echo e($subject['subject_title']); ?></option>
+                            <?php endforeach; ?>
+                            <option value="-1">Other</option>
                         </select>
-                        <div class="error-message" id="courseCategoryError">Please select a category</div>
+                        <div class="error-message" id="courseSubjectError">Please select a subject</div>
                     </div>
 
                     <div class="form-group">
-                        <label for="courseLevel" class="form-label">Difficulty Level*</label>
-                        <select id="courseLevel" class="form-control" required>
-                            <option value="">Select Level</option>
-                            <option value="beginner">Beginner</option>
-                            <option value="intermediate">Intermediate</option>
-                            <option value="advanced">Advanced</option>
-                            <option value="all">All Levels</option>
+                        <label for="courseGrade" class="form-label">Grade*</label>
+                        <select id="courseGrade" name="grade" class="form-control" required>
+                            <option value="">Select Grade</option>
+                            <?php foreach ($grades as $grade): ?>
+                                <option value="<?php echo e($grade['grade_id']); ?>">Grade <?php echo e($grade['grade_name']); ?></option>
+                            <?php endforeach; ?>
+                            <option value="-1">Other</option>
                         </select>
-                        <div class="error-message" id="courseLevelError">Please select a difficulty level</div>
+                        <div class="error-message" id="courseGradeError">Please select a difficulty level</div>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="courseThumbnail" class="form-label">Course Thumbnail Image*</label>
-                    <input type="file" id="courseThumbnail" class="form-control" accept="image/*" required>
+                    <input type="file" id="courseThumbnail" name="courseThumbnail" class="form-control" accept="image/*" required>
                     <p class="hint-text">Upload a high-quality image to attract students. Recommended size: 1280x720px</p>
                     <div class="error-message" id="courseThumbnailError">Please upload a course thumbnail</div>
                 </div>
@@ -601,20 +598,20 @@
                     </div>
                 </div>
 
-                <input type="hidden" id="courseType" name="courseType" value="">
+                <input type="hidden" name="courseType" id="courseType" name="courseType" value="">
                 <div class="error-message" id="courseTypeError">Please select a course type</div>
 
                 <!-- Full Course Pricing (shown when full course selected) -->
                 <div id="fullCoursePricing" class="collapse-content">
                     <div class="form-group">
                         <label for="fullCoursePrice" class="form-label">Course Price*</label>
-                        <input type="number" id="fullCoursePrice" class="form-control" placeholder="Enter price (in $)" step="0.01" min="0">
+                        <input type="number" id="fullCoursePrice" name="fullCoursePrice" class="form-control" placeholder="Enter price (in $)" step="0.01" min="0">
                         <div class="error-message" id="fullCoursePriceError">Please enter a valid price</div>
                     </div>
 
                     <div class="toggle-container">
                         <label class="toggle-switch">
-                            <input type="checkbox" id="hasFreeTrialPeriod">
+                            <input type="checkbox" name="fullCourseFreeTrial" id="hasFreeTrialPeriod">
                             <span class="toggle-slider"></span>
                         </label>
                         <span class="toggle-label">Enable free trial period</span>
@@ -624,7 +621,7 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="freeTrialDays" class="form-label">Free Trial Period (days)*</label>
-                                <input type="number" id="freeTrialDays" class="form-control" placeholder="e.g., 7" min="1">
+                                <input type="number" name="fullCourseFreeTrialDays" id="freeTrialDays" class="form-control" placeholder="e.g., 7" min="1">
                                 <div class="error-message" id="freeTrialDaysError">Please enter a valid number of days</div>
                             </div>
                         </div>
@@ -675,23 +672,23 @@
             <div class="module-content collapse-content show">
                 <div class="form-group">
                     <label class="form-label">Module Title*</label>
-                    <input type="text" class="form-control module-title-input" placeholder="e.g., Introduction to React Hooks" required>
+                    <input type="text" name="moduleTitle" class="form-control module-title-input" placeholder="e.g., Introduction to React Hooks" required>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Module Description</label>
-                    <textarea class="form-control textarea-control module-description-input" placeholder="What will students learn in this module?"></textarea>
+                    <textarea name="moduleDescription" class="form-control textarea-control module-description-input" placeholder="What will students learn in this module?"></textarea>
                 </div>
 
                 <div class="monthly-module-pricing">
                     <div class="form-group">
                         <label class="form-label">Module Price*</label>
-                        <input type="number" class="form-control module-price-input" placeholder="Enter price (in $)" step="0.01" min="0">
+                        <input type="number" name="modulePrice" class="form-control module-price-input" placeholder="Enter price (in $)" step="0.01" min="0">
                     </div>
 
                     <div class="toggle-container">
                         <label class="toggle-switch">
-                            <input type="checkbox" class="module-free-trial-checkbox">
+                            <input type="checkbox" name="moduleFreeTrial" class="module-free-trial-checkbox">
                             <span class="toggle-slider"></span>
                         </label>
                         <span class="toggle-label">Enable free trial period</span>
@@ -700,7 +697,7 @@
                     <div class="module-free-trial-input collapse-content">
                         <div class="form-group">
                             <label class="form-label">Free Trial Period (days)*</label>
-                            <input type="number" class="form-control module-free-trial-days" placeholder="e.g., 7" min="1">
+                            <input type="number" name="moduleFreeTrialDays" class="form-control module-free-trial-days" placeholder="e.g., 7" min="1">
                         </div>
                     </div>
                 </div>
@@ -720,7 +717,7 @@
                     <label class="form-label">Module Attachments</label>
                     <div class="module-attachments drop-zone">
                         <p><i class="fas fa-cloud-upload-alt"></i> Drag files here or click to upload</p>
-                        <input type="file" class="module-file-input" multiple style="display: none;">
+                        <input type="file" name="moduleAttachments" class="module-file-input" multiple style="display: none;">
                     </div>
                     <ul class="module-attachments-list"></ul>
                     <p class="hint-text">Upload any supporting materials for this module (PDFs, presentations, code samples, etc.)</p>
@@ -809,6 +806,20 @@
 
                 // Update module number
                 moduleNode.querySelector('.module-number').textContent = moduleCounter;
+
+                const moduleIndex = moduleCounter - 1;
+                moduleNode.querySelector('.module-title-input').name = `modules[${moduleIndex}][title]`;
+                moduleNode.querySelector('.module-description-input').name = `modules[${moduleIndex}][description]`;
+                moduleNode.querySelector('.module-hours').name = `modules[${moduleIndex}][hours]`;
+                moduleNode.querySelector('.module-minutes').name = `modules[${moduleIndex}][minutes]`;
+
+
+                moduleNode.querySelector('.module-price-input').name = `modules[${moduleIndex}][price]`;
+                moduleNode.querySelector('.module-free-trial-checkbox').name = `modules[${moduleIndex}][hasFreeTrial]`;
+                moduleNode.querySelector('.module-free-trial-days').name = `modules[${moduleIndex}][freeTrialDays]`;
+
+                moduleNode.querySelector('.module-file-input').name = `modules[${moduleIndex}][attachments][]`;
+
 
                 // Add event listeners
                 const toggleBtn = moduleNode.querySelector('.toggle-module-content');
@@ -1005,7 +1016,7 @@
                 let isValid = true;
 
                 // Validate basic course info
-                const requiredFields = ['courseTitle', 'courseDescription', 'courseCategory', 'courseLevel', 'courseThumbnail'];
+                const requiredFields = ['courseTitle', 'courseDescription', 'courseSubject', 'courseGrade', 'courseThumbnail'];
 
                 requiredFields.forEach(fieldId => {
                     const field = document.getElementById(fieldId);
@@ -1113,95 +1124,49 @@
                     saveAsDraftBtn.disabled = true;
                     createCourseBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
 
-                    // Collect all form data
-                    const formData = new FormData();
-
-                    // Add basic course info
-                    formData.append('courseTitle', document.getElementById('courseTitle').value);
-                    formData.append('courseDescription', document.getElementById('courseDescription').value);
-                    formData.append('courseCategory', document.getElementById('courseCategory').value);
-                    formData.append('courseLevel', document.getElementById('courseLevel').value);
-                    formData.append('courseType', courseTypeInput.value);
-
-                    // Add course thumbnail
-                    const thumbnailFile = document.getElementById('courseThumbnail').files[0];
-                    if (thumbnailFile) {
-                        formData.append('courseThumbnail', thumbnailFile);
-                    }
-
-                    // Add pricing info for full courses
-                    if (courseTypeInput.value === 'full') {
-                        formData.append('coursePrice', document.getElementById('fullCoursePrice').value);
-                        formData.append('hasFreeTrial', hasFreeTrialPeriod.checked);
-
-                        if (hasFreeTrialPeriod.checked) {
-                            formData.append('freeTrialDays', document.getElementById('freeTrialDays').value);
-                        }
-                    }
-
-                    // Collect and add modules data
-                    const modules = modulesList.querySelectorAll('.module-item');
-
-                    modules.forEach((module, index) => {
-                        const prefix = `modules[${index}]`;
-
-                        // Add basic module info
-                        formData.append(`${prefix}[title]`, module.querySelector('.module-title-input').value);
-                        formData.append(`${prefix}[description]`, module.querySelector('.module-description-input').value);
-                        formData.append(`${prefix}[order]`, index + 1);
-                        formData.append(`${prefix}[hours]`, module.querySelector('.module-hours').value || 0);
-                        formData.append(`${prefix}[minutes]`, module.querySelector('.module-minutes').value || 0);
-
-                        // Add pricing for monthly courses
-                        if (courseTypeInput.value === 'monthly') {
-                            formData.append(`${prefix}[price]`, module.querySelector('.module-price-input').value);
-
-                            const hasFreeTrial = module.querySelector('.module-free-trial-checkbox').checked;
-                            formData.append(`${prefix}[hasFreeTrial]`, hasFreeTrial);
-
-                            if (hasFreeTrial) {
-                                formData.append(`${prefix}[freeTrialDays]`, module.querySelector('.module-free-trial-days').value);
+                    // Use fetch API to submit the form
+                    fetch(form.action, {
+                            method: 'POST',
+                            body: new FormData(form)
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Server returned error: ' + response.status);
                             }
-                        }
+                            return response.json();
+                        })
+                        .then(data => {
+                            // Show success message
+                            successMessage.style.display = 'block';
+                            console.log(data);
 
-                        // Add module attachments
-                        const fileInput = module.querySelector('.module-file-input');
-                        if (fileInput && fileInput.files.length > 0) {
-                            for (let i = 0; i < fileInput.files.length; i++) {
-                                formData.append(`${prefix}[attachments][${i}]`, fileInput.files[i]);
-                            }
-                        }
-                    });
+                            // Scroll to top to see success message
+                            window.scrollTo({
+                                top: 0,
+                                behavior: 'smooth'
+                            });
 
-                    // In a real application, you would send this data to your server using AJAX
-                    // For this example, we'll simulate a successful submission
-                    setTimeout(() => {
-                        // Show success message
-                        successMessage.style.display = 'block';
-
-                        // Reset form
-                        createCourseBtn.disabled = false;
-                        saveAsDraftBtn.disabled = false;
-                        createCourseBtn.innerHTML = '<i class="fas fa-check"></i> Create Course';
-
-                        // Scroll to top to see success message
-                        window.scrollTo({
-                            top: 0,
-                            behavior: 'smooth'
+                            // Reset form after showing the message
+                            setTimeout(() => {
+                                form.reset();
+                                modulesList.innerHTML = '';
+                                moduleCounter = 0;
+                                fullCourseOption.classList.remove('selected');
+                                monthlyCourseOption.classList.remove('selected');
+                                fullCoursePricing.classList.remove('show');
+                                courseTypeInput.value = '';
+                            }, 3000);
+                        })
+                        .catch(error => {
+                            // Show error message
+                            alert('Error submitting form: ' + error.message);
+                        })
+                        .finally(() => {
+                            // Re-enable buttons
+                            createCourseBtn.disabled = false;
+                            saveAsDraftBtn.disabled = false;
+                            createCourseBtn.innerHTML = '<i class="fas fa-check"></i> Create Course';
                         });
-
-                        // Reset form after showing the message
-                        setTimeout(() => {
-                            form.reset();
-                            modulesList.innerHTML = '';
-                            moduleCounter = 0;
-                            fullCourseOption.classList.remove('selected');
-                            monthlyCourseOption.classList.remove('selected');
-                            fullCoursePricing.classList.remove('show');
-                            courseTypeInput.value = '';
-                            successMessage.style.display = 'none';
-                        }, 3000);
-                    }, 1500);
                 }
             });
 
