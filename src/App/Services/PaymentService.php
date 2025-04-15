@@ -239,6 +239,37 @@ class PaymentService
             ]
         )->findAll();
 
+        if ($pendingPayments) {
+            @$this->processPendingPayments($pendingPayments);
+        }
+    }
+
+
+    public function isOneTimeCoursePaid($userId, $courseId)
+    {
+        $paid = $this->db->query(
+            "SELECT SUM(p.amount) as total_paid FROM payments p INNER JOIN course_payments cp ON p.payment_id = cp.payment_id 
+            WHERE cp.user_id = :user_id AND cp.course_id = :course_id AND p.payment_status = " .
+                AppConstants::PAYMENT_STATUS_SUCCESS,
+            [
+                "user_id" => $userId,
+                "course_id" => $courseId
+            ]
+        )->find();
+
+        $courseFee = $this->db->query(
+            "SELECT price FROM courses
+            WHERE course_id = :course_id",
+            [
+                "course_id" => $courseId
+            ]
+        )->find();
+        $isPaid = $paid && $paid['total_paid'] >= $courseFee['price'];
+        return $isPaid;
+    }
+
+    private function processPendingPayments(array $pendingPayments)
+    {
         foreach ($pendingPayments as $payment) {
             $orderDetails = $this->getOrderDetails($payment['order_id']);
 
