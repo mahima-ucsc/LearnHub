@@ -241,27 +241,9 @@ class PaymentService
         return $isPaid;
     }
 
-    private function processPendingRecurringCourseSubPeriodPayments($userId, $courseId, $subPeriodId)
-    {
-        $pendingPayments = $this->db->query(
-            "SELECT p.order_id FROM payments p INNER JOIN course_payments cp ON p.payment_id = cp.payment_id
-            WHERE cp.user_id = :user_id AND cp.course_id = :course_id AND cp.sub_period_id = :sub_period_id AND p.payment_status = " .
-                AppConstants::PAYMENT_STATUS_PENDING,
-            [
-                "user_id" => $userId,
-                "course_id" => $courseId,
-                "sub_period_id" => $subPeriodId
-            ]
-        )->findAll();
-
-        if ($pendingPayments) {
-            @$this->processPendingPayments($pendingPayments);
-        }
-    }
-
-
     public function isOneTimeCoursePaid($userId, $courseId)
     {
+        $this->processPendingOneTimeCoursePayments($userId, $courseId);
         $paid = $this->db->query(
             "SELECT SUM(p.amount) as total_paid FROM payments p INNER JOIN course_payments cp ON p.payment_id = cp.payment_id 
             WHERE cp.user_id = :user_id AND cp.course_id = :course_id AND p.payment_status = " .
@@ -281,6 +263,41 @@ class PaymentService
         )->find();
         $isPaid = $paid && $paid['total_paid'] >= $courseFee['price'];
         return $isPaid;
+    }
+
+    private function processPendingRecurringCourseSubPeriodPayments($userId, $courseId, $subPeriodId)
+    {
+        $pendingPayments = $this->db->query(
+            "SELECT p.order_id FROM payments p INNER JOIN course_payments cp ON p.payment_id = cp.payment_id
+            WHERE cp.user_id = :user_id AND cp.course_id = :course_id AND cp.sub_period_id = :sub_period_id AND p.payment_status = " .
+                AppConstants::PAYMENT_STATUS_PENDING,
+            [
+                "user_id" => $userId,
+                "course_id" => $courseId,
+                "sub_period_id" => $subPeriodId
+            ]
+        )->findAll();
+
+        if ($pendingPayments) {
+            $this->processPendingPayments($pendingPayments);
+        }
+    }
+
+    private function processPendingOneTimeCoursePayments($userId, $courseId)
+    {
+        $pendingPayments = $this->db->query(
+            "SELECT p.order_id FROM payments p INNER JOIN course_payments cp ON p.payment_id = cp.payment_id
+            WHERE cp.user_id = :user_id AND cp.course_id = :course_id AND cp.sub_period_id IS NULL AND p.payment_status = " .
+                AppConstants::PAYMENT_STATUS_PENDING,
+            [
+                "user_id" => $userId,
+                "course_id" => $courseId
+            ]
+        )->findAll();
+
+        if ($pendingPayments) {
+            $this->processPendingPayments($pendingPayments);
+        }
     }
 
     private function processPendingPayments(array $pendingPayments)
