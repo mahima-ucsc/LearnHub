@@ -44,19 +44,20 @@
                 <div class="filter-controls">
                     <button class="filter-button active" data-filter="all">All</button>
                     <button class="filter-button" data-filter="assignments">Assignments</button>
-                    <button class="filter-button" data-filter="events">Events</button>
-                    <button class="filter-button" data-filter="updates">System Updates</button>
+                    <button class="filter-button" data-filter="read">Read</button>
                     <button class="filter-button" data-filter="unread">Unread</button>
                 </div>
             </div>
 
             <div class="announcement-list">
                 <?php foreach ($announcements as $announcement) { ?>
-                    <div class="announcement-item" id="<?php echo ("announcement-" . $announcement['id']); ?>" data-type="<?php echo htmlspecialchars($announcement["category"]) ?>" data-read="false">
+                    <div class="announcement-item" id="<?php echo ("announcement-" . $announcement['id']); ?>" data-type="<?php echo htmlspecialchars($announcement["category"]) ?>" data-read="<?php echo ($announcement['read_status'] == 1 ? 'true' : 'false'); ?>">
                         <div class="announcement-header">
                             <div class="announcement-source">
                                 <div class="unread-indicator"></div>
-                                <div class="source-icon source-tutor">T</div>
+                                <div class="source-icon source-tutor">
+                                    <?php echo strtoupper(substr($announcement['tutor_name'], 0, 1)); ?>
+                                </div>
                                 <div class="source-name"><?php echo htmlspecialchars($announcement['tutor_name']); ?></div>
                             </div>
                             <div class="announcement-time"><?php echo date("F j, Y, g:i A", strtotime($announcement['created_at'])); ?></div>
@@ -91,8 +92,7 @@
         document.addEventListener("DOMContentLoaded", function() {
             // Filter functionality
             const filterButtons = document.querySelectorAll(".filter-button");
-            const announcementItems =
-                document.querySelectorAll(".announcement-item");
+            const announcementItems = document.querySelectorAll(".announcement-item");
 
             filterButtons.forEach((button) => {
                 button.addEventListener("click", function() {
@@ -108,11 +108,31 @@
                         if (filter === "all") {
                             item.style.display = "block";
                         } else if (filter === "unread") {
-                            item.style.display =
-                                item.getAttribute("data-read") === "false" ? "block" : "none";
+                            item.style.display = item.getAttribute("data-read") === "false" ? "block" : "none";
+                            // Send POST request to mark announcement as read
+                            fetch('/announcements/mark-as-read', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        id: item.getAttribute('id').split('-')[1]
+                                    }),
+                                })
+                                .then((response) => {
+                                    if (!response.ok) {
+                                        throw new Error('Failed to mark as read');
+                                    }
+                                    return response.json();
+                                })
+                                .then((data) => {
+                                    console.log('Announcement marked as read:', data);
+                                })
+                                .catch((error) => {
+                                    console.error('Error:', error);
+                                });
                         } else {
-                            item.style.display =
-                                item.getAttribute("data-type") === filter ? "block" : "none";
+                            item.style.display = item.getAttribute("data-type") === filter ? "block" : "none";
                         }
                     });
 
@@ -147,9 +167,7 @@
 
                     // If we're in unread filter, this item should disappear
                     if (
-                        document.querySelector(
-                            '.filter-button[data-filter="unread"].active'
-                        )
+                        document.querySelector('.filter-button[data-filter="unread"].active')
                     ) {
                         announcementItem.style.display = "none";
                         checkEmptyState();
