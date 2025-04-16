@@ -89,16 +89,10 @@ class AdvertisementService
 
     public function getApprovedAds()
     {
-        return $this->db->query(
+        $ads = $this->db->query(
             "SELECT a.*, 
             CONCAT(u.first_name, ' ', u.last_name) as user_name, 
-            c.course_id, c.title, c.price,
-            JSON_ARRAYAGG(
-                JSON_OBJECT(
-                    'feature_id', f.feature_id,
-                    'feature', f.feature
-                    )
-            ) AS features
+            c.course_id, c.title, c.price
             FROM advertisement a
             JOIN courses c ON a.course_id = c.course_id
             JOIN users u ON a.user_id = u.user_id
@@ -106,6 +100,26 @@ class AdvertisementService
             WHERE a.status = 'approved'
             GROUP BY a.advertisement_id"
         )->findAll();
+
+        $features = $this->db->query(
+            "SELECT * FROM advertisement_feature"
+        )->findAll();
+
+        $features_by_ad_id = [];
+
+        foreach ($features as $feature) {
+            $ad_id = $feature['advertisement_id'];
+            if (!isset($features_by_ad_id[$ad_id])) {
+                $features_by_ad_id[$ad_id] = [];
+            }
+            $features_by_ad_id[$ad_id][] = $feature['feature'];
+        }
+
+        foreach ($ads as &$ad) {
+            $ad_id = $ad['advertisement_id'];
+            $ad['features'] = $features_by_ad_id[$ad_id] ?? [];
+        }
+        return $ads;
     }
 
     public function getAdvertisements()
