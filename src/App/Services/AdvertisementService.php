@@ -105,6 +105,7 @@ class AdvertisementService
             "SELECT * FROM advertisement_feature"
         )->findAll();
 
+        // Add feature to the $ads based on advertisement_id
         $features_by_ad_id = [];
 
         foreach ($features as $feature) {
