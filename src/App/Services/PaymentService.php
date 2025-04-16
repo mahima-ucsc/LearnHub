@@ -38,6 +38,16 @@ class PaymentService
         return $this->db->find()['price'];
     }
 
+
+    public function getCourseAmount(string $courseId)
+    {
+        $this->db->query("SELECT price FROM courses WHERE course_id = :courseId", [
+            'courseId' => $courseId
+        ]);
+
+        return $this->db->find()['price'];
+    }
+
     public function createSubPeriodOrderId(string $courseId, string $subperiodId)
     {
         return 'cid_' . $courseId . '_spid_' . $subperiodId . '_' . time() . '_' . $_SESSION['user'];
@@ -289,8 +299,6 @@ class PaymentService
         }
     }
 
-
-
     public function getViewDetailsForCourseSubPeriodCheckout(string $courseId, string $subperiodId)
     {
         $course = $this->db->query(
@@ -312,6 +320,20 @@ class PaymentService
             "course_title" => $course['title'],
             "start_date" => $subPeriod['start_datetime'],
             "end_date" => $subPeriod['end_datetime'],
+        ];
+    }
+
+    public function getViewDetailsForCourseCheckout(string $courseId)
+    {
+        $course = $this->db->query(
+            "SELECT * FROM courses WHERE course_id = :course_id",
+            [
+                "course_id" => $courseId
+            ]
+        )->find();
+
+        return [
+            "course_title" => $course['title'],
         ];
     }
 }

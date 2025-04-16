@@ -16,7 +16,7 @@
                         <span>Price: Rs. <?php echo e($course['price']); ?></span>
                     </div>
                     <?php if ($course['billing_type'] === 'onetime' && !$course['is_paid']): ?>
-                        <a href="/course/enroll" class="enroll-button">Enroll Now</a>
+                        <a href="<?= "/payment/courses/" . $course['course_id'] ?>" class="enroll-button">Enroll Now</a>
                     <?php endif; ?>
                 </div>
             </div>

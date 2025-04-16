@@ -33,6 +33,20 @@ class PaymentController
         ]);
     }
 
+    public function coursePaymentView(array $params)
+    {
+        $amount = $this->paymentService->getCourseAmount($params["course_id"]);
+        $checkoutData = $this->paymentService->getViewDetailsForCourseCheckout($params["course_id"]);
+
+        echo $this->view->render('Payment/course-payment.php', [
+            "title" => "Course Payment",
+            "amount" => $amount,
+            "courseId" => $params["course_id"],
+            "course_title" => $checkoutData["course_title"],
+            "billing_type" => "onetime",
+        ]);
+    }
+
     public function courseSubperiodPayment(array $params)
     {
 

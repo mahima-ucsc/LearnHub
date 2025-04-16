@@ -4,7 +4,7 @@
 
 <section class="payment-container">
     <div class="payment-header">
-        <h1>Enroll in the <?= $billing_type === 'one_time' ? 'Course' : 'Class' ?></h1>
+        <h1>Enroll in the <?= $billing_type === 'onetime' ? 'Course' : 'Class' ?></h1>
         <p class="subtitle">Complete your enrollment details below</p>
     </div>
 
@@ -29,7 +29,7 @@
         </div>
     </div>
 
-    <form class="payment-form" id="coursePaymentForm" method="POST" action=<?= "/payment/courses/" . $courseId . "/" . $subperiodId ?>>
+    <form class="payment-form" id="coursePaymentForm" method="POST" action=<?= "/payment/courses/" . $courseId . ($billing_type === 'recurring' ? "/" . $subperiodId : "") ?>>
         <h2>Personal Information</h2>
 
         <div class="form-grid">
