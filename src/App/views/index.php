@@ -1861,9 +1861,9 @@
                                         <?php if (!empty($ad['features'])): ?>
                                             <div class="ad-features">
                                                 <?php
-                                                $features = json_decode($ad['features'], true);
+                                                $features = $ad['features'];
                                                 foreach ($features as $feature): ?>
-                                                    <div class="ad-feature"><i class="fas fa-certificate"></i> <?php echo e($feature['feature']); ?></div>
+                                                    <div class="ad-feature"><i class="fas fa-certificate"></i> <?php echo e($feature); ?></div>
                                                 <?php endforeach; ?>
                                             </div>
                                         <?php endif; ?>
