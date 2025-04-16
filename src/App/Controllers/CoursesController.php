@@ -80,14 +80,6 @@ class CoursesController
         ]);
     }
 
-
-    public function enrollCourse()
-    {
-        echo $this->view->render('course/CourseEnroll.php', [
-            "title" => "Enroll"
-        ]);
-    }
-
     public function courseInfo(array $params)
     {
         $course = $this->courseService->getCourseById($params['course_id']);

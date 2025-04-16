@@ -51,7 +51,6 @@
 - `/courses/my-courses/{course_id}` - My Course Details
   - `/courses/my-courses/{course_id}/participant` - Course Participants
   - `/courses/my-courses/{course_id}/participant/stats/{participant_id}` - Participant Stats
-- `/course/enroll` - Enroll in a Course
 - `/course/create` - Create Course View
 - `/create-course` - Create Course (POST)
 - `/courses/my-courses` - My Courses List
