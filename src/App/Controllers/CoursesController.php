@@ -30,7 +30,7 @@ class CoursesController
     {
         $page = $_GET['p'] ?? 1;
         $page = (int) $page;
-        $length = 6;
+        $length = 9;
         $offset = ($page - 1) * $length;
         $searchTerm = $_GET['s'] ?? null;
         $searchBy = $_GET['f'] ?? null;
@@ -41,6 +41,8 @@ class CoursesController
             $offset
         );
 
+        $courseLocations = $this->courseService->getLocations();
+        $subjects = $this->subjectService->getSubjects();
 
         $lastPage = ceil($courseCount / $length);
         $pages = $lastPage ? range(1, $lastPage) : [];
@@ -59,6 +61,9 @@ class CoursesController
         echo $this->view->render('course/Courses.php', [
             "title" => "Search Course",
             "courses" => $courses,
+            "courseLocations" => $courseLocations,
+            "courseCount" => $courseCount,
+            "subjects" => $subjects,
             "currentPage" => $page,
             "previousPageQuery" => http_build_query([
                 'p' => $page - 1,

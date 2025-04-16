@@ -305,48 +305,130 @@ class CourseService
 
 
     // search courses by teacher or course title
-    public function searchCourse(int $length = 6, int $offset = 0)
+    public function searchCourse(int $length = 9, int $offset = 0)
     {
-        // Fetch the search term from the GET request
-        $searchTerm = $_GET['s'] ?? '';
-        $searchBy = $_GET['f'] ?? '';
-        $Searchlocation = $_GET['location'] ?? '';
-        $searchTerm = trim($searchTerm);
-        $params = [
-            "term" => "%{$searchTerm}%",
-        ];
+        // Get all search parameters
+        $searchTerm = trim($_GET['s'] ?? '');
+        $subject = $_GET['subject'] ?? 'all';
+        $price = $_GET['price'] ?? 'all';
+        $type = $_GET['type'] ?? 'all';
+        $location = $_GET['location'] ?? 'all';
+        $duration = $_GET['duration'] ?? 'all';
+        $rating = $_GET['rating'] ?? 'all';
+        $sort = $_GET['sort'] ?? '';
 
-        $locationClause = '';
-        if (!empty($Searchlocation)) {
-            $params["Searchlocation"] = $Searchlocation;
-            if ($searchBy === "tutor") {
-                $locationClause = "AND users.location = :Searchlocation";
-            } else {
-                $locationClause = "AND courses.location = :Searchlocation";
-            }
+        // Initialize arrays for WHERE clauses and parameters
+        $whereConditions = [];
+        $params = [];
+
+        // Add search term condition (searching in name and course title)
+        if (!empty($searchTerm)) {
+            $whereConditions[] = "(u.first_name LIKE :term OR u.last_name LIKE :term OR c.title LIKE :term)";
+            $params["term"] = "%{$searchTerm}%";
         }
 
-        if ($searchBy === "tutor") {
-            $whereClause = "WHERE (users.first_name LIKE :term OR users.last_name LIKE :term) {$locationClause}";
-        } else {
-
-            $whereClause = "WHERE title LIKE :term {$locationClause}";
+        // Add location condition
+        if ($location !== 'all') {
+            $whereConditions[] = "c.location LIKE :location";
+            $params["location"] = "%{$location}%";
         }
 
+        // Add subject condition
+        if ($subject !== 'all') {
+            $whereConditions[] = "c.subject_id = :subject";
+            $params["subject"] = $subject;
+        }
+
+        // Add price range condition
+        // if ($price !== 'all') {
+        //     switch ($price) {
+        //         case 'free':
+        //             $whereConditions[] = "c.price = 0";
+        //             break;
+        //         case 'paid':
+        //             $whereConditions[] = "c.price > 0";
+        //             break;
+        //         case 'under10':
+        //             $whereConditions[] = "c.price > 0 AND c.price <= 10";
+        //             break;
+        //         case 'under20':
+        //             $whereConditions[] = "c.price > 0 AND c.price <= 20";
+        //             break;
+        //         case 'over20':
+        //             $whereConditions[] = "c.price > 20";
+        //             break;
+        //     }
+        // }
+
+        // Add course type condition
+        if ($type !== 'all') {
+            $whereConditions[] = "c.billing_type = :type";
+            $params["type"] = $type;
+        }
+
+        // Add duration condition
+        // if ($duration !== 'all') {
+        //     switch ($duration) {
+        //         case 'short':
+        //             $whereConditions[] = "TIMEDIFF(c.end_time, c.start_time) <= '01:00:00'";
+        //             break;
+        //         case 'medium':
+        //             $whereConditions[] = "TIMEDIFF(c.end_time, c.start_time) > '01:00:00' AND TIMEDIFF(c.end_time, c.start_time) <= '02:00:00'";
+        //             break;
+        //         case 'long':
+        //             $whereConditions[] = "TIMEDIFF(c.end_time, c.start_time) > '02:00:00'";
+        //             break;
+        //     }
+        // }
+
+        // Add rating condition
+        // if ($rating !== 'all') {
+        //     $whereConditions[] = "c.rating >= :rating";
+        //     $params["rating"] = $rating;
+        // }
+
+        // Combine all conditions with AND
+        $whereClause = !empty($whereConditions) ? "WHERE " . implode(" AND ", $whereConditions) : "";
+
+        //TODO: Fix sorting
+        // Add sorting
+        $orderClause = "";
+        switch ($sort) {
+            case 'newest':
+                $orderClause = "ORDER BY c.published_date DESC";
+                break;
+            case 'oldest':
+                $orderClause = "ORDER BY c.published_date ASC";
+                break;
+            case 'price_low':
+                $orderClause = "ORDER BY c.price ASC";
+                break;
+            case 'price_high':
+                $orderClause = "ORDER BY c.price DESC";
+                break;
+        }
+
+        // Build and execute query
         $courses = $this->db->query(
-            "SELECT courses.*, users.first_name as first_name, users.last_name 
-         FROM courses
-         JOIN users ON users.user_id = courses.tutor_id
-         {$whereClause}
-         LIMIT {$length} OFFSET {$offset}",
+            "SELECT 
+        c.*,
+        u.first_name as first_name,
+        u.last_name
+        FROM courses c
+        JOIN users u ON u.user_id = c.tutor_id
+        {$whereClause}
+        {$orderClause}
+        LIMIT {$length} OFFSET {$offset}",
             $params
         )->findAll();
 
+        // Get total count for pagination
         $courseCount = $this->db->query(
-            "SELECT COUNT(*) 
-         FROM courses
-         JOIN users ON users.user_id = courses.tutor_id
-         {$whereClause}",
+            "SELECT 
+        COUNT(*)
+        FROM courses c
+        JOIN users u ON u.user_id = c.tutor_id
+        {$whereClause}",
             $params
         )->count();
 
@@ -798,5 +880,13 @@ class CourseService
             error_log('Failed to create course: ' . $e->getMessage());
             throw $e;
         }
+    }
+
+    public function getLocations()
+    {
+        return $this->db->query(
+            "SELECT DISTINCT(location)
+            FROM courses"
+        )->findAll();
     }
 }
