@@ -216,7 +216,18 @@ class PaymentService
 
     public function isRecurringCourseSubPeriodPaid($userId, $courseId, $subPeriodId)
     {
-        $this->processPendingRecurringCourseSubPeriodPayments($userId, $courseId, $subPeriodId);
+        try {
+            $this->processPendingRecurringCourseSubPeriodPayments($userId, $courseId, $subPeriodId);
+        } catch (\Exception $e) {
+            $logFile = AppConstants::LOG_FOLDER . 'payment_verification_error.log';
+            file_put_contents(
+                $logFile,
+                "Error occurred during payment verification:\n" . $e->getMessage() .
+                    PHP_EOL . $e->getTraceAsString() .
+                    PHP_EOL . str_repeat("-", 50) . PHP_EOL,
+                FILE_APPEND
+            );
+        }
 
         $paid = $this->db->query(
             "SELECT SUM(p.amount) as total_paid FROM payments p INNER JOIN course_payments cp ON p.payment_id = cp.payment_id
@@ -243,7 +254,18 @@ class PaymentService
 
     public function isOneTimeCoursePaid($userId, $courseId)
     {
-        $this->processPendingOneTimeCoursePayments($userId, $courseId);
+        try {
+            $this->processPendingOneTimeCoursePayments($userId, $courseId);
+        } catch (\Exception $e) {
+            $logFile = AppConstants::LOG_FOLDER . 'payment_verification_error.log';
+            file_put_contents(
+                $logFile,
+                "Error occurred during payment verification:\n" . $e->getMessage() .
+                    PHP_EOL . $e->getTraceAsString() .
+                    PHP_EOL . str_repeat("-", 50) . PHP_EOL,
+                FILE_APPEND
+            );
+        }
         $paid = $this->db->query(
             "SELECT SUM(p.amount) as total_paid FROM payments p INNER JOIN course_payments cp ON p.payment_id = cp.payment_id 
             WHERE cp.user_id = :user_id AND cp.course_id = :course_id AND p.payment_status = " .
