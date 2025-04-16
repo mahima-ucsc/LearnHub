@@ -169,8 +169,9 @@ function registerRoutes(App $app)
     $app->get('/test/help', [PageController::class, 'helpAndSupportReview']);
 
     // Payments
-    $app->get('/payment/courses/{course_id}', [PaymentController::class, 'coursePaymentView']);
+    $app->get('/payment/courses/{course_id}', [PaymentController::class, 'onetimeCoursePaymentView']);
     $app->get('/payment/courses/{course_id}/{subperiod_id}', [PaymentController::class, 'courserSubPeriodPaymentView']);
+    $app->post('/payment/courses/{course_id}', [PaymentController::class, 'onetimeCoursePayment']);
     $app->post('/payment/courses/{course_id}/{subperiod_id}', [PaymentController::class, 'courseSubperiodPayment']);
     $app->post(AppConstants::COURSE_PAYMENT_RELATIVE_NOTIFY_URL, [PaymentController::class, 'handlePaymentNotification']);
 

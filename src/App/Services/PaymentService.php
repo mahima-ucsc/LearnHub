@@ -48,12 +48,17 @@ class PaymentService
         return $this->db->find()['price'];
     }
 
+    public function createOnetimeCourseOrderId(string $courseId)
+    {
+        return 'cid_' . $courseId . '_' . time() . '_' . $_SESSION['user'];
+    }
+
     public function createSubPeriodOrderId(string $courseId, string $subperiodId)
     {
         return 'cid_' . $courseId . '_spid_' . $subperiodId . '_' . time() . '_' . $_SESSION['user'];
     }
 
-    public function createPayment(string $orderId, string $courseId, string $subperiodId, string $userId, float $amount)
+    public function createCoursePaymentEntry(string $orderId, string $courseId, ?string $subperiodId, string $userId, float $amount)
     {
 
         try {
@@ -75,7 +80,7 @@ class PaymentService
             VALUES (:courseId, :subperiodId, :userId, :paymentId)",
                 [
                     'courseId' => $courseId,
-                    'subperiodId' => $subperiodId,
+                    'subperiodId' => $subperiodId, // null if one-time course
                     'userId' => $userId,
                     'paymentId' => $paymentId
                 ]
