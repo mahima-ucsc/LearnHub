@@ -1,10 +1,10 @@
 <?php include $this->resolve("partials/_header.php"); ?>
 <link rel="stylesheet" href="/assets/styles/create-form.css">
-<link rel="stylesheet" href="/assets/styles/Payment/course-subperiod-payment.css">
+<link rel="stylesheet" href="/assets/styles/Payment/course-payment.css">
 
 <section class="payment-container">
     <div class="payment-header">
-        <h1>Enroll in the Course</h1>
+        <h1>Enroll in the <?= $billing_type === 'one_time' ? 'Course' : 'Class' ?></h1>
         <p class="subtitle">Complete your enrollment details below</p>
     </div>
 
