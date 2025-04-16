@@ -19,12 +19,31 @@ class PaymentController
     public function courserSubPeriodPaymentView(array $params)
     {
         $amount = $this->paymentService->getCousreSubperiodAmount($params["course_id"], $params["subperiod_id"]);
+        $checkoutData = $this->paymentService->getViewDetailsForCourseSubPeriodCheckout($params["course_id"], $params["subperiod_id"]);
 
-        echo $this->view->render('Payment/course-subperiod-payment.php', [
+        echo $this->view->render('Payment/course-payment.php', [
             "title" => "Course Payment",
             "amount" => $amount,
             "courseId" => $params["course_id"],
             "subperiodId" => $params["subperiod_id"],
+            "course_title" => $checkoutData["course_title"],
+            "start_date" => $checkoutData["start_date"],
+            "end_date" => $checkoutData["end_date"],
+            "billing_type" => "recurring",
+        ]);
+    }
+
+    public function onetimeCoursePaymentView(array $params)
+    {
+        $amount = $this->paymentService->getCourseAmount($params["course_id"]);
+        $checkoutData = $this->paymentService->getViewDetailsForCourseCheckout($params["course_id"]);
+
+        echo $this->view->render('Payment/course-payment.php', [
+            "title" => "Course Payment",
+            "amount" => $amount,
+            "courseId" => $params["course_id"],
+            "course_title" => $checkoutData["course_title"],
+            "billing_type" => "onetime",
         ]);
     }
 
@@ -35,9 +54,40 @@ class PaymentController
         $amount = $this->paymentService->getCousreSubperiodAmount($params["course_id"], $params["subperiod_id"]);
         $currency = "LKR";
 
-        $this->paymentService->createPayment($orderId, $params["course_id"], $params["subperiod_id"], (string) $_SESSION["user"], (float)$amount);
+        $this
+            ->paymentService
+            ->createCoursePaymentEntry($orderId, $params["course_id"], $params["subperiod_id"], (string) $_SESSION["user"], (float)$amount);
 
-        echo $this->view->render('Payment/course-subperiod-payment-autosubmit.php', [
+        echo $this->view->render('Payment/course-payment-autosubmit.php', [
+            "title" => "Course Payment",
+            "first_name" => $_POST["first_name"],
+            "last_name" => $_POST["last_name"],
+            "email" => $_POST["email"],
+            "phone" => $_POST["phone"],
+            "address" => $_POST["address"],
+            "city" => $_POST["city"],
+            "merchant_id" => AppConstants::PAYHERE_MERCHANT_ID,
+            "return_url" => AppConstants::COURSE_PAYMENT_RETURN_URL,
+            "cancel_url" => AppConstants::COURSE_PAYMENT_CANCEL_URL,
+            "notify_url" => AppConstants::COURSE_PAYMENT_NOTIFY_URL,
+            "country" => "Sri Lanka",
+            "items" => $orderId,
+            "order_id" => $orderId,
+            "currency" => $currency,
+            "amount" => $amount,
+            "hash" => $this->paymentService->createPaymentHash($orderId, (float)$amount, $currency)
+        ]);
+    }
+
+    public function onetimeCoursePayment(array $params)
+    {
+        $orderId = $this->paymentService->createOnetimeCourseOrderId($params["course_id"]);
+        $amount = $this->paymentService->getCourseAmount($params["course_id"]);
+        $currency = "LKR";
+
+        $this->paymentService->createCoursePaymentEntry($orderId, $params["course_id"], null, (string) $_SESSION["user"], (float)$amount);
+
+        echo $this->view->render('Payment/course-payment-autosubmit.php', [
             "title" => "Course Payment",
             "first_name" => $_POST["first_name"],
             "last_name" => $_POST["last_name"],

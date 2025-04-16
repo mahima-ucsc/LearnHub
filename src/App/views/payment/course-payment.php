@@ -1,33 +1,35 @@
 <?php include $this->resolve("partials/_header.php"); ?>
 <link rel="stylesheet" href="/assets/styles/create-form.css">
-<link rel="stylesheet" href="/assets/styles/Payment/course-subperiod-payment.css">
+<link rel="stylesheet" href="/assets/styles/Payment/course-payment.css">
 
 <section class="payment-container">
     <div class="payment-header">
-        <h1>Enroll in the Course</h1>
+        <h1>Enroll in the <?= $billing_type === 'onetime' ? 'Course' : 'Class' ?></h1>
         <p class="subtitle">Complete your enrollment details below</p>
     </div>
 
-    <div class="course-card">
-        <div class="course-title">Introduction to Web Development</div>
-        <div class="course-stats">
-            <div class="stat-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-                <span>3 Months</span>
+    <div class="course-details">
+        <div class="detail-item">
+            <span class="label">Course:</span>
+            <span class="value"><?= e($course_title) ?></span>
+        </div>
+        <?php if ($billing_type === 'recurring'): ?>
+            <div class="detail-item">
+                <span class="label">Start Date:</span>
+                <span class="value"><?= e(formatDate($start_date, 'F j, Y')) ?></span>
             </div>
-            <div class="stat-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                </svg>
-                <span class="price"><?= $amount ?></span>
+            <div class="detail-item">
+                <span class="label">End Date:</span>
+                <span class="value"><?= e(formatDate($end_date, 'F j, Y')) ?></span>
             </div>
+        <?php endif; ?>
+        <div class="detail-item">
+            <span class="label">Amount:</span>
+            <span class="value"><?= $amount ?></span>
         </div>
     </div>
 
-    <form class="payment-form" id="coursePaymentForm" method="POST" action=<?= "/payment/courses/" . $courseId . "/" . $subperiodId ?>>
+    <form class="payment-form" id="coursePaymentForm" method="POST" action=<?= "/payment/courses/" . $courseId . ($billing_type === 'recurring' ? "/" . $subperiodId : "") ?>>
         <h2>Personal Information</h2>
 
         <div class="form-grid">
