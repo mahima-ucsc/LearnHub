@@ -224,7 +224,7 @@ nav ul li a.active {
 }
 
 /* Courses Section */
-.courses-container{
+/* .courses-container{
     background-color: #fffefa;
     width: 100%;
 }
@@ -314,7 +314,7 @@ nav ul li a.active {
 
 .course-card button:hover {
   background-color: #ffd033;
-}
+} */
 
 /* Tutors Section */
 .tutors {
