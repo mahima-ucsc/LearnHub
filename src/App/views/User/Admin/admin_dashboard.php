@@ -3,41 +3,18 @@
 <link rel="stylesheet" href="/assets/styles/User/Admin/admin_dashboard.css">
 
 <?php include $this->resolve('User/sidebar.php'); ?>
-<section class="dashboard">
-    <div class="container dashboard-content">
-        <div class="dashboard-text">
-            <h1>Transform Your Knowledge Into Income</h1>
-            <p>Create, sell, and manage your online courses with our powerful platform designed for educators.</p>
-            <a href="#" class="btn btn-primary">Start Teaching Today</a>
-        </div>
-        <div class="dashboard-stats">
-            <div class="stat-item">
-                <h3><?php echo $stat['users']['teachers'] ?></h3>
-                <p>Active Teachers</p>
-            </div>
-            <div class="stat-item">
-                <h3>$10M+</h3>
-                <p>Teacher Earnings</p>
-            </div>
-            <div class="stat-item">
-                <h3><?php echo $stat['users']['students'] ?></h3>
-                <p>Students Taught</p>
-            </div>
-        </div>
-    </div>
-</section>
 <section class="dashboard-section">
     <div class="container">
         <div class="section-header">
             <h2 class="section-title">Dashboard Overview</h2>
-            <p>Track your performance and upcoming tasks</p>
+            <p>Track Website performance</p>
         </div>
 
         <div class="quick-stats">
             <div class="stat-card">
                 <i class="fas fa-users fa-2x" style="color: var(--theme-color)"></i>
-                <div class="stat-value"><?php echo $stat['users']['students'] ?></div>
-                <p>Active Students</p>
+                <div class="stat-value"><?php echo (int)$stat['users']['students'] + (int)$stat['users']['teachers'] +  (int)$stat['users']['admin']; ?></div>
+                <p>Active Users</p>
             </div>
             <div class="stat-card">
                 <i class="fas fa-graduation-cap fa-2x" style="color: var(--theme-color)"></i>
@@ -112,30 +89,46 @@
                 </div>
             </div>
         </div>
-        <div class="upcoming-tasks">
-            <h2 class="section-title">Upcoming Tasks</h2>
-            <div class="task-item">
-                <div class="task-checkbox completed"></div>
-                <div class="task-content">
-                    <h4>Record JavaScript Basics Module</h4>
-                    <span class="task-deadline">Due Tomorrow</span>
+        <div class="dashboard-grid">
+            <!-- User Distribution Pie Chart -->
+            <div class="chart-container">
+                <h2 class="section-title">User Distribution</h2>
+                <div class="chart-wrapper" style="height: 300px; position: relative;">
+                    <canvas id="userDistributionChart"></canvas>
                 </div>
             </div>
-            <div class="task-item">
-                <div class="task-checkbox"></div>
-                <div class="task-content">
-                    <h4>Review Student Projects</h4>
-                    <span class="task-deadline">Due in 3 days</span>
+            <div class="insights-card">
+                <h2 class="section-title">User Statistics</h2>
+                <div class="insight-item">
+                    <div class="insight-icon" style="background: rgba(54, 162, 235, 0.2); color: rgba(54, 162, 235, 1)">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h3>Students</h3>
+                        <p><?php echo $stat['users']['students'] ?? 0; ?> students</p>
+                    </div>
                 </div>
-            </div>
-            <div class="task-item">
-                <div class="task-checkbox"></div>
-                <div class="task-content">
-                    <h4>Update Course Materials</h4>
-                    <span class="task-deadline">Due in 5 days</span>
+                <div class="insight-item">
+                    <div class="insight-icon" style="background: rgba(46, 204, 113, 0.2); color: #2ECC71">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h3>Teachers</h3>
+                        <p><?php echo $stat['users']['teachers'] ?? 0; ?> teachers</p>
+                    </div>
+                </div>
+                <div class="insight-item">
+                    <div class="insight-icon" style="background: rgba(255, 159, 64, 0.2); color: rgba(255, 159, 64, 1)">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h3>Administrators</h3>
+                        <p><?php echo $stat['users']['admin'] ?? 0; ?> administrators</p>
+                    </div>
                 </div>
             </div>
         </div>
+        <!-- TODO: Add bar chart for transaction where it shows money in and out for each month -->
         <div class="transactions-section">
             <div class="transactions-header">
                 <h2 class="section-title">Recent Transactions</h2>
@@ -147,31 +140,6 @@
         </div>
     </div>
 </section>
-
-<section class="section">
-    <div class="container">
-        <div class="section-header">
-            <h2 class="section-title">Your Active Courses</h2>
-            <p>Manage and track your course performance</p>
-        </div>
-        <div class="courses-grid">
-            <div class="course-card">
-                <div class="course-image">
-                    <i class="fas fa-code fa-3x"></i>
-                </div>
-                <div class="course-content">
-                    <h3 class="course-title">Advanced Web Development</h3>
-                    <div class="course-meta">
-                        <span><i class="fas fa-users"></i> 1,234 students</span>
-                        <span><i class="fas fa-star"></i> 4.8</span>
-                    </div>
-                    <div class="course-price">$199.99</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-[]
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
 <script>
     // Add animation for feature cards
@@ -185,7 +153,7 @@
         });
     });
 
-    // Add Chart.js initialization
+    // Performance graph
     let performanceChart;
     const ctx = document.getElementById('performanceChart').getContext('2d');
 
@@ -267,9 +235,67 @@
             updateChart(this.value);
         });
 
-        // Also render transactions (keep your existing code)
         renderTransactions();
     });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // User Distribution Pie Chart
+        const userStats = {
+            students: <?php echo $stat['users']['students'] ?? 0; ?>,
+            teachers: <?php echo $stat['users']['teachers'] ?? 0; ?>,
+            admin: <?php echo $stat['users']['admin'] ?? 0; ?>
+        };
+
+        const userDistributionCtx = document.getElementById('userDistributionChart').getContext('2d');
+        userLabels = ['Students', 'Teachers', 'Administrators']
+        userData = [userStats.students, userStats.teachers, userStats.admin]
+        userBackgroundColor = [
+            'rgba(54, 162, 235, 0.8)', // Blue for students
+            '#2ECC71', // Teal for teachers
+            'rgba(255, 159, 64, 0.8)' // Orange for admins
+        ]
+        createPieChart(userDistributionCtx, userLabels, userData, userBackgroundColor)
+    });
+
+
+    // Create pie chart
+    function createPieChart(ctx, labels, data, backgroundColor) {
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: backgroundColor,
+                    borderColor: backgroundColor,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = Math.round((value / total) * 100);
+                                return `${label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
 
     // Sample transaction data
     const transactions = [{

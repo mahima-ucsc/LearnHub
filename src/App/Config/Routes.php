@@ -20,15 +20,12 @@ function registerRoutes(App $app)
     $app->get('/about', [PageController::class, 'about']);
     $app->get('/profile', [ProfileController::class, 'profile'], [AuthRequiredMiddleware::class]);
     $app->get('/dashboard', [PageController::class, 'dashboard'], [AuthRequiredMiddleware::class]);
-    $app->get('/admin-dashboard', [PageController::class, 'adminDashboard'], [AdminOnlyMiddleware::class]);
     $app->post('/approve-post', [PostController::class, 'approveCourseRequest']);
     $app->post('/reject-post', [PostController::class, 'rejectCourseRequest']);
     $app->get('/admin-dashboard/user-managment', [PageController::class, 'userManagment'], [AdminOnlyMiddleware::class]);
     $app->get('/settings', [PageController::class, 'settings'], [AuthRequiredMiddleware::class]);
     $app->get('/tutor', [TutorProfileController::class, 'tutorProfile'], [AuthRequiredMiddleware::class]);
     $app->get('/alert', [AlertController::class, 'alert']);
-    $app->get('/error', [PageController::class, 'error']);
-    $app->get('/unauthorized-access', [PageController::class, 'unauthorizedAccess']);
     $app->get('/help-and-support', [PageController::class, 'helpAndSupport']);
     $app->get('/announcements/create', [PageController::class, 'createAnnouncements']);
     $app->get('/tech', [PageController::class, 'teacher']);
@@ -41,7 +38,6 @@ function registerRoutes(App $app)
 
 
 
-    $app->get('/denied', [PageController::class, 'denied']);
 
     // Contact
     $app->get('/contact', [ContactController::class, 'contact']);
@@ -174,6 +170,8 @@ function registerRoutes(App $app)
     $app->post('/payment/courses/{course_id}', [PaymentController::class, 'onetimeCoursePayment']);
     $app->post('/payment/courses/{course_id}/{subperiod_id}', [PaymentController::class, 'courseSubperiodPayment']);
     $app->post(AppConstants::COURSE_PAYMENT_RELATIVE_NOTIFY_URL, [PaymentController::class, 'handlePaymentNotification']);
+
+    $app->get('/unauthorized-access', [PageController::class, 'unauthorizedAccess']);
 
     // Catch-all route for 404 page
     $app->get('/{any:.*}', [PageController::class, 'notFound']);

@@ -135,7 +135,7 @@ class AdvertisementService
             [
                 'id' => $id
             ]
-        );
+        )->find();
     }
     public function approve($id)
     {
