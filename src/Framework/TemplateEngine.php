@@ -23,6 +23,12 @@ class TemplateEngine
         return $output;
     }
 
+    public function renderJson(array $data = [])
+    {
+        header('Content-Type: application/json');
+        return json_encode($data);
+    }
+
     public function resolve(string $path)
     {
         return "{$this->basePath}/{$path}";
