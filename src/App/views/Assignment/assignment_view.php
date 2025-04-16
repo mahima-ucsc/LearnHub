@@ -11,7 +11,9 @@
     <div class="assignment-card">
         <?php if (!empty($_SESSION['user']) && $_SESSION['user'] === $assignment['tutor_id']): ?>
             <div class="edit-assignment">
-                <a href="/courses/<?php echo e($course['course_id']); ?>/assignment/<?php echo e($assignment['assignment_id']); ?>/edit"><i class="fa-solid fa-pen-to-square"></i> Edit Assignment</a>
+                <a href="/courses/<?php echo e($course['course_id']); ?>/assignment/<?php echo e($assignment['assignment_id']); ?>/edit"><i class="fa-solid fa-pen-to-square"></i>
+                    Edit Assignment
+                </a>
             </div>
         <?php endif; ?>
         <div class="assignment-card-header">
