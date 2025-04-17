@@ -204,19 +204,6 @@ class CoursesController
         redirectTo('/courses/my-courses');
     }
 
-    // TODO: Rename this function when the old create course is removed
-    public function createCourseNew()
-    {
-        $thumbnail = $_FILES['thumbnail'] ?? null;
-        $this->validatorService->validateImg($thumbnail);
-        $this->validatorService->validateCourse($_POST);
-        $thumbnailFileName = $this->fileService->uploadFile(Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS, $thumbnail);
-        $formData = $_POST;
-        $formData['thumbnail_filename'] = $thumbnailFileName;
-        // $this->courseService->createCourse($formData);
-        redirectTo('/courses/my-courses');
-    }
-
     // Dont use for anything
     // Left for Rollback
     public function myCoursesOld()
@@ -230,23 +217,6 @@ class CoursesController
         echo $this->view->render($url, [
             "title" => "My Courses",
             "courses" => $courses
-        ]);
-    }
-    public function myCourses()
-    {
-        $url = $_SESSION['user_role'] === 'teacher' ? 'Tutor/my_courses.php' : 'User/student/registered_courses.php';
-
-        if ($_SESSION['user_role'] == 'student') {
-            [$courses, $pinnedCourses] = $this->courseService->registeredCourses();
-        } else if ($_SESSION['user_role'] == 'teacher') {
-            $courses = $this->courseService->getMyCourses();
-        }
-
-
-        echo $this->view->render($url, [
-            "title" => "My Courses",
-            "courses" => $courses,
-            "pinnedCourses" => $pinnedCourses ?? []
         ]);
     }
 
@@ -369,16 +339,6 @@ class CoursesController
         $this->courseService->readResource($resource);
     }
 
-    public function myCoursesTest()
-    {
-        echo $this->view->render(
-            "course/test.php",
-            [
-                'title' => "Course Participants",
-            ]
-        );
-    }
-
     // New functions after update the table
     public function createView()
     {
@@ -471,14 +431,17 @@ class CoursesController
             }
         } catch (ValidationException $e) {
             // Handle validation errors
-            // $errors = $e->getErrors();
-            // You could store errors in session and redirect back to form
-            // $_SESSION['errors'] = $errors;
             // redirectTo('/courses/create');
         } catch (Exception $e) {
             // Handle general errors
             error_log('Course creation failed: ' . $e->getMessage());
             $_SESSION['error'] = 'Failed to create course. Please try again.';
         }
+    }
+
+    public function getTeacherCourses(string $id = '')
+    {
+        $teacherId = $id != '' ? $id : $_SESSION['user'];
+        return $this->courseService->getTeacherCourses($teacherId);
     }
 }

@@ -233,8 +233,7 @@
 <div class="post-container">
     <div class="post-header">
 
-        <h1 class="post-title">Post Your Course Requirements</h1>
-        <p class="post-subtitle"> Can't find the course you need? Let our teachers know what you're looking for.
+        <h1 class="post-title">Edit Your Post</h1>
         </p>
     </div>
 
@@ -251,14 +250,15 @@
                 <div class="form-group">
                     <label for="postTitle" class="form-label">Title *</label>
                     <input type="text" id="postTitle" name="title" class="form-control"
-                        placeholder="Enter a descriptive title" required maxlength="100">
+                        placeholder="Enter a descriptive title" required maxlength="100"
+                        value="<?php echo e($request['title']); ?>">
                     <div class="error-message" id="postTitleError">Please enter a title</div>
                 </div>
 
                 <div class="form-group">
                     <label for="postDescription" class="form-label">Description *</label>
                     <textarea id="postDescription" name="description" class="form-control textarea-control"
-                        placeholder="Provide a detailed description of your post" required rows="6"></textarea>
+                        placeholder="Provide a detailed description of your post" required rows="6"><?php echo e($request['description']); ?></textarea>
                     <div class="error-message" id="postDescriptionError">Please enter a description</div>
                 </div>
 
@@ -267,7 +267,7 @@
                     <select id="subject" name="subject" class="form-control" required>
                         <option value="">Select a subject</option>
                         <?php foreach ($subjects as $subject): ?>
-                            <option value="<?php echo e($subject['subject_id']); ?>">
+                            <option value="<?php echo e($subject['subject_id']); ?>" <?php echo e($request['subject_id']) == e($subject['subject_id']) ? 'selected' : ''; ?>>
                                 <?php echo e($subject['subject_title']); ?>
                             </option>
                         <?php endforeach; ?>
@@ -281,7 +281,7 @@
                     <select id="grade" name="grade" class="form-control" required>
                         <option value="">Select a grade</option>
                         <?php foreach ($grades as $grade): ?>
-                            <option value="<?php echo e($grade['grade_id']); ?>">
+                            <option value="<?php echo e($grade['grade_id']); ?>" <?php echo e($request['grade_id']) == e($grade['grade_id']) ? 'selected' : ''; ?>>
                                 <?php echo e($grade['grade_name']); ?>
                             </option>
                         <?php endforeach; ?>
@@ -292,7 +292,8 @@
                 <div class="form-group">
                     <label for="postTitle" class="form-label">Location *</label>
                     <input type="text" id="location" name="location" class="form-control"
-                        placeholder="Enter a location" required>
+                        placeholder="Enter a location" required
+                        value="<?php echo e($request['location']); ?>">
                     <div class="error-message" id="locationError">Please enter a location</div>
                 </div>
             </div>
@@ -300,8 +301,9 @@
 
             <!-- Submit Section -->
             <div class="form-actions">
+                <input type="hidden" name="_METHOD" value="PUT" />
                 <button type="submit" class="btn btn-primary" id="submitPost">
-                    <i class="fas fa-paper-plane"></i> Publish Post
+                    <i class="fas fa-paper-plane"></i> Update Post
                 </button>
             </div>
         </form>

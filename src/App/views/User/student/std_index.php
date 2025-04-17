@@ -1,5 +1,4 @@
 <?php include $this->resolve('partials/_header.php') ?>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
 <style>
     :root {
@@ -83,9 +82,24 @@
 
     .courses-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(280px, 300px));
         gap: 1.5rem;
         margin-bottom: 2rem;
+    }
+
+    .course-card-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        transition: var(--transition);
+    }
+
+    .course-card-link:hover {
+        transform: translateY(-5px);
+    }
+
+    .course-card-link:hover .course-card {
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
     }
 
     .course-card {
@@ -102,13 +116,15 @@
     }
 
     .course-image {
-        width: 100%;
-        height: 160px;
-        background: var(--theme-color);
-        display: flex;
-        align-items: center;
-        justify-content: center;
         position: relative;
+    }
+
+    .course-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        border-radius: 15px 15px 0 0;
     }
 
     .course-tag {
@@ -124,6 +140,15 @@
 
     .course-content {
         padding: 1.5rem;
+    }
+
+    .course-time {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        color: var(--text-light);
+        margin: 0.5rem 0;
     }
 
     .course-meta {
@@ -362,37 +387,6 @@
         justify-content: center;
     }
 
-    .achievement-section {
-        background: white;
-        border-radius: 15px;
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .achievement-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 1rem;
-    }
-
-    .achievement-item {
-        text-align: center;
-        padding: 1rem;
-        border-radius: 10px;
-        background: var(--bg-light);
-        transition: transform 0.3s;
-    }
-
-    .achievement-item:hover {
-        transform: translateY(-5px);
-    }
-
-    .achievement-icon {
-        font-size: 2rem;
-        color: var(--theme-color);
-        margin-bottom: 0.5rem;
-    }
-
     .calendar-header {
         display: flex;
         justify-content: space-between;
@@ -442,6 +436,55 @@
 
     .rating {
         color: var(--theme-color);
+    }
+
+    /* Quick access */
+    .student-quick-access {
+        margin-top: 2rem;
+        background: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .student-access-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        background: var(--bg-light);
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        transition: transform 0.3s, background 0.3s;
+        cursor: pointer;
+    }
+
+    .student-access-item i {}
+
+    .student-resource-access {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .student-quick-access p {
+        margin: 0.2rem 0 0;
+        font-size: 0.9rem;
+        color: var(--text-light);
+    }
+
+    .student-quick-access h3 {
+        margin-bottom: 1.2rem;
+    }
+
+    .access-icon {
+        background: var(--theme-color);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
     }
 
     @media (max-width: 1024px) {
@@ -535,82 +578,32 @@
                     <a href="#" class="view-all">View All</a>
                 </h2>
                 <div class="courses-grid">
-                    <div class="course-card">
-                        <div class="course-image">
-                            <i class="fas fa-code fa-2x" style="color: white;"></i>
-                            <span class="course-tag">In Progress</span>
-                        </div>
-                        <div class="course-content">
-                            <h3 class="course-title">Advanced Web Development</h3>
-                            <div class="progress-bar">
-                                <div class="progress" style="width: 75%;"></div>
-                            </div>
-                            <div class="course-progress-info">
-                                <span>75% Complete</span>
-                                <div class="time-remaining">
-                                    <i class="fas fa-clock"></i>
-                                    <span>2h remaining</span>
+                    <?php
+                    $limit = count($courses) >= 3 ? 3 : count($courses);
+                    for ($i = 0; $i < $limit; $i++): ?>
+                        <a href="/courses/<?php echo e($courses[$i]['course_id']); ?>" class="course-card-link">
+                            <div class="course-card">
+
+                                <div class="course-image">
+                                    <img src="/storage/uploads/courses/thumbnails/<?php echo e($courses[$i]['thumbnail_url']) ?>" alt="">
+                                    <span class="course-tag"><?php echo e($courses[$i]['day']) ?></span>
+                                </div>
+                                <div class="course-content">
+                                    <h3 class="course-title"><?php echo e($courses[$i]['title']) ?></h3>
+                                    <div class="course-time">
+                                        <i class="fas fa-clock"></i>
+                                        <span><?php echo e(date('h:i A', strtotime($courses[$i]['start_time']))); ?> - <?php echo e(date('h:i A', strtotime($courses[$i]['end_time']))); ?></span>
+                                    </div>
+                                    <div class="instructor-info">
+                                        <div class="instructor-avatar">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <span><?php echo e($courses[$i]['teacher']) ?></span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="instructor-info">
-                                <div class="instructor-avatar">
-                                    <i class="fas fa-user"></i>
-                                </div>
-                                <span>Sarah Johnson</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="course-card">
-                        <div class="course-image">
-                            <i class="fas fa-code fa-2x" style="color: white;"></i>
-                            <span class="course-tag">In Progress</span>
-                        </div>
-                        <div class="course-content">
-                            <h3 class="course-title">Advanced Web Development</h3>
-                            <div class="progress-bar">
-                                <div class="progress" style="width: 75%;"></div>
-                            </div>
-                            <div class="course-progress-info">
-                                <span>75% Complete</span>
-                                <div class="time-remaining">
-                                    <i class="fas fa-clock"></i>
-                                    <span>2h remaining</span>
-                                </div>
-                            </div>
-                            <div class="instructor-info">
-                                <div class="instructor-avatar">
-                                    <i class="fas fa-user"></i>
-                                </div>
-                                <span>Sarah Johnson</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="course-card">
-                        <div class="course-image">
-                            <i class="fas fa-code fa-2x" style="color: white;"></i>
-                            <span class="course-tag">In Progress</span>
-                        </div>
-                        <div class="course-content">
-                            <h3 class="course-title">Advanced Web Development</h3>
-                            <div class="progress-bar">
-                                <div class="progress" style="width: 75%;"></div>
-                            </div>
-                            <div class="course-progress-info">
-                                <span>75% Complete</span>
-                                <div class="time-remaining">
-                                    <i class="fas fa-clock"></i>
-                                    <span>2h remaining</span>
-                                </div>
-                            </div>
-                            <div class="instructor-info">
-                                <div class="instructor-avatar">
-                                    <i class="fas fa-user"></i>
-                                </div>
-                                <span>Sarah Johnson</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- More course cards with similar structure -->
+                        </a>
+                    <?php endfor; ?>
                 </div>
             </section>
             <section class="recommended-section">
@@ -623,30 +616,33 @@
                     <div class="category-tag">Marketing</div>
                 </div>
                 <div class="courses-grid">
-                    <!-- Similar course cards but with different content -->
+                    <div class="course-card">
+                        <div class="course-image">
+                            <i class="fas fa-code fa-2x" style="color: white;"></i>
+                            <span class="course-tag">In Progress</span>
+                        </div>
+                        <div class="course-content">
+                            <h3 class="course-title">Advanced Web Development</h3>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 75%;"></div>
+                            </div>
+                            <div class="course-progress-info">
+                                <span>75% Complete</span>
+                                <div class="time-remaining">
+                                    <i class="fas fa-clock"></i>
+                                    <span>2h remaining</span>
+                                </div>
+                            </div>
+                            <div class="instructor-info">
+                                <div class="instructor-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <span>Sarah Johnson</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
-            <section class="achievement-section">
-                <h2 class="section-title">Your Achievements</h2>
-                <div class="achievement-grid">
-                    <div class="achievement-item">
-                        <div class="achievement-icon">
-                            <i class="fas fa-award"></i>
-                        </div>
-                        <h4>Quick Learner</h4>
-                        <p>Completed 5 courses</p>
-                    </div>
-                    <div class="achievement-item">
-                        <div class="achievement-icon">
-                            <i class="fas fa-bolt"></i>
-                        </div>
-                        <h4>Fast Track</h4>
-                        <p>Finished in record time</p>
-                    </div>
-                    <!-- More achievement items -->
-                </div>
-            </section>
-
             <section class="feedback-section">
                 <h2 class="section-title">Recent Reviews</h2>
                 <div class="feedback-item">
@@ -697,7 +693,35 @@
                         <span>Team Collaboration</span>
                     </div>
                 </div>
-                <!-- More events -->
+            </div>
+            <div class="student-quick-access">
+                <h3>Quick Access</h3>
+
+                <a href="/my-resources" class="student-resource-access">
+                    <div class="student-access-item">
+                        <div class="access-icon">
+                            <i class="fas fa-file-alt fa-lg"></i>
+                        </div>
+                        <div>
+                            <h4>My Resources</h4>
+                            <p>Access your study materials</p>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </a>
+
+                <a href="/my-posts" class="student-resource-access">
+                    <div class="student-access-item">
+                        <div class="access-icon">
+                            <i class="fas fa-comment-alt fa-lg"></i>
+                        </div>
+                        <div>
+                            <h4>My Posts</h4>
+                            <p>View your discussions and comments</p>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </a>
             </div>
         </div>
     </div>

@@ -1840,7 +1840,7 @@
                                     <div class="ad-media">
                                         <div class="ad-badge">Limited Time Offer</div>
                                         <img src="/storage/uploads/advertisement/thumbnail/<?php echo e($ad['thumbnail_url']); ?>" alt="Premium Course">
-                                        <div class="ad-overlay">
+                                        <!-- <div class="ad-overlay">
                                             <div class="timer-container">
                                                 <div class="timer-label">Offer ends in:</div>
                                                 <div class="countdown-timer" data-expires="2025-05-15">
@@ -1849,7 +1849,7 @@
                                                     <span class="minutes">22</span>m
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> -->
                                     </div>
                                     <div class="ad-details">
                                         <div class="partner-info">

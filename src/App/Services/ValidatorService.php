@@ -63,9 +63,9 @@ class ValidatorService
     public function validateCourseRequest(array $formData)
     {
         $this->validator->validate($formData, [
-            "requestTitle" => ["required"],
-            "requestDescription" => ["required"],
-            "subject_id" => ["required"],
+            "title" => ["required"],
+            "description" => ["required"],
+            "subject" => ["required"],
         ]);
     }
 
@@ -130,5 +130,4 @@ class ValidatorService
         //     ]);
         // }
     }
-
 }

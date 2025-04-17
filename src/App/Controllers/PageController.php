@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\{CourseRequestService, UserService, CourseService, AdvertisementService};
+use App\Services\{CourseRequestService, UserService, CourseService, AdvertisementService, PaymentService, ResourceService};
+use APP\Config\Paths;
 
 
 class PageController
@@ -15,7 +16,9 @@ class PageController
         private UserService $userService,
         private CourseService $courseService,
         private CourseRequestService $courseRequestService,
-        private AdvertisementService $advertisementService
+        private AdvertisementService $advertisementService,
+        private PaymentService $paymentService,
+        private ResourceService $resourceService
     ) {}
 
     public function home()
@@ -84,7 +87,18 @@ class PageController
     public function dashboard()
     {
         if ($_SESSION['user_role'] === "student") {
+
             $path = "User/student/std_index.php";
+            $courses = $this->courseService->getStudentCourses($_SESSION['user']);
+            $userData = $this->userService->getUserProfile($_SESSION['user']);
+            $courseThumbnailPath = Paths::STORAGE_UPLOADS . Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS;
+            // dd($courses);
+            echo $this->view->render($path, [
+                "title" => "Dashboard",
+                'courses' => $courses,
+                'userData' => $userData,
+                'courseThumbnailPath' => $courseThumbnailPath
+            ]);
         } elseif ($_SESSION['user_role'] === "teacher") {
             $path = "User/Tutor/teacher_index.php";
         } elseif ($_SESSION['user_role'] === "admin") {
@@ -107,70 +121,12 @@ class PageController
         } else {
             $path = "index.php";
         }
-        $myCourses = $this->courseService->getMyCourses();
         $users = $this->userService->getAllUsers();
         echo $this->view->render($path, [
             "title" => "Dashboard",
             'users' => $users,
-            "myCourses" => $myCourses
         ]);
     }
-
-    /*
-    OLD dashboard
-     */
-    // public function dashboard()
-    // {
-    //     $myCourses = $this->courseService->getMyCourses();
-    //     $users = $this->userService->getAllUsers();
-    //     echo $this->view->render('User/Tutor/dashboard.php', [
-    //         "title" => "Dashboard",
-    //         'users' => $users,
-    //         "myCourses" => $myCourses
-    //     ]);
-    // }
-
-
-
-    /* 
-    * Old AdminDashboard
-    */
-    // public function adminDashboard()
-    // {
-    //     $users = [];
-    //     $courses = [];
-    //     $courseRequests = [];
-
-    //     // Handle user data
-    //     if ($_GET['tab'] == 'user-managment') {
-
-    //         // $users = $this->userService->getAllUsers();
-    //         $users = $this->userService->getUsers();
-    //     }
-
-    //     // handle posts
-    //     if ($_GET['tab'] == 'post-managment') {
-    //         $courseRequests = $this->courseRequestService->getPendingCourseRequests();
-    //     }
-
-    //     if ($_GET['tab'] == 'course-managment') {
-    //         $courses = $this->courseService->getAllCourses();
-    //     }
-
-    //     $userCount = $this->userService->getUserCount();
-    //     $courseCount = $this->courseService->getNoOfCourses();
-    //     $stat = [
-    //         "users" => $userCount,
-    //         "courses" => $courseCount
-    //     ];
-    //     echo $this->view->render('User/Admin/admin_dashboard.php', [
-    //         "title" => "Admin Dashboard",
-    //         'users' => $users ?? '',
-    //         "courses" => $courses ?? '',
-    //         "stat" => $stat,
-    //         "courseRequests" => $courseRequests
-    //     ]);
-    // }
 
     public function billingAndPayment()
     {
@@ -188,18 +144,40 @@ class PageController
     }
     public function courseManagment()
     {
-        $courseCount = $this->courseService->getNoOfCourses();
-        $courses = $this->courseService->getCourseList();
-        echo $this->view->render('User/Admin/admin_course_managment.php', [
+        if ($_SESSION['user_role'] === 'teacher') {
+            $courses = $this->courseService->getTeacherCourses($_SESSION['user']);
+            $courseCount = count($courses);
+            $revenue = $this->paymentService->getTeacherCourseIncome($_SESSION['user']);
+            $revenue = $revenue[0]['revenue'];
+        } else {
+            $courseCount = $this->courseService->getNoOfCourses();
+            $courses = $this->courseService->getCourseList();
+            $revenue = $this->paymentService->getTotalCourseIncome();
+            $revenue = $revenue[0]['revenue'];
+        }
+        echo $this->view->render('User/course_managment.php', [
             'title' => "Course Managment",
             'courseCount' => $courseCount,
-            "courses" => $courses
+            "courses" => $courses,
+            'revenue' => $revenue
         ]);
     }
     public function unauthorizedAccess()
     {
         echo $this->view->render("unauthorized_access.php", [
             'title' => "401 Unauthorized Access"
+        ]);
+    }
+    public function notFound()
+    {
+        echo $this->view->render('notFound.php', [
+            'title' => "404 - Page Not Found"
+        ]);
+    }
+    public function internalServerError()
+    {
+        echo $this->view->render('internal_server_error.php', [
+            'title' => "500 - Internal Server Error"
         ]);
     }
 
@@ -211,12 +189,6 @@ class PageController
                 'title' => "User Courses"
             ]
         );
-    }
-    public function notFound()
-    {
-        echo $this->view->render('notFound.php', [
-            'title' => "404 - Page Not Found"
-        ]);
     }
 
     public function interest()
@@ -309,63 +281,22 @@ class PageController
             "advertisements" => $advertisements
         ]);
     }
+    public function userResourceView()
+    {
+        $resources = $this->resourceService->getResources();
+        echo $this->view->render(
+            '/User/student/resource.php',
+            [
+                'title' => "My resource",
+                'resources' => $resources
+            ]
+        );
+    }
     public function test()
     {
-        $page = $_GET['p'] ?? 1;
-        $page = (int) $page;
-        $length = 8;
-        $offset = ($page - 1) * $length;
-        $searchTerm = $_GET['s'] ?? null;
-        $searchBy = $_GET['f'] ?? null;
-        $location = $_GET['location'] ?? null;
 
-        [$courses, $courseCount] = $this->courseService->searchCourse(
-            $length,
-            $offset
-        );
-
-
-        $lastPage = ceil($courseCount / $length);
-        $pages = $lastPage ? range(1, $lastPage) : [];
-
-        $pageLinks = array_map(
-            fn($pageNum) => http_build_query([
-                'p' => $pageNum,
-                's' => $searchTerm,
-                'f' => $searchBy,
-                "location" => $location
-            ]),
-            $pages
-        );
-
-        echo $this->view->render('course/Courses copy.php', [
-            "title" => "Search Course",
-            "courses" => $courses,
-            "currentPage" => $page,
-            "previousPageQuery" => http_build_query([
-                'p' => $page - 1,
-                's' => $searchTerm,
-                'f' => $searchBy,
-                "location" => $location
-            ]),
-            "lastPage" => $lastPage,
-            "nextPageQuery" => http_build_query([
-                'p' => $page + 1,
-                's' => $searchTerm,
-                'f' => $searchBy,
-                "location" => $location
-            ]),
-            "pageLinks" => $pageLinks,
-            "searchTerm" => $searchTerm,
-            "searchBy" => $searchBy,
-            "location" => $location
+        echo $this->view->render("/post/user_course_request.php", [
+            "title" => "Post Managment"
         ]);
-        // echo $this->view->render("test.php", [
-        //     "title" => "Post Managment"
-        // ]);
-    }
-    public function testPost()
-    {
-        dd($_POST);
     }
 }
