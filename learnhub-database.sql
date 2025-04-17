@@ -417,3 +417,25 @@ CREATE TABLE IF NOT EXISTS advertisement_feature(
     FOREIGN KEY (advertisement_id) REFERENCES advertisement(advertisement_id) ON DELETE CASCADE,
     PRIMARY KEY (feature_id)
 );
+
+-- Table for notifications
+CREATE TABLE IF NOT EXISTS notifications (
+    notification_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+    message TEXT NOT NULL,
+    url VARCHAR(255),
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(notification_id)
+);
+
+-- Table to associate notifications with users and track read status
+CREATE TABLE IF NOT EXISTS notification_users (
+    notification_user_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+    notification_id BIGINT(20) UNSIGNED NOT NULL,
+    user_id BIGINT(20) UNSIGNED NOT NULL,
+    is_read TINYINT NOT NULL DEFAULT 0,
+    PRIMARY KEY(notification_user_id),
+    UNIQUE KEY(notification_id, user_id),
+    FOREIGN KEY (notification_id) REFERENCES notifications(notification_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);

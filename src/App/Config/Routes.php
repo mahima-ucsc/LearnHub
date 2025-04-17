@@ -6,12 +6,31 @@ declare(strict_types=1);
 
 namespace App\Config;
 
-use App\Controllers\{AdvertisementController, AlertController, AssignmentController, AuthController, ContactController, ProfileController, CoursesController, TutorProfileController, SettingController, PageController, PaymentController, ResourceController, PostController, ReviewController, UserController};
-use App\Middleware\AdminOnlyMiddleware;
-use App\Middleware\AuthRequiredMiddleware;
-use App\Middleware\GuestOnlyMiddleware;
-use App\Middleware\StudentOnlyMiddleware;
-use App\Middleware\TeacherOnlyMiddleware;
+use App\Controllers\{
+    AdvertisementController,
+    AlertController,
+    AssignmentController,
+    AuthController,
+    ContactController,
+    ProfileController,
+    CoursesController,
+    NotificationController,
+    TutorProfileController,
+    PageController,
+    PaymentController,
+    ResourceController,
+    PostController,
+    ReviewController,
+    UserController
+};
+use App\Middleware\{
+    AdminOnlyMiddleware,
+    AuthRequiredMiddleware,
+    GuestOnlyMiddleware,
+    NotificationMiddleware,
+    StudentOnlyMiddleware,
+    TeacherOnlyMiddleware
+};
 use Framework\App;
 
 function registerRoutes(App $app)
@@ -35,16 +54,10 @@ function registerRoutes(App $app)
     $app->get('/post-managment', [PageController::class, 'postManagment']);
     $app->get('/advertisement-managment', [PageController::class, 'adManagment']);
 
-
-
-
-
     // Contact
     $app->get('/contact', [ContactController::class, 'contact']);
     $app->post('/contact', [ContactController::class, 'submitContactForm']);
     $app->get('/contact/successfull', [ContactController::class, 'successfull']);
-
-
 
     // User
     $app->post('/choose-role', [AuthController::class, 'chooseRole'], [GuestOnlyMiddleware::class]);
@@ -77,8 +90,6 @@ function registerRoutes(App $app)
 
     // Student
     $app->get('/my-resource', [PageController::class, 'userResourceView']);
-
-
 
     // Courses
     $app->get('/courses', [CoursesController::class, 'course']);
@@ -166,6 +177,11 @@ function registerRoutes(App $app)
     $app->post('/test', [PageController::class, 'testPost']);
     $app->get('/post', [PageController::class, 'post']);
     $app->get('/test/help', [PageController::class, 'helpAndSupportReview']);
+
+    // Notifications
+    $app->get('/api/notifications', [NotificationController::class, 'getUserNotifications'], [NotificationMiddleware::class]);
+    $app->post('/api/notifications/mark-all-as-read', [NotificationController::class, 'markAllAsRead'], [NotificationMiddleware::class]);
+    $app->post('/api/notifications/mark-as-read/{notification_id}', [NotificationController::class, 'markAsRead'], [NotificationMiddleware::class]);
 
     // Payments
     $app->get('/payment/courses/{course_id}', [PaymentController::class, 'onetimeCoursePaymentView']);
