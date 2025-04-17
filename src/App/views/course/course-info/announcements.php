@@ -84,8 +84,8 @@
                             </div>
                         </div>
                     </div>
+                <?php } ?>
             </div>
-        <?php } ?>
         </div>
     </div>
 
@@ -94,6 +94,7 @@
             // Filter functionality
             const filterButtons = document.querySelectorAll(".filter-button");
             const announcementItems = document.querySelectorAll(".announcement-item");
+            checkEmptyState();
 
             filterButtons.forEach((button) => {
                 button.addEventListener("click", function() {

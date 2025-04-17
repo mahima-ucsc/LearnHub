@@ -98,7 +98,7 @@ header {
 
 .announcement-list {
   max-height: 600px;
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 
 .announcement-item {
