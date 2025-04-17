@@ -21,7 +21,7 @@ class PaymentController
         $amount = $this->paymentService->getCousreSubperiodAmount($params["course_id"], $params["subperiod_id"]);
         $checkoutData = $this->paymentService->getViewDetailsForCourseSubPeriodCheckout($params["course_id"], $params["subperiod_id"]);
 
-        echo $this->view->render('Payment/course-payment.php', [
+        echo $this->view->render('payment/course-payment.php', [
             "title" => "Course Payment",
             "amount" => $amount,
             "courseId" => $params["course_id"],
@@ -38,7 +38,7 @@ class PaymentController
         $amount = $this->paymentService->getCourseAmount($params["course_id"]);
         $checkoutData = $this->paymentService->getViewDetailsForCourseCheckout($params["course_id"]);
 
-        echo $this->view->render('Payment/course-payment.php', [
+        echo $this->view->render('payment/course-payment.php', [
             "title" => "Course Payment",
             "amount" => $amount,
             "courseId" => $params["course_id"],
@@ -58,7 +58,7 @@ class PaymentController
             ->paymentService
             ->createCoursePaymentEntry($orderId, $params["course_id"], $params["subperiod_id"], (string) $_SESSION["user"], (float)$amount);
 
-        echo $this->view->render('Payment/course-payment-autosubmit.php', [
+        echo $this->view->render('payment/course-payment-autosubmit.php', [
             "title" => "Course Payment",
             "first_name" => $_POST["first_name"],
             "last_name" => $_POST["last_name"],
@@ -87,7 +87,7 @@ class PaymentController
 
         $this->paymentService->createCoursePaymentEntry($orderId, $params["course_id"], null, (string) $_SESSION["user"], (float)$amount);
 
-        echo $this->view->render('Payment/course-payment-autosubmit.php', [
+        echo $this->view->render('payment/course-payment-autosubmit.php', [
             "title" => "Course Payment",
             "first_name" => $_POST["first_name"],
             "last_name" => $_POST["last_name"],
