@@ -352,6 +352,7 @@
         z-index: 1;
     }
 
+    /* Course Content */
     .course-content {
         padding: 20px;
         flex-grow: 1;
@@ -359,11 +360,30 @@
         flex-direction: column;
     }
 
+    .course-content-header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
     .course-title {
         font-size: 18px;
         font-weight: 600;
         margin-bottom: 10px;
         line-height: 1.4;
+    }
+
+    .course-subject {
+        background-color: rgba(220, 223, 53, 0.25);
+        /* color: var(--white); */
+        font-size: 12px;
+        font-weight: 600;
+        padding: 5px 10px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        z-index: 1;
     }
 
     .course-description {
@@ -426,6 +446,12 @@
     .course-price {
         font-weight: 600;
         font-size: 15px;
+    }
+
+    .onetime-payment-tag {
+        color: rgb(58, 58, 58);
+        font-weight: 300;
+        font-size: 10px;
     }
 
 
@@ -791,15 +817,6 @@
                     </select>
                 </div>
                 <div class="filter-group">
-                    <span class="filter-label">Duration:</span>
-                    <select class="filter-select" name="duration">
-                        <option value="all" <?php echo (!isset($_GET['duration']) || $_GET['duration'] === 'all') ? 'selected' : ''; ?>>Any Duration</option>
-                        <option value="short" <?php echo (isset($_GET['duration']) && $_GET['duration'] === 'short') ? 'selected' : ''; ?>>Short (0-3 weeks)</option>
-                        <option value="medium" <?php echo (isset($_GET['duration']) && $_GET['duration'] === 'medium') ? 'selected' : ''; ?>>Medium (1-3 months)</option>
-                        <option value="long" <?php echo (isset($_GET['duration']) && $_GET['duration'] === 'long') ? 'selected' : ''; ?>>Long (3+ months)</option>
-                    </select>
-                </div>
-                <div class="filter-group">
                     <span class="filter-label">Rating:</span>
                     <select class="filter-select" name="rating">
                         <option value="all" <?php echo (!isset($_GET['rating']) || $_GET['rating'] === 'all') ? 'selected' : ''; ?>>Any Rating</option>
@@ -813,8 +830,8 @@
                         <option value="popular" <?php echo (!isset($_GET['sort']) || $_GET['sort'] === 'popular') ? 'selected' : ''; ?>>Most Popular</option>
                         <option value="newest" <?php echo (isset($_GET['sort']) && $_GET['sort'] === 'newest') ? 'selected' : ''; ?>>Newest First</option>
                         <option value="oldest" <?php echo (isset($_GET['sort']) && $_GET['sort'] === 'oldest') ? 'selected' : ''; ?>>Oldest First</option>
-                        <option value="priceAsc" <?php echo (isset($_GET['sort']) && $_GET['sort'] === 'priceAsc') ? 'selected' : ''; ?>>Price: Low to High</option>
-                        <option value="priceDesc" <?php echo (isset($_GET['sort']) && $_GET['sort'] === 'priceDesc') ? 'selected' : ''; ?>>Price: High to Low</option>
+                        <option value="price_low" <?php echo (isset($_GET['sort']) && $_GET['sort'] === 'priceAsc') ? 'selected' : ''; ?>>Price: Low to High</option>
+                        <option value="price_high" <?php echo (isset($_GET['sort']) && $_GET['sort'] === 'priceDesc') ? 'selected' : ''; ?>>Price: High to Low</option>
                     </select>
                 </div>
                 <div class="filter-actions">
@@ -869,9 +886,16 @@
                         </div>
                     </div>
                     <div class="course-content">
-                        <h3 class="course-title">
-                            <?php echo e($course['title']); ?>
-                        </h3>
+                        <div class="course-content-header">
+                            <h3 class="course-title">
+                                <?php echo e($course['title']); ?>
+                            </h3>
+                            <div class="course-subject">
+                                <span>
+                                    <?php echo e($course['subject']); ?>
+                                </span>
+                            </div>
+                        </div>
                         <p class="course-description">
                             <?php echo e($course['description']); ?>
                         </p>
@@ -895,6 +919,9 @@
                             <?php if (isset($course['billing_type'])): ?>
                                 <span>
                                     <?php echo $course['billing_type'] === 'onetime' ? 'Rs.' . e($course['price']) : '<i class="fas fa-money-bill" style="color: var(--success);"></i> Monthly payment'; ?>
+                                </span>
+                                <span class="onetime-payment-tag">
+                                    <?php echo $course['billing_type'] === 'onetime' ? 'onetime payment' : ''; ?>
                                 </span>
                             <?php endif; ?>
                         </div>

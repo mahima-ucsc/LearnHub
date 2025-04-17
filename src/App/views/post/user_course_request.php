@@ -1,7 +1,6 @@
 <?php include $this->resolve('partials/_header.php'); ?>
 <?php include $this->resolve('User/sidebar.php'); ?>
 
-<!-- <link rel="stylesheet" href="/assets/styles/components/managment.css"> -->
 <style>
     :root {
         --theme-color: #FFC400;

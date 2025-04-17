@@ -24,38 +24,12 @@ class PageController
     public function home()
     {
         $advertisements = $this->advertisementService->getApprovedAds();
+
         echo $this->view->render('index.php', [
             "title" => "Home",
             "advertisements" => $advertisements
         ]);
     }
-    /* OLD HOME*/
-    // public function home()
-    // {
-    //     $user = $this->userService->getUserProfile();
-    //     $userCount = $this->userService->getUserCount();
-    //     $courseCount = $this->courseService->getNoOfCourses();
-    //     $stat = [
-    //         "users" => $userCount,
-    //         "courses" => $courseCount
-    //     ];
-    //     $advertisements = $this->advertisementService->getApprovedAds();
-    //     if ($_SESSION['user_role'] === "student") {
-    //         $path = "User/student/std_index.php";
-    //     } elseif ($_SESSION['user_role'] === "teacher") {
-    //         $path = "User/Tutor/teacher_index.php";
-    //     } elseif ($_SESSION['user_role'] === "admin") {
-    //         $path = "User/Admin/admin_dashboard.php";
-    //     } else {
-    //         $path = "index.php";
-    //     }
-    //     echo $this->view->render('$index.php', [
-    //         "title" => "Home",
-    //         "userData" => $user,
-    //         "stat" => $stat,
-    //         "advertisements" => $advertisements
-    //     ]);
-    // }
     public function helpAndSupportReview()
     {
         echo $this->view->render('User/Admin/help_And_Support_Review.php', [
@@ -295,7 +269,7 @@ class PageController
     public function test()
     {
 
-        echo $this->view->render("/post/user_course_request.php", [
+        echo $this->view->render("test.php", [
             "title" => "Post Managment"
         ]);
     }

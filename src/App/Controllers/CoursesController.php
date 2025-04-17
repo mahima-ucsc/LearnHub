@@ -32,9 +32,16 @@ class CoursesController
         $page = (int) $page;
         $length = 9;
         $offset = ($page - 1) * $length;
+
         $searchTerm = $_GET['s'] ?? null;
-        $searchBy = $_GET['f'] ?? null;
         $location = $_GET['location'] ?? null;
+        $searchTerm = trim($_GET['s'] ?? '');
+        $subject = $_GET['subject'] ?? 'all';
+        $price = $_GET['price'] ?? 'all';
+        $type = $_GET['type'] ?? 'all';
+        $duration = $_GET['duration'] ?? 'all';
+        $rating = $_GET['rating'] ?? 'all';
+        $sort = $_GET['sort'] ?? '';
 
         [$courses, $courseCount] = $this->courseService->searchCourse(
             $length,
@@ -51,8 +58,11 @@ class CoursesController
             fn($pageNum) => http_build_query([
                 'p' => $pageNum,
                 's' => $searchTerm,
-                'f' => $searchBy,
-                "location" => $location
+                "location" => $location,
+                "type" => $type,
+                "subject" => $subject,
+                "sort" => $sort
+
             ]),
             $pages
         );
@@ -68,19 +78,22 @@ class CoursesController
             "previousPageQuery" => http_build_query([
                 'p' => $page - 1,
                 's' => $searchTerm,
-                'f' => $searchBy,
-                "location" => $location
+                "location" => $location,
+                "type" => $type,
+                "subject" => $subject,
+                "sort" => $sort
             ]),
             "lastPage" => $lastPage,
             "nextPageQuery" => http_build_query([
                 'p' => $page + 1,
                 's' => $searchTerm,
-                'f' => $searchBy,
-                "location" => $location
+                "location" => $location,
+                "type" => $type,
+                "subject" => $subject,
+                "sort" => $sort
             ]),
             "pageLinks" => $pageLinks,
             "searchTerm" => $searchTerm,
-            "searchBy" => $searchBy,
             "location" => $location
         ]);
     }
@@ -204,21 +217,6 @@ class CoursesController
         redirectTo('/courses/my-courses');
     }
 
-    // Dont use for anything
-    // Left for Rollback
-    public function myCoursesOld()
-    {
-        $url = $_SESSION['user_role'] === 'teacher' ? 'Tutor/my_courses.php' : 'User/user_courses.php';
-        if ($_SESSION['user_role'] == 'student') {
-            $courses = $this->courseService->registeredCourses();
-        } else if ($_SESSION['user_role'] == 'teacher') {
-            $courses = $this->courseService->getMyCourses();
-        }
-        echo $this->view->render($url, [
-            "title" => "My Courses",
-            "courses" => $courses
-        ]);
-    }
 
     public function courseEditView(array $params)
     {
@@ -439,9 +437,9 @@ class CoursesController
         }
     }
 
-    public function getTeacherCourses(string $id = '')
+    public function getTeacherCourses()
     {
-        $teacherId = $id != '' ? $id : $_SESSION['user'];
+        $teacherId =  $_SESSION['user'];
         return $this->courseService->getTeacherCourses($teacherId);
     }
 }
