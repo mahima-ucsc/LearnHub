@@ -131,16 +131,6 @@ class CourseService
     //     );
     // }
 
-    public function getMyCourses()
-    {
-        $myCourses = $this->db->query(
-            "SELECT * FROM courses
-            WHERE tutor_id = :tutor_id",
-            ['tutor_id' => $_SESSION['user']]
-        )->findAll();
-
-        return $myCourses;
-    }
     public function getMyCourseById(string $id)
     {
         return $this->db->query(
@@ -865,5 +855,44 @@ class CourseService
             "SELECT DISTINCT(location)
             FROM courses"
         )->findAll();
+    }
+
+    public function getTeacherCourses(int $id)
+    {
+        try {
+            return $this->db->query(
+                "SELECT * FROM courses
+                WHERE tutor_id = :id",
+                [
+                    'id' => $id
+                ]
+            )->findAll();
+        } catch (Exception $e) {
+            error_log('Failed to fetch teacher courses: ' . $e->getMessage());
+            redirectTo('/server-error');
+        }
+    }
+
+    public function getStudentCourses(int $id)
+    {
+        try {
+            return $this->db->query(
+                "SELECT DISTINCT c.*,
+                CONCAT(u.first_name, ' ', u.last_name) AS teacher,
+                s.subject_title AS subject
+                FROM courses c
+                JOIN course_payments cp ON cp.course_id = c.course_id
+                JOIN users u ON u.user_id = c.tutor_id
+                JOIN subjects s ON c.subject_id = s.subject_id
+                WHERE cp.user_id = :id",
+                [
+                    'id' => $id
+                ]
+            )->findAll();
+        } catch (Exception $e) {
+
+            error_log('Failed to fetch student courses: ' . $e->getMessage());
+            redirectTo('/server-error');
+        }
     }
 }
