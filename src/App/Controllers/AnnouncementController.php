@@ -24,8 +24,9 @@ class AnnouncementController
         );
     }
 
-    public function createAnnouncements()
+    public function createAnnouncements($params)
     {
+        $_POST['course_id'] = $params['course_id'];
         $this->AnnouncementService->createAnnouncements($_POST, $_FILES);
     }
 

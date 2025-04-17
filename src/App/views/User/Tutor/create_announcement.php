@@ -31,11 +31,12 @@
             </div>
 
             <div class="form-group">
-                <label for="priority"><i class="fas fa-exclamation-circle"></i> Priority Level</label>
-                <select id="priority" name="priority">
-                    <option value="low">Low - General information</option>
-                    <option value="medium">Medium - Important notice</option>
-                    <option value="high">High - Urgent announcement</option>
+                <label for="category"><i class="fas fa-exclamation-circle"></i> Category</label>
+                <select id="category" name="category">
+                    <option value="Assignments">Assignments</option>
+                    <option value="Event">Event</option>
+                    <option value="General">General</option>
+                    <option value="Reminder">Remainder</option>
                 </select>
             </div>
 
@@ -83,7 +84,7 @@
 
         <div id="announcementPreview" class="announcement-preview">
             <h3><i class="fas fa-search"></i> Preview</h3>
-            <div id="previewPriority"></div>
+            <div id="previewCategory"></div>
             <h4 id="previewTitle"></h4>
             <div class="preview-content" id="previewContent"></div>
             <div id="previewAttachments" class="preview-attachments">
@@ -99,7 +100,7 @@
             const form = document.getElementById('announcementForm');
             const titleInput = document.getElementById('title');
             const contentInput = document.getElementById('content');
-            const prioritySelect = document.getElementById('priority');
+            const categorySelect = document.getElementById('category');
             const visibilitySelect = document.getElementById('visibility');
             const fileInput = document.getElementById('attachments');
             const fileInfo = document.getElementById('fileInfo');
@@ -107,7 +108,7 @@
             const previewSection = document.getElementById('announcementPreview');
             const previewTitle = document.getElementById('previewTitle');
             const previewContent = document.getElementById('previewContent');
-            const previewPriority = document.getElementById('previewPriority');
+            const previewCategory = document.getElementById('previewCategory');
             const alertMessage = document.getElementById('alertMessage');
             const userSelection = document.getElementById('userSelection');
             const emailInput = document.getElementById('emailInput');
@@ -230,7 +231,7 @@
             previewBtn.addEventListener('click', function() {
                 const title = titleInput.value.trim();
                 const content = contentInput.value.trim();
-                const priority = prioritySelect.value;
+                const category = categorySelect.value;
 
                 if (!title || !content) {
                     showAlert('Please fill in both title and content fields for preview.', 'danger');
@@ -240,21 +241,27 @@
                 previewTitle.textContent = title;
                 previewContent.textContent = content;
 
-                // Style based on priority
-                previewPriority.className = '';
-                previewPriority.classList.add('priority-' + priority);
-
-                // Add icon based on priority
-                let priorityIcon = '';
-                if (priority === 'high') {
-                    priorityIcon = '<i class="fas fa-exclamation-triangle"></i> ';
-                } else if (priority === 'medium') {
-                    priorityIcon = '<i class="fas fa-exclamation-circle"></i> ';
-                } else {
-                    priorityIcon = '<i class="fas fa-info-circle"></i> ';
+                // Style based on category
+                previewCategory.classList.add('category');
+                let categoryIcon = '';
+                switch (category) {
+                    case 'Assignments':
+                        categoryIcon = '<i class="fas fa-tasks"></i> ';
+                        break;
+                    case 'Event':
+                        categoryIcon = '<i class="fas fa-calendar-alt"></i> ';
+                        break;
+                    case 'General':
+                        categoryIcon = '<i class="fas fa-info-circle"></i> ';
+                        break;
+                    case 'Reminder':
+                        categoryIcon = '<i class="fas fa-bell"></i> ';
+                        break;
+                    default:
+                        categoryIcon = '<i class="fas fa-exclamation-triangle"></i> ';
                 }
 
-                previewPriority.innerHTML = priorityIcon + getPriorityText(priority);
+                previewCategory.innerHTML = categoryIcon + category;
 
                 // Display attached files in preview
                 attachmentList.innerHTML = '';
@@ -320,16 +327,6 @@
                 else return (bytes / 1048576).toFixed(1) + ' MB';
             }
 
-            function getPriorityText(priority) {
-                switch (priority) {
-                    case 'high':
-                        return 'High Priority';
-                    case 'medium':
-                        return 'Medium Priority';
-                    default:
-                        return 'Low Priority';
-                }
-            }
 
             function showAlert(message, type) {
                 let icon = type === 'success' ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-exclamation-circle"></i>';

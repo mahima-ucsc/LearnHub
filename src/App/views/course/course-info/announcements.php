@@ -112,14 +112,8 @@
                             item.style.display = item.getAttribute("data-read") === "false" ? "block" : "none";
                         } else if (filter === "read") {
                             item.style.display = item.getAttribute("data-read") === "true" ? "block" : "none";
-                            // Remove unread indicator from read items
-                            const unreadIndicator = item.querySelector(".unread-indicator");
-                            if (unreadIndicator) {
-                                unreadIndicator.remove();
-                            }
                         } else {
                             item.style.display = item.getAttribute("data-type") === filter ? "block" : "none";
-                            console.log(item.getAttribute("data-type"));
                         }
                     });
 
@@ -129,20 +123,23 @@
             });
 
             // Mark as read/unread functionality
-            const markUnreadButtons = document.querySelectorAll(".mark-unread-btn");
             const markReadButtons = document.querySelectorAll(".mark-read-btn");
+            const markUnreadButtons = document.querySelectorAll(".mark-unread-btn");
 
             // Add event listeners to mark-as-read buttons in the items that are unread states
             markReadButtons.forEach((button) => {
                 button.addEventListener("click", function() {
+                    const buttonValue = this.className;
                     const announcementItem = this.closest(".announcement-item");
-
-                    // Ensure the item is marked as read only once
-                    if (announcementItem.getAttribute("data-read") === "true") return;
-
                     // Change item's state to read
                     announcementItem.classList.add("read");
                     announcementItem.setAttribute("data-read", "true");
+
+                    // Update unread count
+                    updateUnreadCount();
+
+                    this.textContent = 'Mark as unread';
+                    this.className = 'mark-unread-btn';
 
                     // Remove unread indicator
                     const unreadIndicator = announcementItem.querySelector(".unread-indicator");
@@ -150,9 +147,12 @@
                         unreadIndicator.remove();
                     }
 
-                    // Change button text
-                    this.textContent = "Mark as unread";
-                    this.className = "mark-unread-btn";
+                    // If we're in read filter, this item should disappear
+                    if (document.querySelector('.filter-button[data-filter="unread"].active')) {
+                        announcementItem.style.display = "none";
+                        checkEmptyState();
+                        console.log("unread .active to none")
+                    }
 
                     // Send POST request to mark announcement as read
                     fetch('/announcements/mark-as-read', {
@@ -177,16 +177,7 @@
                             console.error('Error:', error);
                         });
 
-                    // Update unread count
-                    updateUnreadCount();
 
-                    // If we're in read filter, this item should disappear
-                    if (
-                        document.querySelector('.filter-button[data-filter="read"].active')
-                    ) {
-                        announcementItem.style.display = "none";
-                        checkEmptyState();
-                    }
                 });
             });
 
@@ -194,9 +185,6 @@
             markUnreadButtons.forEach((button) => {
                 button.addEventListener("click", function() {
                     const announcementItem = this.closest(".announcement-item");
-
-                    // Ensure the item is marked as unread only once
-                    if (announcementItem.getAttribute("data-read") === "false") return;
 
                     announcementItem.classList.remove("read");
                     announcementItem.setAttribute("data-read", "false");
@@ -212,6 +200,14 @@
                     // Change button text
                     this.textContent = "Mark as read";
                     this.className = "mark-read-btn";
+
+                    // If we're in unread filter, this item should disappear
+                    if (
+                        document.querySelector('.filter-button[data-filter="unread"].active')
+                    ) {
+                        announcementItem.style.display = "none";
+                        checkEmptyState();
+                    }
 
                     // Send POST request to mark announcement as unread
                     fetch('/announcements/mark-as-unread', {
@@ -239,13 +235,7 @@
                     // Update unread count
                     updateUnreadCount();
 
-                    // If we're in unread filter, this item should disappear
-                    if (
-                        document.querySelector('.filter-button[data-filter="unread"].active')
-                    ) {
-                        announcementItem.style.display = "none";
-                        checkEmptyState();
-                    }
+
                 });
             });
 
@@ -272,16 +262,31 @@
                     // Update unread count
                     updateUnreadCount();
                 }
+
+                if (e.target && e.target.classList.contains("mark-read-btn")) {
+                    const announcementItem = e.target.closest(".announcement-item");
+                    announcementItem.classList.add("read");
+                    announcementItem.setAttribute("data-read", "true");
+
+                    // Remove unread indicator
+                    const unreadIndicator = announcementItem.querySelector(".unread-indicator");
+                    if (unreadIndicator) {
+                        unreadIndicator.remove();
+                    }
+
+                    // Change button text
+                    e.target.textContent = "Mark as unread";
+                    e.target.className = "mark-unread-btn";
+
+                    // Update unread count
+                    updateUnreadCount();
+                }
             });
 
             // Function to update unread count badge
             function updateUnreadCount() {
-                const unreadItems = document.querySelectorAll(
-                    '.announcement-item[data-read="false"]'
-                );
-                const notificationBadge = document.querySelector(
-                    ".notification-badge"
-                );
+                const unreadItems = document.querySelectorAll('.announcement-item[data-read="false"]');
+                const notificationBadge = document.querySelector(".notification-badge");
 
                 if (unreadItems.length > 0) {
                     notificationBadge.textContent = unreadItems.length;
@@ -290,6 +295,7 @@
                     notificationBadge.style.display = "none";
                 }
             }
+
 
             // Function to check and show empty state if needed
             function checkEmptyState() {
