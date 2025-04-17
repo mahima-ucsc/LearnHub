@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/assets/styles/main.css">
     <link rel="stylesheet" href="/assets/styles/footer.css">
     <link rel="stylesheet" href="/assets/styles/header.css">
+    <link rel="stylesheet" href="/assets/styles/notifications.css">
 
     <link rel="stylesheet" href="/assets/styles/reset.css">
 
@@ -62,7 +63,7 @@
                     </svg>
                     <div class="tooltip">Notifications</div>
 
-                    <div class="notification-count">3</div>
+                    <?php include $this->resolve("partials/notification-dropdown.php"); ?>
                 </div>
             <?php endif; ?>
             <div class="user-picture-container">
