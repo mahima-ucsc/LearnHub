@@ -45,14 +45,57 @@ class PostController
     }
     public function CourseRequestView()
     {
-        $courseRequests = $this->courseRequestService->getApprovedCourseRequests();
+        $searchTerm = $_GET['s'] ?? null;
+        $page = $_GET['p'] ?? 1;
+        $page = (int) $page;
+        $length = 6;
+        $offset = ($page - 1) * $length;
+
+        $subject = $_GET['subject'] ?? 'all';
+        $grade = $_GET['grade'] ?? 'all';
+        $sort = $_GET['sort'] ?? 'recent';
+
+        [$courseRequests, $requestCount] = $this->courseRequestService->getApprovedCourseRequests($length, $offset);
+
+        $lastPage = ceil($requestCount / $length);
+        $pages = $lastPage ? range(1, $lastPage) : [];
+
+        $pageLinks = array_map(
+            fn($pageNum) => http_build_query([
+                'p' => $pageNum,
+                's' => $searchTerm,
+                'subject' => $subject,
+                'grade' => $grade,
+                'sort' => $sort
+            ]),
+            $pages
+        );
+
         $subjects = $this->subjectService->getSubjects();
         $grades = $this->courseService->getGrades();
         echo $this->view->render('post/course_requests.php', [
             "title" => "Course Requests",
             "courseRequests" => $courseRequests,
             'subjects' => $subjects,
-            'grades' => $grades
+            'grades' => $grades,
+            'requestCount' => $requestCount,
+            "currentPage" => $page,
+            "previousPageQuery" => http_build_query([
+                'p' => $page - 1,
+                's' => $searchTerm,
+                'subject' => $subject,
+                'grade' => $grade,
+                'sort' => $sort
+            ]),
+            'lastPage' => $lastPage,
+            "nextPageQuery" => http_build_query([
+                'p' => $page + 1,
+                's' => $searchTerm,
+                'subject' => $subject,
+                'grade' => $grade,
+                'sort' => $sort
+            ]),
+            "pageLinks" => $pageLinks,
         ]);
     }
 

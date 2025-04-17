@@ -174,6 +174,16 @@
         margin-top: 50px;
     }
 
+    .clear-filter {
+        display: flex;
+        justify-content: end;
+        margin-bottom: 16px;
+    }
+
+    .clear-filter a {
+        color: #FFC400;
+    }
+
     .create-course-request-btn {
         display: flex;
         justify-content: end;
@@ -349,42 +359,80 @@
     }
 
     /* Pagination */
-    .pagination {
+    .pagination-course-container {
         display: flex;
         justify-content: center;
-        margin-top: 40px;
-        margin-bottom: 60px;
+        align-items: center;
+        gap: 15px;
+        margin: 40px 0;
     }
 
-    .pagination-list {
-        display: flex;
-        list-style-type: none;
-        gap: 8px;
-    }
-
-    .pagination-item a {
+    .pagination-btn {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 40px;
-        height: 40px;
-        border-radius: 8px;
+        padding: 10px 15px;
         background-color: var(--white);
         color: var(--dark);
+        border-radius: var(--radius-sm);
         text-decoration: none;
-        transition: var(--transition);
         font-weight: 500;
         box-shadow: var(--shadow);
+        transition: var(--transition);
     }
 
-    .pagination-item a:hover {
-        background-color: var(--gray-light);
+    .pagination-btn:hover {
+        background-color: var(--gray);
+        transform: translateY(-2px);
     }
 
-    .pagination-item.active a {
+    .pagination-btn i {
+        margin: 0 5px;
+    }
+
+    .page-numbers {
+        display: flex;
+        gap: 8px;
+    }
+
+    .page-numbers a {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--white);
+        color: var(--dark);
+        border-radius: var(--radius-sm);
+        text-decoration: none;
+        font-weight: 500;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+    }
+
+    .page-numbers a:hover:not(.active-page) {
+        background-color: var(--gray);
+        transform: translateY(-2px);
+    }
+
+    .page-numbers a.active-page {
         background-color: var(--primary);
         color: var(--dark);
     }
+
+    /* Responsive adjustments */
+    @media (max-width: 576px) {
+        .pagination-course-container {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .page-numbers {
+            order: -1;
+        }
+    }
+
+
 
     /* Responsive adjustments */
     @media (max-width: 992px) {
@@ -430,14 +478,17 @@
 <div class="container">
     <div class="search-section">
         <h3 class="subsection-title">Find Course Requests</h3>
-        <form class="search-form" id="searchForm" method="GET" action="/course/request">
+        <form class="search-form" id="searchForm" method="GET">
             <div class="search-input-group">
                 <i class="fas fa-search"></i>
-                <input type="text" name="s" class="search-input" id="searchInput" placeholder="Search by keyword...">
+                <input type="text" name="s" class="search-input" id="searchInput" placeholder="Search by keyword..."
+                    value="<?php echo isset($_GET['s']) ? e($_GET['s']) : ''; ?>">
             </div>
             <button type="submit" class="search-button">Search</button>
         </form>
-        <form action="/course/request" method="GET">
+        <form method="GET">
+            <!-- Hidden search term to preserve it when filtering -->
+            <input type="hidden" name="s" value="<?php echo isset($_GET['s']) ? e($_GET['s']) : ''; ?>">
             <div class="filter-options">
                 <div class="filter-group">
                     <label class="filter-label">Grade</label>
@@ -472,9 +523,10 @@
                 </div>
                 <div class="filter-group">
                     <label class="filter-label">Sort By</label>
-                    <select class="filter-select" id="sortFilter">
+                    <select class="filter-select" id="sortFilter" name="sort">
                         <option value="recent">Most Recent</option>
-                        <option value="proposals">Most Proposals</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="popular">Most Popular</option>
                         <option value="budget">Highest Budget</option>
                     </select>
                 </div>
@@ -488,6 +540,14 @@
     </div>
 
     <div class="request-container">
+        <div class="clear-filter">
+            <?php if (isset($_GET['s']) || (isset($_GET) && count($_GET) > 0 && !isset($_GET['p']))): ?>
+                <a href="/course/request/" class="clear-btn" onclick="showLoader()">
+                    Clear Filters
+                </a>
+            <?php endif; ?>
+
+        </div>
         <div class="create-course-request-btn">
             <a href="/course/request/create" class="btn btn-primary">
                 <i class="fa-solid fa-plus"></i>
@@ -542,147 +602,26 @@
                     </div>
                 </div>
             <?php endforeach; ?>
-            <div class="request-card">
-                <div class="request-header">
-                    <div class="requester">
-                        <img src="/assets/images/user_placeholder.jpg" alt="Requester">
-                        <span>Thomas W.</span>
-                    </div>
-                    <div class="request-status">
-                        <span class="status-open">Open</span>
-                        <span class="time-posted">Posted 2 days ago</span>
-                    </div>
-                </div>
-                <h4 class="request-title">Advanced Machine Learning for Financial Analysis</h4>
-                <div class="request-details">
-                    <div class="detail-item">
-                        <i class="fas fa-graduation-cap"></i>
-                        <span>Advanced Level</span>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-clock"></i>
-                        <span>30-40 hours</span>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-dollar-sign"></i>
-                        <span>Budget: $300-500</span>
-                    </div>
-                </div>
-                <p class="request-brief">Looking for a comprehensive course on applying ML algorithms for financial data analysis, risk assessment, and predictive modeling. Need practical projects with real-world datasets...</p>
-                <div class="request-footer">
-                    <span class="proposals-count"><i class="fas fa-user-tie"></i> 6 Tutor Proposals</span>
-                    <a href="#" class="view-details">View Details</a>
-                </div>
-            </div>
-
-            <div class="request-card">
-                <div class="request-header">
-                    <div class="requester">
-                        <img src="/assets/images/user_placeholder.jpg" alt="Requester">
-                        <span>Priya M.</span>
-                    </div>
-                    <div class="request-status">
-                        <span class="status-open">Open</span>
-                        <span class="time-posted">Posted 1 week ago</span>
-                    </div>
-                </div>
-                <h4 class="request-title">UX Research Methods for Product Teams</h4>
-                <div class="request-details">
-                    <div class="detail-item">
-                        <i class="fas fa-graduation-cap"></i>
-                        <span>Intermediate Level</span>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-clock"></i>
-                        <span>20-25 hours</span>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-dollar-sign"></i>
-                        <span>Budget: $200-350</span>
-                    </div>
-                </div>
-                <p class="request-brief">Seeking a practical course on UX research methods suitable for product managers and designers. Should cover user interviews, usability testing, data analysis...</p>
-                <div class="request-footer">
-                    <span class="proposals-count"><i class="fas fa-user-tie"></i> 12 Tutor Proposals</span>
-                    <a href="#" class="view-details">View Details</a>
-                </div>
-            </div>
-
-            <div class="request-card">
-                <div class="request-header">
-                    <div class="requester">
-                        <img src="/assets/images/user_placeholder.jpg" alt="Requester">
-                        <span>James R.</span>
-                    </div>
-                    <div class="request-status">
-                        <span class="status-open">Open</span>
-                        <span class="time-posted">Posted 3 days ago</span>
-                    </div>
-                </div>
-                <h4 class="request-title">Full Stack Web Development with React and Node.js</h4>
-                <div class="request-details">
-                    <div class="detail-item">
-                        <i class="fas fa-graduation-cap"></i>
-                        <span>Intermediate Level</span>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-clock"></i>
-                        <span>40-50 hours</span>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-dollar-sign"></i>
-                        <span>Budget: $400-600</span>
-                    </div>
-                </div>
-                <p class="request-brief">Looking for a comprehensive course covering modern full stack development. Need to learn React, Redux, Node.js, Express, and MongoDB with real-world project implementation...</p>
-                <div class="request-footer">
-                    <span class="proposals-count"><i class="fas fa-user-tie"></i> 8 Tutor Proposals</span>
-                    <a href="#" class="view-details">View Details</a>
-                </div>
-            </div>
-
-            <div class="request-card">
-                <div class="request-header">
-                    <div class="requester">
-                        <img src="/assets/images/user_placeholder.jpg" alt="Requester">
-                        <span>Sarah K.</span>
-                    </div>
-                    <div class="request-status">
-                        <span class="status-open">Open</span>
-                        <span class="time-posted">Posted 5 days ago</span>
-                    </div>
-                </div>
-                <h4 class="request-title">Data Visualization with Python and Tableau</h4>
-                <div class="request-details">
-                    <div class="detail-item">
-                        <i class="fas fa-graduation-cap"></i>
-                        <span>Beginner Level</span>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-clock"></i>
-                        <span>15-20 hours</span>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-dollar-sign"></i>
-                        <span>Budget: $150-250</span>
-                    </div>
-                </div>
-                <p class="request-brief">Need to learn effective data visualization techniques using Python libraries (Matplotlib, Seaborn) and Tableau. Interested in creating interactive dashboards and storytelling with data...</p>
-                <div class="request-footer">
-                    <span class="proposals-count"><i class="fas fa-user-tie"></i> 4 Tutor Proposals</span>
-                    <a href="#" class="view-details">View Details</a>
-                </div>
-            </div>
         </div>
 
-        <div class="pagination">
-            <ul class="pagination-list">
-                <li class="pagination-item"><a href="#"><i class="fas fa-chevron-left"></i></a></li>
-                <li class="pagination-item active"><a href="#">1</a></li>
-                <li class="pagination-item"><a href="#">2</a></li>
-                <li class="pagination-item"><a href="#">3</a></li>
-                <li class="pagination-item"><a href="#"><i class="fas fa-chevron-right"></i></a></li>
-            </ul>
+        <div class="pagination-course-container">
+            <?php if ($currentPage > 1) : ?>
+                <a href="?<?php echo e($previousPageQuery); ?>" class="pagination-btn prev-btn" onclick="showLoader()">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </a>
+            <?php endif; ?>
+            <div class="page-numbers">
+                <?php foreach ($pageLinks as $pageNum => $query): ?>
+                    <a href="?<?php echo e($query); ?>" class="<?php echo $pageNum + 1 === $currentPage ? "active-page" : "" ?>" onclick="showLoader()">
+                        <?php echo ($pageNum + 1); ?>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+            <?php if ($currentPage < $lastPage): ?>
+                <a href="?<?php echo e($nextPageQuery); ?>" class="pagination-btn next-btn" onclick="showLoader();changePage(1)">
+                    Next <i class="fas fa-chevron-right"></i>
+                </a>
+            <?php endif; ?>
         </div>
 
         <div class="create-request-cta">
@@ -693,48 +632,5 @@
     </div>
 </div>
 
-<script>
-    // Search functionality
-    document.getElementById('searchForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-        filterRequests(searchTerm);
-    });
-
-    // Filter change event listeners
-    document.getElementById('levelFilter').addEventListener('change', applyFilters);
-    document.getElementById('durationFilter').addEventListener('change', applyFilters);
-    document.getElementById('budgetFilter').addEventListener('change', applyFilters);
-    document.getElementById('sortFilter').addEventListener('change', applyFilters);
-
-    function filterRequests(searchTerm) {
-        const requestCards = document.querySelectorAll('.request-card');
-
-        requestCards.forEach(card => {
-            const title = card.querySelector('.request-title').textContent.toLowerCase();
-            const description = card.querySelector('.request-brief').textContent.toLowerCase();
-
-            if (title.includes(searchTerm) || description.includes(searchTerm)) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
-        });
-    }
-
-    function applyFilters() {
-        const level = document.getElementById('levelFilter').value;
-        const duration = document.getElementById('durationFilter').value;
-        const budget = document.getElementById('budgetFilter').value;
-        const sort = document.getElementById('sortFilter').value;
-
-        // Here you would typically make an AJAX request to the server
-        // with these filter parameters and refresh the request cards
-        console.log(`Filtering by: Level=${level}, Duration=${duration}, Budget=${budget}, Sort=${sort}`);
-
-        // For demo purposes, let's just show a message
-        alert(`Filters applied: Level=${level || 'Any'}, Duration=${duration || 'Any'}, Budget=${budget || 'Any'}, Sort=${sort}`);
-    }
-</script>
 
 <?php include $this->resolve("partials/_footer.php"); ?>
