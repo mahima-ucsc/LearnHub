@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace App\Config;
 
-use App\Controllers\{AdvertisementController, AlertController, AssignmentController, AuthController, ContactController, ProfileController, CoursesController, TutorProfileController, SettingController, PageController, PaymentController, ResourceController, PostController, ReviewController, UserController};
+use App\Controllers\{AdvertisementController, AlertController, AssignmentController, AuthController, ContactController, ProfileController, CoursesController, NotificationController, TutorProfileController, SettingController, PageController, PaymentController, ResourceController, PostController, ReviewController, UserController};
 use App\Middleware\AdminOnlyMiddleware;
 use App\Middleware\AuthRequiredMiddleware;
 use App\Middleware\GuestOnlyMiddleware;
@@ -163,6 +163,9 @@ function registerRoutes(App $app)
     $app->post('/test', [PageController::class, 'testPost']);
     $app->get('/post', [PageController::class, 'post']);
     $app->get('/test/help', [PageController::class, 'helpAndSupportReview']);
+
+    // Notifications
+    $app->get('/notifications', [NotificationController::class, 'getUserNotifications'], [AuthRequiredMiddleware::class]);
 
     // Payments
     $app->get('/payment/courses/{course_id}', [PaymentController::class, 'onetimeCoursePaymentView']);

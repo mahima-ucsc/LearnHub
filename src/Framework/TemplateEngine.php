@@ -26,7 +26,12 @@ class TemplateEngine
     public function renderJson(array $data = [])
     {
         header('Content-Type: application/json');
-        return json_encode($data);
+
+        ob_start();
+        echo json_encode($data);
+        $output = ob_get_contents();
+        ob_end_clean();
+        echo $output;
     }
 
     public function resolve(string $path)
