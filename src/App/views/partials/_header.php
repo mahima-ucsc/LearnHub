@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/assets/styles/main.css">
     <link rel="stylesheet" href="/assets/styles/footer.css">
     <link rel="stylesheet" href="/assets/styles/header.css">
+    <link rel="stylesheet" href="/assets/styles/notifications.css">
 
     <link rel="stylesheet" href="/assets/styles/reset.css">
 
@@ -62,7 +63,133 @@
                     </svg>
                     <div class="tooltip">Notifications</div>
 
-                    <div class="notification-count">3</div>
+                    <div class="notification-count">0</div>
+                    <div class="notifications-dropdown">
+                        <div class="notifications-header">
+                            <h3>Notifications</h3>
+                            <div class="notification-actions">
+                                <button class="refresh-notifications" title="Refresh notifications">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z" />
+                                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
+                                    </svg>
+                                </button>
+                                <button class="mark-all-read">Mark all as read</button>
+                            </div>
+                        </div>
+                        <div class="notifications-list">
+                            <!-- Notifications will be populated dynamically -->
+                        </div>
+                        <div class="notifications-footer">
+                            <a href="/notifications" class="view-all">View all notifications</a>
+                        </div>
+                    </div>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const notificationIcon = document.querySelector('.notification-icon-container');
+                            const notificationsDropdown = document.querySelector('.notifications-dropdown');
+                            const markAllReadBtn = document.querySelector('.mark-all-read');
+                            const refreshBtn = document.querySelector('.refresh-notifications');
+                            const notificationsListContainer = document.querySelector('.notifications-list');
+
+                            let notifications = [];
+
+                            // Function to fetch notifications
+                            function fetchNotifications() {
+                                // Add rotating class to show loading state
+                                refreshBtn.classList.add('rotating');
+
+                                fetch('/api/notifications')
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error('Notifications Network response was not ok');
+                                        }
+                                        return response.json();
+                                    })
+                                    .then(data => {
+                                        notifications = data;
+                                        renderNotifications();
+                                    })
+                                    .catch(error => {
+                                        console.error('Error fetching notifications:', error);
+                                        notifications = []; // Reset to empty if fetch fails
+                                        renderNotifications();
+                                    })
+                                    .finally(() => {
+                                        // Remove rotating class when done
+                                        setTimeout(() => {
+                                            refreshBtn.classList.remove('rotating');
+                                        }, 500);
+                                    });
+                            }
+
+                            // Initial fetch
+                            fetchNotifications();
+
+                            // Optionally, refresh notifications periodically
+                            // setInterval(fetchNotifications, 60000); // Refresh every minute
+
+                            // Function to render notifications
+                            function renderNotifications() {
+                                notificationsListContainer.innerHTML = '';
+                                let unreadCount = 0;
+
+                                if (notifications.length === 0) {
+                                    notificationsListContainer.innerHTML = '<div class="no-notifications">No notifications</div>';
+                                } else {
+                                    notifications.forEach(notification => {
+                                        if (!notification.is_read) unreadCount++;
+
+                                        const notificationItem = document.createElement('a');
+                                        notificationItem.href = notification.url;
+                                        notificationItem.className = `notification-item ${notification.is_read ? 'read' : 'unread'}`;
+
+                                        notificationItem.innerHTML = `
+                                            <div class="notification-content">
+                                                <p>${notification.message}</p>
+                                                <span class="notification-time">${notification.updated_at}</span>
+                                            </div>
+                                            ${!notification.read ? '<div class="notification-badge"></div>' : ''}
+                                        `;
+
+                                        notificationsListContainer.appendChild(notificationItem);
+                                    });
+                                }
+
+                                document.querySelector('.notification-count').textContent = unreadCount;
+                            }
+
+                            // Initial render
+                            renderNotifications();
+
+                            // Refresh button click handler
+                            refreshBtn.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                fetchNotifications();
+                            });
+
+                            notificationIcon.addEventListener('click', function(e) {
+                                e.stopPropagation();
+                                notificationsDropdown.style.display = notificationsDropdown.style.display === 'block' ? 'none' : 'block';
+                            });
+
+                            markAllReadBtn.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                notifications.forEach(notification => notification.read = true);
+                                renderNotifications();
+                            });
+
+                            // Close dropdown when clicking elsewhere
+                            document.addEventListener('click', function(e) {
+                                if (!notificationsDropdown.contains(e.target) && !notificationIcon.contains(e.target)) {
+                                    notificationsDropdown.style.display = 'none';
+                                }
+                            });
+                        });
+                    </script>
                 </div>
             <?php endif; ?>
             <div class="user-picture-container">

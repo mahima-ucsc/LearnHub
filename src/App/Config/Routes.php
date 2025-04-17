@@ -176,7 +176,7 @@ function registerRoutes(App $app)
     $app->get('/test/help', [PageController::class, 'helpAndSupportReview']);
 
     // Notifications
-    $app->get('/notifications', [NotificationController::class, 'getUserNotifications'], [NotificationMiddleware::class]);
+    $app->get('/api/notifications', [NotificationController::class, 'getUserNotifications'], [NotificationMiddleware::class]);
 
     // Payments
     $app->get('/payment/courses/{course_id}', [PaymentController::class, 'onetimeCoursePaymentView']);
