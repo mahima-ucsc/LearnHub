@@ -270,16 +270,18 @@ CREATE TABLE IF NOT EXISTS course_requests (
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     subject_id BIGINT(20) UNSIGNED,
+    grade_id BIGINT(20) UNSIGNED NOT NULL,
+    status ENUM('pending', 'approved') NOT NULL DEFAULT 'pending',
+    location VARCHAR(100) NOT NULL,
+
     created_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     updated_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
     user_id BIGINT(20) UNSIGNED NOT NULL,
     PRIMARY KEY(request_id),
     FOREIGN KEY (subject_id) REFERENCES subjects(subject_id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (grade_id) REFERENCES grades(grade_id) ON DELETE CASCADE
 );
-
-ALTER TABLE course_requests
-ADD COLUMN status ENUM('pending', 'approved') NOT NULL DEFAULT 'pending';
 
 -- Comments on course requests
 CREATE TABLE IF NOT EXISTS course_request_comments (
