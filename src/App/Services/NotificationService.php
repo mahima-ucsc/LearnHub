@@ -21,4 +21,14 @@ class NotificationService
             ]
         )->findAll();
     }
+
+    public function markAllAsRead(string $userId)
+    {
+        $this->db->query(
+            "UPDATE notification_users SET is_read = 1 WHERE user_id = :user_id",
+            [
+                'user_id' => $userId
+            ]
+        );
+    }
 }

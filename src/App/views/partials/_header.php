@@ -178,7 +178,22 @@
                             markAllReadBtn.addEventListener('click', function(e) {
                                 e.preventDefault();
                                 e.stopPropagation();
-                                notifications.forEach(notification => notification.read = true);
+                                fetch('/api/notifications/mark-all-as-read', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-Requested-With': 'XMLHttpRequest'
+                                        }
+                                    })
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            console.error('Failed to mark notifications as read');
+                                        }
+                                        return response.json();
+                                    })
+                                    .catch(error => {
+                                        console.error('Error marking notifications as read:', error);
+                                    });
                                 renderNotifications();
                             });
 

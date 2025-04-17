@@ -19,4 +19,10 @@ class NotificationController
         $notifications = $this->notificationService->getNotificationsForLoggedInUser();
         $this->view->renderJson($notifications);
     }
+
+    public function markAllAsRead()
+    {
+        $this->notificationService->markAllAsRead((string)$_SESSION['user']);
+        $this->view->renderJson(['status' => 'success']);
+    }
 }

@@ -177,6 +177,7 @@ function registerRoutes(App $app)
 
     // Notifications
     $app->get('/api/notifications', [NotificationController::class, 'getUserNotifications'], [NotificationMiddleware::class]);
+    $app->post('/api/notifications/mark-all-as-read', [NotificationController::class, 'markAllAsRead'], [NotificationMiddleware::class]);
 
     // Payments
     $app->get('/payment/courses/{course_id}', [PaymentController::class, 'onetimeCoursePaymentView']);
