@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use Error;
+use Exception;
 use Framework\Database;
 
 class CourseRequestService
@@ -13,16 +15,23 @@ class CourseRequestService
     public function create(array $formData)
     {
         $user_id = $_SESSION['user'];
-        $this->db->query(
-            "INSERT INTO course_requests(title, description, subject_id, user_id)
-            VALUES (:title, :description, :subject_id, :user_id)",
-            [
-                "title" => $formData['title'],
-                "description" => $formData['description'],
-                "subject_id" => $formData['subject_id'] != -1 ? $formData['subject_id'] : null,
-                "user_id" => $user_id,
-            ]
-        );
+        try {
+            $this->db->query(
+                "INSERT INTO course_requests(title, description, subject_id, grade_id, user_id, location)
+                VALUES (:title, :description, :subject_id, :grade_id, :user_id, :location)",
+                [
+                    "title" => $formData['title'],
+                    "description" => $formData['description'],
+                    "subject_id" => $formData['subject'] ? $formData['subject'] : null,
+                    "grade_id" => $formData['grade'] ? $formData['grade'] : null,
+                    "user_id" => $user_id,
+                    "location" => $formData['location']
+                ]
+            );
+        } catch (Exception $e) {
+            error_log("Failed to insert data to course request table: " . $e->getMessage());
+            redirectTo('/server-error');
+        }
     }
 
     public function getCourseRequestsforView()
@@ -65,7 +74,11 @@ class CourseRequestService
                 cr.request_id, 
                 cr.description,
                 cr.status, 
+                cr.location,
                 s.subject_title AS subject, 
+                s.subject_id, 
+                g.grade_name AS grade,
+                g.grade_id AS grade_id,
                 cr.created_date, 
                 cr.updated_date, 
                 u.user_id as author_id,
@@ -77,6 +90,8 @@ class CourseRequestService
                 subjects s ON cr.subject_id = s.subject_id
             JOIN 
                 users u ON cr.user_id = u.user_id
+            JOIN
+                grades g ON g.grade_id = cr.grade_id
             LEFT JOIN 
                 course_request_comments c ON cr.request_id = c.request_id
             WHERE 
@@ -130,9 +145,13 @@ class CourseRequestService
                 cr.request_id, 
                 cr.description,
                 s.subject_id, 
-                s.subject_title AS subject, 
+                s.subject_title AS subject,
+                cr.grade_id,
+                g.grade_name AS grade,
+                cr.location,
                 cr.created_date, 
-                cr.updated_date, 
+                cr.updated_date,
+                cr.user_id,
                 CONCAT(u.first_name, ' ', u.last_name) AS author
             FROM 
                 course_requests cr
@@ -140,6 +159,8 @@ class CourseRequestService
                 subjects s ON cr.subject_id = s.subject_id
             JOIN 
                 users u ON cr.user_id = u.user_id
+            JOIN
+                grades g ON g.grade_id = cr.grade_id
             WHERE 
                 request_id = :request_id  
             ";
@@ -225,23 +246,29 @@ class CourseRequestService
 
     public function updateCourseRequestById(array $formData, string $requestId)
     {
-        $query =
-            "UPDATE course_requests SET
-            title = :title,
-            description = :description,
-            subject_id = :subject_id
-            WHERE request_id = :request_id AND user_id = :user_id";
-
-        $this->db->query(
-            $query,
-            [
-                "title" => $formData['requestTitle'],
-                "description" => $formData['requestDescription'],
-                "subject_id" => $formData['subject_id'] != -1 ? $formData['subject_id'] : null,
-                "request_id" => $requestId,
-                "user_id" => $_SESSION['user']
-            ]
-        );
+        try {
+            $this->db->query(
+                "UPDATE course_requests SET
+                title = :title,
+                description = :description,
+                subject_id = :subject_id,
+                grade_id = :grade_id,
+                location = :location
+                WHERE request_id = :request_id AND user_id = :user_id",
+                [
+                    "title" => $formData['title'],
+                    "description" => $formData['description'],
+                    "subject_id" => $formData['subject'] != -1 ? $formData['subject'] : null,
+                    "request_id" => $requestId,
+                    'grade_id' => $formData['grade'],
+                    'location' => $formData['location'],
+                    "user_id" => $_SESSION['user']
+                ]
+            );
+        } catch (Exception $e) {
+            error_log("Failed to update course request: " . $e->getMessage());
+            redirectTo('/server-error');
+        }
     }
 
     public function approveCourseRequestById(string $requestId)
@@ -284,5 +311,22 @@ class CourseRequestService
                 "comment_id" => $commentId
             ]
         );
+    }
+
+    public function getUserCourseRequest(int $id)
+    {
+        try {
+            return $this->db->query(
+                "SELECT * FROM
+                course_requests
+                WHERE user_id = :id",
+                [
+                    'id' => $id
+                ]
+            )->findAll();
+        } catch (Exception $e) {
+            error_log("Failed to fetch course request by user ID: " . $e->getMessage());
+            redirectTo('server-error');
+        }
     }
 }

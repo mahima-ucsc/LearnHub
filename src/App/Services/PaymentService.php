@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Config\AppConstants;
 use App\Exceptions\PayhereException;
+use Exception;
 use Framework\App;
 use Framework\Database;
 
@@ -379,5 +380,38 @@ class PaymentService
         return [
             "course_title" => $course['title'],
         ];
+    }
+
+    public function getTeacherCourseIncome(int $id)
+    {
+        try {
+            return $this->db->query(
+                "SELECT SUM(p.amount) AS revenue
+                FROM payments p
+                JOIN course_payments cp ON p.payment_id = cp.payment_id
+                JOIN courses c ON c.course_id = cp.course_id
+                WHERE c.tutor_id = :id",
+                [
+                    'id' => $id
+                ]
+            )->findAll();
+        } catch (Exception $e) {
+            error_log("Fail to fetch the teacher course income: " . $e->getMessage());
+            redirectTo('/server-error');
+        }
+    }
+
+    public function getTotalCourseIncome()
+    {
+        try {
+            return $this->db->query(
+                "SELECT SUM(p.amount) AS revenue
+                FROM payments p
+                JOIN course_payments cp ON p.payment_id = cp.payment_id"
+            )->findAll();
+        } catch (Exception $e) {
+            error_log("Fail to fetch total course income: " . $e->getMessage());
+            redirectTo('/server-error');
+        }
     }
 }
