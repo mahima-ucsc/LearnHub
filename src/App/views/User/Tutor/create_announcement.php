@@ -19,7 +19,7 @@
 
         <div id="alertMessage" class="alert"></div>
 
-        <form id="announcementForm" action="/announcements/create" method="post" enctype="multipart/form-data">
+        <form id="announcementForm" action="/courses/<?php echo $course_id; ?>/announcements/create" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="title"><i class="fas fa-heading"></i> Announcement Title</label>
                 <input type="text" id="title" name="title" placeholder="Enter a clear title for your announcement" required>

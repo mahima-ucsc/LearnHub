@@ -14,12 +14,13 @@ class AnnouncementController
         private AnnouncementService $AnnouncementService
     ) {}
 
-    public function announcementsFormView()
+    public function announcementsFormView($params)
     {
         echo $this->view->render(
             "User/Tutor/create_announcement.php",
             [
                 'title' => 'create announcement',
+                'course_id' => $params['course_id']
             ]
         );
     }
@@ -28,6 +29,7 @@ class AnnouncementController
     {
         $_POST['course_id'] = $params['course_id'];
         $this->AnnouncementService->createAnnouncements($_POST, $_FILES);
+        redirectTo("/courses/{$params['course_id']}/announcements");
     }
 
     public function announcementsListView($params)
