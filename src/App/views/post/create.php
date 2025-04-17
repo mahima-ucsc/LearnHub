@@ -1,467 +1,314 @@
 <?php include $this->resolve("partials/_header.php"); ?>
-<link rel="stylesheet" href="/assets/styles/components/toast.css">
-
-
 <style>
     :root {
-        --theme-color: #FFC400;
-        --theme-dark: #e6b000;
-        --theme-light: #ffd54f;
-        --theme-ultra-light: #fff8e1;
-        --dark-text: #333333;
-        --light-text: #666666;
-        --lightest-text: #999999;
-        --background: #f9f9f9;
+        --primary: #FFC400;
+        --primary-dark: #e6b000;
+        --primary-rgb: 255, 196, 0;
+        --gray-light: #f8f9fa;
+        --gray: #e9ecef;
+        --gray-dark: #6c757d;
         --white: #ffffff;
-        --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-        --border-radius: 12px;
-        --input-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-        --transition: all 0.3s ease;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --radius-sm: 8px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --color-text: #333333;
+        --color-text-secondary: var(--gray-dark);
+        --color-heading: #222222;
+        --color-bg: var(--white);
+        --color-bg-secondary: var(--gray-light);
+        --color-border: var(--gray);
+        --color-success: #28a745;
+        --color-success-bg: #d4edda;
+        --color-error: #dc3545;
     }
 
-
-    .main-post-container {
-        width: 100%;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
-    }
-
-    .btn {
-        background-color: transparent;
-        border: none;
-        padding: 14px 28px;
-        border-radius: var(--border-radius);
-        cursor: pointer;
-        font-weight: 600;
-        transition: var(--transition);
-        font-size: 16px;
-        letter-spacing: 0.5px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn i {
-        margin-right: 8px;
-    }
-
-    .btn-primary {
-        background-color: var(--theme-color);
-        color: var(--dark-text);
-    }
-
-    .btn-primary:hover {
-        background-color: var(--theme-dark);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(255, 196, 0, 0.3);
-    }
-
-    /* Main Content */
-    .page-title {
-        text-align: center;
-        margin: 30px 0 50px;
-    }
-
-    .page-title h2 {
-        font-size: 38px;
-        color: var(--dark-text);
-        font-weight: 700;
-        margin-bottom: 12px;
-    }
-
-    .page-title p {
-        font-size: 18px;
-        color: var(--light-text);
-        max-width: 600px;
-        margin: 0 auto;
-    }
-
-    /* Post Form */
     .post-container {
-        background-color: var(--white);
-        border-radius: var(--border-radius);
-        box-shadow: var(--shadow);
-        padding: 40px;
-        margin-bottom: 60px;
-        position: relative;
-        overflow: hidden;
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 0 1rem;
     }
 
-    .post-container:before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 6px;
-        background: var(--theme-color);
+    .post-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .post-title {
+        font-size: 2rem;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .post-subtitle {
+        color: var(--color-text-secondary);
+        font-size: 1rem;
+    }
+
+    .success-message {
+        background-color: var(--color-success-bg);
+        color: var(--color-success);
+        padding: 1rem;
+        border-radius: var(--radius-md);
+        margin-bottom: 1.5rem;
+        display: none;
+        text-align: center;
+    }
+
+    .post-form-container {
+        background-color: var(--color-bg);
+        border-radius: var(--radius-lg);
+        padding: 2rem;
+        box-shadow: var(--shadow-md);
+    }
+
+    .form-section {
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .section-title {
+        color: var(--color-heading);
+        margin-bottom: 1.5rem;
+        font-size: 1.25rem;
     }
 
     .form-group {
-        margin-bottom: 25px;
+        margin-bottom: 1.5rem;
     }
 
-    .form-group label {
+    .form-label {
         display: block;
-        margin-bottom: 10px;
-        font-weight: 600;
-        color: var(--dark-text);
-        font-size: 15px;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--color-text);
     }
 
     .form-control {
         width: 100%;
-        padding: 16px 20px;
-        border: 1px solid #e0e0e0;
-        border-radius: var(--border-radius);
-        font-size: 16px;
-        transition: var(--transition);
-        box-shadow: var(--input-shadow);
-        background-color: #fafafa;
+        padding: 0.75rem;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        font-size: 1rem;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .form-control:focus {
         outline: none;
-        border-color: var(--theme-color);
-        background-color: var(--white);
-        box-shadow: 0 0 0 3px rgba(255, 196, 0, 0.15);
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
     }
 
-    .form-control::placeholder {
-        color: var(--lightest-text);
+    .form-control.error {
+        border-color: var(--color-error);
     }
 
-    select.form-control {
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23666666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 16px center;
-        padding-right: 45px;
+    .textarea-control {
+        min-height: 100px;
+        resize: vertical;
     }
 
-    .rich-editor {
-        border: 1px solid #e0e0e0;
-        border-radius: var(--border-radius);
-        overflow: hidden;
-        box-shadow: var(--input-shadow);
-        background-color: #fafafa;
-        transition: var(--transition);
+    .hint-text {
+        font-size: 0.85rem;
+        color: var(--color-text-secondary);
+        margin-top: 0.5rem;
     }
 
-    .rich-editor:focus-within {
-        border-color: var(--theme-color);
-        box-shadow: 0 0 0 3px rgba(255, 196, 0, 0.15);
-        background-color: var(--white);
+    .error-message {
+        color: var(--color-error);
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+        display: none;
     }
 
-    .toolbar {
-        display: flex;
-        background-color: #f1f1f1;
-        padding: 12px 15px;
-        border-bottom: 1px solid #e0e0e0;
-        flex-wrap: wrap;
-        gap: 5px;
-    }
-
-    .toolbar button {
-        background-color: transparent;
-        border: none;
-        padding: 8px 14px;
-        cursor: pointer;
-        border-radius: 6px;
-        transition: var(--transition);
-        color: var(--dark-text);
-    }
-
-    .toolbar button:hover {
-        background-color: var(--theme-ultra-light);
-    }
-
-    .toolbar button.active {
-        background-color: var(--theme-light);
-    }
-
-    .editor-content {
-        padding: 20px;
-        min-height: 220px;
-        outline: none;
-        background-color: inherit;
-    }
-
-    /* Recent Posts */
-    .recent-posts {
-        margin-top: 60px;
-    }
-
-    .recent-posts h2 {
-        font-size: 28px;
-        font-weight: 700;
-        margin-bottom: 25px;
-        position: relative;
-        padding-bottom: 12px;
-    }
-
-    .recent-posts h2:after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 60px;
-        height: 4px;
-        background-color: var(--theme-color);
-        border-radius: 10px;
-    }
-
-    .post-list {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-        gap: 30px;
-    }
-
-    .post-card {
-        background-color: var(--white);
-        border-radius: var(--border-radius);
-        box-shadow: var(--shadow);
-        overflow: hidden;
-        transition: var(--transition);
-        border: 1px solid rgba(0, 0, 0, 0.03);
-    }
-
-    .post-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-    }
-
-    .post-card-header {
-        background-color: var(--theme-color);
-        color: var(--dark-text);
-        padding: 20px;
-        position: relative;
-    }
-
-    .post-card-header h3 {
-        font-size: 20px;
-        margin-bottom: 10px;
-        font-weight: 700;
-    }
-
-    .post-meta {
-        display: flex;
-        justify-content: space-between;
-        font-size: 14px;
-        color: var(--dark-text);
-        opacity: 0.9;
-        font-weight: 500;
-    }
-
-    .post-meta span {
+    .toggle-container {
         display: flex;
         align-items: center;
     }
 
-    .post-meta i {
-        margin-right: 5px;
-    }
-
-    .post-card-body {
-        padding: 20px;
-    }
-
-    .post-content {
-        margin-bottom: 15px;
-        font-size: 15px;
-        color: var(--light-text);
-        max-height: 120px;
-        overflow: hidden;
+    .toggle-switch {
         position: relative;
-    }
-
-    .post-content:after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 40px;
-        background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-    }
-
-    .post-card-footer {
-        display: flex;
-        justify-content: space-between;
-        padding: 15px 20px;
-        border-top: 1px solid #eee;
-        color: var(--lightest-text);
-        font-size: 14px;
-    }
-
-    /* Tags */
-    .tag {
         display: inline-block;
-        padding: 5px 12px;
-        font-size: 12px;
-        font-weight: 600;
-        border-radius: 20px;
-        background-color: var(--theme-ultra-light);
-        color: var(--dark-text);
-        margin-right: 8px;
+        width: 52px;
+        height: 26px;
+        margin-right: 10px;
     }
 
-    /* Button with icon */
-    .icon-btn {
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+    .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+    input:checked+.toggle-slider {
+        background-color: var(--primary);
+    }
+
+    input:checked+.toggle-slider:before {
+        transform: translateX(26px);
+    }
+
+    .toggle-label {
+        font-size: 0.95rem;
+    }
+
+    .form-actions {
         display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--radius-md);
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
         align-items: center;
-        justify-content: center;
+        gap: 0.5rem;
     }
 
-    .icon-btn i {
-        margin-right: 8px;
+    .btn-primary {
+        background-color: var(--primary);
+        color: white;
+        border: none;
     }
 
-    /* Responsive */
+    .btn-primary:hover {
+        background-color: var(--primary-dark);
+    }
+
+    .btn-outline {
+        background-color: transparent;
+        color: var(--color-text);
+        border: 1px solid var(--color-border);
+    }
+
+    .btn-outline:hover {
+        background-color: var(--color-bg-secondary);
+    }
+
     @media (max-width: 768px) {
-        .post-list {
-            grid-template-columns: 1fr;
+        .post-form-container {
+            padding: 1.5rem;
         }
 
-        .post-container {
-            padding: 30px 20px;
+        .form-actions {
+            flex-direction: column;
         }
 
-        .page-title h2 {
-            font-size: 30px;
-        }
-
-        .page-title p {
-            font-size: 16px;
+        .btn {
+            width: 100%;
         }
     }
 </style>
+<div class="post-container">
+    <div class="post-header">
 
-<main>
-    <div class="main-post-container">
-        <div class="page-title">
-            <h2>Post Your Course Requirements</h2>
-            <p>Can't find the course you need? Let our teachers know what you're looking for.</p>
-        </div>
+        <h1 class="post-title">Post Your Course Requirements</h1>
+        <p class="post-subtitle"> Can't find the course you need? Let our teachers know what you're looking for.
+        </p>
+    </div>
 
-        <div class="post-container">
-            <form id="requirementForm">
+    <div class="success-message" id="successMessage">
+        Your post has been successfully created and published.
+    </div>
+
+    <div class="post-form-container">
+        <form id="postForm" method="POST">
+            <!-- Basic Post Information -->
+            <div class="form-section">
+                <h3 class="section-title">Post Information</h3>
+
                 <div class="form-group">
-                    <label for="postTitle">Course Title</label>
-                    <input type="text" id="postTitle" class="form-control" placeholder="What course are you looking for?" required>
+                    <label for="postTitle" class="form-label">Title *</label>
+                    <input type="text" id="postTitle" name="title" class="form-control"
+                        placeholder="Enter a descriptive title" required maxlength="100">
+                    <div class="error-message" id="postTitleError">Please enter a title</div>
                 </div>
 
                 <div class="form-group">
-                    <label for="postContent">Course Description</label>
-                    <div class="rich-editor">
-                        <div class="toolbar">
-                            <button type="button" id="bold" title="Bold"><i class="fas fa-bold"></i></button>
-                            <button type="button" id="italic" title="Italic"><i class="fas fa-italic"></i></button>
-                            <button type="button" id="underline" title="Underline"><i class="fas fa-underline"></i></button>
-                            <button type="button" id="bullet" title="Bullet List"><i class="fas fa-list-ul"></i></button>
-                            <button type="button" id="number" title="Numbered List"><i class="fas fa-list-ol"></i></button>
-                        </div>
-                        <div class="editor-content" id="editor" contenteditable="true" placeholder="Describe what you're looking to learn..."></div>
-                    </div>
+                    <label for="postDescription" class="form-label">Description *</label>
+                    <textarea id="postDescription" name="description" class="form-control textarea-control"
+                        placeholder="Provide a detailed description of your post" required rows="6"></textarea>
+                    <div class="error-message" id="postDescriptionError">Please enter a description</div>
                 </div>
 
                 <div class="form-group">
-                    <label for="category">Course Category</label>
-                    <select id="category" class="form-control" required>
-                        <option value="">Select a category</option>
-                        <option value="programming">Programming & Development</option>
-                        <option value="design">Design & Creative</option>
-                        <option value="business">Business & Finance</option>
-                        <option value="marketing">Marketing & Communications</option>
-                        <option value="languages">Languages</option>
-                        <option value="academic">Academic & Science</option>
+                    <label for="subject" class="form-label">Subject *</label>
+                    <select id="subject" name="subject" class="form-control" required>
+                        <option value="">Select a subject</option>
+                        <?php foreach ($subjects as $subject): ?>
+                            <option value="<?php echo e($subject['subject_id']); ?>">
+                                <?php echo e($subject['subject_title']); ?>
+                            </option>
+                        <?php endforeach; ?>
                         <option value="other">Other</option>
                     </select>
+                    <div class="error-message" id="subjectError">Please select a subject</div>
                 </div>
 
                 <div class="form-group">
-                    <label for="budget">Budget Range</label>
-                    <div style="display: flex; gap: 15px; align-items: center;">
-                        <div style="flex: 1;">
-                            <input type="number" id="budgetMin" class="form-control" placeholder="Min ($)" min="0" step="1">
-                        </div>
-                        <span style="font-weight: 500;">to</span>
-                        <div style="flex: 1;">
-                            <input type="number" id="budgetMax" class="form-control" placeholder="Max ($)" min="0" step="1">
-                        </div>
-                    </div>
+                    <label for="grade" class="form-label">Grade/Level *</label>
+                    <select id="grade" name="grade" class="form-control" required>
+                        <option value="">Select a grade</option>
+                        <?php foreach ($grades as $grade): ?>
+                            <option value="<?php echo e($grade['grade_id']); ?>">
+                                <?php echo e($grade['grade_name']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                        <option value="all">All Levels</option>
+                    </select>
+                    <div class="error-message" id="gradeError">Please select a grade level</div>
                 </div>
-
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary icon-btn">
-                        <i class="fas fa-paper-plane"></i> Post Requirement
-                    </button>
+                    <label for="postTitle" class="form-label">Location *</label>
+                    <input type="text" id="location" name="location" class="form-control"
+                        placeholder="Enter a location" required>
+                    <div class="error-message" id="locationError">Please enter a location</div>
                 </div>
-            </form>
-        </div>
-</main>
-<script src="/assets/js/components/toast.js"></script>
+            </div>
 
+
+            <!-- Submit Section -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" id="submitPost">
+                    <i class="fas fa-paper-plane"></i> Publish Post
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <script>
-    // Simple rich text editor functionality
-    document.querySelectorAll('.toolbar button').forEach(button => {
-        button.addEventListener('click', function() {
-            let command = this.id;
-            if (command === 'bullet') {
-                document.execCommand('insertUnorderedList', false, null);
-            } else if (command === 'number') {
-                document.execCommand('insertOrderedList', false, null);
-            } else {
-                document.execCommand(command, false, null);
-            }
-            this.classList.toggle('active');
-        });
-    });
-
-    // Form submission
-    document.getElementById('requirementForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        // Get all form values
-        const formData = {
-            title: document.getElementById('postTitle').value,
-            description: document.getElementById('editor').innerHTML,
-            category: document.getElementById('category').value,
-            budgetMin: document.getElementById('budgetMin').value,
-            budgetMax: document.getElementById('budgetMax').value
-        };
-
-        // Send POST request to the server
-        fetch('/course/request/create', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(response => {
-                if (response.ok) {
-                    showToast('Post Submitted', 'The post has been submitted successfully.', 'success');
-                    return response.json();
-                }
-                throw new Error('Network response was not ok');
-            })
-            .then(data => {
-                // Optional: redirect or clear form after successful submission
-                // window.location.href = '/course/requests';
-                // document.getElementById('requirementForm').reset();
-                console.log(data);
-
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('There was a problem submitting your request. Please try again.');
-            });
-    });
 </script>
 
 <?php include $this->resolve("partials/_footer.php"); ?>
