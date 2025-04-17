@@ -130,6 +130,39 @@
                             // Optionally, refresh notifications periodically
                             // setInterval(fetchNotifications, 60000); // Refresh every minute
 
+                            // Function to mark notification as read
+                            function markAsRead(notificationId, event) {
+                                event.preventDefault();
+                                event.stopPropagation();
+
+                                fetch(`/api/notifications/mark-as-read/${notificationId}`, {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-Requested-With': 'XMLHttpRequest'
+                                        }
+                                    })
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            console.error('Failed to mark notification as read');
+                                        }
+                                        return response.json();
+                                    })
+                                    .then(data => {
+                                        // Find and update the notification in our array
+                                        const notificationIndex = notifications.findIndex(n => n.notification_id === notificationId);
+                                        if (notificationIndex !== -1) {
+                                            notifications[notificationIndex].is_read = true;
+                                            window.location.href = notifications[notificationIndex].url;
+                                            renderNotifications();
+                                        }
+
+                                    })
+                                    .catch(error => {
+                                        console.error('Error marking notification as read:', error);
+                                    });
+                            }
+
                             // Function to render notifications
                             function renderNotifications() {
                                 notificationsListContainer.innerHTML = '';
@@ -144,14 +177,22 @@
                                         const notificationItem = document.createElement('a');
                                         notificationItem.href = notification.url;
                                         notificationItem.className = `notification-item ${notification.is_read ? 'read' : 'unread'}`;
+                                        notificationItem.dataset.id = notification.id;
 
                                         notificationItem.innerHTML = `
                                             <div class="notification-content">
                                                 <p>${notification.message}</p>
                                                 <span class="notification-time">${notification.updated_at}</span>
                                             </div>
-                                            ${!notification.read ? '<div class="notification-badge"></div>' : ''}
+                                            ${!notification.is_read ? '<div class="notification-badge"></div>' : ''}
                                         `;
+
+                                        // Add click handler for each notification
+                                        notificationItem.addEventListener('click', function(e) {
+                                            if (!notification.is_read) {
+                                                markAsRead(notification.notification_id, e);
+                                            }
+                                        });
 
                                         notificationsListContainer.appendChild(notificationItem);
                                     });
@@ -191,10 +232,16 @@
                                         }
                                         return response.json();
                                     })
+                                    .then(() => {
+                                        // Update all notifications as read
+                                        notifications.forEach(notification => {
+                                            notification.is_read = true;
+                                        });
+                                        renderNotifications();
+                                    })
                                     .catch(error => {
                                         console.error('Error marking notifications as read:', error);
                                     });
-                                renderNotifications();
                             });
 
                             // Close dropdown when clicking elsewhere

@@ -13,7 +13,7 @@ class NotificationService
     public function getNotificationsForLoggedInUser()
     {
         return $this->db->query(
-            "SELECT message, url, updated_at, is_read FROM notifications n INNER JOIN notification_users n_u ON n.notification_id = n_u.notification_id
+            "SELECT n.notification_id as notification_id, message, url, updated_at, is_read FROM notifications n INNER JOIN notification_users n_u ON n.notification_id = n_u.notification_id
             WHERE n_u.user_id = :user_id
             ORDER BY n.updated_at DESC",
             [
@@ -28,6 +28,17 @@ class NotificationService
             "UPDATE notification_users SET is_read = 1 WHERE user_id = :user_id",
             [
                 'user_id' => $userId
+            ]
+        );
+    }
+
+    public function markAsRead(string $userId, string $notificationId)
+    {
+        $this->db->query(
+            "UPDATE notification_users SET is_read = 1 WHERE user_id = :user_id AND notification_id = :notification_id",
+            [
+                'user_id' => $userId,
+                'notification_id' => $notificationId
             ]
         );
     }
