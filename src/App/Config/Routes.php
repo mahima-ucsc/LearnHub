@@ -69,12 +69,14 @@ function registerRoutes(App $app)
     $app->post('/update-password', [UserController::class, 'updatePassword'], [AuthRequiredMiddleware::class]);
 
     // Admin operations
-    $app->get('/admin-dashboard', [PageController::class, 'adminDashboard'], [AdminOnlyMiddleware::class]);
     $app->post('/admin-dashboard/course-managment/approve', [PostController::class, 'approveCourseRequest']);
     $app->post('/admin-dashboard/course-managment/reject', [PostController::class, 'rejectCourseRequest']);
     $app->get('/admin-dashboard/user-managment', [PageController::class, 'userManagment'], [AdminOnlyMiddleware::class]);
     $app->post('/admin/adduser', [UserController::class, 'addUser'], [AdminOnlyMiddleware::class]); // Add new user
     $app->delete('/user/delete/{user_id}', [UserController::class, 'deleteUser'], [AuthRequiredMiddleware::class]); // Delete user
+
+    // Student
+    $app->get('/my-resource', [PageController::class, 'userResourceView']);
 
 
 
@@ -87,7 +89,6 @@ function registerRoutes(App $app)
     $app->get('/courses/my-courses/{course_id}/participant', [CoursesController::class, 'courseParticipant'], [TeacherOnlyMiddleware::class]);
     $app->get('/courses/my-courses/{course_id}/participant/stats/{participant_id}', [CoursesController::class, 'courseParticipantStat'], [TeacherOnlyMiddleware::class]);
     $app->get('/course/create/old', [CoursesController::class, 'createCourseView']);
-    $app->post('/create-course', [CoursesController::class, 'createCourseNew'], [TeacherOnlyMiddleware::class]);
     $app->post('/save-course-data', [CoursesController::class, 'saveCourseData'], [TeacherOnlyMiddleware::class]);
     $app->get('/courses/my-courses', [CoursesController::class, 'myCourses'], [AuthRequiredMiddleware::class]);
     $app->get('/courses/test', [CoursesController::class, 'myCoursesTest']);
@@ -110,16 +111,18 @@ function registerRoutes(App $app)
     $app->get('/course/create/success', [CoursesController::class, 'successMessage']);
 
     // Course Requests
-    $app->get('/course/request', [PostController::class, 'approvedCourseRequestView']);
+    $app->get('/course/request', [PostController::class, 'CourseRequestView']);
     $app->get('/course/request/create', [PostController::class, 'createCourseRequestView'], [AuthRequiredMiddleware::class]);
-    $app->get('/course/request/edit/{id}', [PostController::class, 'updateCourseRequestView'], [AuthRequiredMiddleware::class]);
-    $app->get('/course/request/{id}', [PostController::class, 'requestDetails'], [AuthRequiredMiddleware::class]);
     $app->post('/course/request/create', [PostController::class, 'createCourseRequest'], [AuthRequiredMiddleware::class]);
+    $app->get('/course/request/edit/{request_id}', [PostController::class, 'editCourseRequestView'], [AuthRequiredMiddleware::class]);
+    $app->get('/course/request/{id}', [PostController::class, 'requestDetails'], [AuthRequiredMiddleware::class]);
     $app->post('/course/request/{id}/comments/create', [PostController::class, 'createComment'], [AuthRequiredMiddleware::class]);
     $app->put('/course/request/{requestId}/comments/{commentId}', [PostController::class, 'updateComment'], [AuthRequiredMiddleware::class]);
-    $app->put('/course/request/{id}', [PostController::class, 'updateCourseRequest'], [AuthRequiredMiddleware::class]);
+    $app->put('/course/request/edit/{request_id}', [PostController::class, 'updateCourseRequest'], [AuthRequiredMiddleware::class]);
     $app->delete('/course/request/{id}', [PostController::class, 'deleteCourseRequest'], [AuthRequiredMiddleware::class]);
     $app->delete('/course/request/{requestId}/comments/{commentId}', [PostController::class, 'deleteComment'], [AuthRequiredMiddleware::class]);
+
+    $app->get('/courserequest-managment', [PostController::class, 'managmentView']);
 
     // Resources
     $app->get('/resource', [ResourceController::class, 'resource']);
@@ -172,6 +175,7 @@ function registerRoutes(App $app)
     $app->post(AppConstants::COURSE_PAYMENT_RELATIVE_NOTIFY_URL, [PaymentController::class, 'handlePaymentNotification']);
 
     $app->get('/unauthorized-access', [PageController::class, 'unauthorizedAccess']);
+    $app->get('/server-error', [PageController::class, 'internalServerError']);
 
     // Catch-all route for 404 page
     $app->get('/{any:.*}', [PageController::class, 'notFound']);
