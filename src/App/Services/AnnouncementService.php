@@ -107,4 +107,12 @@ class AnnouncementService
             ['announcementId' => $announcementId]
         );
     }
+
+    public function markAsUnread($announcement)
+    {
+        $this->db->query(
+            "UPDATE announcements SET read_status = 0 WHERE id = :announcementId",
+            ['announcementId' => $announcement]
+        );
+    }
 }

@@ -44,6 +44,7 @@
                 <div class="filter-controls">
                     <button class="filter-button active" data-filter="all">All</button>
                     <button class="filter-button" data-filter="assignments">Assignments</button>
+                    <button class="filter-button" data-filter="general">general</button>
                     <button class="filter-button" data-filter="read">Read</button>
                     <button class="filter-button" data-filter="unread">Unread</button>
                 </div>
@@ -54,7 +55,7 @@
                     <div class="announcement-item" id="<?php echo ("announcement-" . $announcement['id']); ?>" data-type="<?php echo htmlspecialchars($announcement["category"]) ?>" data-read="<?php echo ($announcement['read_status'] == 1 ? 'true' : 'false'); ?>">
                         <div class="announcement-header">
                             <div class="announcement-source">
-                                <div class="unread-indicator"></div>
+                                <?php echo $announcement['read_status'] == 0 ? ("<div class='unread-indicator'></div>") : ''; ?>
                                 <div class="source-icon source-tutor">
                                     <?php echo strtoupper(substr($announcement['tutor_name'], 0, 1)); ?>
                                 </div>
@@ -79,7 +80,7 @@
                                 ?>
                             </div>
                             <div class="announcement-actions">
-                                <button class="mark-read-btn">Mark as read</button>
+                                <button class="<?php echo $announcement['read_status'] == 1 ? "mark-unread-btn" : "mark-read-btn" ?>"><?php echo  $announcement['read_status'] == 1 ? "mark as unread" : "mark as read" ?></button>
                             </div>
                         </div>
                     </div>
@@ -109,30 +110,16 @@
                             item.style.display = "block";
                         } else if (filter === "unread") {
                             item.style.display = item.getAttribute("data-read") === "false" ? "block" : "none";
-                            // Send POST request to mark announcement as read
-                            fetch('/announcements/mark-as-read', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                    body: JSON.stringify({
-                                        id: item.getAttribute('id').split('-')[1]
-                                    }),
-                                })
-                                .then((response) => {
-                                    if (!response.ok) {
-                                        throw new Error('Failed to mark as read');
-                                    }
-                                    return response.json();
-                                })
-                                .then((data) => {
-                                    console.log('Announcement marked as read:', data);
-                                })
-                                .catch((error) => {
-                                    console.error('Error:', error);
-                                });
+                        } else if (filter === "read") {
+                            item.style.display = item.getAttribute("data-read") === "true" ? "block" : "none";
+                            // Remove unread indicator from read items
+                            const unreadIndicator = item.querySelector(".unread-indicator");
+                            if (unreadIndicator) {
+                                unreadIndicator.remove();
+                            }
                         } else {
                             item.style.display = item.getAttribute("data-type") === filter ? "block" : "none";
+                            console.log(item.getAttribute("data-type"));
                         }
                     });
 
@@ -142,18 +129,23 @@
             });
 
             // Mark as read/unread functionality
-            const markReadButtons = document.querySelectorAll(".mark-read-btn");
             const markUnreadButtons = document.querySelectorAll(".mark-unread-btn");
+            const markReadButtons = document.querySelectorAll(".mark-read-btn");
 
+            // Add event listeners to mark-as-read buttons in the items that are unread states
             markReadButtons.forEach((button) => {
                 button.addEventListener("click", function() {
                     const announcementItem = this.closest(".announcement-item");
+
+                    // Ensure the item is marked as read only once
+                    if (announcementItem.getAttribute("data-read") === "true") return;
+
+                    // Change item's state to read
                     announcementItem.classList.add("read");
                     announcementItem.setAttribute("data-read", "true");
 
                     // Remove unread indicator
-                    const unreadIndicator =
-                        announcementItem.querySelector(".unread-indicator");
+                    const unreadIndicator = announcementItem.querySelector(".unread-indicator");
                     if (unreadIndicator) {
                         unreadIndicator.remove();
                     }
@@ -161,6 +153,88 @@
                     // Change button text
                     this.textContent = "Mark as unread";
                     this.className = "mark-unread-btn";
+
+                    // Send POST request to mark announcement as read
+                    fetch('/announcements/mark-as-read', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                id: announcementItem.getAttribute('id').split('-')[1]
+                            }),
+                        })
+                        .then((response) => {
+                            if (!response.ok) {
+                                throw new Error('Failed to mark as read');
+                            }
+                            return response.json();
+                        })
+                        .then((data) => {
+                            console.log('Announcement marked as read:', data);
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
+
+                    // Update unread count
+                    updateUnreadCount();
+
+                    // If we're in read filter, this item should disappear
+                    if (
+                        document.querySelector('.filter-button[data-filter="read"].active')
+                    ) {
+                        announcementItem.style.display = "none";
+                        checkEmptyState();
+                    }
+                });
+            });
+
+            // Add event listeners to mark-as-unread buttons in the items that are read states
+            markUnreadButtons.forEach((button) => {
+                button.addEventListener("click", function() {
+                    const announcementItem = this.closest(".announcement-item");
+
+                    // Ensure the item is marked as unread only once
+                    if (announcementItem.getAttribute("data-read") === "false") return;
+
+                    announcementItem.classList.remove("read");
+                    announcementItem.setAttribute("data-read", "false");
+
+                    // Add unread indicator if not already present
+                    const sourceDiv = announcementItem.querySelector(".announcement-source");
+                    if (!announcementItem.querySelector(".unread-indicator")) {
+                        const unreadIndicator = document.createElement("div");
+                        unreadIndicator.className = "unread-indicator";
+                        sourceDiv.prepend(unreadIndicator);
+                    }
+
+                    // Change button text
+                    this.textContent = "Mark as read";
+                    this.className = "mark-read-btn";
+
+                    // Send POST request to mark announcement as unread
+                    fetch('/announcements/mark-as-unread', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                id: announcementItem.getAttribute('id').split('-')[1]
+                            }),
+                        })
+                        .then((response) => {
+                            if (!response.ok) {
+                                throw new Error('Failed to mark as unread');
+                            }
+                            return response.json();
+                        })
+                        .then((data) => {
+                            console.log('Announcement marked as unread:', data);
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
 
                     // Update unread count
                     updateUnreadCount();
@@ -181,6 +255,7 @@
                     const announcementItem = e.target.closest(".announcement-item");
                     announcementItem.classList.remove("read");
                     announcementItem.setAttribute("data-read", "false");
+
 
                     // Add unread indicator
                     const sourceDiv = announcementItem.querySelector(

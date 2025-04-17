@@ -57,4 +57,18 @@ class AnnouncementController
             echo json_encode(['status' => 'error', 'message' => 'Invalid announcement ID']);
         }
     }
+
+    public function markAsUnread()
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $announcementId = $data['id'] ?? null;
+
+        if ($announcementId) {
+            $this->AnnouncementService->markAsUnread($announcementId);
+            echo json_encode(['status' => 'success', 'message' => 'Announcement marked as unread']);
+        } else {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => 'Invalid announcement ID']);
+        }
+    }
 }
