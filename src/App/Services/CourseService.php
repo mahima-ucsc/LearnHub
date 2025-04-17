@@ -403,9 +403,11 @@ class CourseService
             "SELECT 
         c.*,
         u.first_name as first_name,
-        u.last_name
+        u.last_name,
+        s.subject_title AS subject
         FROM courses c
         JOIN users u ON u.user_id = c.tutor_id
+        JOIN subjects s ON s.subject_id = c.subject_id
         {$whereClause}
         {$orderClause}
         LIMIT {$length} OFFSET {$offset}",
