@@ -91,7 +91,7 @@ class UserService
         $_SESSION['user'] = $this->db->lastInsertId();
         $_SESSION['user_role'] = $_SESSION['temp_role'];
         unset($_SESSION['temp_role']);
-        unset($_SESSION['$tempUser']);
+        unset($_SESSION['tempUser']);
         unset($_SESSION['otp_hash']);
     }
 
