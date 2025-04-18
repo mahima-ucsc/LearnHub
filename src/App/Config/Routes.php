@@ -142,9 +142,12 @@ function registerRoutes(App $app)
     $app->get('/resource/create', [ResourceController::class, 'createView']);
     $app->post('/resource/create', [ResourceController::class, 'create']);
 
-    // Course Reviews
-    $app->get('/courses/{courseId}/reviews', [ReviewController::class, 'courseReviews']);
-    $app->post('/courses/{courseId}/reviews', [ReviewController::class, 'addCourseReview'], [AuthRequiredMiddleware::class]);
+    // course Reviews
+    $app->get('/course/review/{course}/{page}', [ReviewController::class, 'getCourseReview']);
+    $app->post('/add-course-review', [ReviewController::class, 'addCourseReview'], [AuthRequiredMiddleware::class]);
+    $app->post('/delete-course-review', [ReviewController::class, 'deleteCourseReview'], [AuthRequiredMiddleware::class]);
+    $app->get('/courses/review/edit/{review}', [ReviewController::class, 'editCourseReviewView'], [AuthRequiredMiddleware::class]);
+    $app->post('/course/review/edit/{review}', [ReviewController::class, 'editCourseReview'], [AuthRequiredMiddleware::class]);
 
     // Reviews
     $app->post('/add-review', [ReviewController::class, 'addReview'], [AuthRequiredMiddleware::class]);
