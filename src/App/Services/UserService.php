@@ -267,7 +267,7 @@ class UserService
             $mail->Host = 'smtp.gmail.com'; //specify main and backup server
             $mail->SMTPAuth = true; //enable smtp authentication
             $mail->Username = 'learnhubnet@gmail.com'; //smtp username
-            $mail->Password = 'utsd sdge opzv swwx'; // smtp password that is google app password
+            $mail->Password = 'fops kigv zank yhse'; // smtp password that is google app password
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
 
@@ -299,7 +299,7 @@ class UserService
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
             $mail->Username = 'learnhubnet@gmail.com';
-            $mail->Password = 'utsd sdge opzv swwx';
+            $mail->Password = 'fops kigv zank yhse';
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
 
