@@ -108,6 +108,12 @@ class UserService
         if (!$passwordMatch) {
             throw new ValidationException(['password' => ['Invalid Email address or Password. Please try again.']]);
         }
+        $this->db->query(
+            "UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE user_id = :id",
+            [
+                "id" => $user['user_id']
+            ]
+        );
 
         session_regenerate_id();
         $_SESSION['user'] = $user['user_id'];
