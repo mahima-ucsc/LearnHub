@@ -209,4 +209,196 @@ class AssignmentService
             throw $e;
         }
     }
+
+    public function submitAssignment(string $courseId, string $assignmentId, array $files)
+    {
+        $this->db->beginTransaction();
+        try {
+            $submission = $this->db->query(
+                "SELECT * FROM assignment_submission
+                WHERE assignment_id = :assignmentId
+                AND course_id = :courseId
+                AND student_id = :student_id",
+                [
+                    "assignmentId" => $assignmentId,
+                    "courseId" => $courseId,
+                    "student_id" => $_SESSION['user']
+                ]
+            )->find();
+            // dd($$submission);
+
+            if (empty($submission)) {
+                $this->db->query(
+                    "INSERT INTO assignment_submission(assignment_id, course_id, student_id)
+                    VALUES(:assignment_id, :course_id, :student_id)",
+                    [
+                        'assignment_id' => $assignmentId,
+                        'course_id' => $courseId,
+                        'student_id' => $_SESSION['user']
+                    ]
+                );
+
+                $submissionId = $this->db->lastInsertId();
+            } else {
+                $submissionId = $submission['submission_id'];
+            }
+
+            if (!empty($files['files']['name'][0])) {
+                foreach ($files['files']['tmp_name'] as $key => $tmpName) {
+                    // Build the individual file array
+                    $file = [
+                        'name'     => $files['files']['name'][$key],
+                        'tmp_name' => $files['files']['tmp_name'][$key],
+                        'error'    => $files['files']['error'][$key],
+                    ];
+                    try {
+                        // Call uploadFile function for each file
+                        $newFileName = $this->uploadFile($file, 'assignments_submission');
+                        $this->db->query(
+                            "INSERT INTO assignment_submission_attachment(submission_id, attachment_path)
+                                VALUES(:submission_id, :attachment_path)",
+                            [
+                                "submission_id" => $submissionId,
+                                "attachment_path" => $newFileName
+                            ]
+                        );
+                    } catch (ValidationException $e) {
+                        throw new ValidationException([
+                            "file" => [$e]
+                        ]);
+                    }
+                }
+            }
+            $this->db->commit();
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
+    }
+
+    public function getSubmission($courseId, $assignmentId)
+    {
+        return $this->db->query(
+            "SELECT a.submission_id AS id,
+            CONCAT(u.first_name, ' ', u.last_name) AS studentName,
+            a.status,
+            a.grade,
+            a.upload_date,
+            a.feedback,
+            JSON_ARRAYAGG(
+                JSON_OBJECT(
+                    'attachment_id', ast.attachment_id,
+                    'name', ast.attachment_path
+                    )
+            ) AS attachments
+            FROM assignment_submission a
+            JOIN assignment_submission_attachment ast ON a.submission_id = ast.submission_id
+            JOIN users u ON a.student_id = u.user_id
+            WHERE a.course_id = :courseId AND a.assignment_id = :assignmentId
+            GROUP BY a.submission_id",
+            [
+                "courseId" => $courseId,
+                "assignmentId" => $assignmentId
+            ]
+        )->findAll();
+    }
+
+    public function getSubmissionById(string $submissionId)
+    {
+        return $this->db->query(
+            "SELECT * FROM assignment_submission WHERE submission_id = :submission_id",
+            [
+                "submission_id" => $submissionId
+            ]
+        );
+    }
+    public function getUserSubmission()
+    {
+        return $this->db->query(
+            "SELECT a.submission_id ,
+            a.status,
+            a.grade,
+            a.upload_date,
+            a.feedback,
+            a.upload_date,
+            JSON_ARRAYAGG(
+                JSON_OBJECT(
+                    'attachment_id', ast.attachment_id,
+                    'name', ast.attachment_path
+                    )
+            ) AS attachments
+            FROM assignment_submission a
+            JOIN assignment_submission_attachment ast ON a.submission_id = ast.submission_id
+            WHERE a.student_id = :id
+            GROUP BY a.submission_id",
+            [
+                "id" => $_SESSION['user']
+            ]
+        )->find();
+    }
+
+    public function getSubmissionAttachment(string $id)
+    {
+        return $this->db->query(
+            "SELECT * FROM assignment_submission_attachment WHERE attachment_id = :id",
+            ["id" => $id]
+        )->find();
+    }
+
+    public function readAttachment(array $attachment)
+    {
+        $filePath = Paths::STORAGE_UPLOADS . '/assignments_submission/' . $attachment['attachment_path'];
+        if (!file_exists($filePath)) {
+            redirectTo($_SERVER['HTTP_REFERER']);
+        }
+        header("Content-Disposition: attachment;filename={$attachment['attachment_path']}");
+        readfile($filePath);
+    }
+
+    public function submissionReview(string $id, string $feedback, int $grade)
+    {
+        return $this->db->query(
+            "UPDATE assignment_submission
+            SET
+            feedback = :feedback,
+            grade = :grade,
+            status = :status
+            WHERE submission_id = :id",
+            [
+                "feedback" => $feedback,
+                "grade" => $grade,
+                "id" => $id,
+                "status" => "graded"
+            ]
+        );
+    }
+
+    public function removeSubmissionFile(string $submissionId, string $attachmentId)
+    {
+        $attachment = $this->db->query(
+            "SELECT 
+            attachment_id,
+            attachment_path 
+            FROM assignment_submission_attachment
+            WHERE submission_id = :submissionId 
+            AND attachment_id = :attachmentId",
+            [
+                "submissionId" => $submissionId,
+                "attachmentId" => $attachmentId
+            ]
+        )->find();
+        if (!empty($attachment)) {
+            $filePath = Paths::STORAGE_UPLOADS . '/assignments_submission/' . $attachment['attachment_path'];
+            if (file_exists($filePath)) {
+                unlink($filePath); // Delete the file from server
+            }
+            $this->db->query(
+                "DELETE FROM assignment_submission_attachment 
+                WHERE attachment_id = :attachmentId",
+                [
+                    "attachmentId" => $attachment['attachment_id']
+                ]
+            );
+        }
+    }
 }

@@ -337,8 +337,6 @@
 
     }
 </style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
 
 <body>
 
@@ -447,16 +445,6 @@
     </main>
     <?php include $this->resolve('components/delete_modal.php'); ?>
 
-    <!-- Toast Notification -->
-    <div class="toast" id="toast">
-        <div class="toast-icon">
-            <i class="fas fa-check"></i>
-        </div>
-        <div class="toast-message" id="toastMessage">Action completed successfully!</div>
-    </div>
-
-    <script>
-    </script>
 </body>
 
 </html>

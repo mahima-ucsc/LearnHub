@@ -72,18 +72,28 @@ function calcDateDiff($startDate)
                                     <div class="period-title">
                                         <h4><?= formatDate($period['start_datetime'], 'Y M j') . " - " . formatDate($period['end_datetime'], 'Y M j') ?></h4>
                                     </div>
-                                    <div class="period-toggle">
-                                        <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <polyline points="6 9 12 15 18 9"></polyline>
-                                        </svg>
-                                    </div>
+                                    <?php if ($period['is_paid']): ?>
+                                        <div class="period-toggle">
+                                            <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="6 9 12 15 18 9"></polyline>
+                                            </svg>
+                                        </div>
+                                    <?php else: ?>
+                                        <a class="pay-button" href="<?= "/payment/courses/" . $course['course_id'] . "/" . $period['sub_period_id'] ?>">Pay Now</a>
+                                    <?php endif; ?>
                                 </div>
 
                                 <div class="period-content">
                                     <div class="module-list">
-                                        <?php foreach ($period['modules'] as $module): ?>
-                                            <?php include $this->resolve("course/course-info/course-module.php"); ?>
-                                        <?php endforeach; ?>
+                                        <?php if ($period['is_paid'] || $period['is_free_access_period']): ?>
+                                            <?php foreach ($period['modules'] as $module): ?>
+                                                <?php include $this->resolve("course/course-info/course-module.php"); ?>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <div class="no-access-message">
+                                                <p>You don't have access to this content. Please pay to unlock.</p>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
@@ -117,18 +127,28 @@ function calcDateDiff($startDate)
                                     <div class="period-title">
                                         <h4><?= formatDate($period['start_datetime'], 'Y M j') . " - " . formatDate($period['end_datetime'], 'Y M j') ?></h4>
                                     </div>
-                                    <div class="period-toggle">
-                                        <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <polyline points="6 9 12 15 18 9"></polyline>
-                                        </svg>
-                                    </div>
+                                    <?php if ($period['is_paid']): ?>
+                                        <div class="period-toggle">
+                                            <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="6 9 12 15 18 9"></polyline>
+                                            </svg>
+                                        </div>
+                                    <?php else: ?>
+                                        <a class="pay-button" href="<?= "/payment/courses/" . $course['course_id'] . "/" . $period['sub_period_id'] ?>">Pay Now</a>
+                                    <?php endif; ?>
                                 </div>
 
                                 <div class="period-content">
                                     <div class="module-list">
-                                        <?php foreach ($period['modules'] as $module): ?>
-                                            <?php include $this->resolve("course/course-info/course-module.php"); ?>
-                                        <?php endforeach; ?>
+                                        <?php if ($period['is_paid']): ?>
+                                            <?php foreach ($period['modules'] as $module): ?>
+                                                <?php include $this->resolve("course/course-info/course-module.php"); ?>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <div class="no-access-message">
+                                                <p>You don't have access to this content. Please pay to unlock.</p>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>

@@ -166,6 +166,13 @@ class DatabaseSetupTool
             $this->db->connection->query($seed4);
             echo "Database seeded with modules.\n";
 
+            $seed5 = file_get_contents("./seed/seed-course-payments.sql");
+            if ($seed4 === false) {
+                throw new Exception("Unable to read seed-course-payments.sql file.");
+            }
+            $this->db->connection->query($seed5);
+            echo "Database seeded with course payments.\n";
+
             // Commit the transaction if everything succeeded
             $this->db->connection->commit();
             echo "All seeding completed successfully.\n";

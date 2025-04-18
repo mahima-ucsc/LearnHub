@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Config\AppConstants;
 use Exception;
 use Framework\Database;
 use App\Config\Paths;
@@ -142,15 +143,22 @@ class CourseService
         )->find();
     }
 
-    public function getByCourseId(string $id)
+    public function getCourseById(string $id)
     {
-        return $this->db->query(
+        $course =  $this->db->query(
             "SELECT * FROM courses
             WHERE course_id = :id",
             [
                 'id' => $id
             ]
         )->find();
+
+        $isPaid = null;
+        if (isset($_SESSION['user']) && $course['billing_type'] == 'onetime') {
+            $isPaid = $this->isOneTimeCoursePaid($_SESSION['user'], $id);
+        }
+        $course['is_paid'] = $isPaid;
+        return $course;
     }
 
     public function getCourseModuleList(string $courseId)
@@ -188,14 +196,33 @@ class CourseService
         )->findAll();
 
         foreach ($subPeriods as &$period) {
-            $subPeriodModules = $this->db->query(
-                "SELECT * FROM course_modules
-                    WHERE sub_period_id = :sub_period_id",
-                [
-                    'sub_period_id' => $period['sub_period_id']
-                ]
-            )->findAll();
-            $period['modules'] = $subPeriodModules;
+            // Check if the user has paid for the course
+            $isPaid = null;
+
+            if (isset($_SESSION['user'])) {
+                $isPaid = $this->isRecurringCourseSubPeriodPaid($_SESSION['user'], $courseId, $period['sub_period_id']);
+            }
+            $period['is_paid'] = $isPaid;
+
+            $currentDateTime = date('Y-m-d H:i:s');
+            $freeAccessStartDateTime = $period['free_access_start_datetime'];
+            $freeAccessEndDateTime = $period['free_access_end_datetime'];
+            $isFreeAccessPeriod = $freeAccessStartDateTime <= $currentDateTime && $freeAccessEndDateTime >= $currentDateTime;
+            $period['is_free_access_period'] = $isFreeAccessPeriod;
+
+            // Set modules for each sub period only if paid or in free access period
+            if ($isPaid || $isFreeAccessPeriod) {
+                $subPeriodModules = $this->db->query(
+                    "SELECT * FROM course_modules
+                        WHERE sub_period_id = :sub_period_id",
+                    [
+                        'sub_period_id' => $period['sub_period_id']
+                    ]
+                )->findAll();
+                $period['modules'] = $subPeriodModules;
+            } else {
+                $period['modules'] = [];
+            }
         }
 
         return $subPeriods;
@@ -210,6 +237,9 @@ class CourseService
         $currentDateTime = date('Y-m-d H:i:s');
 
         foreach ($allContent as $period) {
+            if ($period['start_datetime'] > $currentDateTime) {
+                continue; // Skip future periods
+            }
             if ($period['end_datetime'] > $currentDateTime) {
                 $currentContent[] = $period;
             } else {
@@ -509,5 +539,53 @@ class CourseService
         }
 
         return $fileName;
+    }
+
+    private function isOneTimeCoursePaid($userId, $courseId)
+    {
+        $paid = $this->db->query(
+            "SELECT SUM(p.amount) as total_paid FROM payments p INNER JOIN course_payments cp ON p.payment_id = cp.payment_id 
+            WHERE cp.user_id = :user_id AND cp.course_id = :course_id AND p.payment_status = " .
+                AppConstants::PAYMENT_STATUS_SUCCESS,
+            [
+                "user_id" => $userId,
+                "course_id" => $courseId
+            ]
+        )->find();
+
+        $courseFee = $this->db->query(
+            "SELECT price FROM courses
+            WHERE course_id = :course_id",
+            [
+                "course_id" => $courseId
+            ]
+        )->find();
+        $isPaid = $paid && $paid['total_paid'] >= $courseFee['price'];
+        return $isPaid;
+    }
+
+    private function isRecurringCourseSubPeriodPaid($userId, $courseId, $subPeriodId)
+    {
+        $paid = $this->db->query(
+            "SELECT SUM(p.amount) as total_paid FROM payments p INNER JOIN course_payments cp ON p.payment_id = cp.payment_id
+            WHERE cp.user_id = :user_id AND cp.course_id = :course_id AND cp.sub_period_id = :sub_period_id AND p.payment_status = " .
+                AppConstants::PAYMENT_STATUS_SUCCESS,
+            [
+                "user_id" => $userId,
+                "course_id" => $courseId,
+                "sub_period_id" => $subPeriodId
+            ]
+        )->find();
+
+        $subPeriodFee = $this->db->query(
+            "SELECT price FROM recurring_course_sub_periods
+            WHERE sub_period_id = :sub_period_id",
+            [
+                "sub_period_id" => $subPeriodId
+            ]
+        )->find();
+
+        $isPaid = $paid && $paid['total_paid'] >= $subPeriodFee['price'];
+        return $isPaid;
     }
 }
