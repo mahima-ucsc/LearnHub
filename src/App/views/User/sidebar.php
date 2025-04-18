@@ -307,7 +307,7 @@
     <div class="sidebar-menu">
         <div class="sidebar-section">
             <h4 class="section-title">Main</h4>
-            <a href="/" class="menu-item active">
+            <a href="/dashboard" class="menu-item active">
                 <span class="menu-icon"><i class="fas fa-tachometer-alt"></i></span>
                 Dashboard
             </a>
@@ -343,6 +343,13 @@
                 Pending Posts
             </a>
         </div>
+        <div class="sidebar-section">
+            <h4 class="section-title">Ad Management</h4>
+            <a href="/advertisement-managment" class="menu-item">
+                <span class="menu-icon"><i class="fas fa-ad"></i></i></span>
+                Pending Ad
+            </a>
+        </div>
 
         <div class="sidebar-section">
             <h4 class="section-title">Transactions</h4>
@@ -370,7 +377,7 @@
 
         <div class="sidebar-section">
             <h4 class="section-title">Settings</h4>
-            <a href="#" class="menu-item">
+            <a href="/settings" class="menu-item">
                 <span class="menu-icon"><i class="fas fa-cog"></i></span>
                 General Settings
             </a>

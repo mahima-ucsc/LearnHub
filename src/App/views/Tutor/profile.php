@@ -121,52 +121,51 @@
         <div class="reviews-section">
             <h2 class="review-title">Student Reviews</h2>
             <div class="reviews-summary">
-                <!-- summary of reating -->
                 <div class="overall-rating">
-                    <div class="rating-number"><?php echo number_format($summeryOfReviews['avgRating'], 1) ?> / 5</div>
+                    <div class="rating-number">4.8</div>
                     <div class="rating-stars">
-                        <?php
-                        if (($summeryOfReviews['avgRating'] - floor($summeryOfReviews['avgRating'])) > 0.4) {
-                            $flag = true;
-                        }
-                        for ($i = 1; $i <= 5; $i++) {
-
-                            if ($i <= $summeryOfReviews['avgRating']) {
-                                echo '<span class="star active">★</span>';
-                            } else if ($flag) {
-                                echo '<span class="star half-active">★</span>';
-                                $flag = false;
-                            } else {
-                                echo '<span class="star">★</span>';
-                            }
-                        }
-                        ?>
+                        <span class="star active">★</span>
+                        <span class="star active">★</span>
+                        <span class="star active">★</span>
+                        <span class="star active">★</span>
+                        <span class="star half-active">★</span>
                     </div>
-                    <div class="rating-text"><?php echo $summeryOfReviews['totalReviews'] ?> Total Reviews</div>
+                    <div class="rating-text">256 Total Reviews</div>
                 </div>
-                <!-- all ratings with percentage -->
                 <div class="rating-breakdown">
-                    <?php
-                    krsort($summeryOfReviews['starCount']);
-                    foreach ($summeryOfReviews['starCount'] as $key => $value) : ?>
-                        <div class="rating-bar">
-                            <span class="rating-label"><?php echo $key ?> Stars</span>
-                            <div class="progress-bar">
-                                <div class="progress" style="width: <?php echo $summeryOfReviews['totalReviews'] > 0 ? ($value / $summeryOfReviews['totalReviews']) * 100 : 0; ?>%"></div>
-                            </div>
-                            <span class="rating-percentage"><?php echo number_format($summeryOfReviews['totalReviews'], 2) > 0 ? number_format($value / $summeryOfReviews['totalReviews'], 2) * 100 : 0; ?> %</span>
+                    <div class="rating-bar">
+                        <span class="rating-label">5 Stars</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 65%"></div>
                         </div>
-                    <?php endforeach; ?>
+                        <span class="rating-percentage">65%</span>
+                    </div>
+                    <div class="rating-bar">
+                        <span class="rating-label">4 Stars</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 25%"></div>
+                        </div>
+                        <span class="rating-percentage">25%</span>
+                    </div>
+                    <div class="rating-bar">
+                        <span class="rating-label">3 Stars</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 8%"></div>
+                        </div>
+                        <span class="rating-percentage">8%</span>
+                    </div>
+                    <div class="rating-bar">
+                        <span class="rating-label">2 Stars</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 2%"></div>
+                        </div>
+                        <span class="rating-percentage">2%</span>
+                    </div>
                 </div>
             </div>
-
-
             <!-- Review Cards -->
             <!-- Current user reviews-->
-
-            <?php
-            // dd($userReview);
-            foreach ($userReview as $review) : ?>
+            <?php foreach ($userReview as $review) : ?>
                 <div class="review-card">
                     <div class="review-header">
                         <div class="reviewer-info">
@@ -189,7 +188,7 @@
                             <!-- Option menu-->
                             <div class="cart-options">
                                 <a class="menu-button" href="/review/edit/<?php echo e($review['review_id']); ?>">Edit</a>
-                                <a href="#" class="menu-button" onclick="showModal(<?php echo $review['review_id']; ?>)">Delete</a>
+                                <a href="#" class="menu-button" onclick="showModal()">Delete</a>
                             </div>
                         </div>
                     </div>
@@ -225,6 +224,53 @@
                     </div>
                 </div>
             <?php endforeach; ?>
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="reviewer-info">
+                        <img src="/assets/images/user.jpeg" alt="Sarah Johnson" class="reviewer-avatar">
+                        <div>
+                            <div class="reviewer-name">Sarah Johnson</div>
+                            <div class="review-course">
+                                <i class="fas fa-graduation-cap"></i>
+                                Advanced JavaScript Mastery
+                            </div>
+                        </div>
+                    </div>
+                    <span class="review-date">2 weeks ago</span>
+                </div>
+                <p class="review-text">This course exceeded my expectations! John's teaching style is clear and engaging. The practical examples really helped me understand complex concepts.</p>
+                <div class="review-rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+            </div>
+
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="reviewer-info">
+                        <img src="/assets/images/user.jpeg" alt="Michael Chen" class="reviewer-avatar">
+                        <div>
+                            <div class="reviewer-name">Michael Chen</div>
+                            <div class="review-course">
+                                <i class="fas fa-graduation-cap"></i>
+                                React & Redux for Beginners
+                            </div>
+                        </div>
+                    </div>
+                    <span class="review-date">1 month ago</span>
+                </div>
+                <p class="review-text">Great introduction to React! The course structure is well thought out and the projects are very practical. John is always quick to respond to questions.</p>
+                <div class="review-rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i>
+                </div>
+            </div>
 
             <!-- Load More Button -->
             <div class="load-more-container">
@@ -291,11 +337,9 @@
         //Delete confirmation
         const modal = document.getElementById('deleteModal');
 
-        function showModal(review_id) {
+        function showModal() {
             modal.style.display = 'block';
 
-            document.getElementById('submit').action = '/course/review/delete/' + review_id;
-            console.log("hello", review_id);
             // Prevent scrolling of background content
             document.body.style.overflow = 'hidden';
         }

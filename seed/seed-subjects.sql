@@ -4,12 +4,13 @@ VALUES
 ('Physics'),
 ('Chemistry'),
 ('Biology'),
-('Computer Science'),
+('Science'),
 ('History'),
 ('Geography'),
 ('English Literature'),
 ('Economics'),
-('Psychology');
+('Commerce'),
+('ICT');
 
 
 INSERT INTO grades (grade_name) 
