@@ -45,15 +45,6 @@ class AuthController
         redirectTo('register/verification');
     }
 
-    public function tempUserSave()
-    {
-        $this->validatorService->validateRegister($_POST);
-        $this->userService->isEmailTaken($_POST['email']);
-        $this->userService->sendVerificationCode($_POST['email']);
-        $_SESSION[$tempUser = $_POST];
-        redirectTo('register/verification');
-    }
-
     public function verificationView()
     {
         echo $this->view->render("register_varification.php", [
