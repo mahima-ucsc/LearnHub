@@ -408,7 +408,6 @@
                             </tr>
                         </thead>
                         <tbody id="userTableBody">
-                            <!-- Table rows will be added dynamically -->
                             <?php foreach ($users as $user): ?>
                                 <tr>
 
@@ -422,14 +421,16 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td><?php echo e($user['date_of_birth']) ?></td>
+                                    <td><?php echo formatDate($user['joined_date'], 'Y M j') ?></td>
                                     <td>
                                         <span class="user-role role-<?php echo e($user['user_role']) ?>"><?php echo e($user['user_role']) ?></span>
                                     </td>
                                     <td>
-                                        <button class="action-btn btn-delete" data-id="<?php echo e($user['user_id']) ?>" onclick="event.stopPropagation();showModal('/user/delete/<?php echo e($user['user_id']) ?>')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                        <?php if ($user['user_id'] != $_SESSION['user']): ?>
+                                            <button class="action-btn btn-delete" data-id="<?php echo e($user['user_id']) ?>" onclick="event.stopPropagation();showModal('/user/delete/<?php echo e($user['user_id']) ?>')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
