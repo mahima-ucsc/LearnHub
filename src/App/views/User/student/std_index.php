@@ -458,7 +458,6 @@
         cursor: pointer;
     }
 
-    .student-access-item i {}
 
     .student-resource-access {
         text-decoration: none;
@@ -532,49 +531,11 @@
             <section class="std-hero">
                 <h1>Welcome back, <?php echo e($userData["first_name"]); ?></h1>
                 <p>You're making great progress. Keep up the momentum!</p>
-                <div class="achievement-badges">
-                    <div class="badge">
-                        <i class="fas fa-fire"></i>
-                        <span>5 Day Streak</span>
-                    </div>
-                    <div class="badge">
-                        <i class="fas fa-star"></i>
-                        <span>Top Performer</span>
-                    </div>
-                    <div class="badge">
-                        <i class="fas fa-certificate"></i>
-                        <span>12 Certificates</span>
-                    </div>
-                </div>
-            </section>
-
-            <section class="quick-stats">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-clock fa-lg"></i>
-                    </div>
-                    <h3>12.5 hrs</h3>
-                    <p>Learning Time</p>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-tasks fa-lg"></i>
-                    </div>
-                    <h3>85%</h3>
-                    <p>Completion Rate</p>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-trophy fa-lg"></i>
-                    </div>
-                    <h3>250</h3>
-                    <p>XP Points</p>
-                </div>
             </section>
 
             <section class="enrolled-courses">
                 <h2 class="section-title">
-                    Pick up where you left off
+                    Your courses
                     <a href="#" class="view-all">View All</a>
                 </h2>
                 <div class="courses-grid">
@@ -668,14 +629,6 @@
             <div class="calendar">
                 <div class="calendar-header">
                     <h3>Upcoming Events</h3>
-                    <div class="calendar-navigation">
-                        <div class="calendar-nav-btn">
-                            <i class="fas fa-chevron-left"></i>
-                        </div>
-                        <div class="calendar-nav-btn">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
                 </div>
                 <div class="event">
                     <div class="event-date">Feb 18, 2025</div>
@@ -710,14 +663,14 @@
                     </div>
                 </a>
 
-                <a href="/my-posts" class="student-resource-access">
+                <a href="/courserequest-managment" class="student-resource-access">
                     <div class="student-access-item">
                         <div class="access-icon">
                             <i class="fas fa-comment-alt fa-lg"></i>
                         </div>
                         <div>
                             <h4>My Posts</h4>
-                            <p>View your discussions and comments</p>
+                            <p>View your course request and comments</p>
                         </div>
                         <i class="fas fa-chevron-right"></i>
                     </div>
