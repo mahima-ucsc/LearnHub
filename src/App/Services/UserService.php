@@ -267,7 +267,7 @@ class UserService
             $mail->Host = 'smtp.gmail.com'; //specify main and backup server
             $mail->SMTPAuth = true; //enable smtp authentication
             $mail->Username = 'learnhubnet@gmail.com'; //smtp username
-            $mail->Password = 'utsd sdge opzv swwx'; // smtp password that is google app password
+            $mail->Password = 'fops kigv zank yhse'; // smtp password that is google app password
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
 
@@ -299,7 +299,7 @@ class UserService
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
             $mail->Username = 'learnhubnet@gmail.com';
-            $mail->Password = 'utsd sdge opzv swwx';
+            $mail->Password = 'fops kigv zank yhse';
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
 
@@ -310,17 +310,17 @@ class UserService
 
             // Email content
             $mail->isHTML(true);
-            $mail->Subject = 'New Contact Message from ' . $data['name'];
+            $mail->Subject = 'New Contact Message from ' . ($data['name'] ?? 'Unknown');
 
-            // Create HTML body
+            // Safely access the subject key
             $mailBody = "
                 <h2>New Contact Message</h2>
-                <p><strong>From:</strong> {$data['name']}</p>
-                <p><strong>Email:</strong> {$data['email']}</p>
-                <p><strong>Subject:</strong> {$data['subject']}</p>
+                <p><strong>From:</strong> " . htmlspecialchars($data['name'] ?? 'Unknown') . "</p>
+                <p><strong>Email:</strong> " . htmlspecialchars($data['email'] ?? 'Unknown') . "</p>
+                <p><strong>Subject:</strong> " . htmlspecialchars($data['subject'] ?? 'No Subject') . "</p>
                 <hr>
                 <h3>Message:</h3>
-                <p>" . nl2br(htmlspecialchars($data['message'])) . "</p>
+                <p>" . nl2br(htmlspecialchars($data['message'] ?? 'No Message')) . "</p>
             ";
 
             $mail->Body = $mailBody;
