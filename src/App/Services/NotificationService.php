@@ -42,4 +42,31 @@ class NotificationService
             ]
         );
     }
+
+    // TODO: Test this function.
+    public function createNotification(string $message, string $url, array $userIds): void
+    {
+        // Insert the notification into the notifications table
+        $this->db->query(
+            "INSERT INTO notifications (message, url) VALUES (:message, :url)",
+            [
+                'message' => $message,
+                'url' => $url
+            ]
+        );
+
+        $notificationId = $this->db->lastInsertId();
+
+        // Insert into the notification_users table for each user ID
+        foreach ($userIds as $userId) {
+            $this->db->query(
+                "INSERT INTO notification_users (user_id, notification_id, is_read) VALUES (:user_id, :notification_id, :is_read)",
+                [
+                    'user_id' => $userId,
+                    'notification_id' => $notificationId,
+                    'is_read' => 0
+                ]
+            );
+        }
+    }
 }
