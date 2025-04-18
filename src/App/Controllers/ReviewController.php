@@ -18,9 +18,8 @@ class ReviewController
     public function editView(array $params)
     {
         $review = $this->reviewService->getReviewById($params['review']);
-
         if (!$review) {
-            redirectTo('/profile');
+            redirectTo($_SERVER['HTTP_REFERER']);
         }
 
         echo $this->view->render(
@@ -58,5 +57,54 @@ class ReviewController
     {
         $this->reviewService->delete((int)$params['review']);
         redirectTo('/tutor');
+    }
+
+    //course review
+    public function addCourseReview()
+    {
+        $this->reviewService->createCourseReview($_POST);
+        redirectTo($_SERVER['HTTP_REFERER']);
+    }
+
+    public function deleteCourseReview()
+    {
+        if ($_POST['token'] === $_SESSION['token']) {
+            $this->reviewService->deleteCourseReview($_POST['review_id']);
+        }
+        redirectTo($_SERVER['HTTP_REFERER']);
+    }
+
+    public function editCourseReviewView(array $params)
+    {
+        $review = $this->reviewService->getCourseReviewById($params['review']);
+
+        if (!$review) {
+            redirectTo($_SERVER['HTTP_REFERER']);
+        }
+        echo $this->view->render(
+            "course/course-info/course-review-edit.php",
+            [
+                "title" => "Edit Course Review",
+                'review' => $review
+            ]
+        );
+    }
+
+    public function editCourseReview($params)
+    {
+        $review = $this->reviewService->getCourseReviewById($params['review']);
+        if (!$review) {
+            redirectTo('/course');
+        }
+        $this->reviewService->updateCourseRequest($_POST, (int)$params['review']);
+        redirectTo("/courses/" . $review['course_id']);
+    }
+
+    public function getCourseReview($params)
+    {
+        header('Content-Type: application/json');
+        $courseReview = $this->reviewService->getCourseReview($params['course'], $params['page']);
+        echo json_encode($courseReview);
+        exit;
     }
 }
