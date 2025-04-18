@@ -126,6 +126,10 @@ function registerRoutes(App $app)
     $app->get('/resource', [ResourceController::class, 'resource']);
     $app->get('/resource/create', [ResourceController::class, 'createView']);
     $app->post('/resource/create', [ResourceController::class, 'create']);
+    $app->get('/resource/my-resources', [ResourceController::class, 'myResources'], [AuthRequiredMiddleware::class]);
+    $app->delete('/resource/delete/{resource_id}', [ResourceController::class, 'deleteResource'], [AuthRequiredMiddleware::class]);
+    $app->get('/resource/edit/{resource_id}', [ResourceController::class, 'editView'], [AuthRequiredMiddleware::class]);
+    $app->post('/resource/edit/{resource_id}', [ResourceController::class, 'updateResource'], [AuthRequiredMiddleware::class]);
 
     // Course Reviews
     $app->get('/courses/{courseId}/reviews', [ReviewController::class, 'courseReviews']);

@@ -78,4 +78,8 @@ class Database
     {
         return $this->connection->rollBack();
     }
+    public function rowCount(): int
+    {
+        return $this->stmt->rowCount();
+    }
 }

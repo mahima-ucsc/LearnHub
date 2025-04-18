@@ -837,7 +837,7 @@
         <!-- Resource Actions -->
         <section class="resource-actions">
             <div class="action-btns">
-                <a href="#" class="btn btn-primary">
+                <a href="/resource/create" class="btn btn-primary">
                     <i class="fas fa-plus"></i> Share a Resource
                 </a>
                 <a href="#" class="btn btn-outline">
@@ -892,7 +892,7 @@
         <section class="share-resource-cta">
             <h2>Have knowledge to share?</h2>
             <p>Share your own learning resources with the community. Whether it's a tutorial, guide, template, or tool, your contribution can help others learn and grow.</p>
-            <a href="#" class="btn btn-primary">
+            <a href="/resource/create" class="btn btn-primary">
                 <i class="fas fa-upload"></i> Share Your Resource
             </a>
         </section>
