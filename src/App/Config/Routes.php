@@ -161,6 +161,7 @@ function registerRoutes(App $app)
     $app->get('/assignment/{assignment_id}/resource/{resource_id}', [AssignmentController::class, 'getResource']);
 
 
+
     $app->get('/courses/{courseId}/assignment/{assignment_id}/test', [AssignmentController::class, 'getData']);
     $app->get('/courses/{courseId}/assignment/{assignment_id}/review', [AssignmentController::class, 'review']);
     $app->get('/submission/{submission_id}/attachment/{attachment_id}', [AssignmentController::class, 'getSubmissionFile']);
