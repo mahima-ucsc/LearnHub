@@ -1,12 +1,14 @@
+:root {
+  --btn-active-color: #ffc400;
+  --btn-deactive-color: #f5f7fa;
+  --btn-border-color: #ddd;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: "Arial", sans-serif;
-}
-
-section {
-  /* background-color: #f5f7fa; */
 }
 
 .container {
@@ -81,8 +83,8 @@ header {
 
 .filter-button {
   padding: 8px 12px;
-  background-color: #f5f7fa;
-  border: 1px solid #ddd;
+  background-color: var(--btn-deactive-color);
+  border: 1px solid var(--btn-border-color);
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
@@ -91,9 +93,9 @@ header {
 
 .filter-button:hover,
 .filter-button.active {
-  background-color: #3498db;
+  background-color: var(--btn-active-color);
   color: white;
-  border-color: #3498db;
+  border-color: var(--btn-active-color);
 }
 
 .announcement-list {

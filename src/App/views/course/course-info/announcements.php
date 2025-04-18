@@ -96,6 +96,7 @@
             const announcementItems = document.querySelectorAll(".announcement-item");
             checkEmptyState();
 
+            // Add event listeners to filter buttons
             filterButtons.forEach((button) => {
                 button.addEventListener("click", function() {
                     // Remove active class from all buttons
@@ -124,36 +125,15 @@
             });
 
             // Mark as read/unread functionality
-            const markReadButtons = document.querySelectorAll(".mark-read-btn");
-            const markUnreadButtons = document.querySelectorAll(".mark-unread-btn");
+            let markReadButtons = document.querySelectorAll(".mark-read-btn");
+            let markUnreadButtons = document.querySelectorAll(".mark-unread-btn");
 
             // Add event listeners to mark-as-read buttons in the items that are unread states
             markReadButtons.forEach((button) => {
                 button.addEventListener("click", function() {
                     const buttonValue = this.className;
                     const announcementItem = this.closest(".announcement-item");
-                    // Change item's state to read
-                    announcementItem.classList.add("read");
-                    announcementItem.setAttribute("data-read", "true");
-
-                    // Update unread count
-                    updateUnreadCount();
-
-                    this.textContent = 'Mark as unread';
-                    this.className = 'mark-unread-btn';
-
-                    // Remove unread indicator
                     const unreadIndicator = announcementItem.querySelector(".unread-indicator");
-                    if (unreadIndicator) {
-                        unreadIndicator.remove();
-                    }
-
-                    // If we're in read filter, this item should disappear
-                    if (document.querySelector('.filter-button[data-filter="unread"].active')) {
-                        announcementItem.style.display = "none";
-                        checkEmptyState();
-                        console.log("unread .active to none")
-                    }
 
                     // Send POST request to mark announcement as read
                     fetch('/announcements/mark-as-read', {
@@ -173,6 +153,27 @@
                         })
                         .then((data) => {
                             console.log('Announcement marked as read:', data);
+                            // Change item's state to read
+                            announcementItem.classList.add("read");
+                            announcementItem.setAttribute("data-read", "true");
+
+                            // Update unread count
+                            updateUnreadCount();
+
+                            this.textContent = 'Mark as unread';
+                            this.className = 'mark-unread-btn';
+
+                            // Remove unread indicator
+                            if (unreadIndicator) {
+                                unreadIndicator.remove();
+                            }
+
+                            // If we're in read filter, this item should disappear
+                            if (document.querySelector('.filter-button[data-filter="unread"].active')) {
+                                announcementItem.style.display = "none";
+                                checkEmptyState();
+                                console.log("unread .active to none")
+                            }
                         })
                         .catch((error) => {
                             console.error('Error:', error);
@@ -185,30 +186,10 @@
             // Add event listeners to mark-as-unread buttons in the items that are read states
             markUnreadButtons.forEach((button) => {
                 button.addEventListener("click", function() {
-                    const announcementItem = this.closest(".announcement-item");
-
-                    announcementItem.classList.remove("read");
-                    announcementItem.setAttribute("data-read", "false");
-
-                    // Add unread indicator if not already present
-                    const sourceDiv = announcementItem.querySelector(".announcement-source");
-                    if (!announcementItem.querySelector(".unread-indicator")) {
-                        const unreadIndicator = document.createElement("div");
-                        unreadIndicator.className = "unread-indicator";
-                        sourceDiv.prepend(unreadIndicator);
-                    }
-
-                    // Change button text
-                    this.textContent = "Mark as read";
-                    this.className = "mark-read-btn";
-
-                    // If we're in unread filter, this item should disappear
-                    if (
-                        document.querySelector('.filter-button[data-filter="unread"].active')
-                    ) {
-                        announcementItem.style.display = "none";
-                        checkEmptyState();
-                    }
+                    let buttonValue = this.className;
+                    let announcementItem = this.closest(".announcement-item");
+                    let unreadIndicator = document.createElement("div");
+                    let sourceDiv = announcementItem.querySelector(".announcement-source");
 
                     // Send POST request to mark announcement as unread
                     fetch('/announcements/mark-as-unread', {
@@ -222,19 +203,38 @@
                         })
                         .then((response) => {
                             if (!response.ok) {
-                                throw new Error('Failed to mark as unread');
+                                throw new Error('Failed to mark as read');
                             }
                             return response.json();
                         })
                         .then((data) => {
-                            console.log('Announcement marked as unread:', data);
+                            console.log('Announcement marked as read:', data);
+                            // Change item's state to read
+                            announcementItem.classList.remove("read");
+                            announcementItem.setAttribute("data-read", "false");
+
+                            // Change button text
+                            this.textContent = "Mark as read";
+                            this.className = "mark-read-btn";
+
+                            // Add unread indicator if not already present
+                            if (!announcementItem.querySelector(".unread-indicator")) {
+                                unreadIndicator.className = "unread-indicator";
+                                sourceDiv.prepend(unreadIndicator);
+                            }
+
+                            // If we're in read filter, this item should disappear
+                            if (document.querySelector('.filter-button[data-filter="read"].active')) {
+                                announcementItem.style.display = "none";
+                                console.log("unread .active to none");
+                            }
+                            // Update unread count
+                            updateUnreadCount();
+                            checkEmptyState();
                         })
                         .catch((error) => {
                             console.error('Error:', error);
                         });
-
-                    // Update unread count
-                    updateUnreadCount();
 
 
                 });
@@ -296,7 +296,6 @@
                     notificationBadge.style.display = "none";
                 }
             }
-
 
             // Function to check and show empty state if needed
             function checkEmptyState() {
