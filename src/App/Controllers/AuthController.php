@@ -89,13 +89,7 @@ class AuthController
         $this->validatorService->validateLogin($_POST);
         $this->userService->login($_POST);
 
-        if ($_SESSION['user_role'] === "admin") {
-            redirectTo('/admin-dashboard?tab=dashboard');
-        } else if ($_SESSION['user_role'] === 'teacher') {
-            redirectTo('/dashboard');
-        } else {
-            redirectTo('/');
-        }
+        redirectTo('/dashboard');
     }
 
     public function logout()

@@ -270,16 +270,18 @@ CREATE TABLE IF NOT EXISTS course_requests (
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     subject_id BIGINT(20) UNSIGNED,
+    grade_id BIGINT(20) UNSIGNED NOT NULL,
+    status ENUM('pending', 'approved') NOT NULL DEFAULT 'pending',
+    location VARCHAR(100) NOT NULL,
+
     created_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     updated_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
     user_id BIGINT(20) UNSIGNED NOT NULL,
     PRIMARY KEY(request_id),
     FOREIGN KEY (subject_id) REFERENCES subjects(subject_id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (grade_id) REFERENCES grades(grade_id) ON DELETE CASCADE
 );
-
-ALTER TABLE course_requests
-ADD COLUMN status ENUM('pending', 'approved') NOT NULL DEFAULT 'pending';
 
 -- Comments on course requests
 CREATE TABLE IF NOT EXISTS course_request_comments (
@@ -328,6 +330,7 @@ CREATE TABLE IF NOT EXISTS assignment_submission(
     student_id BIGINT(20) UNSIGNED NoT NULL,
     status ENUM('pending', 'graded') DEFAULT 'pending',
     grade INT DEFAULT 0 CHECK (grade >= 0 AND grade <= 100),
+    feedback TEXT,
 
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
     FOREIGN KEY (student_id) REFERENCES users(user_id) ON DELETE CASCADE,
@@ -413,4 +416,26 @@ CREATE TABLE IF NOT EXISTS advertisement_feature(
 
     FOREIGN KEY (advertisement_id) REFERENCES advertisement(advertisement_id) ON DELETE CASCADE,
     PRIMARY KEY (feature_id)
+);
+
+-- Table for notifications
+CREATE TABLE IF NOT EXISTS notifications (
+    notification_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+    message TEXT NOT NULL,
+    url VARCHAR(255),
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(notification_id)
+);
+
+-- Table to associate notifications with users and track read status
+CREATE TABLE IF NOT EXISTS notification_users (
+    notification_user_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+    notification_id BIGINT(20) UNSIGNED NOT NULL,
+    user_id BIGINT(20) UNSIGNED NOT NULL,
+    is_read TINYINT NOT NULL DEFAULT 0,
+    PRIMARY KEY(notification_user_id),
+    UNIQUE KEY(notification_id, user_id),
+    FOREIGN KEY (notification_id) REFERENCES notifications(notification_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );

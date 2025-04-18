@@ -1786,13 +1786,15 @@
         <div class="hero-content">
             <h1>Discover, Learn, Share & Grow Together</h1>
             <p>Explore thousands of courses, share valuable resources, and request custom courses tailored to your specific learning journey.</p>
-            <div class="search-container">
-                <div class="search-bar">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" placeholder="Search for courses, resources, tutors, or skills...">
-                    <button class="search-btn">Search</button>
+            <form action="/test" method="get">
+                <div class="search-container">
+                    <div class="search-bar">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" name="s" placeholder="Search for a course...">
+                        <button class="search-btn">Search</button>
+                    </div>
                 </div>
-            </div>
+            </form>
             <div class="hero-features">
                 <div class="hero-feature">
                     <i class="fas fa-graduation-cap"></i>
@@ -1815,19 +1817,18 @@
     </div>
 </section>
 <!-- Advertisement Section -->
-<section class="container">
-    <div class="section-header">
-        <div>
-            <h2 class="section-title">Premium Offers</h2>
-            <p class="section-description">Exclusive limited-time deals</p>
+<?php if (!empty($advertisements)): ?>
+    <section class="container">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">Premium Offers</h2>
+                <p class="section-description">Exclusive limited-time deals</p>
+            </div>
         </div>
-    </div>
-    <div class="ad-carousel">
-        <div class="carousel-container">
-            <div class="carousel-track">
-                <?php
-                if (!empty($advertisements)):
-                    foreach ($advertisements as $ad): ?>
+        <div class="ad-carousel">
+            <div class="carousel-container">
+                <div class="carousel-track">
+                    <?php foreach ($advertisements as $ad): ?>
                         <div class="carousel-slide">
                             <div class="premium-ad">
                                 <div class="ad-header">
@@ -1839,7 +1840,7 @@
                                     <div class="ad-media">
                                         <div class="ad-badge">Limited Time Offer</div>
                                         <img src="/storage/uploads/advertisement/thumbnail/<?php echo e($ad['thumbnail_url']); ?>" alt="Premium Course">
-                                        <div class="ad-overlay">
+                                        <!-- <div class="ad-overlay">
                                             <div class="timer-container">
                                                 <div class="timer-label">Offer ends in:</div>
                                                 <div class="countdown-timer" data-expires="2025-05-15">
@@ -1848,7 +1849,7 @@
                                                     <span class="minutes">22</span>m
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> -->
                                     </div>
                                     <div class="ad-details">
                                         <div class="partner-info">
@@ -1860,16 +1861,16 @@
                                         <?php if (!empty($ad['features'])): ?>
                                             <div class="ad-features">
                                                 <?php
-                                                $features = json_decode($ad['features'], true);
+                                                $features = $ad['features'];
                                                 foreach ($features as $feature): ?>
-                                                    <div class="ad-feature"><i class="fas fa-certificate"></i> <?php echo e($feature['feature']); ?></div>
+                                                    <div class="ad-feature"><i class="fas fa-certificate"></i> <?php echo e($feature); ?></div>
                                                 <?php endforeach; ?>
                                             </div>
                                         <?php endif; ?>
                                         <div class="ad-footer">
                                             <div class="ad-pricing">
-                                                <div class="ad-price"><?php echo e($ad['price']); ?></div>
-                                                <div class="ad-original-price"><?php echo e($ad['price']); ?></div>
+                                                <div class="ad-price">Rs. <?php echo e($ad['price']) - e($ad['price']) * (e($ad['discount']) / 100); ?></div>
+                                                <div class="ad-original-price">Rs. <?php echo e($ad['price']); ?></div>
                                                 <div class="ad-discount"><?php echo e($ad['discount']); ?>% OFF</div>
                                             </div>
                                             <div class="ad-actions">
@@ -1881,185 +1882,24 @@
                                 </div>
                             </div>
                         </div>
-                <?php endforeach;
-                endif; ?>
-                <!-- Ad Slide 1 -->
-                <!-- <div class="carousel-slide">
-                    <div class="premium-ad">
-                        <div class="ad-header">
-                            <div class="ad-label">
-                                <i class="fas fa-ad"></i> <span>Advertisement</span>
-                            </div>
-                        </div>
-                        <div class="ad-content">
-                            <div class="ad-media">
-                                <div class="ad-badge">Limited Time Offer</div>
-                                <img src="/assets/images/intro-to-web.jpg" alt="Premium Course">
-                                <div class="ad-overlay">
-                                    <div class="timer-container">
-                                        <div class="timer-label">Offer ends in:</div>
-                                        <div class="countdown-timer" data-expires="2025-05-15">
-                                            <span class="days">28</span>d
-                                            <span class="hours">14</span>h
-                                            <span class="minutes">22</span>m
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="ad-details">
-                                <div class="partner-info">
-                                    <img src="/assets/images/user_placeholder.jpg" alt="Partner Logo" class="partner-logo">
-                                    <span class="partner-name">Microsoft Learning</span>
-                                </div>
-                                <h3 class="ad-title">Microsoft Azure Certification Masterclass 2025</h3>
-                                <p class="ad-description">Master cloud computing with Microsoft Azure. This comprehensive program includes 5 industry-recognized certifications, hands-on labs, and career coaching.</p>
-                                <div class="ad-features">
-                                    <div class="ad-feature"><i class="fas fa-certificate"></i> 5 Azure Certifications</div>
-                                    <div class="ad-feature"><i class="fas fa-laptop-code"></i> 24 Real-world Projects</div>
-                                    <div class="ad-feature"><i class="fas fa-user-tie"></i> Career Coaching</div>
-                                    <div class="ad-feature"><i class="fas fa-graduation-cap"></i> Job Guarantee</div>
-                                </div>
-                                <div class="ad-footer">
-                                    <div class="ad-pricing">
-                                        <div class="ad-price">$399</div>
-                                        <div class="ad-original-price">$1,299</div>
-                                        <div class="ad-discount">69% OFF</div>
-                                    </div>
-                                    <div class="ad-actions">
-                                        <a href="#" class="btn btn-primary btn-ad">Claim Offer</a>
-                                        <a href="#" class="btn btn-outline btn-ad-secondary">Learn More</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
+                    <?php endforeach; ?>
+                </div>
 
-                <!-- Ad Slide 2 -->
-                <!-- <div class="carousel-slide">
-                    <div class="premium-ad">
-                        <div class="ad-header">
-                            <div class="ad-label">
-                                <i class="fas fa-ad"></i> <span>Advertisement</span>
-                            </div>
-                        </div>
-                        <div class="ad-content">
-                            <div class="ad-media">
-                                <div class="ad-badge">Most Popular</div>
-                                <img src="/assets/images/intro-to-web.jpg" alt="Data Science Course">
-                                <div class="ad-overlay">
-                                    <div class="timer-container">
-                                        <div class="timer-label">Flash Sale:</div>
-                                        <div class="countdown-timer" data-expires="2025-04-30">
-                                            <span class="days">14</span>d
-                                            <span class="hours">08</span>h
-                                            <span class="minutes">45</span>m
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="ad-details">
-                                <div class="partner-info">
-                                    <img src="/assets/images/user_placeholder.jpg" alt="Partner Logo" class="partner-logo">
-                                    <span class="partner-name">DataCamp</span>
-                                </div>
-                                <h3 class="ad-title">Data Science Career Track: Python & Machine Learning</h3>
-                                <p class="ad-description">Launch your career in data science with this comprehensive program covering Python, statistics, machine learning, and deep learning fundamentals.</p>
-                                <div class="ad-features">
-                                    <div class="ad-feature"><i class="fas fa-project-diagram"></i> 8 End-to-End Projects</div>
-                                    <div class="ad-feature"><i class="fas fa-code"></i> Python & R Programming</div>
-                                    <div class="ad-feature"><i class="fas fa-brain"></i> AI & ML Fundamentals</div>
-                                    <div class="ad-feature"><i class="fas fa-folder-open"></i> Portfolio Building</div>
-                                </div>
-                                <div class="ad-footer">
-                                    <div class="ad-pricing">
-                                        <div class="ad-price">$299</div>
-                                        <div class="ad-original-price">$999</div>
-                                        <div class="ad-discount">70% OFF</div>
-                                    </div>
-                                    <div class="ad-actions">
-                                        <a href="#" class="btn btn-primary btn-ad">Enroll Now</a>
-                                        <a href="#" class="btn btn-outline btn-ad-secondary">Learn More</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
+                <!-- Carousel Controls -->
+                <button class="carousel-btn carousel-btn-prev"><i class="fas fa-chevron-left"></i></button>
+                <button class="carousel-btn carousel-btn-next"><i class="fas fa-chevron-right"></i></button>
 
-                <!-- Ad Slide 3 -->
-                <!-- <div class="carousel-slide">
-                    <div class="premium-ad">
-                        <div class="ad-header">
-                            <div class="ad-label">
-                                <i class="fas fa-ad"></i> <span>Advertisement</span>
-                            </div>
-                        </div>
-                        <div class="ad-content">
-                            <div class="ad-media">
-                                <div class="ad-badge">New Course</div>
-                                <img src="/assets/images/intro-to-web.jpg" alt="AI Course">
-                                <div class="ad-overlay">
-                                    <div class="timer-container">
-                                        <div class="timer-label">Early Bird Discount:</div>
-                                        <div class="countdown-timer" data-expires="2025-05-01">
-                                            <span class="days">15</span>d
-                                            <span class="hours">20</span>h
-                                            <span class="minutes">10</span>m
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="ad-details">
-                                <div class="partner-info">
-                                    <img src="/assets/images/user_placeholder.jpg" alt="Partner Logo" class="partner-logo">
-                                    <span class="partner-name">AI Academy</span>
-                                </div>
-                                <h3 class="ad-title">Generative AI Professional Certification 2025</h3>
-                                <p class="ad-description">Master the latest generative AI technologies including LLMs, diffusion models, and prompt engineering with hands-on project experience.</p>
-                                <div class="ad-features">
-                                    <div class="ad-feature"><i class="fas fa-robot"></i> LLM Fine-tuning</div>
-                                    <div class="ad-feature"><i class="fas fa-image"></i> Stable Diffusion</div>
-                                    <div class="ad-feature"><i class="fas fa-pencil-alt"></i> Prompt Engineering</div>
-                                    <div class="ad-feature"><i class="fas fa-certificate"></i> Industry Certification</div>
-                                </div>
-                                <div class="ad-footer">
-                                    <div class="ad-pricing">
-                                        <div class="ad-price">$449</div>
-                                        <div class="ad-original-price">$1,499</div>
-                                        <div class="ad-discount">70% OFF</div>
-                                    </div>
-                                    <div class="ad-actions">
-                                        <a href="#" class="btn btn-primary btn-ad">Reserve Seat</a>
-                                        <a href="#" class="btn btn-outline btn-ad-secondary">Learn More</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
-            </div>
-
-            <!-- Carousel Controls -->
-            <button class="carousel-btn carousel-btn-prev"><i class="fas fa-chevron-left"></i></button>
-            <button class="carousel-btn carousel-btn-next"><i class="fas fa-chevron-right"></i></button>
-
-            <!-- Carousel Indicators -->
-            <!-- <div class="carousel-indicators">
-                <button class="carousel-indicator active" data-slide="0"></button>
-                <button class="carousel-indicator" data-slide="1"></button>
-                <button class="carousel-indicator" data-slide="2"></button>
-            </div> -->
-            <div class="carousel-indicators">
-                <?php
-                $slideCount = count($advertisements);
-                for ($i = 0; $i < $slideCount; $i++): ?>
-                    <button class="carousel-indicator <?php echo $i === 0 ? 'active' : ''; ?>" data-slide="<?php echo $i; ?>"></button>
-                <?php endfor; ?>
+                <div class="carousel-indicators">
+                    <?php
+                    $slideCount = count($advertisements);
+                    for ($i = 0; $i < $slideCount; $i++): ?>
+                        <button class="carousel-indicator <?php echo $i === 0 ? 'active' : ''; ?>" data-slide="<?php echo $i; ?>"></button>
+                    <?php endfor; ?>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+<?php endif; ?>
 <section class="container courses-section">
     <div class="section-header">
         <div>

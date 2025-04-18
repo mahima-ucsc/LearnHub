@@ -2,37 +2,58 @@
 
 <link rel="stylesheet" href="/assets/styles/Post/action-menu.css">
 <link rel="stylesheet" href="/assets/styles/Post/course-request-details.css">
-
+<link rel="stylesheet" href="/assets/styles/Post/single-post.css">
+<style>
+    .request-card:hover {
+        transform: none !important;
+        box-shadow: none !important;
+    }
+</style>
 <section class="course-request-detail">
     <div class="back-button">
         <a href="/course/request">← Back to Course Requests</a>
     </div>
 
     <!-- Main Post Content -->
-    <div class="request-post-detail">
-        <div class="user-info">
-            <img src="/assets/images/user.jpeg" alt="User Avatar" class="avatar">
-            <div class="user-details">
-                <h4><?= e($request["author"]) ?></h4>
-                <span class="post-time">
+    <div class="request-card">
+        <div class="request-header">
+            <div class="requester">
+                <img src="/assets/images/user_placeholder.jpg" alt="Requester">
+                <span><?php echo e($request['author']); ?></span>
+            </div>
+            <div class="request-status">
+                <span class="time-posted">
                     <?= e(
                         $request["updated_date"] === $request["created_date"] ?
                             "Posted on " . formatDate($request["created_date"], 'F j, Y') :
                             "Edited on " . formatDate($request["updated_date"], 'F j, Y')
                     ) ?>
                 </span>
-            </div>
-        </div>
 
-        <div class="request-content">
-            <div class="request-title">
-                <h3><?= e($request["title"]) ?></h3>
-            </div>
-            <p><?= e($request["description"]) ?></p>
-            <div class="request-metadata">
-                <span class="subject"><?= e($request["subject"]  ?? "Other") ?></span>
             </div>
         </div>
+        <h4 class="request-title"><?php echo e($request['title']); ?></h4>
+        <div class="request-details">
+            <div class="detail-item">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Grade <?php echo e($request['grade']); ?></span>
+            </div>
+            <div class="detail-item">
+                <i class="fas fa-book"></i>
+                <span>
+                    <?php echo e($request['subject']); ?>
+                </span>
+            </div>
+            <div class="detail-item">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>
+                    <?php echo e($request['location']); ?>
+                </span>
+            </div>
+        </div>
+        <p class="request-brief">
+            <?php echo e($request['description']); ?>
+        </p>
         <!-- Comments Section -->
         <div class="comments-container">
             <h3>Comments</h3>

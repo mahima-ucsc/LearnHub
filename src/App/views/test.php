@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submit Course Promotion</title>
+    <title>LearnHub - Create Course</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -78,21 +78,17 @@
             margin-top: 20px;
         }
 
-        .promotion-form-container {
+        .card {
             background-color: var(--white);
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             padding: 40px;
-            margin-top: 20px;
+            margin-bottom: 30px;
             animation: fadeInUp 1s ease;
         }
 
-        .form-section {
-            margin-bottom: 30px;
-        }
-
         .section-title {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 600;
             margin-bottom: 20px;
             padding-bottom: 10px;
@@ -102,6 +98,10 @@
 
         .form-group {
             margin-bottom: 25px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
         }
 
         .form-label {
@@ -124,11 +124,16 @@
         .form-control:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(255, 196, 0, 0.25);
+            box-shadow: 0 0 0 2px rgba(255, 196, 0, 0.05);
         }
 
         .form-control.error {
             border-color: #dc3545;
+        }
+
+        .textarea-control {
+            height: 120px;
+            resize: vertical;
         }
 
         .error-message {
@@ -138,188 +143,86 @@
             display: none;
         }
 
-        .input-group {
-            display: flex;
-            gap: 15px;
-        }
-
-        .input-group .form-group {
-            flex: 1;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .textarea-control {
-            height: 120px;
-            resize: vertical;
-        }
-
         .hint-text {
             font-size: 0.875rem;
             color: var(--gray-dark);
             margin-top: 8px;
         }
 
-        .file-upload {
-            position: relative;
+        .course-type-selector {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 30px;
-            border: 2px dashed var(--gray);
-            border-radius: var(--radius-sm);
-            background-color: var(--gray-light);
-            transition: var(--transition);
-            cursor: pointer;
-            margin-bottom: 15px;
+            gap: 20px;
+            margin-bottom: 30px;
         }
 
-        .file-upload:hover {
+        .course-type-option {
+            flex: 1;
+            padding: 20px;
+            border: 2px solid var(--gray);
+            border-radius: var(--radius);
+            cursor: pointer;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .course-type-option:hover {
+            border-color: var(--primary-light);
+            background-color: var(--primary-light);
+            transform: translateY(-5px);
+        }
+
+        .course-type-option.selected {
             border-color: var(--primary);
             background-color: var(--primary-light);
         }
 
-        .file-upload.active {
-            border-color: var(--primary-dark);
-            background-color: var(--primary-light);
-        }
-
-        .file-upload input[type="file"] {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .upload-icon {
+        .course-type-option i {
             font-size: 2rem;
             color: var(--primary-dark);
             margin-bottom: 15px;
         }
 
-        .upload-text {
-            font-weight: 500;
-            color: var(--dark);
-            margin-bottom: 5px;
+        .course-type-option h3 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
         }
 
-        .upload-hint {
-            font-size: 0.875rem;
+        .course-type-option p {
+            font-size: 0.9rem;
             color: var(--gray-dark);
         }
 
-        .preview-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .preview-image {
-            width: 100px;
-            height: 100px;
-            border-radius: var(--radius-sm);
-            object-fit: cover;
-            border: 2px solid var(--primary-light);
-            position: relative;
-        }
-
-        .remove-image {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background-color: var(--white);
-            color: var(--dark);
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            font-size: 0.75rem;
-            transition: var(--transition);
-        }
-
-        .remove-image:hover {
-            background-color: #dc3545;
-            color: var(--white);
-        }
-
-        .feature-list {
+        .module-list {
             margin-top: 20px;
         }
 
-        .feature-item {
+        .module-item {
+            background: var(--gray-light);
+            padding: 20px;
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .module-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
-            animation: fadeIn 0.3s ease;
         }
 
-        .feature-input {
-            flex: 1;
+        .module-title {
+            font-weight: 600;
+            font-size: 1.1rem;
         }
 
-        .remove-feature {
-            background-color: var(--gray);
-            color: var(--gray-dark);
-            width: 36px;
-            height: 36px;
-            border: none;
-            border-radius: var(--radius-sm);
+        .module-actions {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: 10px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .remove-feature:hover {
-            background-color: #dc3545;
-            color: var(--white);
-        }
-
-        .add-feature {
-            display: flex;
-            align-items: center;
-            padding: 10px 15px;
-            background-color: var(--gray-light);
-            border: 1px dashed var(--gray-dark);
-            border-radius: var(--radius-sm);
-            color: var(--dark);
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .add-feature:hover {
-            background-color: var(--primary-light);
-            border-color: var(--primary);
-        }
-
-        .add-feature i {
-            margin-right: 8px;
-        }
-
-        .form-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-            margin-top: 40px;
+            gap: 10px;
         }
 
         .btn {
-            padding: 14px 28px;
+            padding: 12px 24px;
             border-radius: var(--radius-sm);
             font-weight: 600;
             font-size: 1rem;
@@ -333,6 +236,11 @@
 
         .btn i {
             margin-right: 8px;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.9rem;
         }
 
         .btn-primary {
@@ -359,18 +267,44 @@
             transform: translateY(-3px);
         }
 
-        /* Success message */
-        .success-message {
-            background-color: #d4edda;
-            color: #155724;
-            padding: 15px;
-            border-radius: var(--radius-sm);
-            margin-bottom: 30px;
-            display: none;
-            animation: fadeIn 0.5s ease;
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
         }
 
-        /* Toggle switch */
+        .btn-danger:hover {
+            background-color: #c82333;
+            transform: translateY(-3px);
+        }
+
+        .btn-flat {
+            background: transparent;
+            padding: 8px;
+            color: var(--gray-dark);
+        }
+
+        .btn-flat:hover {
+            color: var(--primary-dark);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
         .toggle-switch {
             position: relative;
             display: inline-block;
@@ -416,115 +350,106 @@
             transform: translateX(24px);
         }
 
-        .toggle-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
         .toggle-label {
             font-weight: 500;
         }
 
-        /* Package selection styles */
-        .package-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            margin-top: 20px;
+        .collapse-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
         }
 
-        .package-card {
-            background-color: var(--white);
-            border: 2px solid var(--gray);
-            border-radius: var(--radius);
-            padding: 30px;
-            transition: var(--transition);
-            position: relative;
-            cursor: pointer;
+        .collapse-content.show {
+            max-height: 1000px;
         }
 
-        .package-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-hover);
-            border-color: var(--primary-light);
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 40px;
         }
 
-        .package-card.selected {
-            border-color: var(--primary);
-            box-shadow: 0 5px 25px rgba(255, 196, 0, 0.25);
-        }
-
-        .package-badge {
-            position: absolute;
-            top: -10px;
-            right: 20px;
-            background-color: var(--accent);
-            color: white;
-            font-size: 0.8rem;
-            font-weight: 600;
-            padding: 5px 15px;
-            border-radius: 20px;
-        }
-
-        .package-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: var(--dark);
-        }
-
-        .package-price {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: var(--primary-dark);
-        }
-
-        .package-price .period {
-            font-size: 1rem;
-            color: var(--gray-dark);
-            font-weight: 400;
-        }
-
-        .package-features {
-            list-style-type: none;
-            margin-bottom: 25px;
-        }
-
-        .package-features li {
-            margin-bottom: 12px;
-            position: relative;
-            padding-left: 28px;
-        }
-
-        .package-features li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: var(--primary-dark);
-            font-weight: bold;
-        }
-
-        .package-select-btn {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid var(--primary);
-            background-color: transparent;
-            color: var(--primary-dark);
-            font-weight: 600;
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
             border-radius: var(--radius-sm);
+            margin-bottom: 30px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Attachment */
+        .drop-zone {
+            border: 2px dashed var(--gray);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 15px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+
+        .drop-zone:hover {
+            border-color: var(--primary);
+            background-color: var(--primary-light);
+        }
+
+        .drop-zone i {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .module-attachments-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .module-attachments-list li {
+            display: flex;
+            align-items: center;
+            background: var(--gray-light);
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--gray);
+        }
+
+        .file-icon {
+            margin-right: 10px;
+            color: var(--primary-dark);
+        }
+
+        .file-name {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .file-size {
+            margin: 0 15px;
+            color: var(--gray-dark);
+            font-size: 0.85rem;
+        }
+
+        .remove-file {
+            background: transparent;
+            border: none;
+            color: var(--gray-dark);
             cursor: pointer;
             transition: var(--transition);
         }
 
-        .package-select-btn:hover,
-        .selected .package-select-btn {
-            background-color: var(--primary);
-            color: var(--dark);
+        .remove-file:hover {
+            color: #dc3545;
         }
 
-        /* Animations */
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -559,88 +484,13 @@
             }
         }
 
-        /* Progress Steps */
-        .progress-steps {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 40px;
-            position: relative;
-        }
-
-        .progress-steps:before {
-            content: '';
-            position: absolute;
-            top: 15px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background-color: var(--gray);
-            z-index: 1;
-        }
-
-        .step {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex: 1;
-        }
-
-        .step-number {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--gray);
-            border-radius: 50%;
-            color: var(--gray-dark);
-            font-weight: 600;
-            margin-bottom: 10px;
-            transition: var(--transition);
-        }
-
-        .step.active .step-number {
-            background-color: var(--primary);
-            color: var(--dark);
-            box-shadow: 0 0 0 4px rgba(255, 196, 0, 0.25);
-        }
-
-        .step.completed .step-number {
-            background-color: var(--primary-dark);
-            color: var(--white);
-        }
-
-        .step-label {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--gray-dark);
-            transition: var(--transition);
-        }
-
-        .step.active .step-label {
-            color: var(--dark);
-            font-weight: 600;
-        }
-
-        /* Form sections for multi-step */
-        .form-step {
-            display: none;
-        }
-
-        .form-step.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
         /* Media queries */
         @media (max-width: 768px) {
             .container {
                 padding: 30px 15px;
             }
 
-            .promotion-form-container {
+            .card {
                 padding: 30px 20px;
             }
 
@@ -648,13 +498,13 @@
                 font-size: 2rem;
             }
 
-            .input-group {
+            .form-row {
                 flex-direction: column;
                 gap: 0;
             }
 
-            .form-grid {
-                grid-template-columns: 1fr;
+            .course-type-selector {
+                flex-direction: column;
             }
 
             .form-actions {
@@ -665,827 +515,699 @@
                 width: 100%;
             }
         }
-
-        @media (max-width: 480px) {
-            .page-title {
-                font-size: 1.8rem;
-            }
-
-            .progress-steps {
-                flex-direction: column;
-                gap: 15px;
-                align-items: flex-start;
-            }
-
-            .progress-steps:before {
-                display: none;
-            }
-
-            .step {
-                flex-direction: row;
-                gap: 10px;
-            }
-
-            .step-label {
-                margin-bottom: 0;
-            }
-        }
     </style>
 </head>
 
 <body>
     <div class="container">
         <div class="page-header">
-            <h1 class="page-title">Course Promotion Submission</h1>
-            <p class="page-subtitle">Submit your course promotion for admin approval. Promotions that meet our quality standards will be featured on the homepage.</p>
+            <h1 class="page-title">Create New Course</h1>
+            <p class="page-subtitle">Share your knowledge with the world by creating an engaging course. Choose your course format and start building your content.</p>
         </div>
 
-        <div class="success-message" id="successMessage">
-            Your promotion has been successfully submitted for review. You will be notified once it is approved.
+        <div id="successMessage" class="success-message">
+            Your course has been created successfully! You can now add more content or publish it.
         </div>
 
-        <div class="promotion-form-container">
-            <div class="progress-steps">
-                <div class="step active" data-step="1">
-                    <div class="step-number">1</div>
-                    <div class="step-label">Course Details</div>
-                </div>
-                <div class="step" data-step="2">
-                    <div class="step-number">2</div>
-                    <div class="step-label">Select Package</div>
-                </div>
-                <div class="step" data-step="3">
-                    <div class="step-number">3</div>
-                    <div class="step-label">Media & Features</div>
-                </div>
-                <div class="step" data-step="4">
-                    <div class="step-number">4</div>
-                    <div class="step-label">Review & Submit</div>
-                </div>
-            </div>
+        <form id="createCourseForm">
+            <!-- Basic Course Information Card -->
+            <div class="card">
+                <h2 class="section-title">Course Information</h2>
 
-            <form id="promotionForm">
-                <!-- Step 1: Course Details -->
-                <div class="form-step active" id="step1">
-                    <div class="form-section">
-                        <h3 class="section-title">Basic Course Information</h3>
-                        <div class="form-group">
-                            <label for="courseTitle" class="form-label">Course Title *</label>
-                            <input type="text" id="courseTitle" name="courseTitle" class="form-control" placeholder="Enter course title" required>
-                            <div class="error-message" id="courseTitleError">Course title is required</div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="courseDescription" class="form-label">Course Description *</label>
-                            <textarea id="courseDescription" name="courseDescription" class="form-control textarea-control" placeholder="Describe your course in detail" required></textarea>
-                            <div class="error-message" id="courseDescriptionError">Course description is required</div>
-                            <p class="hint-text">Provide a compelling description highlighting the value of your course (200-500 characters recommended)</p>
-                        </div>
-
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="courseCategory" class="form-label">Category *</label>
-                                <select id="courseCategory" name="courseCategory" class="form-control" required>
-                                    <option value="">Select category</option>
-                                    <option value="development">Development</option>
-                                    <option value="design">Design</option>
-                                    <option value="business">Business</option>
-                                    <option value="marketing">Marketing</option>
-                                    <option value="photography">Photography</option>
-                                    <option value="music">Music</option>
-                                    <option value="health">Health & Fitness</option>
-                                    <option value="language">Language Learning</option>
-                                    <option value="other">Other</option>
-                                </select>
-                                <div class="error-message" id="courseCategoryError">Please select a category</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="courseDifficulty" class="form-label">Difficulty Level *</label>
-                                <select id="courseDifficulty" name="courseDifficulty" class="form-control" required>
-                                    <option value="">Select difficulty</option>
-                                    <option value="beginner">Beginner</option>
-                                    <option value="intermediate">Intermediate</option>
-                                    <option value="advanced">Advanced</option>
-                                    <option value="all">All Levels</option>
-                                </select>
-                                <div class="error-message" id="courseDifficultyError">Please select difficulty level</div>
-                            </div>
-                        </div>
-
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="courseLanguage" class="form-label">Language *</label>
-                                <select id="courseLanguage" name="courseLanguage" class="form-control" required>
-                                    <option value="">Select language</option>
-                                    <option value="english">English</option>
-                                    <option value="spanish">Spanish</option>
-                                    <option value="french">French</option>
-                                    <option value="german">German</option>
-                                    <option value="chinese">Chinese</option>
-                                    <option value="japanese">Japanese</option>
-                                    <option value="other">Other</option>
-                                </select>
-                                <div class="error-message" id="courseLanguageError">Please select a language</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="courseDuration" class="form-label">Total Course Duration (hours) *</label>
-                                <input type="number" id="courseDuration" name="courseDuration" class="form-control" placeholder="e.g., 12" min="1" step="0.5" required>
-                                <div class="error-message" id="courseDurationError">Please enter valid course duration</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-primary" id="nextToStep2">Continue <i class="fas fa-arrow-right"></i></button>
-                    </div>
+                <div class="form-group">
+                    <label for="courseTitle" class="form-label">Course Title*</label>
+                    <input type="text" id="courseTitle" class="form-control" placeholder="e.g., Advanced Web Development with React" required>
+                    <div class="error-message" id="courseTitleError">Please enter a course title</div>
                 </div>
 
-                <!-- Step 2: Package Selection -->
-                <!-- Step 2: Package Selection -->
-                <div class="form-step" id="step2">
-                    <div class="form-section">
-                        <h3 class="section-title">Select Promotion Package</h3>
-                        <p class="hint-text">Choose the best promotion package to showcase your course to potential students.</p>
-
-                        <div class="form-group">
-                            <label for="selectedPackage" class="form-label">Promotion Package *</label>
-                            <select id="selectedPackage" name="selectedPackage" class="form-control" required>
-                                <option value="">Select a package</option>
-                                <option value="basic">Basic - $49.99/week (Homepage feature for 1 week)</option>
-                                <option value="standard">Standard - $99.99/month (Homepage feature for 30 days)</option>
-                                <option value="gold">Gold - $199.99/month (Homepage feature for 60 days)</option>
-                            </select>
-                            <div class="error-message" id="selectedPackageError">Please select a promotion package</div>
-                        </div>
-
-                        <div class="package-details" id="packageDetails" style="margin-top: 25px; padding: 20px; background-color: var(--primary-light); border-radius: var(--radius-sm); display: none;">
-                            <h4 id="packageTitle" style="margin-bottom: 15px; color: var(--dark);"></h4>
-                            <div id="packagePrice" style="font-size: 1.5rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 15px;"></div>
-                            <div style="font-weight: 600; margin-bottom: 10px;">Package includes:</div>
-                            <ul id="packageFeatures" style="padding-left: 25px;"></ul>
-                        </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-outline" id="backToStep1"><i class="fas fa-arrow-left"></i> Back</button>
-                        <button type="button" class="btn btn-primary" id="nextToStep3">Continue <i class="fas fa-arrow-right"></i></button>
-                    </div>
+                <div class="form-group">
+                    <label for="courseDescription" class="form-label">Course Description*</label>
+                    <textarea id="courseDescription" class="form-control textarea-control" placeholder="Describe what students will learn in your course..." required></textarea>
+                    <div class="error-message" id="courseDescriptionError">Please enter a course description</div>
                 </div>
 
-                <!-- Step 3: Media & Features -->
-                <div class="form-step" id="step3">
-                    <div class="form-section">
-                        <h3 class="section-title">Course Media</h3>
-
-                        <div class="form-group">
-                            <label class="form-label">Course Thumbnail Image *</label>
-                            <div class="file-upload" id="thumbnailUpload">
-                                <input type="file" id="courseThumbnail" name="courseThumbnail" accept="image/*" required>
-                                <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                                <p class="upload-text">Drag and drop or click to upload</p>
-                                <p class="upload-hint">Recommended size: 1280x720 pixels (16:9 ratio)</p>
-                            </div>
-                            <div class="preview-container" id="thumbnailPreview"></div>
-                            <div class="error-message" id="courseThumbnailError">Course thumbnail is required</div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Additional Images (Optional)</label>
-                            <div class="file-upload" id="additionalImagesUpload">
-                                <input type="file" id="additionalImages" name="additionalImages" accept="image/*" multiple>
-                                <i class="fas fa-images upload-icon"></i>
-                                <p class="upload-text">Upload additional screenshots or images</p>
-                                <p class="upload-hint">You can select multiple files (up to 5)</p>
-                            </div>
-                            <div class="preview-container" id="additionalImagesPreview"></div>
-                        </div>
-                    </div>
-
-                    <div class="form-section">
-                        <h3 class="section-title">Course Features</h3>
-                        <p class="hint-text">Add key features or benefits of your course to highlight in the promotion</p>
-
-                        <div id="featuresList" class="feature-list">
-                            <div class="feature-item">
-                                <input type="text" class="form-control feature-input" name="features[]" placeholder="e.g., '50+ hours of video content'">
-                                <button type="button" class="remove-feature"><i class="fas fa-times"></i></button>
-                            </div>
-                            <div class="feature-item">
-                                <input type="text" class="form-control feature-input" name="features[]" placeholder="e.g., 'Downloadable resources'">
-                                <button type="button" class="remove-feature"><i class="fas fa-times"></i></button>
-                            </div>
-                        </div>
-
-                        <button type="button" id="addFeature" class="add-feature">
-                            <i class="fas fa-plus"></i> Add Another Feature
-                        </button>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-outline" id="backToStep2"><i class="fas fa-arrow-left"></i> Back</button>
-                        <button type="button" class="btn btn-primary" id="nextToStep4">Review <i class="fas fa-arrow-right"></i></button>
-                    </div>
-                </div>
-
-                <!-- Step 4: Review & Submit -->
-                <div class="form-step" id="step4">
-                    <div class="form-section">
-                        <h3 class="section-title">Review Your Promotion</h3>
-                        <p class="hint-text">Please review all details before submitting. You can go back to edit any section.</p>
-
-                        <div class="review-content" id="reviewContent">
-                            <!-- Content will be dynamically generated by JavaScript -->
-                        </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="courseCategory" class="form-label">Category*</label>
+                        <select id="courseCategory" class="form-control" required>
+                            <option value="">Select Category</option>
+                            <option value="programming">Programming & Development</option>
+                            <option value="business">Business & Entrepreneurship</option>
+                            <option value="design">Design & Creativity</option>
+                            <option value="marketing">Marketing & Communications</option>
+                            <option value="personal">Personal Development</option>
+                            <option value="health">Health & Fitness</option>
+                            <option value="academics">Academics</option>
+                        </select>
+                        <div class="error-message" id="courseCategoryError">Please select a category</div>
                     </div>
 
                     <div class="form-group">
-                        <div class="toggle-container">
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="termsAgreed" name="termsAgreed" required>
-                                <span class="toggle-slider"></span>
-                            </label>
-                            <span class="toggle-label">I agree to the promotion guidelines and terms</span>
-                        </div>
-                        <div class="error-message" id="termsAgreedError">You must agree to the terms</div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-outline" id="backToStep3"><i class="fas fa-arrow-left"></i> Back</button>
-                        <button type="submit" class="btn btn-primary" id="submitPromotion"><i class="fas fa-paper-plane"></i> Submit Promotion</button>
+                        <label for="courseLevel" class="form-label">Difficulty Level*</label>
+                        <select id="courseLevel" class="form-control" required>
+                            <option value="">Select Level</option>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                            <option value="all">All Levels</option>
+                        </select>
+                        <div class="error-message" id="courseLevelError">Please select a difficulty level</div>
                     </div>
                 </div>
-            </form>
-        </div>
+
+                <div class="form-group">
+                    <label for="courseThumbnail" class="form-label">Course Thumbnail Image*</label>
+                    <input type="file" id="courseThumbnail" class="form-control" accept="image/*" required>
+                    <p class="hint-text">Upload a high-quality image to attract students. Recommended size: 1280x720px</p>
+                    <div class="error-message" id="courseThumbnailError">Please upload a course thumbnail</div>
+                </div>
+            </div>
+
+            <!-- Course Type Card -->
+            <div class="card">
+                <h2 class="section-title">Course Type & Pricing</h2>
+
+                <div class="course-type-selector">
+                    <div class="course-type-option" id="fullCourseOption">
+                        <i class="fas fa-box"></i>
+                        <h3>Complete Course</h3>
+                        <p>Create all modules upfront and set a price for the entire course.</p>
+                    </div>
+
+                    <div class="course-type-option" id="monthlyCourseOption">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3>Monthly Course</h3>
+                        <p>Add modules over time and set individual prices for each module.</p>
+                    </div>
+                </div>
+
+                <input type="hidden" id="courseType" name="courseType" value="">
+                <div class="error-message" id="courseTypeError">Please select a course type</div>
+
+                <!-- Full Course Pricing (shown when full course selected) -->
+                <div id="fullCoursePricing" class="collapse-content">
+                    <div class="form-group">
+                        <label for="fullCoursePrice" class="form-label">Course Price*</label>
+                        <input type="number" id="fullCoursePrice" class="form-control" placeholder="Enter price (in $)" step="0.01" min="0">
+                        <div class="error-message" id="fullCoursePriceError">Please enter a valid price</div>
+                    </div>
+
+                    <div class="toggle-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="hasFreeTrialPeriod">
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span class="toggle-label">Enable free trial period</span>
+                    </div>
+
+                    <div id="freeTrialPeriodInput" class="collapse-content">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="freeTrialDays" class="form-label">Free Trial Period (days)*</label>
+                                <input type="number" id="freeTrialDays" class="form-control" placeholder="e.g., 7" min="1">
+                                <div class="error-message" id="freeTrialDaysError">Please enter a valid number of days</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modules Card -->
+            <div class="card">
+                <h2 class="section-title">Course Modules</h2>
+
+                <div id="modulesList" class="module-list">
+                    <!-- Modules will be added here dynamically -->
+                </div>
+
+                <button type="button" id="addModuleBtn" class="btn btn-outline">
+                    <i class="fas fa-plus"></i> Add New Module
+                </button>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" id="saveAsDraftBtn">
+                    <i class="fas fa-save"></i> Save as Draft
+                </button>
+                <button type="submit" class="btn btn-primary" id="createCourseBtn">
+                    <i class="fas fa-check"></i> Create Course
+                </button>
+            </div>
+        </form>
     </div>
+
+    <!-- Module Template (hidden, used for JavaScript cloning) -->
+    <template id="moduleTemplate">
+        <div class="module-item">
+            <div class="module-header">
+                <h3 class="module-title">Module <span class="module-number"></span></h3>
+                <div class="module-actions">
+                    <button type="button" class="btn btn-flat toggle-module-content">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <button type="button" class="btn btn-flat remove-module">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="module-content collapse-content show">
+                <div class="form-group">
+                    <label class="form-label">Module Title*</label>
+                    <input type="text" class="form-control module-title-input" placeholder="e.g., Introduction to React Hooks" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Module Description</label>
+                    <textarea class="form-control textarea-control module-description-input" placeholder="What will students learn in this module?"></textarea>
+                </div>
+
+                <div class="monthly-module-pricing">
+                    <div class="form-group">
+                        <label class="form-label">Module Price*</label>
+                        <input type="number" class="form-control module-price-input" placeholder="Enter price (in $)" step="0.01" min="0">
+                    </div>
+
+                    <div class="toggle-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" class="module-free-trial-checkbox">
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span class="toggle-label">Enable free trial period</span>
+                    </div>
+
+                    <div class="module-free-trial-input collapse-content">
+                        <div class="form-group">
+                            <label class="form-label">Free Trial Period (days)*</label>
+                            <input type="number" class="form-control module-free-trial-days" placeholder="e.g., 7" min="1">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Estimated Completion Time</label>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <input type="number" class="form-control module-hours" placeholder="Hours" min="0">
+                        </div>
+                        <div class="form-group">
+                            <input type="number" class="form-control module-minutes" placeholder="Minutes" min="0" max="59">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Module Attachments</label>
+                    <div class="module-attachments drop-zone">
+                        <p><i class="fas fa-cloud-upload-alt"></i> Drag files here or click to upload</p>
+                        <input type="file" class="module-file-input" multiple style="display: none;">
+                    </div>
+                    <ul class="module-attachments-list"></ul>
+                    <p class="hint-text">Upload any supporting materials for this module (PDFs, presentations, code samples, etc.)</p>
+                </div>
+            </div>
+        </div>
+    </template>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Variables
-            const form = document.getElementById('promotionForm');
-            const steps = document.querySelectorAll('.form-step');
-            const progressSteps = document.querySelectorAll('.step');
+            // Elements
+            const form = document.getElementById('createCourseForm');
+            const fullCourseOption = document.getElementById('fullCourseOption');
+            const monthlyCourseOption = document.getElementById('monthlyCourseOption');
+            const courseTypeInput = document.getElementById('courseType');
+            const fullCoursePricing = document.getElementById('fullCoursePricing');
+            const hasFreeTrialPeriod = document.getElementById('hasFreeTrialPeriod');
+            const freeTrialPeriodInput = document.getElementById('freeTrialPeriodInput');
+            const addModuleBtn = document.getElementById('addModuleBtn');
+            const modulesList = document.getElementById('modulesList');
+            const successMessage = document.getElementById('successMessage');
+            const saveAsDraftBtn = document.getElementById('saveAsDraftBtn');
+            const createCourseBtn = document.getElementById('createCourseBtn');
 
-            // Package selection handling
-            const packageCards = document.querySelectorAll('.package-card');
-            const selectedPackageInput = document.getElementById('selectedPackage');
+            let moduleCounter = 0;
 
-            // Select package when clicking on a card
-            packageCards.forEach(card => {
-                card.addEventListener('click', function() {
-                    // Remove selection from all cards
-                    packageCards.forEach(c => c.classList.remove('selected'));
-
-                    // Add selection to clicked card
-                    this.classList.add('selected');
-
-                    // Store the selected package value
-                    selectedPackageInput.value = this.dataset.package;
-
-                    // Hide error if shown
-                    document.getElementById('selectedPackageError').style.display = 'none';
-                });
+            // Course Type Selection
+            fullCourseOption.addEventListener('click', function() {
+                selectCourseType('full');
             });
 
-            // File upload handling
-            const thumbnailUpload = document.getElementById('thumbnailUpload');
-            const courseThumbnail = document.getElementById('courseThumbnail');
-            const thumbnailPreview = document.getElementById('thumbnailPreview');
-
-            const additionalImagesUpload = document.getElementById('additionalImagesUpload');
-            const additionalImages = document.getElementById('additionalImages');
-            const additionalImagesPreview = document.getElementById('additionalImagesPreview');
-
-            // Thumbnail upload
-            thumbnailUpload.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                thumbnailUpload.classList.add('active');
+            monthlyCourseOption.addEventListener('click', function() {
+                selectCourseType('monthly');
             });
 
-            thumbnailUpload.addEventListener('dragleave', () => {
-                thumbnailUpload.classList.remove('active');
-            });
+            function selectCourseType(type) {
+                fullCourseOption.classList.remove('selected');
+                monthlyCourseOption.classList.remove('selected');
 
-            thumbnailUpload.addEventListener('drop', (e) => {
-                e.preventDefault();
-                thumbnailUpload.classList.remove('active');
+                if (type === 'full') {
+                    fullCourseOption.classList.add('selected');
+                    fullCoursePricing.classList.add('show');
+                    courseTypeInput.value = 'full';
 
-                if (e.dataTransfer.files.length) {
-                    courseThumbnail.files = e.dataTransfer.files;
-                    showThumbnailPreview();
+                    // Hide pricing in modules for full course
+                    document.querySelectorAll('.monthly-module-pricing').forEach(el => {
+                        el.style.display = 'none';
+                    });
+                } else {
+                    monthlyCourseOption.classList.add('selected');
+                    fullCoursePricing.classList.remove('show');
+                    courseTypeInput.value = 'monthly';
+
+                    // Show pricing in modules for monthly course
+                    document.querySelectorAll('.monthly-module-pricing').forEach(el => {
+                        el.style.display = 'block';
+                    });
+                }
+
+                document.getElementById('courseTypeError').style.display = 'none';
+
+                // Add at least one module if none exists
+                if (modulesList.children.length === 0) {
+                    addModule();
+                }
+            }
+
+            // Toggle Free Trial Period
+            hasFreeTrialPeriod.addEventListener('change', function() {
+                if (this.checked) {
+                    freeTrialPeriodInput.classList.add('show');
+                } else {
+                    freeTrialPeriodInput.classList.remove('show');
                 }
             });
 
-            courseThumbnail.addEventListener('change', showThumbnailPreview);
+            // Add New Module
+            addModuleBtn.addEventListener('click', addModule);
 
-            function showThumbnailPreview() {
-                thumbnailPreview.innerHTML = '';
+            function addModule() {
+                moduleCounter++;
 
-                if (courseThumbnail.files && courseThumbnail.files[0]) {
-                    const reader = new FileReader();
+                // Clone the module template
+                const template = document.getElementById('moduleTemplate');
+                const moduleNode = document.importNode(template.content, true);
 
-                    reader.onload = function(e) {
-                        const preview = document.createElement('div');
-                        preview.className = 'preview-image';
-                        preview.style.backgroundImage = `url(${e.target.result})`;
-                        preview.style.backgroundSize = 'cover';
-                        preview.style.backgroundPosition = 'center';
+                // Update module number
+                moduleNode.querySelector('.module-number').textContent = moduleCounter;
 
-                        const removeButton = document.createElement('span');
-                        removeButton.className = 'remove-image';
-                        removeButton.innerHTML = '<i class="fas fa-times"></i>';
-                        removeButton.addEventListener('click', () => {
-                            courseThumbnail.value = '';
-                            thumbnailPreview.innerHTML = '';
-                        });
+                // Add event listeners
+                const toggleBtn = moduleNode.querySelector('.toggle-module-content');
+                const removeBtn = moduleNode.querySelector('.remove-module');
+                const moduleContent = moduleNode.querySelector('.module-content');
+                const freeTrialCheckbox = moduleNode.querySelector('.module-free-trial-checkbox');
+                const freeTrialInput = moduleNode.querySelector('.module-free-trial-input');
 
-                        preview.appendChild(removeButton);
-                        thumbnailPreview.appendChild(preview);
+                toggleBtn.addEventListener('click', function() {
+                    moduleContent.classList.toggle('show');
+                    const icon = this.querySelector('i');
+                    icon.classList.toggle('fa-chevron-down');
+                    icon.classList.toggle('fa-chevron-up');
+                });
+
+                removeBtn.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to remove this module?')) {
+                        this.closest('.module-item').remove();
+                        updateModuleNumbers();
+                    }
+                });
+
+                freeTrialCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        freeTrialInput.classList.add('show');
+                    } else {
+                        freeTrialInput.classList.remove('show');
+                    }
+                });
+
+                // Set display state for pricing based on course type
+                if (courseTypeInput.value === 'full') {
+                    moduleNode.querySelector('.monthly-module-pricing').style.display = 'none';
+                }
+
+                // Append the new module
+                modulesList.appendChild(moduleNode);
+
+                // Initialize file attachments for this new module
+                initializeModuleAttachments(modulesList.lastElementChild);
+            }
+
+            // Update module numbers after deletion
+            function updateModuleNumbers() {
+                const modules = modulesList.querySelectorAll('.module-item');
+                modules.forEach((module, index) => {
+                    module.querySelector('.module-number').textContent = index + 1;
+                });
+                moduleCounter = modules.length;
+            }
+
+            // Handle module attachments
+            function initializeModuleAttachments(moduleNode) {
+                const dropZone = moduleNode.querySelector('.module-attachments');
+                const fileInput = moduleNode.querySelector('.module-file-input');
+                const attachmentsList = moduleNode.querySelector('.module-attachments-list');
+
+                // Create DataTransfer object to manage files
+                const dataTransfer = new DataTransfer();
+
+                // Click on drop zone to trigger file input
+                dropZone.addEventListener('click', () => {
+                    fileInput.click();
+                });
+
+                // Handle drag & drop events
+                dropZone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dropZone.style.borderColor = 'var(--primary)';
+                });
+
+                dropZone.addEventListener('dragleave', (e) => {
+                    e.preventDefault();
+                    dropZone.style.borderColor = 'var(--gray)';
+                });
+
+                dropZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropZone.style.borderColor = 'var(--gray)';
+                    handleFiles(e.dataTransfer.files);
+                });
+
+                // When files are selected via the file input
+                fileInput.addEventListener('change', (e) => {
+                    handleFiles(e.target.files);
+                });
+
+                // Add files to DataTransfer and update the preview
+                function handleFiles(files) {
+                    for (let i = 0; i < files.length; i++) {
+                        dataTransfer.items.add(files[i]);
+                    }
+                    // Update the file input with our DataTransfer files
+                    fileInput.files = dataTransfer.files;
+                    renderPreview();
+                }
+
+                // Format file size in a readable way
+                function formatFileSize(bytes) {
+                    if (bytes === 0) return '0 Bytes';
+                    const k = 1024;
+                    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+                    const i = Math.floor(Math.log(bytes) / Math.log(k));
+                    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+                }
+
+                // Get appropriate icon for file type
+                function getFileIcon(fileName) {
+                    const extension = fileName.split('.').pop().toLowerCase();
+                    const iconMap = {
+                        pdf: 'fa-file-pdf',
+                        doc: 'fa-file-word',
+                        docx: 'fa-file-word',
+                        xls: 'fa-file-excel',
+                        xlsx: 'fa-file-excel',
+                        ppt: 'fa-file-powerpoint',
+                        pptx: 'fa-file-powerpoint',
+                        jpg: 'fa-file-image',
+                        jpeg: 'fa-file-image',
+                        png: 'fa-file-image',
+                        gif: 'fa-file-image',
+                        svg: 'fa-file-image',
+                        zip: 'fa-file-archive',
+                        rar: 'fa-file-archive',
+                        txt: 'fa-file-alt',
+                        mp4: 'fa-file-video',
+                        mov: 'fa-file-video',
+                        avi: 'fa-file-video',
+                        mp3: 'fa-file-audio',
+                        wav: 'fa-file-audio',
+                        html: 'fa-file-code',
+                        css: 'fa-file-code',
+                        js: 'fa-file-code'
                     };
 
-                    reader.readAsDataURL(courseThumbnail.files[0]);
-                }
-            }
-
-            // Additional images upload
-            additionalImagesUpload.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                additionalImagesUpload.classList.add('active');
-            });
-
-            additionalImagesUpload.addEventListener('dragleave', () => {
-                additionalImagesUpload.classList.remove('active');
-            });
-
-            additionalImagesUpload.addEventListener('drop', (e) => {
-                e.preventDefault();
-                additionalImagesUpload.classList.remove('active');
-
-                if (e.dataTransfer.files.length) {
-                    additionalImages.files = e.dataTransfer.files;
-                    showAdditionalImagesPreview();
-                }
-            });
-
-            additionalImages.addEventListener('change', showAdditionalImagesPreview);
-
-            function showAdditionalImagesPreview() {
-                additionalImagesPreview.innerHTML = '';
-
-                if (additionalImages.files && additionalImages.files.length) {
-                    // Limit to max 5 images
-                    const maxImages = Math.min(additionalImages.files.length, 5);
-
-                    for (let i = 0; i < maxImages; i++) {
-                        const reader = new FileReader();
-
-                        reader.onload = function(e) {
-                            const preview = document.createElement('div');
-                            preview.className = 'preview-image';
-                            preview.style.backgroundImage = `url(${e.target.result})`;
-                            preview.style.backgroundSize = 'cover';
-                            preview.style.backgroundPosition = 'center';
-
-                            const removeButton = document.createElement('span');
-                            removeButton.className = 'remove-image';
-                            removeButton.innerHTML = '<i class="fas fa-times"></i>';
-                            removeButton.dataset.index = i;
-
-                            removeButton.addEventListener('click', () => {
-                                preview.remove();
-                                // Note: In a real application, you would need to use FormData to properly
-                                // handle file removals or a more sophisticated file upload handling
-                            });
-
-                            preview.appendChild(removeButton);
-                            additionalImagesPreview.appendChild(preview);
-                        };
-
-                        reader.readAsDataURL(additionalImages.files[i]);
-                    }
-                }
-            }
-
-            // Course features
-            const featuresList = document.getElementById('featuresList');
-            const addFeatureBtn = document.getElementById('addFeature');
-
-            addFeatureBtn.addEventListener('click', addFeature);
-
-            function addFeature() {
-                const featureItems = document.querySelectorAll('.feature-item');
-
-                // Limit to max 10 features
-                if (featureItems.length >= 10) {
-                    alert('Maximum 10 features allowed');
-                    return;
+                    return iconMap[extension] || 'fa-file';
                 }
 
-                const newFeature = document.createElement('div');
-                newFeature.className = 'feature-item';
-                newFeature.style.opacity = '0';
+                // Render the attachments preview
+                function renderPreview() {
+                    // Clear the current list
+                    attachmentsList.innerHTML = '';
 
-                newFeature.innerHTML = `
-                    <input type="text" class="form-control feature-input" name="features[]" placeholder="Enter course feature">
-                    <button type="button" class="remove-feature"><i class="fas fa-times"></i></button>
-                `;
+                    // Create a preview for each file
+                    Array.from(fileInput.files).forEach((file, index) => {
+                        const listItem = document.createElement('li');
 
-                featuresList.appendChild(newFeature);
+                        // Add file icon
+                        const icon = document.createElement('i');
+                        icon.className = `fas ${getFileIcon(file.name)} file-icon`;
+                        listItem.appendChild(icon);
 
-                // Animate the new feature
-                setTimeout(() => {
-                    newFeature.style.opacity = '1';
-                }, 10);
+                        // Add file name
+                        const fileName = document.createElement('span');
+                        fileName.textContent = file.name;
+                        fileName.className = 'file-name';
+                        listItem.appendChild(fileName);
 
-                // Add event listener to the new remove button
-                const removeBtn = newFeature.querySelector('.remove-feature');
-                removeBtn.addEventListener('click', function() {
-                    removeFeature(this);
-                });
-            }
+                        // Add file size
+                        const fileSize = document.createElement('span');
+                        fileSize.textContent = formatFileSize(file.size);
+                        fileSize.className = 'file-size';
+                        listItem.appendChild(fileSize);
 
-            // Remove feature
-            document.querySelectorAll('.remove-feature').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    removeFeature(this);
-                });
-            });
+                        // Create a remove button for each file
+                        const removeBtn = document.createElement('button');
+                        removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                        removeBtn.className = 'remove-file';
+                        removeBtn.type = 'button';
+                        removeBtn.addEventListener('click', () => removeFile(index));
+                        listItem.appendChild(removeBtn);
 
-            function removeFeature(button) {
-                const featureItem = button.closest('.feature-item');
-
-                // Animate removal
-                featureItem.style.opacity = '0';
-
-                setTimeout(() => {
-                    featureItem.remove();
-                }, 300);
-            }
-
-            // Multi-step form navigation
-            const nextToStep2 = document.getElementById('nextToStep2');
-            const nextToStep3 = document.getElementById('nextToStep3');
-            const nextToStep4 = document.getElementById('nextToStep4');
-
-            const backToStep1 = document.getElementById('backToStep1');
-            const backToStep2 = document.getElementById('backToStep2');
-            const backToStep3 = document.getElementById('backToStep3');
-
-            const submitPromotion = document.getElementById('submitPromotion');
-
-            // Step navigation
-            nextToStep2.addEventListener('click', () => {
-                if (validateStep(1)) {
-                    goToStep(2);
-                }
-            });
-
-            nextToStep3.addEventListener('click', () => {
-                if (validateStep(2)) {
-                    goToStep(3);
-                }
-            });
-
-            nextToStep4.addEventListener('click', () => {
-                if (validateStep(3)) {
-                    populateReviewContent();
-                    goToStep(4);
-                }
-            });
-
-            backToStep1.addEventListener('click', () => goToStep(1));
-            backToStep2.addEventListener('click', () => goToStep(2));
-            backToStep3.addEventListener('click', () => goToStep(3));
-
-            function goToStep(step) {
-                steps.forEach(s => s.classList.remove('active'));
-                progressSteps.forEach(s => {
-                    s.classList.remove('active');
-                    s.classList.remove('completed');
-                });
-
-                document.getElementById(`step${step}`).classList.add('active');
-
-                for (let i = 1; i <= progressSteps.length; i++) {
-                    const stepEl = document.querySelector(`.step[data-step="${i}"]`);
-                    if (i < step) {
-                        stepEl.classList.add('completed');
-                    } else if (i === step) {
-                        stepEl.classList.add('active');
-                    }
+                        attachmentsList.appendChild(listItem);
+                    });
                 }
 
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
+                // Remove a file from the DataTransfer list
+                function removeFile(index) {
+                    // Create a new DataTransfer object and add back every file except the one to remove
+                    const newDataTransfer = new DataTransfer();
+                    Array.from(fileInput.files).forEach((file, i) => {
+                        if (i !== index) {
+                            newDataTransfer.items.add(file);
+                        }
+                    });
+                    // Update our DataTransfer and file input
+                    fileInput.files = newDataTransfer.files;
+                    renderPreview();
+                }
             }
 
             // Form validation
-            function validateStep(step) {
+            function validateForm() {
                 let isValid = true;
 
-                switch (step) {
-                    case 1:
-                        // Validate course details
-                        const requiredFieldsStep1 = ['courseTitle', 'courseDescription', 'courseCategory', 'courseDifficulty', 'courseLanguage', 'courseDuration'];
-                        requiredFieldsStep1.forEach(field => {
-                            if (!validateField(field)) {
-                                isValid = false;
-                            }
-                        });
-                        break;
+                // Validate basic course info
+                const requiredFields = ['courseTitle', 'courseDescription', 'courseCategory', 'courseLevel', 'courseThumbnail'];
 
-                    case 2:
-                        // Validate package selection
-                        if (!selectedPackageInput.value) {
-                            document.getElementById('selectedPackageError').style.display = 'block';
-                            isValid = false;
-                        }
-                        break;
+                requiredFields.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    const errorElement = document.getElementById(fieldId + 'Error');
 
-                    case 3:
-                        // Validate media & features
-                        if (!validateField('courseThumbnail')) {
-                            isValid = false;
-                        }
-
-                        // Validate that at least one feature is entered
-                        const features = document.querySelectorAll('input[name="features[]"]');
-                        let hasFeature = false;
-
-                        features.forEach(feature => {
-                            if (feature.value.trim() !== '') {
-                                hasFeature = true;
-                            }
-                        });
-
-                        if (!hasFeature) {
-                            alert('Please add at least one course feature');
-                            isValid = false;
-                        }
-                        break;
-
-                    case 4:
-                        // Validate terms agreement
-                        if (!validateField('termsAgreed')) {
-                            isValid = false;
-                        }
-                        break;
-                }
-
-                return isValid;
-            }
-
-            function validateField(fieldId) {
-                const field = document.getElementById(fieldId);
-                const errorElement = document.getElementById(`${fieldId}Error`);
-
-                let isValid = true;
-
-                if (field.required && !field.value) {
-                    isValid = false;
-                    if (errorElement) {
+                    if (!field.value) {
                         errorElement.style.display = 'block';
-                    }
-                    if (field.classList) {
                         field.classList.add('error');
-                    }
-                } else if (field.type === 'checkbox' && field.required && !field.checked) {
-                    isValid = false;
-                    if (errorElement) {
-                        errorElement.style.display = 'block';
-                    }
-                } else if (field.type === 'file' && field.required && (!field.files || field.files.length === 0)) {
-                    isValid = false;
-                    if (errorElement) {
-                        errorElement.style.display = 'block';
-                    }
-                } else {
-                    if (errorElement) {
+                        isValid = false;
+                    } else {
                         errorElement.style.display = 'none';
-                    }
-                    if (field.classList) {
                         field.classList.remove('error');
                     }
+                });
+
+                // Validate course type
+                if (!courseTypeInput.value) {
+                    document.getElementById('courseTypeError').style.display = 'block';
+                    isValid = false;
+                }
+
+                // Validate pricing based on course type
+                if (courseTypeInput.value === 'full') {
+                    const priceField = document.getElementById('fullCoursePrice');
+                    const priceError = document.getElementById('fullCoursePriceError');
+
+                    if (!priceField.value || parseFloat(priceField.value) < 0) {
+                        priceError.style.display = 'block';
+                        priceField.classList.add('error');
+                        isValid = false;
+                    } else {
+                        priceError.style.display = 'none';
+                        priceField.classList.remove('error');
+                    }
+
+                    // Validate free trial period if enabled
+                    if (hasFreeTrialPeriod.checked) {
+                        const daysField = document.getElementById('freeTrialDays');
+                        const daysError = document.getElementById('freeTrialDaysError');
+
+                        if (!daysField.value || parseInt(daysField.value) < 1) {
+                            daysError.style.display = 'block';
+                            daysField.classList.add('error');
+                            isValid = false;
+                        } else {
+                            daysError.style.display = 'none';
+                            daysField.classList.remove('error');
+                        }
+                    }
+                }
+
+                // Validate modules
+                const modules = modulesList.querySelectorAll('.module-item');
+                if (modules.length === 0) {
+                    alert('Please add at least one module to your course');
+                    isValid = false;
+                } else {
+                    modules.forEach((module, index) => {
+                        const titleInput = module.querySelector('.module-title-input');
+
+                        if (!titleInput.value) {
+                            titleInput.classList.add('error');
+                            isValid = false;
+                        } else {
+                            titleInput.classList.remove('error');
+                        }
+
+                        // Validate module price if monthly course
+                        if (courseTypeInput.value === 'monthly') {
+                            const priceInput = module.querySelector('.module-price-input');
+
+                            if (!priceInput.value || parseFloat(priceInput.value) < 0) {
+                                priceInput.classList.add('error');
+                                isValid = false;
+                            } else {
+                                priceInput.classList.remove('error');
+                            }
+
+                            // Validate free trial period if enabled for this module
+                            const freeTrialCheckbox = module.querySelector('.module-free-trial-checkbox');
+                            if (freeTrialCheckbox.checked) {
+                                const daysInput = module.querySelector('.module-free-trial-days');
+
+                                if (!daysInput.value || parseInt(daysInput.value) < 1) {
+                                    daysInput.classList.add('error');
+                                    isValid = false;
+                                } else {
+                                    daysInput.classList.remove('error');
+                                }
+                            }
+                        }
+                    });
                 }
 
                 return isValid;
-            }
-
-            // Get package details for display
-            function getPackageDetails(packageType) {
-                const packages = {
-                    'basic': {
-                        name: 'Basic',
-                        price: '$49.99',
-                        period: 'week',
-                        features: [
-                            'Feature on homepage for 1 week',
-                            'Basic search visibility',
-                            'Basic analytics dashboard',
-                            'Email promotion to 500 users'
-                        ]
-                    },
-                    'standard': {
-                        name: 'Standard',
-                        price: '$99.99',
-                        period: 'month',
-                        features: [
-                            'Feature on homepage for 1 month',
-                            'Feature in category page for 1 week',
-                            'Advanced search visibility',
-                            'Detailed analytics dashboard',
-                            'Email promotion to 2,000 users',
-                            'Social media promotion'
-                        ]
-                    },
-                    'gold': {
-                        name: 'Gold',
-                        price: '$199.99',
-                        period: 'month',
-                        features: [
-                            'Feature on homepage for 1 month',
-                            'Feature in category page for 1 month',
-                            'Priority search visibility',
-                            'Premium analytics dashboard',
-                            'Email promotion to 5,000 users',
-                            'Social media promotion campaign',
-                            'Featured in newsletter',
-                            'Dedicated promotion banner'
-                        ]
-                    }
-                };
-
-                return packages[packageType] || packages['basic'];
-            }
-
-            // Populate review content
-            function populateReviewContent() {
-                const reviewContent = document.getElementById('reviewContent');
-
-                const courseTitle = document.getElementById('courseTitle').value;
-                const courseCategory = document.getElementById('courseCategory').options[document.getElementById('courseCategory').selectedIndex].text;
-                const courseDifficulty = document.getElementById('courseDifficulty').options[document.getElementById('courseDifficulty').selectedIndex].text;
-                const selectedPackage = selectedPackageInput.value;
-                const packageDetails = getPackageDetails(selectedPackage);
-
-                // Get all features
-                const features = [];
-                document.querySelectorAll('input[name="features[]"]').forEach(feature => {
-                    if (feature.value.trim() !== '') {
-                        features.push(feature.value);
-                    }
-                });
-
-                // Build HTML for review
-                let reviewHTML = `
-                    <div style="background-color: #f8f9fa; border-radius: 10px; padding: 25px; margin-bottom: 30px;">
-                        <h4 style="font-size: 1.5rem; margin-bottom: 20px; color: var(--dark);">${courseTitle}</h4>
-                        
-                        <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px;">
-                            <div style="flex: 1; min-width: 250px;">
-                                <div style="font-weight: 600; margin-bottom: 5px;">Course Title:</div>
-                                <div>${courseTitle}</div>
-                            </div>
-                            
-                            <div style="flex: 1; min-width: 250px;">
-                                <div style="font-weight: 600; margin-bottom: 5px;">Category:</div>
-                                <div>${courseCategory}</div>
-                            </div>
-                        </div>
-                        
-                        <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px;">
-                            <div style="flex: 1; min-width: 250px;">
-                                <div style="font-weight: 600; margin-bottom: 5px;">Difficulty Level:</div>
-                                <div>${courseDifficulty}</div>
-                            </div>
-                            
-                            <div style="flex: 1; min-width: 250px;">
-                                <div style="font-weight: 600; margin-bottom: 5px;">Duration:</div>
-                                <div>${document.getElementById('courseDuration').value} hours</div>
-                            </div>
-                        </div>
-                        
-                        <div style="background-color: var(--primary-light); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                                <div style="font-size: 1.1rem; font-weight: 600;">Selected Promotion Package</div>
-                                <div style="color: var(--primary-dark); font-weight: 700; font-size: 1.2rem;">${packageDetails.name}</div>
-                            </div>
-                            
-                            <div style="display: flex; flex-wrap: wrap; gap: 15px;">
-                                <div style="flex: 1; min-width: 120px;">
-                                    <div style="font-size: 0.9rem; color: var(--gray-dark);">Package Price</div>
-                                    <div style="font-weight: 700; color: var(--primary-dark);">${packageDetails.price}/${packageDetails.period}</div>
-                                </div>
-                                
-                                <div style="flex: 2; min-width: 250px;">
-                                    <div style="font-size: 0.9rem; color: var(--gray-dark);">Package Features</div>
-                                    <ul style="margin-top: 5px; padding-left: 20px;">
-                `;
-
-                packageDetails.features.forEach(feature => {
-                    reviewHTML += `<li style="line-height: 1.5; font-size: 0.9rem;">${feature}</li>`;
-                });
-
-                reviewHTML += `
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-bottom: 20px;">
-                            <div style="font-weight: 600; margin-bottom: 10px;">Course Description:</div>
-                            <div style="line-height: 1.6;">${document.getElementById('courseDescription').value}</div>
-                        </div>
-                        
-                        <div style="margin-bottom: 20px;">
-                            <div style="font-weight: 600; margin-bottom: 10px;">Course Features:</div>
-                            <ul style="padding-left: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px;">
-                `;
-
-                features.forEach(feature => {
-                    reviewHTML += `<li style="line-height: 1.5;">${feature}</li>`;
-                });
-
-                reviewHTML += `
-                            </ul>
-                        </div>
-                    </div>
-                `;
-
-                // Display thumbnail preview in review
-                if (courseThumbnail.files && courseThumbnail.files[0]) {
-                    const reader = new FileReader();
-
-                    reader.onload = function(e) {
-                        const imagePreview = document.createElement('div');
-                        imagePreview.innerHTML = `
-                            <div style="margin-bottom: 30px;">
-                                <div style="font-weight: 600; margin-bottom: 10px;">Course Thumbnail:</div>
-                                <img src="${e.target.result}" style="max-width: 100%; height: auto; border-radius: 8px; max-height: 300px; object-fit: contain; border: 2px solid var(--primary-light);">
-                            </div>
-                        `;
-
-                        // Insert after the main review content
-                        reviewContent.appendChild(imagePreview);
-                    };
-
-                    reader.readAsDataURL(courseThumbnail.files[0]);
-                }
-
-                reviewContent.innerHTML = reviewHTML;
             }
 
             // Form submission
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
 
-                if (validateStep(4)) {
-                    // Simulate form submission
-                    const submitButton = document.getElementById('submitPromotion');
-                    submitButton.disabled = true;
-                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+                if (validateForm()) {
+                    // Disable buttons and show loading state
+                    createCourseBtn.disabled = true;
+                    saveAsDraftBtn.disabled = true;
+                    createCourseBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
 
+                    // Collect all form data
+                    const formData = new FormData();
+
+                    // Add basic course info
+                    formData.append('courseTitle', document.getElementById('courseTitle').value);
+                    formData.append('courseDescription', document.getElementById('courseDescription').value);
+                    formData.append('courseCategory', document.getElementById('courseCategory').value);
+                    formData.append('courseLevel', document.getElementById('courseLevel').value);
+                    formData.append('courseType', courseTypeInput.value);
+
+                    // Add course thumbnail
+                    const thumbnailFile = document.getElementById('courseThumbnail').files[0];
+                    if (thumbnailFile) {
+                        formData.append('courseThumbnail', thumbnailFile);
+                    }
+
+                    // Add pricing info for full courses
+                    if (courseTypeInput.value === 'full') {
+                        formData.append('coursePrice', document.getElementById('fullCoursePrice').value);
+                        formData.append('hasFreeTrial', hasFreeTrialPeriod.checked);
+
+                        if (hasFreeTrialPeriod.checked) {
+                            formData.append('freeTrialDays', document.getElementById('freeTrialDays').value);
+                        }
+                    }
+
+                    // Collect and add modules data
+                    const modules = modulesList.querySelectorAll('.module-item');
+
+                    modules.forEach((module, index) => {
+                        const prefix = `modules[${index}]`;
+
+                        // Add basic module info
+                        formData.append(`${prefix}[title]`, module.querySelector('.module-title-input').value);
+                        formData.append(`${prefix}[description]`, module.querySelector('.module-description-input').value);
+                        formData.append(`${prefix}[order]`, index + 1);
+                        formData.append(`${prefix}[hours]`, module.querySelector('.module-hours').value || 0);
+                        formData.append(`${prefix}[minutes]`, module.querySelector('.module-minutes').value || 0);
+
+                        // Add pricing for monthly courses
+                        if (courseTypeInput.value === 'monthly') {
+                            formData.append(`${prefix}[price]`, module.querySelector('.module-price-input').value);
+
+                            const hasFreeTrial = module.querySelector('.module-free-trial-checkbox').checked;
+                            formData.append(`${prefix}[hasFreeTrial]`, hasFreeTrial);
+
+                            if (hasFreeTrial) {
+                                formData.append(`${prefix}[freeTrialDays]`, module.querySelector('.module-free-trial-days').value);
+                            }
+                        }
+
+                        // Add module attachments
+                        const fileInput = module.querySelector('.module-file-input');
+                        if (fileInput && fileInput.files.length > 0) {
+                            for (let i = 0; i < fileInput.files.length; i++) {
+                                formData.append(`${prefix}[attachments][${i}]`, fileInput.files[i]);
+                            }
+                        }
+                    });
+
+                    // In a real application, you would send this data to your server using AJAX
+                    // For this example, we'll simulate a successful submission
                     setTimeout(() => {
                         // Show success message
-                        const successMessage = document.getElementById('successMessage');
                         successMessage.style.display = 'block';
 
-                        // Reset button
-                        submitButton.disabled = false;
-                        submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Promotion';
+                        // Reset form
+                        createCourseBtn.disabled = false;
+                        saveAsDraftBtn.disabled = false;
+                        createCourseBtn.innerHTML = '<i class="fas fa-check"></i> Create Course';
 
-                        // Scroll to top to see message
+                        // Scroll to top to see success message
                         window.scrollTo({
                             top: 0,
                             behavior: 'smooth'
                         });
 
-                        // Reset form (in a real app, you'd likely redirect after successful submission)
+                        // Reset form after showing the message
                         setTimeout(() => {
                             form.reset();
-                            thumbnailPreview.innerHTML = '';
-                            additionalImagesPreview.innerHTML = '';
-                            packageCards.forEach(c => c.classList.remove('selected'));
-
-                            // Reset to first step after a short delay
-                            setTimeout(() => {
-                                goToStep(1);
-                                successMessage.style.display = 'none';
-                            }, 1000);
+                            modulesList.innerHTML = '';
+                            moduleCounter = 0;
+                            fullCourseOption.classList.remove('selected');
+                            monthlyCourseOption.classList.remove('selected');
+                            fullCoursePricing.classList.remove('show');
+                            courseTypeInput.value = '';
+                            successMessage.style.display = 'none';
                         }, 3000);
-                    }, 2000);
+                    }, 1500);
                 }
             });
 
-            // Initialize form field validations on blur
-            const allInputs = document.querySelectorAll('.form-control, input[type="checkbox"], input[type="file"]');
-            allInputs.forEach(input => {
-                input.addEventListener('blur', function() {
-                    validateField(this.id);
-                });
+            // Save as draft button
+            saveAsDraftBtn.addEventListener('click', function() {
+                alert('Course saved as draft! You can come back and complete it later.');
             });
         });
     </script>

@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Config\AppConstants;
 use App\Exceptions\PayhereException;
+use Exception;
 use Framework\App;
 use Framework\Database;
 
@@ -38,12 +39,27 @@ class PaymentService
         return $this->db->find()['price'];
     }
 
-    public function createSubPeriodOrderId(string $courseId, string $subperiodId)
+
+    public function getCourseAmount(string $courseId)
     {
-        return 'cid_' . $courseId . '_spid_' . $subperiodId . '_' . time();
+        $this->db->query("SELECT price FROM courses WHERE course_id = :courseId", [
+            'courseId' => $courseId
+        ]);
+
+        return $this->db->find()['price'];
     }
 
-    public function createPayment(string $orderId, string $courseId, string $subperiodId, string $userId, float $amount)
+    public function createOnetimeCourseOrderId(string $courseId)
+    {
+        return 'cid_' . $courseId . '_' . time() . '_' . $_SESSION['user'];
+    }
+
+    public function createSubPeriodOrderId(string $courseId, string $subperiodId)
+    {
+        return 'cid_' . $courseId . '_spid_' . $subperiodId . '_' . time() . '_' . $_SESSION['user'];
+    }
+
+    public function createCoursePaymentEntry(string $orderId, string $courseId, ?string $subperiodId, string $userId, float $amount)
     {
 
         try {
@@ -65,7 +81,7 @@ class PaymentService
             VALUES (:courseId, :subperiodId, :userId, :paymentId)",
                 [
                     'courseId' => $courseId,
-                    'subperiodId' => $subperiodId,
+                    'subperiodId' => $subperiodId, // null if one-time course
                     'userId' => $userId,
                     'paymentId' => $paymentId
                 ]
@@ -201,7 +217,18 @@ class PaymentService
 
     public function isRecurringCourseSubPeriodPaid($userId, $courseId, $subPeriodId)
     {
-        $this->processPendingRecurringCourseSubPeriodPayments($userId, $courseId, $subPeriodId);
+        try {
+            $this->processPendingRecurringCourseSubPeriodPayments($userId, $courseId, $subPeriodId);
+        } catch (\Exception $e) {
+            $logFile = AppConstants::LOG_FOLDER . 'payment_verification_error.log';
+            file_put_contents(
+                $logFile,
+                "Error occurred during payment verification:\n" . $e->getMessage() .
+                    PHP_EOL . $e->getTraceAsString() .
+                    PHP_EOL . str_repeat("-", 50) . PHP_EOL,
+                FILE_APPEND
+            );
+        }
 
         $paid = $this->db->query(
             "SELECT SUM(p.amount) as total_paid FROM payments p INNER JOIN course_payments cp ON p.payment_id = cp.payment_id
@@ -226,6 +253,41 @@ class PaymentService
         return $isPaid;
     }
 
+    public function isOneTimeCoursePaid($userId, $courseId)
+    {
+        try {
+            $this->processPendingOneTimeCoursePayments($userId, $courseId);
+        } catch (\Exception $e) {
+            $logFile = AppConstants::LOG_FOLDER . 'payment_verification_error.log';
+            file_put_contents(
+                $logFile,
+                "Error occurred during payment verification:\n" . $e->getMessage() .
+                    PHP_EOL . $e->getTraceAsString() .
+                    PHP_EOL . str_repeat("-", 50) . PHP_EOL,
+                FILE_APPEND
+            );
+        }
+        $paid = $this->db->query(
+            "SELECT SUM(p.amount) as total_paid FROM payments p INNER JOIN course_payments cp ON p.payment_id = cp.payment_id 
+            WHERE cp.user_id = :user_id AND cp.course_id = :course_id AND p.payment_status = " .
+                AppConstants::PAYMENT_STATUS_SUCCESS,
+            [
+                "user_id" => $userId,
+                "course_id" => $courseId
+            ]
+        )->find();
+
+        $courseFee = $this->db->query(
+            "SELECT price FROM courses
+            WHERE course_id = :course_id",
+            [
+                "course_id" => $courseId
+            ]
+        )->find();
+        $isPaid = $paid && $paid['total_paid'] >= $courseFee['price'];
+        return $isPaid;
+    }
+
     private function processPendingRecurringCourseSubPeriodPayments($userId, $courseId, $subPeriodId)
     {
         $pendingPayments = $this->db->query(
@@ -239,6 +301,30 @@ class PaymentService
             ]
         )->findAll();
 
+        if ($pendingPayments) {
+            $this->processPendingPayments($pendingPayments);
+        }
+    }
+
+    private function processPendingOneTimeCoursePayments($userId, $courseId)
+    {
+        $pendingPayments = $this->db->query(
+            "SELECT p.order_id FROM payments p INNER JOIN course_payments cp ON p.payment_id = cp.payment_id
+            WHERE cp.user_id = :user_id AND cp.course_id = :course_id AND cp.sub_period_id IS NULL AND p.payment_status = " .
+                AppConstants::PAYMENT_STATUS_PENDING,
+            [
+                "user_id" => $userId,
+                "course_id" => $courseId
+            ]
+        )->findAll();
+
+        if ($pendingPayments) {
+            $this->processPendingPayments($pendingPayments);
+        }
+    }
+
+    private function processPendingPayments(array $pendingPayments)
+    {
         foreach ($pendingPayments as $payment) {
             $orderDetails = $this->getOrderDetails($payment['order_id']);
 
@@ -255,6 +341,77 @@ class PaymentService
                     (float) $orderDetails['data'][0]['amount']
                 );
             }
+        }
+    }
+
+    public function getViewDetailsForCourseSubPeriodCheckout(string $courseId, string $subperiodId)
+    {
+        $course = $this->db->query(
+            "SELECT * FROM courses WHERE course_id = :course_id",
+            [
+                "course_id" => $courseId
+            ]
+        )->find();
+
+        $subPeriod = $this->db->query(
+            "SELECT * FROM recurring_course_sub_periods WHERE sub_period_id = :sub_period_id AND course_id = :course_id",
+            [
+                "course_id" => $courseId,
+                "sub_period_id" => $subperiodId
+            ]
+        )->find();
+
+        return [
+            "course_title" => $course['title'],
+            "start_date" => $subPeriod['start_datetime'],
+            "end_date" => $subPeriod['end_datetime'],
+        ];
+    }
+
+    public function getViewDetailsForCourseCheckout(string $courseId)
+    {
+        $course = $this->db->query(
+            "SELECT * FROM courses WHERE course_id = :course_id",
+            [
+                "course_id" => $courseId
+            ]
+        )->find();
+
+        return [
+            "course_title" => $course['title'],
+        ];
+    }
+
+    public function getTeacherCourseIncome(int $id)
+    {
+        try {
+            return $this->db->query(
+                "SELECT SUM(p.amount) AS revenue
+                FROM payments p
+                JOIN course_payments cp ON p.payment_id = cp.payment_id
+                JOIN courses c ON c.course_id = cp.course_id
+                WHERE c.tutor_id = :id",
+                [
+                    'id' => $id
+                ]
+            )->findAll();
+        } catch (Exception $e) {
+            error_log("Fail to fetch the teacher course income: " . $e->getMessage());
+            redirectTo('/server-error');
+        }
+    }
+
+    public function getTotalCourseIncome()
+    {
+        try {
+            return $this->db->query(
+                "SELECT SUM(p.amount) AS revenue
+                FROM payments p
+                JOIN course_payments cp ON p.payment_id = cp.payment_id"
+            )->findAll();
+        } catch (Exception $e) {
+            error_log("Fail to fetch total course income: " . $e->getMessage());
+            redirectTo('/server-error');
         }
     }
 }
