@@ -114,6 +114,8 @@ function registerRoutes(App $app)
     // New course Routes
     $app->get('/course/create', [CoursesController::class, 'createView']);
     $app->post('/course/create', [CoursesController::class, 'create']);
+    $app->get('/course/{course_id}/module/create', [CoursesController::class, 'createModuleView']);
+    $app->post('/course/{course_id}/module/create', [CoursesController::class, 'createModule']);
 
     // TODO: Remove or implement this route
     // $app->get('/courses/my/registered', [CoursesController::class, 'regCourses'], [AuthRequiredMiddleware::class]);

@@ -40,14 +40,6 @@
                 <h3><?php echo e($assignment['title']); ?></h3>
                 <p><?php echo e($assignment['instruction']); ?></p>
 
-                <h4>Requirements:</h4>
-                <ul>
-                    <li>Include at least 3 sections (About, Projects, Contact)</li>
-                    <li>Implement responsive design principles</li>
-                    <li>Use semantic HTML elements</li>
-                    <li>Include CSS animations or transitions</li>
-                    <li>Ensure accessibility compliance</li>
-                </ul>
             </div>
 
             <div class="attachment-list">
