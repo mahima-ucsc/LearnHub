@@ -1,7 +1,5 @@
-<head>
-    <link rel="stylesheet" href="/assets/styles/help-and-support.css">
-</head>
 <?php include $this->resolve("partials/_header.php"); ?>
+<link rel="stylesheet" href="/assets/styles/help-and-support.css">
 
 
 <div class="head-container">
@@ -10,34 +8,9 @@
 <div class="head">
     <h2>How can we help you?</h2>
     <p>Find answers to your questions, explore guides, or connect with our support team to get the help you need.</p>
-    <!-- Search Section -->
-    <form method="post">
-        <input type="text" class="textbox" placeholder="Search">
-        <input title="Search" value="" type="submit" class="button">
-    </form>
 </div>
 
 <section class="help">
-
-    <!-- Support Options -->
-    <section class="support-options">
-        <h2>Get in Touch</h2>
-        <div class="support-card">
-            <h3>Live Chat</h3>
-            <p>Chat with our support team for real-time assistance.</p>
-            <button>Start Chat</button>
-        </div>
-        <div class="support-card">
-            <h3>Get In Support</h3>
-            <p>Send us your queries, and we'll get back to you soon.</p>
-            <button onclick="contactUs()">Contact Us</button>
-        </div>
-        <div class="support-card">
-            <h3>Community</h3>
-            <p>Get help and share knowledge with other users.</p>
-            <button onclick="getSupport()">get support</button>
-        </div>
-    </section>
 
     <!-- FAQ secton -->
     <section class="FAQ">
