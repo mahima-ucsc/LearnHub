@@ -885,7 +885,7 @@ class CourseService
         }
     }
 
-    public function getStudentCourses(int $id)
+    public function getStudentCourses(string $id)
     {
         try {
             return $this->db->query(
