@@ -439,3 +439,28 @@ CREATE TABLE IF NOT EXISTS notification_users (
     FOREIGN KEY (notification_id) REFERENCES notifications(notification_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
+
+-- table for announcements
+CREATE TABLE IF NOT EXISTS announcements (
+    announcement_id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+    course_id BIGINT(20) UNSIGNED NOT NULL, 
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    category ENUM('assignment', 'event', 'general', 'news', 'reminder') NOT NULL DEFAULT 'general',
+    visibility ENUM('all', 'specific') NOT NULL DEFAULT 'all',
+    specific_emails JSON DEFAULT NULL, -- Stores specific emails as JSON
+    attachments TEXT DEFAULT NULL, -- Stores file paths of uploaded attachments
+    send_email BOOLEAN NOT NULL DEFAULT FALSE, -- Indicates if email notifications are sent
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS announcements_read (
+    announcements_read_id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+    announcement_id BIGINT(20) NOT NULL,
+    user_id BIGINT(20) UNSIGNED NOT NULL,
+    is_read BOOLEAN NOT NULL DEFAULT FALSE,
+    FOREIGN KEY (announcement_id) REFERENCES announcements(announcement_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
