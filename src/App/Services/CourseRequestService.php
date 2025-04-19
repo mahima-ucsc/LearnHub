@@ -372,4 +372,41 @@ class CourseRequestService
             redirectTo('server-error');
         }
     }
+
+    public function getRecentCourseRequest(int $limit = 0)
+    {
+        try {
+            if ($limit != 0) {
+                $limitClouse = "LIMIT " . $limit;
+            }
+            return $this->db->query(
+                "SELECT 
+                cr.title,
+                cr.request_id, 
+                cr.description,
+                cr.status, 
+                cr.location,
+                s.subject_title AS subject, 
+                s.subject_id, 
+                g.grade_name AS grade,
+                g.grade_id AS grade_id,
+                cr.created_date, 
+                cr.updated_date, 
+                u.user_id as author_id,
+                CONCAT(u.first_name, ' ', u.last_name) AS author,
+                COUNT(c.comment_id) AS comments_count
+                FROM course_requests cr
+                LEFT JOIN subjects s ON cr.subject_id = s.subject_id
+                JOIN users u ON cr.user_id = u.user_id
+                JOIN grades g ON g.grade_id = cr.grade_id
+                LEFT JOIN course_request_comments c ON cr.request_id = c.request_id
+                WHERE cr.status = 'approved'
+                ORDER BY cr.created_date DESC
+                {$limitClouse};"
+            )->findAll();
+        } catch (Exception $e) {
+            error_log("Failed to fetch recent course requests: " . $e->getMessage());
+            redirectTo('/server-error');
+        }
+    }
 }
