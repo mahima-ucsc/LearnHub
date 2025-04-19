@@ -141,6 +141,13 @@ function registerRoutes(App $app)
     $app->get('/resource/create', [ResourceController::class, 'createView']);
     $app->post('/resource/create', [ResourceController::class, 'create']);
 
+    // announcement
+    $app->get('/courses/{course_id}/announcements/create', [AnnouncementController::class, 'announcementsFormView'], [AuthRequiredMiddleware::class]);
+    $app->post('/courses/{course_id}/announcements/create', [AnnouncementController::class, 'createAnnouncements']);
+    $app->get('/courses/{course_id}/announcements', [AnnouncementController::class, 'announcementsListView'], [AuthRequiredMiddleware::class]);
+    $app->post('/announcements/mark-as-read', [AnnouncementController::class, 'markAsRead'], [AuthRequiredMiddleware::class]);
+    $app->post('/announcements/mark-as-unread', [AnnouncementController::class, 'markAsUnread'], [AuthRequiredMiddleware::class]);
+
     // course Reviews
     $app->get('/course/review/{course}/{page}', [ReviewController::class, 'getCourseReview']);
     $app->post('/add-course-review', [ReviewController::class, 'addCourseReview'], [AuthRequiredMiddleware::class]);
