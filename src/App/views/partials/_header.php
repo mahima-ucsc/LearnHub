@@ -217,6 +217,7 @@
                 </svg>Contact Us</a>
         </div>
     </div>
+    <?php include $this->resolve('components/loader.php'); ?>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
