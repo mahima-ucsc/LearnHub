@@ -303,7 +303,6 @@ class CourseService
         $price = $_GET['price'] ?? 'all';
         $type = $_GET['type'] ?? 'all';
         $location = $_GET['location'] ?? 'all';
-        $duration = $_GET['duration'] ?? 'all';
         $rating = $_GET['rating'] ?? 'all';
         $sort = $_GET['sort'] ?? '';
 
@@ -356,21 +355,6 @@ class CourseService
             $params["type"] = $type;
         }
 
-        // Add duration condition
-        // if ($duration !== 'all') {
-        //     switch ($duration) {
-        //         case 'short':
-        //             $whereConditions[] = "TIMEDIFF(c.end_time, c.start_time) <= '01:00:00'";
-        //             break;
-        //         case 'medium':
-        //             $whereConditions[] = "TIMEDIFF(c.end_time, c.start_time) > '01:00:00' AND TIMEDIFF(c.end_time, c.start_time) <= '02:00:00'";
-        //             break;
-        //         case 'long':
-        //             $whereConditions[] = "TIMEDIFF(c.end_time, c.start_time) > '02:00:00'";
-        //             break;
-        //     }
-        // }
-
         // Add rating condition
         // if ($rating !== 'all') {
         //     $whereConditions[] = "c.rating >= :rating";
@@ -380,7 +364,6 @@ class CourseService
         // Combine all conditions with AND
         $whereClause = !empty($whereConditions) ? "WHERE " . implode(" AND ", $whereConditions) : "";
 
-        //TODO: Fix sorting
         // Add sorting
         $orderClause = "";
         switch ($sort) {
@@ -697,12 +680,38 @@ class CourseService
             );
 
             $courseId = $this->db->lastInsertId();
+            $moduleId = $this->createModule($courseId, $courseData['billing_type'], $courseData['modules']);
+            $this->db->commit();
+            return $courseId;
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            error_log('Failed to create course: ' . $e->getMessage());
+            throw $e;
+        }
+    }
 
-            // If it's a recurring course, create subscription period
-            if ($courseData['billing_type'] === 'recurring') {
+    /**
+     * Creates new course modules
+     * 
+     * @param $isCreateModule is used to check whether the function is invoked when creating a course 
+     * or adding a new module to a existing course.
+     * 
+     * Default value, $isCreateModule = 0 means function is invoked when creating a course
+     * 
+     * $isCreateModule = 1 means function is invoked when adding a new module to a existing course. In
+     * this case, function commit changes to the database. Otherwise not.
+     * 
+     */
+
+    public function createModule(string $courseId, string $type, array $modules, int $isCreateModule = 0)
+    {
+        $this->db->beginTransaction();
+
+        try {
+            if ($type === 'recurring') {
 
                 // For each module, create a subscription period
-                foreach ($courseData['modules'] as $moduleData) {
+                foreach ($modules as $module) {
                     $this->db->query(
                         "INSERT INTO recurring_course_sub_periods(
                         course_id, 
@@ -721,13 +730,13 @@ class CourseService
                     )",
                         [
                             "course_id" => $courseId,
-                            "start_datetime" => $moduleData['start_date'],
-                            "end_datetime" => $moduleData['end_date'],
-                            "price" => $moduleData['price'],
-                            "free_access_start_datetime" => isset($moduleData['has_free_trial']) && $moduleData['has_free_trial'] ?
-                                $moduleData['free_trial_start_date'] . ' 00:00:00' : null,
-                            "free_access_end_datetime" => isset($moduleData['has_free_trial']) && $moduleData['has_free_trial'] ?
-                                $moduleData['free_trial_end_date'] . ' 23:59:59' : null
+                            "start_datetime" => $module['start_date'],
+                            "end_datetime" => $module['end_date'],
+                            "price" => $module['price'],
+                            "free_access_start_datetime" => isset($module['has_free_trial']) && $module['has_free_trial'] ?
+                                $module['free_trial_start_date'] . ' 00:00:00' : null,
+                            "free_access_end_datetime" => isset($module['has_free_trial']) && $module['has_free_trial'] ?
+                                $module['free_trial_end_date'] . ' 23:59:59' : null
                         ]
                     );
 
@@ -751,8 +760,8 @@ class CourseService
                         [
                             "course_id" => $courseId,
                             "sub_period_id" => $subPeriodId,
-                            "title" => $moduleData['title'],
-                            "description" => $moduleData['description']
+                            "title" => $module['title'],
+                            "description" => $module['description']
                         ]
                     );
 
@@ -760,8 +769,8 @@ class CourseService
                     error_log("***********module id created");
 
                     // Upload and insert module resources if any
-                    if (isset($moduleData['attachments']) && !empty($moduleData['attachments'])) {
-                        foreach ($moduleData['attachments'] as $attachment) {
+                    if (isset($module['attachments']) && !empty($module['attachments'])) {
+                        foreach ($module['attachments'] as $attachment) {
                             if ($attachment['error'] === 0) {
                                 try {
                                     $newFileName = $this->uploadFile($attachment, 'course_module_resource');
@@ -791,7 +800,7 @@ class CourseService
                 }
             } else {
                 // If it's a onetime course insert module and resources 
-                foreach ($courseData['modules'] as $moduleData) {
+                foreach ($modules as $module) {
                     $this->db->query(
                         "INSERT INTO course_modules(
                         course_id, 
@@ -804,16 +813,16 @@ class CourseService
                     )",
                         [
                             "course_id" => $courseId,
-                            "title" => $moduleData['title'],
-                            "description" => $moduleData['description']
+                            "title" => $module['title'],
+                            "description" => $module['description']
                         ]
                     );
 
                     $moduleId = $this->db->lastInsertId();
 
                     // Upload and insert module resources if any
-                    if (isset($moduleData['attachments']) && !empty($moduleData['attachments'])) {
-                        foreach ($moduleData['attachments'] as $attachment) {
+                    if (isset($module['attachments']) && !empty($module['attachments'])) {
+                        foreach ($module['attachments'] as $attachment) {
                             if ($attachment['error'] === 0) {
                                 try {
                                     $newFileName = $this->uploadFile($attachment, 'course_module_resource');
@@ -842,12 +851,13 @@ class CourseService
                     }
                 }
             }
-            $this->db->commit();
-            return $courseId;
+            if ($isCreateModule) {
+                $this->db->commit();
+            }
+            return $moduleId;
         } catch (Exception $e) {
-            $this->db->rollBack();
-            error_log('Failed to create course: ' . $e->getMessage());
-            throw $e;
+            error_log('Failed to create course module: ' . $e->getMessage());
+            redirectTo('/server-error');
         }
     }
 

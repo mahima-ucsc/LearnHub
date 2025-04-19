@@ -65,7 +65,6 @@ function registerRoutes(App $app)
     $app->get('/register/create-account', [AuthController::class, 'registerView'], [GuestOnlyMiddleware::class]);
     $app->post('/register', [AuthController::class, 'register'], [GuestOnlyMiddleware::class]);
     $app->get('/register/verification', [AuthController::class, 'verificationView'], [GuestOnlyMiddleware::class]);
-    $app->post('/register/verification', [AuthController::class, 'tempUserSave'], [GuestOnlyMiddleware::class]);
     $app->post('/verify-otp', [AuthController::class, 'verifyuser'], [GuestOnlyMiddleware::class]);
     $app->post('/resend-otp', [AuthController::class, 'resendOtp'], [GuestOnlyMiddleware::class]);
     $app->get('/interest', [PageController::class, 'interest'], [AuthRequiredMiddleware::class]);
@@ -114,6 +113,8 @@ function registerRoutes(App $app)
     // New course Routes
     $app->get('/course/create', [CoursesController::class, 'createView']);
     $app->post('/course/create', [CoursesController::class, 'create']);
+    $app->get('/course/{course_id}/module/create', [CoursesController::class, 'createModuleView']);
+    $app->post('/course/{course_id}/module/create', [CoursesController::class, 'createModule']);
 
     // TODO: Remove or implement this route
     // $app->get('/courses/my/registered', [CoursesController::class, 'regCourses'], [AuthRequiredMiddleware::class]);
@@ -140,9 +141,12 @@ function registerRoutes(App $app)
     $app->get('/resource/create', [ResourceController::class, 'createView']);
     $app->post('/resource/create', [ResourceController::class, 'create']);
 
-    // Course Reviews
-    $app->get('/courses/{courseId}/reviews', [ReviewController::class, 'courseReviews']);
-    $app->post('/courses/{courseId}/reviews', [ReviewController::class, 'addCourseReview'], [AuthRequiredMiddleware::class]);
+    // course Reviews
+    $app->get('/course/review/{course}/{page}', [ReviewController::class, 'getCourseReview']);
+    $app->post('/add-course-review', [ReviewController::class, 'addCourseReview'], [AuthRequiredMiddleware::class]);
+    $app->post('/delete-course-review', [ReviewController::class, 'deleteCourseReview'], [AuthRequiredMiddleware::class]);
+    $app->get('/courses/review/edit/{review}', [ReviewController::class, 'editCourseReviewView'], [AuthRequiredMiddleware::class]);
+    $app->post('/course/review/edit/{review}', [ReviewController::class, 'editCourseReview'], [AuthRequiredMiddleware::class]);
 
     // Reviews
     $app->post('/add-review', [ReviewController::class, 'addReview'], [AuthRequiredMiddleware::class]);

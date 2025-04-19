@@ -39,7 +39,6 @@ class CoursesController
         $subject = $_GET['subject'] ?? 'all';
         $price = $_GET['price'] ?? 'all';
         $type = $_GET['type'] ?? 'all';
-        $duration = $_GET['duration'] ?? 'all';
         $rating = $_GET['rating'] ?? 'all';
         $sort = $_GET['sort'] ?? '';
 
@@ -66,7 +65,6 @@ class CoursesController
             ]),
             $pages
         );
-
 
         echo $this->view->render('course/Courses.php', [
             "title" => "Search Course",
@@ -171,16 +169,6 @@ class CoursesController
             ]
         );
     }
-
-    public function createCourseView()
-    {
-        $subjects = $this->subjectService->getSubjects();
-        echo $this->view->render('course/create_course.php', [
-            "title" => "Create Course",
-            "subjects" => $subjects
-        ]);
-    }
-
     /**
      * This function is used when creating a course. Initially, it saves the course data in the session 
      * and then redirects to the next page to add course modules. The add module view sends a POST request 
@@ -441,5 +429,57 @@ class CoursesController
     {
         $teacherId =  $_SESSION['user'];
         return $this->courseService->getTeacherCourses($teacherId);
+    }
+
+    public function createModuleView(array $params)
+    {
+        $courseId = $params['course_id'];
+        echo $this->view->render('/course/create_module.php', [
+            "title" => "Create Module"
+        ]);
+    }
+    public function createModule(array $params)
+    {
+        $courseId = $params['course_id'];
+        $course = $this->courseService->getCourseById($courseId);
+        $type = $course['billing_type'];
+        // Process module attachments
+        $moduleAttachments = [];
+        if (isset($_FILES['modules']['name'][0]['attachments'])) {
+            foreach ($_FILES['modules']['name'][0]['attachments'] as $index => $filename) {
+                if (!empty($filename)) {
+                    $moduleAttachments[] = [
+                        'name' => $_FILES['modules']['name'][0]['attachments'][$index],
+                        'type' => $_FILES['modules']['type'][0]['attachments'][$index],
+                        'tmp_name' => $_FILES['modules']['tmp_name'][0]['attachments'][$index],
+                        'error' => $_FILES['modules']['error'][0]['attachments'][$index],
+                        'size' => $_FILES['modules']['size'][0]['attachments'][$index]
+                    ];
+                }
+            }
+        }
+        // Prepare modules data
+        $modulesData = [];
+        if (isset($_POST['modules']) && is_array($_POST['modules'])) {
+            foreach ($_POST['modules'] as $index => $module) {
+                $moduleData = [
+                    'title' => $module['title'],
+                    'description' => $module['description'],
+                    'price' => floatval($module['price']),
+                    'start_date' => $module['moduleStartTime'],
+                    'end_date' => $module['moduleEndTime'],
+                    'has_free_trial' => isset($module['hasFreeTrial']) && $module['hasFreeTrial'] === 'on',
+                    'free_trial_start_date' => $module['freeTrialStartDate'] ?? null,
+                    'free_trial_end_date' => $module['freeTrialEndDate'] ?? null,
+                    'duration_minutes' => (isset($module['hours']) ? intval($module['hours']) * 60 : 0) +
+                        (isset($module['minutes']) ? intval($module['minutes']) : 0),
+                    'attachments' => $moduleAttachments
+                ];
+
+                $modulesData[] = $moduleData;
+            }
+        }
+        $this->courseService->createModule($courseId, $type, $modulesData, 1);
+        echo json_encode($modulesData);
     }
 }
