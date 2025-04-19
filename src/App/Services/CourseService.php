@@ -907,4 +907,38 @@ class CourseService
             redirectTo('/server-error');
         }
     }
+
+    /**
+     * Gets the count of courses grouped by subject.
+     * 
+     * This function retrieves the number of courses for each subject from the database,
+     * orders them by course count in descending order, and optionally limits the results.
+     * 
+     * @param int $limit Optional. The maximum number of records to return. If 0, returns all records.
+     * @return array An array of objects containing subject_id, subject title, and course count.
+     * @throws Exception If database query fails, logs error and redirects to error page.
+     */
+    public function getCourseCountBySubject(int $limit = 0)
+    {
+
+        try {
+            if ($limit != 0) {
+                $limitClause = "LIMIT " . $limit;
+            }
+            return $this->db->query(
+                "SELECT
+                s.subject_id,
+                s.subject_title AS subject,
+                COUNT(c.course_id) AS course_count
+                FROM subjects s
+                JOIN courses c ON c.subject_id = s.subject_id
+                GROUP BY s.subject_id
+                ORDER BY course_count DESC
+                {$limitClause} "
+            )->findAll();
+        } catch (Exception $e) {
+            error_log("Failed fetch course count by subject" . $e->getMessage());
+            redirectTo('server-error');
+        }
+    }
 }
