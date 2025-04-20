@@ -982,7 +982,7 @@
             const dateMonth = row.querySelector('.date-month').textContent;
             const userRole = row.querySelector('.author-type').textContent;
 
-            // Update modal content with real data
+            // Update post preview modal content with real data
             modalTitle.textContent = postTitle;
 
             modalMeta.innerHTML = `

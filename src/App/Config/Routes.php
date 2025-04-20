@@ -37,9 +37,6 @@ function registerRoutes(App $app)
     $app->get('/about', [PageController::class, 'about']);
     $app->get('/profile', [PageController::class, 'profile'], [AuthRequiredMiddleware::class]);
     $app->get('/dashboard', [PageController::class, 'dashboard'], [AuthRequiredMiddleware::class]);
-    $app->post('/approve-post', [PostController::class, 'approveCourseRequest']);
-    $app->post('/reject-post', [PostController::class, 'rejectCourseRequest']);
-    $app->get('/admin-dashboard/user-managment', [PageController::class, 'userManagment'], [AdminOnlyMiddleware::class]);
     $app->get('/settings', [PageController::class, 'settings'], [AuthRequiredMiddleware::class]);
     $app->get('/tutor', [PageController::class, 'tutorProfile'], [AuthRequiredMiddleware::class]);
     $app->get('/alert', [AlertController::class, 'alert']);
@@ -79,8 +76,8 @@ function registerRoutes(App $app)
     $app->post('/update-password', [UserController::class, 'updatePassword'], [AuthRequiredMiddleware::class]);
 
     // Admin operations
-    $app->post('/admin-dashboard/course-managment/approve', [PostController::class, 'approveCourseRequest']);
-    $app->post('/admin-dashboard/course-managment/reject', [PostController::class, 'rejectCourseRequest']);
+    $app->post('/approve-post', [PostController::class, 'approveCourseRequest']);
+    $app->post('/reject-post', [PostController::class, 'rejectCourseRequest']);
     $app->get('/admin-dashboard/user-managment', [PageController::class, 'userManagment'], [AdminOnlyMiddleware::class]);
     $app->post('/admin/adduser', [UserController::class, 'addUser'], [AdminOnlyMiddleware::class]); // Add new user
     $app->delete('/user/delete/{user_id}', [UserController::class, 'deleteUser'], [AuthRequiredMiddleware::class]); // Delete user
@@ -90,8 +87,8 @@ function registerRoutes(App $app)
 
     // Courses
     $app->get('/courses', [CoursesController::class, 'course']);
-    $app->get('/manage-course/edit/{course}', [CoursesController::class, 'courseEditView']);
-    $app->post('/manage-course/edit/{course}', [CoursesController::class, 'editCourse']);
+    $app->get('/course/edit/{course_id}', [CoursesController::class, 'courseEditView']);
+    $app->put('/course/edit/{course_id}', [CoursesController::class, 'editCourse']);
     $app->delete('/manage-course/delete/{course}', [CoursesController::class, 'deleteCourse'], [TeacherOnlyMiddleware::class]);
     $app->get('/courses/my-courses/{course_id}', [CoursesController::class, 'courseInfo'], [AuthRequiredMiddleware::class]);
     $app->get('/courses/my-courses/{course_id}/participant', [CoursesController::class, 'courseParticipant'], [TeacherOnlyMiddleware::class]);
@@ -103,7 +100,7 @@ function registerRoutes(App $app)
     $app->post('/courses/pin-course', [CoursesController::class, 'pinCourse']);
 
     $app->get('/courses/{course_id}', [CoursesController::class, 'courseInfo']);
-    $app->get('/courses/{course_id}/participants', [CoursesController::class, 'courseParticipant'], [TeacherOnlyMiddleware::class]);
+    $app->get('/courses/{course_id}/participants', [CoursesController::class, 'courseParticipant']);
     $app->delete('/courses/{course_id}/participants/remove/{user_id}', [CoursesController::class, 'RemoveCourseParticipant'], [TeacherOnlyMiddleware::class]);
     $app->post('/courses/{course_id}/participants/add', [CoursesController::class, 'AddParticipant'], [TeacherOnlyMiddleware::class]);
     $app->get('/course/{course_id}/module/{module_id}/resource/{resource_id}', [CoursesController::class, 'readModuleResources'], [TeacherOnlyMiddleware::class]);
