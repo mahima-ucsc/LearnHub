@@ -83,7 +83,7 @@ class PageController
         if ($_SESSION['user_role'] === "student") {
 
             $path = "User/student/std_index.php";
-            $courses = $this->courseService->getStudentCourses($_SESSION['user']);
+            $courses = $this->courseService->getStudentCourses((string)$_SESSION['user']);
             $userData = $this->userService->getUserProfile($_SESSION['user']);
             $courseThumbnailPath = Paths::STORAGE_UPLOADS . Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS;
             // dd($courses);
@@ -93,8 +93,14 @@ class PageController
                 'userData' => $userData,
                 'courseThumbnailPath' => $courseThumbnailPath
             ]);
+            exit;
         } elseif ($_SESSION['user_role'] === "teacher") {
             $path = "User/Tutor/teacher_index.php";
+            echo $this->view->render($path, [
+                "title" => "Teacher Dashboard",
+                // 'users' => $users,
+            ]);
+            exit;
         } elseif ($_SESSION['user_role'] === "admin") {
 
             $path = "User/Admin/admin_dashboard.php";
@@ -215,7 +221,7 @@ class PageController
     public function createAd()
     {
         echo $this->view->render(
-            'Tutor/create_ad.php',
+            'User/Tutor/create_ad.php',
             [
                 'title' => "Create Ad"
             ]
