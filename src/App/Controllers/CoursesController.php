@@ -99,6 +99,8 @@ class CoursesController
     public function courseInfo(array $params)
     {
         $course = $this->courseService->getCourseById($params['course_id']);
+        $participants = $this->courseService->getCourseParticipants((string) $params['course_id']);
+        $participantCount = count($participants);
         /**
          * 'isPaid' property based on the course type:
          * - For one-time courses: Boolean value (true or false)
@@ -164,7 +166,8 @@ class CoursesController
                 'assignmentsResources' => $assignmentsResources,
                 // 'moduleResources' => $moduleResources,
                 'userReview' => $userReview,
-                'summeryOfReviews' => $summeryOfReviews
+                'summeryOfReviews' => $summeryOfReviews,
+                'participantCount' => $participantCount
 
             ]
         );
@@ -206,34 +209,7 @@ class CoursesController
     }
 
 
-    public function courseEditView(array $params)
-    {
-        $course = $this->courseService->getMyCourseById($params['course']);
 
-        if (!$course) {
-            redirectTo('/courses/my-courses');
-        }
-
-        echo $this->view->render(
-            'course/edit_course.php',
-            [
-                'course' => $course,
-                'title' => "Edit Course"
-            ]
-        );
-    }
-
-    public function editCourse(array $params)
-    {
-        $course = $this->courseService->getMyCourseById($params['course']);
-
-        if (!$course) {
-            redirectTo('/courses/my-courses');
-        }
-        $this->validatorService->validateCourse($_POST);
-        $this->courseService->update($_POST, (int)$params['course']);
-        redirectTo($_SERVER['HTTP_REFERER']);
-    }
 
     public function deleteCourse(array $params)
     {
@@ -273,12 +249,29 @@ class CoursesController
 
     public function courseParticipant(array $params)
     {
+        // TODO: Get Payment status
+        $isParticipant = false;
+        if ($_SESSION['user_role'] == 'student') {
+            $courses = $this->courseService->getStudentCourses((string)$_SESSION['user']);
+            foreach ($courses as $course) {
+                if ($course['course_id'] == $params['course_id']) {
+                    $isParticipant = true;
+                    break;
+                }
+            }
+            if (!$isParticipant) {
+                redirectTo('/unauthorized-access');
+            }
+        }
         $students = $this->courseService->getCourseParticipants($params['course_id']);
+        $studentCount = count($students);
         echo $this->view->render(
             "course/course_participants.php",
             [
                 'students' => $students,
                 'title' => "Course Participants",
+                'isParticipant' => $isParticipant,
+                'stdCount' => $studentCount
             ]
         );
     }
@@ -423,6 +416,40 @@ class CoursesController
             error_log('Course creation failed: ' . $e->getMessage());
             $_SESSION['error'] = 'Failed to create course. Please try again.';
         }
+    }
+
+    public function courseEditView(array $params)
+    {
+        $course = $this->courseService->getCourseById($params['course_id']);
+        $subjects = $this->subjectService->getSubjects();
+        $grades = $this->courseService->getGrades();
+
+        if (!$course) {
+            redirectTo('/error');
+        }
+
+        echo $this->view->render(
+            'course/edit_course.php',
+            [
+                'title' => "Edit Course",
+                'course' => $course,
+                'subjects' => $subjects,
+                'grades' => $grades
+            ]
+        );
+    }
+
+    public function editCourse(array $params)
+    {
+
+        $course = $this->courseService->getCourseById($params['course_id']);
+        if (!$course) {
+            redirectTo('/server-error');
+            exit;
+        }
+
+        $this->courseService->update($course, $_POST, (int)$params['course_id']);
+        redirectTo($_SERVER['HTTP_REFERER']);
     }
 
     public function getTeacherCourses()

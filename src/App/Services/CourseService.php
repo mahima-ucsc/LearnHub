@@ -411,37 +411,7 @@ class CourseService
     }
 
 
-    public function update(array $formData, int $id)
-    {
-        $this->db->query(
-            "UPDATE courses
-            SET title = :title,
-            description = :description,
-            subject_id = :subject_id,
-            grade_id = :grade_id,
-            start_time = :start_time,
-            end_time = :end_time,
-            day = :day,
-            price = :price,
-            pricing_period = :pricing_period,
-            duration = :duration
-            WHERE course_id = :course_id",
-            [
-                'course_id' => $id,
-                'title' => $formData['title'],
-                'description' => $formData['description'],
-                'subject_id' => $formData['subject_id'],
-                'grade_id' => $formData['grade_id'],
-                'start_time' => $formData['start_time'],
-                'end_time' => $formData['end_time'],
-                'day' => $formData['day'],
-                'price' => $formData['price'],
-                'pricing_period' => $formData['pricing_period'],
-                'duration' => $formData['duration'],
 
-            ]
-        );
-    }
 
     public function delete(int $id)
     {
@@ -529,15 +499,25 @@ class CourseService
     public function getCourseParticipants(string $id)
     {
         $searchTerm = $_GET['s'] ?? '';
-        return $this->db->query(
-            "SELECT U.first_name, U.last_name, U.user_id, U.email, SC.* from users U
-            JOIN students_courses SC ON U.user_id = SC.student_id
-            WHERE SC.course_id = :id AND (U.first_name LIKE :term OR U.last_name LIKE :term)",
+        $participants = $this->db->query(
+            "SELECT DISTINCT
+            u.user_id,
+            CONCAT(u.first_name, ' ', u.last_name) AS username,
+            u.email
+            FROM users u
+            JOIN course_payments cp ON u.user_id = cp.user_id
+            WHERE cp.course_id = :id 
+            AND(
+            u.first_name LIKE :term 
+            OR u.last_name LIKE :term 
+            OR CONCAT(u.first_name, ' ', u.last_name) LIKE :term
+            );",
             [
                 "id" => $id,
                 "term" => "%{$searchTerm}%"
             ]
         )->findAll();
+        return $participants;
     }
 
     public function RemoveParticipant(string $courseId, string $userId)
@@ -859,6 +839,43 @@ class CourseService
             error_log('Failed to create course module: ' . $e->getMessage());
             redirectTo('/server-error');
         }
+    }
+
+    public function update(array $course, array $formData, int $id)
+    {
+        $params = [
+            'course_id' => $id,
+            'title' => $formData['courseTitle'],
+            'description' => $formData['courseDescription'],
+            'subject_id' => $formData['subject'],
+            'grade_id' => $formData['grade'],
+            'start_time' => $formData['courseStartTime'],
+            'end_time' => $formData['courseEndTime'],
+            'day' => $formData['courseday'],
+            'price' => $formData['price'],
+        ];
+
+        $sql = "UPDATE courses
+                SET title = :title,
+                description = :description,
+                subject_id = :subject_id,
+                grade_id = :grade_id,
+                start_time = :start_time,
+                end_time = :end_time,
+                day = :day,
+                price = :price";
+
+        $courseThumbnail = $_FILES['courseThumbnail'] ?? null;
+        if ($courseThumbnail['name']) {
+            $thumbnailFileName = $this->fileService->uploadFile(Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS, $courseThumbnail);
+            unlink(Paths::STORAGE_UPLOADS . "/" . Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS . "/" . $course['thumbnail_url']);
+            $sql .= ", thumbnail_url = :thumbnail_url";
+            $params['thumbnail_url'] = $thumbnailFileName;
+        }
+
+        $sql .= " WHERE course_id = :course_id";
+
+        $this->db->query($sql, $params);
     }
 
     public function getLocations()

@@ -1,12 +1,9 @@
 <?php include $this->resolve("partials/_header.php"); ?>
 
-<head>
-    <link rel="stylesheet" href="/assets/styles/Course/course_participant.css">
-
-</head>
+<link rel="stylesheet" href="/assets/styles/Course/course_participant.css">
 <div class="user-content">
     <div class="user-header">
-        <h1>User Management</h1>
+        <h1>Course Participants</h1>
         <div class="header-actions">
             <div class="search-form">
                 <form id="searchForm">
@@ -23,38 +20,58 @@
         </div>
     </div>
 
+    <p>
+        <?= e($stdCount); ?> Students
+    </p>
     <!-- User Table -->
     <div class="user-table-container">
         <table class="data-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Joined Date</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="userTableBody">
-                <?php if (!empty($students)): ?>
-                    <?php foreach ($students as $std) : ?>
+            <?php if ($isParticipant): ?>
+                <th>Student name</th>
+                <tbody id="userTableBody">
+                    <?php if (!empty($students)): ?>
+                        <?php foreach ($students as $std) : ?>
+                            <tr>
+                                <td><?php echo $std['username']; ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
                         <tr>
-                            <td><?php echo $std['user_id']; ?></td>
-                            <td><?php echo $std['first_name']; ?> <?php echo $std['last_name']; ?></td>
-                            <td><?php echo $std['email']; ?></td>
-                            <td><?php echo $std['registered_date']; ?></td>
-                            <td>
-                                <button class="delete-btn" onclick="event.stopPropagation();showModal('participants/remove/<?php echo $std['user_id']; ?>')">Remove</button>
-
-                            </td>
+                            <td>No students</td>
                         </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
+                    <?php endif; ?>
+                </tbody>
+            <?php else: ?>
+                <thead>
                     <tr>
-                        <td>No students</td>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Payment Status</th>
+                        <th>Actions</th>
                     </tr>
-                <?php endif; ?>
-            </tbody>
+                </thead>
+                <tbody id="userTableBody">
+                    <?php if (!empty($students)): ?>
+                        <?php foreach ($students as $std) : ?>
+                            <tr>
+                                <td><?php echo $std['user_id']; ?></td>
+                                <td><?php echo $std['username']; ?></td>
+                                <td><?php echo $std['email']; ?></td>
+                                <td><?php echo $std['registered_date']; ?></td>
+                                <td>
+                                    <button class="delete-btn" onclick="event.stopPropagation();showModal('participants/remove/<?php echo $std['user_id']; ?>')">Remove</button>
+
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td>No students</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            <?php endif; ?>
         </table>
     </div>
 
