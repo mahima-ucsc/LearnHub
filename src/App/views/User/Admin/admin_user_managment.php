@@ -338,113 +338,109 @@
     }
 </style>
 
-<body>
 
 
-    <?php include $this->resolve('User/sidebar.php') ?>
+<?php include $this->resolve('User/sidebar.php') ?>
 
-    <!-- Main Content -->
-    <main class="user-main-content" id="mainContent">
+<!-- Main Content -->
+<main class="user-main-content" id="mainContent">
 
-        <div class="user-container">
-            <h1 class="dashboard-title">User Management</h1>
+    <div class="user-container">
+        <h1 class="dashboard-title">User Management</h1>
 
-            <!-- Stats Cards -->
-            <div class="stats-container">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="stat-value" id="totalUsers"><?php echo ((int)$userCount['students'] + (int)$userCount['teachers']) ?></div>
-                    <div class="stat-label">Total Users</div>
+        <!-- Stats Cards -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-user-shield"></i>
-                    </div>
-                    <div class="stat-value" id="adminCount"><?php echo e($userCount['admin']); ?></div>
-                    <div class="stat-label">Admins</div>
+                <div class="stat-value" id="totalUsers"><?php echo ((int)$userCount['students'] + (int)$userCount['teachers']) ?></div>
+                <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-user-shield"></i>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-user-edit"></i>
-                    </div>
-                    <div class="stat-value" id="editorCount"><?php echo e($userCount['students']); ?></div>
-                    <div class="stat-label">Students</div>
+                <div class="stat-value" id="adminCount"><?php echo e($userCount['admin']); ?></div>
+                <div class="stat-label">Admins</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-user-edit"></i>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="stat-value" id="regularUserCount"><?php echo e($userCount['teachers']); ?></div>
-                    <div class="stat-label">Teachers</div>
+                <div class="stat-value" id="editorCount"><?php echo e($userCount['students']); ?></div>
+                <div class="stat-label">Students</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="stat-value" id="regularUserCount"><?php echo e($userCount['teachers']); ?></div>
+                <div class="stat-label">Teachers</div>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <h2 class="table-title">Registered Users</h2>
+                <button onclick="openPopup()" class="add-usr-btn">
+                    <span class="menu-icon"><i class="fas fa-user-plus"></i></span>
+                    Add User
+                </button>
+                <div class="search-container">
+                    <form method="GET">
+                        <i class="fas fa-search"></i>
+                        <input type="text" name="s" placeholder="Search users..." class="search-input" id="searchInput" value="<?php echo ($_GET['s']); ?>">
+                    </form>
                 </div>
             </div>
-
-            <!-- Users Table -->
-            <div class="table-container">
-                <div class="table-header">
-                    <h2 class="table-title">Registered Users</h2>
-                    <button onclick="openPopup()" class="add-usr-btn">
-                        <span class="menu-icon"><i class="fas fa-user-plus"></i></span>
-                        Add User
-                    </button>
-                    <div class="search-container">
-                        <form method="GET">
-                            <i class="fas fa-search"></i>
-                            <input type="text" name="s" placeholder="Search users..." class="search-input" id="searchInput" value="<?php echo ($_GET['s']); ?>">
-                        </form>
-                    </div>
-                </div>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>User</th>
+                            <th>Joined Date</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        <?php foreach ($users as $user): ?>
                             <tr>
-                                <th>User ID</th>
-                                <th>User</th>
-                                <th>Joined Date</th>
-                                <th>Role</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="userTableBody">
-                            <!-- Table rows will be added dynamically -->
-                            <?php foreach ($users as $user): ?>
-                                <tr>
 
-                                    <td><?php echo e($user['user_id']) ?></td>
-                                    <td>
-                                        <div class="user-info">
-                                            <div class="user-avatar"><?php echo e($user['first_name'][0]); ?> <?php echo e($user['last_name'][0]); ?></div>
-                                            <div class="user-details">
-                                                <div class="user-name"><?php echo e($user['first_name']) ?> <?php echo e($user['last_name']) ?></div>
-                                                <div class="user-email"><?php echo e($user['email']) ?></div>
-                                            </div>
+                                <td><?php echo e($user['user_id']) ?></td>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar"><?php echo e($user['first_name'][0]); ?> <?php echo e($user['last_name'][0]); ?></div>
+                                        <div class="user-details">
+                                            <div class="user-name"><?php echo e($user['first_name']) ?> <?php echo e($user['last_name']) ?></div>
+                                            <div class="user-email"><?php echo e($user['email']) ?></div>
                                         </div>
-                                    </td>
-                                    <td><?php echo e($user['date_of_birth']) ?></td>
-                                    <td>
-                                        <span class="user-role role-<?php echo e($user['user_role']) ?>"><?php echo e($user['user_role']) ?></span>
-                                    </td>
-                                    <td>
+                                    </div>
+                                </td>
+                                <td><?php echo formatDate($user['joined_date'], 'Y M j') ?></td>
+                                <td>
+                                    <span class="user-role role-<?php echo e($user['user_role']) ?>"><?php echo e($user['user_role']) ?></span>
+                                </td>
+                                <td>
+                                    <?php if ($user['user_id'] != $_SESSION['user']): ?>
                                         <button class="action-btn btn-delete" data-id="<?php echo e($user['user_id']) ?>" onclick="event.stopPropagation();showModal('/user/delete/<?php echo e($user['user_id']) ?>')">
                                             <i class="fas fa-trash"></i>
                                         </button>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
 
-                        </tbody>
-                    </table>
-                </div>
-                <div class="pagination" id="pagination">
-                    <!-- Pagination will be added dynamically -->
-                </div>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination" id="pagination">
+                <!-- Pagination will be added dynamically -->
             </div>
         </div>
-    </main>
-    <?php include $this->resolve('components/delete_modal.php'); ?>
-
-</body>
-
-</html>
+    </div>
+</main>
+<?php include $this->resolve('components/delete_modal.php'); ?>

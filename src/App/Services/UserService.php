@@ -51,7 +51,7 @@ class UserService
         )->count();
 
         if ($emailCount > 0) {
-            throw new ValidationException(['email' => 'Email taken']);
+            throw new ValidationException(['email' => ['This email address is already in use. Please try a different one.']]);
         }
     }
     public function canChangeEmail(string $email)
@@ -91,7 +91,7 @@ class UserService
         $_SESSION['user'] = $this->db->lastInsertId();
         $_SESSION['user_role'] = $_SESSION['temp_role'];
         unset($_SESSION['temp_role']);
-        unset($_SESSION['$tempUser']);
+        unset($_SESSION['tempUser']);
         unset($_SESSION['otp_hash']);
     }
 
@@ -185,24 +185,29 @@ class UserService
 
     public function getUserCount()
     {
-        $students =  $this->db->query(
-            "SELECT COUNT(*) FROM users WHERE user_role = 'student'"
-        )->count();
+        try {
+            $students =  $this->db->query(
+                "SELECT COUNT(*) FROM users WHERE user_role = 'student'"
+            )->count();
 
-        $teachers = $this->db->query(
-            "SELECT COUNT(*) FROM users WHERE user_role = 'teacher'"
-        )->count();
-        $admin = $this->db->query(
-            "SELECT COUNT(*) FROM users WHERE user_role = 'admin'"
-        )->count();
+            $teachers = $this->db->query(
+                "SELECT COUNT(*) FROM users WHERE user_role = 'teacher'"
+            )->count();
+            $admin = $this->db->query(
+                "SELECT COUNT(*) FROM users WHERE user_role = 'admin'"
+            )->count();
 
-        $count = [
-            'students' => $students,
-            'teachers' => $teachers,
-            'admin' => $admin
-        ];
+            $count = [
+                'students' => $students,
+                'teachers' => $teachers,
+                'admin' => $admin
+            ];
 
-        return $count;
+            return $count;
+        } catch (Exception $e) {
+            error_log("Failed to fetch user count: " . $e->getMessage());
+            redirectTo('/server-error');
+        }
     }
 
     public function updateProfile(array $formData)

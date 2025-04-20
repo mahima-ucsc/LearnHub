@@ -312,7 +312,8 @@
     }
 
     .stats-grid {
-        display: grid;
+        display: flex;
+        justify-content: space-between;
         grid-template-columns: repeat(4, 1fr);
         gap: 3rem;
         text-align: center;
@@ -642,8 +643,7 @@
 <section class="about-hero">
     <div class="about-hero-content">
         <h1>Transforming Education Together</h1>
-        <p>LearnConnect is a global community where passionate educators share knowledge and students discover their potential through high-quality online courses.</p>
-        <button class="cta-button">Explore Our Story</button>
+        <p>Learnhub is a community where Teacher share knowledge and students discover their potential through high-quality online courses.</p>
     </div>
 </section>
 
@@ -666,15 +666,15 @@
                 <div class="mission-icon">
                     <i class="fas fa-users"></i>
                 </div>
-                <h3>Empowering Educators</h3>
-                <p>We provide talented teachers with the tools and platform they need to share their expertise and earn income doing what they love while reaching students globally.</p>
+                <h3>Empowering Teachers</h3>
+                <p>We provide talented teachers with the platform they need to share their expertise and earn income doing what they love while reaching students.</p>
             </div>
             <div class="mission-card">
                 <div class="mission-icon">
                     <i class="fas fa-globe"></i>
                 </div>
-                <h3>Global Accessibility</h3>
-                <p>We're breaking down barriers to education by making learning accessible to students from all backgrounds and regions, regardless of geographic or economic limitations.</p>
+                <h3>Enhance Accessibility</h3>
+                <p>We're breaking down barriers to education by making learning accessible to students from all backgrounds regardless of geographic limitations.</p>
             </div>
         </div>
     </div>
@@ -695,7 +695,6 @@
                 </div>
                 <div class="member-info">
                     <h3>Sachith Dhanushka</h3>
-                    <p>Co-Founder & CEO</p>
                     <div class="social-links">
                         <a href="#"><i class="fab fa-linkedin"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
@@ -709,7 +708,6 @@
                 </div>
                 <div class="member-info">
                     <h3>Dinuka Sahan</h3>
-                    <p>Co-Founder & CTO</p>
                     <div class="social-links">
                         <a href="#"><i class="fab fa-linkedin"></i></a>
                         <a href="#"><i class="fab fa-github"></i></a>
@@ -722,8 +720,7 @@
                     <div class="member-overlay"></div>
                 </div>
                 <div class="member-info">
-                    <h3>Mahima Sahan</h3>
-                    <p>Head of Education</p>
+                    <h3>Mahima De Silva</h3>
                     <div class="social-links">
                         <a href="#"><i class="fab fa-linkedin"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
@@ -737,7 +734,6 @@
                 </div>
                 <div class="member-info">
                     <h3>Ravindu Manupasan</h3>
-                    <p>Chief Marketing Officer</p>
                     <div class="social-links">
                         <a href="#"><i class="fab fa-linkedin"></i></a>
                         <a href="#"><i class="fab fa-instagram"></i></a>
@@ -753,51 +749,17 @@
     <div class="section-container">
         <div class="stats-grid">
             <div class="stat-item">
-                <h3 id="stat-teachers">500+</h3>
+                <h3 id="stat-teachers"><?= e($roundedStudentCount); ?>+</h3>
                 <p>Expert Teachers</p>
             </div>
             <div class="stat-item">
-                <h3 id="stat-courses">1,200+</h3>
+                <h3 id="stat-courses"><?= e($roundedCourseCount); ?>+</h3>
                 <p>Quality Courses</p>
             </div>
             <div class="stat-item">
-                <h3 id="stat-students">50K+</h3>
+                <h3 id="stat-students"><?= e($roundedTeacherCount); ?>+</h3>
                 <p>Active Students</p>
             </div>
-            <div class="stat-item">
-                <h3 id="stat-countries">120+</h3>
-                <p>Countries Reached</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Testimonials Section -->
-<section class="testimonials">
-    <div class="section-container">
-        <div class="section-heading">
-            <h2>What Our Community Says</h2>
-            <p>Hear from teachers and students who have transformed their lives with LearnConnect.</p>
-        </div>
-        <div class="testimonial-slider">
-            <div class="testimonial-container">
-                <div class="testimonial">
-                    <div class="testimonial-avatar">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <p class="testimonial-text">"LearnConnect transformed my career. I was able to learn cutting-edge skills and land a job at a top tech company. The courses are engaging, practical, and taught by real experts who care about student success."</p>
-                    <p class="testimonial-author">Marcus Williams</p>
-                    <p class="testimonial-role">Software Developer</p>
-                </div>
-            </div>
-        </div>
-        <div class="slider-buttons">
-            <button class="slider-btn prev-btn">
-                <i class="fas fa-arrow-left"></i>
-            </button>
-            <button class="slider-btn next-btn">
-                <i class="fas fa-arrow-right"></i>
-            </button>
         </div>
     </div>
 </section>

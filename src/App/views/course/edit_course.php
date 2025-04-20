@@ -1,172 +1,164 @@
 <?php include $this->resolve("partials/_header.php"); ?>
-<?php include $this->resolve("partials/_alert.php"); ?>
 
-<head>
-    <link rel="stylesheet" href="/assets/styles/Course/create-course.css">
-</head>
+<link rel="stylesheet" href="/assets/styles/Course/create_course.css">
 
-<section class="create-course-container">
-    <div class="create-course-header">
-        <h1>Edit Course</h1>
-        <p>Share your knowledge with the world</p>
-    </div>
+<div class="page-header">
+    <h1 class="page-title">Edit Course</h1>
+</div>
+<!-- Basic Course Information Card -->
+<section class="container">
+    <form method="POST" enctype="multipart/form-data">
+        <div class="card">
+            <h2 class="section-title">Course Information</h2>
 
-    <form class="create-course-form" id="createCourseForm" method="POST" action="/manage-course/edit/<?php echo $course['course_id']; ?>">
-        <?php include $this->resolve("partials/_csrf.php"); ?>
-        <div class="create-course-section">
-            <h2>Basic Information</h2>
-            <div class="create-course-form-group">
-                <label for="courseTitle">Course Title *</label>
-                <input type="text" id="title" name="title" value="<?php echo e($course['title']); ?>" required>
+            <div class="form-group">
+                <label for="courseTitle" class="form-label">Course Title*</label>
+                <input type="text" name="courseTitle" id="courseTitle" class="form-control"
+                    placeholder="e.g., Advanced Web Development with React"
+                    value="<?= e($course['title']); ?>"
+                    required>
+                <div class="error-message" id="courseTitleError">Please enter a course title</div>
             </div>
-            <div class="create-course-form-group">
-                <label for="description">Course Description *</label>
-                <textarea id="description" name="description" required><?php echo e($course['description']); ?></textarea>
+
+            <div class="form-group">
+                <label for="courseDescription" class="form-label">Course Description*</label>
+                <textarea name="courseDescription" id="courseDescription" class="form-control textarea-control" placeholder="Describe what students will learn in your course..." required><?= e($course['description']); ?></textarea>
+                <div class="error-message" id="courseDescriptionError">Please enter a course description</div>
             </div>
-            <!-- <div class="create-course-form-group">
-                <label for="courseImage">Course Image URL *</label>
-                <input type="url" id="courseImage" name="courseImage" required>
-            </div> -->
-            <div class="create-course-form-group">
-                <label for="price">Course Price (Rs.) *</label>
-                <div style="display: flex;flex-direction: row; padding: 10px;">
 
-                    <input type="number" id="price" name="price" value="<?php echo e($course['price']); ?>" min="0" step="0.01" required>
-
-                    <select id="pricing_period" name="pricing_period" style="margin-left:16px" required>
-                        <option value="">Select Price period</option>
-                        <option value="daily" <?php echo ($course['pricing_period'] == 'daily') ? 'selected' : ''; ?>>Daily</option>
-                        <option value="monthly" <?php echo ($course['pricing_period'] == 'monthly') ? 'selected' : ''; ?>>Monthly</option>
-                        <option value="yearly" <?php echo ($course['pricing_period'] == 'yearly') ? 'selected' : ''; ?>>Yearly</option>
-                        <option value="wholecourse" <?php echo ($course['pricing_period'] == 'wholecourse') ? 'selected' : ''; ?>>For whole course</option>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="courseSubject" class="form-label">Subject*</label>
+                    <select id="courseSubject" name="subject" class="form-control" required>
+                        <option value="">Select Subject</option>
+                        <?php foreach ($subjects as $subject): ?>
+                            <option value="<?php echo e($subject['subject_id']); ?>" <?= e($course['subject_id']) == $subject['subject_id'] ? 'selected' : '' ?>><?php echo e($subject['subject_title']); ?></option>
+                        <?php endforeach; ?>
+                        <option value="-1">Other</option>
                     </select>
+                    <div class="error-message" id="courseSubjectError">Please select a subject</div>
+                </div>
 
+                <div class="form-group">
+                    <label for="courseGrade" class="form-label">Grade*</label>
+                    <select id="courseGrade" name="grade" class="form-control" required>
+                        <option value="">Select Grade</option>
+                        <?php foreach ($grades as $grade): ?>
+                            <option value="<?php echo e($grade['grade_id']); ?>" <?= e($course['grade_id']) == $grade['grade_id'] ? 'selected' : '' ?>>Grade <?php echo e($grade['grade_name']); ?></option>
+                        <?php endforeach; ?>
+                        <option value="-1">Other</option>
+                    </select>
+                    <div class="error-message" id="courseGradeError">Please select a grade</div>
                 </div>
             </div>
-            <div class="create-course-form-group">
-                <label for="subject_id">Subject *</label>
-                <select id="subject_id" name="subject_id" required>
-                    <option value="">Select a subject</option>
-                    <option value="1" <?php echo ($course['subject_id'] == '1') ? 'selected' : ''; ?>>Physics</option>
-
-                    <option value="2" <?php echo ($course['subject_id'] == '2') ? 'selected' : ''; ?>>Combined Mathematics</option>
-                    <option value="3" <?php echo ($course['subject_id'] == '3') ? 'selected' : ''; ?>>Chemistry</option>
-                    <option value="4" <?php echo ($course['subject_id'] == '4') ? 'selected' : ''; ?>>ICT</option>
-                    <option value="5" <?php echo ($course['subject_id'] == '5') ? 'selected' : ''; ?>>Science for Technology</option>
-                    <option value="6" <?php echo ($course['subject_id'] == '6') ? 'selected' : ''; ?>>Bio Science Technology</option>
-                    <option value="7" <?php echo ($course['subject_id'] == '7') ? 'selected' : ''; ?>>Mathematics</option>
-                    <option value="8" <?php echo ($course['subject_id'] == '8') ? 'selected' : ''; ?>>Science</option>
-                    <option value="9" <?php echo ($course['subject_id'] == '9') ? 'selected' : ''; ?>>Geogrophy</option>
-                    <option value="10" <?php echo ($course['subject_id'] == '10') ? 'selected' : ''; ?>>Econ</option>
-                    <option value="11" <?php echo ($course['subject_id'] == '11') ? 'selected' : ''; ?>>Political Science</option>
-                    <option value="12" <?php echo ($course['subject_id'] == '12') ? 'selected' : ''; ?>>Logics</option>
-                </select>
-            </div>
-            <div class="create-course-form-group">
-                <label for="day">Day (in weeks) *</label>
-                <select id="day" name="day" required>
-                    <option value="">Select a day</option>
-                    <option value="sun" <?php echo ($course['day'] == 'sun') ? 'selected' : ''; ?>>Sunday</option>
-                    <option value="mon" <?php echo ($course['day'] == 'mon') ? 'selected' : ''; ?>>Monday</option>
-                    <option value="tue" <?php echo ($course['day'] == 'tue') ? 'selected' : ''; ?>>Tuesday</option>
-                    <option value="wed" <?php echo ($course['day'] == 'wed') ? 'selected' : ''; ?>>Wednesday</option>
-                    <option value="thu" <?php echo ($course['day'] == 'thu') ? 'selected' : ''; ?>>Thursday</option>
-                    <option value="fri" <?php echo ($course['day'] == 'fri') ? 'selected' : ''; ?>>Friday</option>
-                    <option value="sat" <?php echo ($course['day'] == 'sat') ? 'selected' : ''; ?>>Saturday</option>
-
-                </select>
-            </div>
-            <div class="create-course-form-group">
-                <label>Course Time*</label> <br>
-                <div style="display: flex; flex-direction: row; margin-left: 26px;">
-                    <label for="start_time" style="margin-right: 26px;">Start Time*</label>
-                    <input type="time" value="<?php echo e($course['start_time']); ?>" id="start_time" name="start_time" min="0" step="60" placeholder="08:00" required>
-
-                    <label for="end_time" style="margin-right: 26px;margin-left: 16px;">End Time*</label>
-                    <input type="time" value="<?php echo e($course['end_time']); ?>" id="end_time" name="end_time" min="0" placeholder="10:00" required>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="courseStartTime" class="form-label">Start Time*</label>
+                    <input type="time" name="courseStartTime" id="courseStartTime" class="form-control" value="<?= e($course['end_time']); ?>">
+                    <div class="error-message" id="courseStartTimeError">Please enter a start time</div>
+                </div>
+                <div class="form-group">
+                    <label for="courseEndTime" class="form-label">End Time*</label>
+                    <input type="time" name="courseEndTime" id="courseEndTime" class="form-control" value="<?= e($course['end_time']); ?>">
+                    <div class="error-message" id="courseEndTimeError">Please enter a end time</div>
+                </div>
+                <div class="form-group">
+                    <label for="courseDay" class="form-label">Day*</label>
+                    <select id="courseDay" name="courseday" class="form-control" required>
+                        <option value="">Select Day</option>
+                        <option value="Sunday" <?= e($course['day']) == "Sunday" ? 'selected' : '' ?>>Sunday</option>
+                        <option value="Monday" <?= e($course['day']) == "Monday" ? 'selected' : '' ?>>Monday</option>
+                        <option value="Tuesday" <?= e($course['day']) == "Monday" ? 'selected' : '' ?>>Monday</option>
+                        <option value="Wednsday"> <?= e($course['day']) == "Wednsday" ? 'selected' : '' ?>Wednsday</option>
+                        <option value="Thursday" <?= e($course['day']) == "Thursday" ? 'selected' : '' ?>>Thursday</option>
+                        <option value="Friday" <?= e($course['day']) == "Friday" ? 'selected' : '' ?>>Friday</option>
+                        <option value="Saturday" <?= e($course['day']) == "Saturday" ? 'selected' : '' ?>>Saturday</option>
+                    </select>
+                    <div class="error-message" id="courseDayError">Please enter a day</div>
                 </div>
             </div>
-            <div class="create-course-form-group">
-                <label for="grade_id">Course Level *</label>
-                <select id="grade_id" name="grade_id" required>
-                    <option value="">Select a level</option>
-                    <option value="1" <?php echo ($course['grade_id'] == '1') ? 'selected' : ''; ?>>Grade 1</option>
-                    <option value="2" <?php echo ($course['grade_id'] == '2') ? 'selected' : ''; ?>>Grade 2</option>
-                    <option value="3" <?php echo ($course['grade_id'] == '3') ? 'selected' : ''; ?>>Grade 3</option>
-                    <option value="4" <?php echo ($course['grade_id'] == '4') ? 'selected' : ''; ?>>Grade 4</option>
-                    <option value="5" <?php echo ($course['grade_id'] == '5') ? 'selected' : ''; ?>>Grade 5</option>
-                    <option value="6" <?php echo ($course['grade_id'] == '6') ? 'selected' : ''; ?>>Grade 6</option>
-                    <option value="7" <?php echo ($course['grade_id'] == '7') ? 'selected' : ''; ?>>Grade 7</option>
-                    <option value="8" <?php echo ($course['grade_id'] == '8') ? 'selected' : ''; ?>>Grade 8</option>
-                    <option value="9" <?php echo ($course['grade_id'] == '9') ? 'selected' : ''; ?>>Grade 9</option>
-                    <option value="10" <?php echo ($course['grade_id'] == '10') ? 'selected' : ''; ?>>Grade 10</option>
-                    <option value="11" <?php echo ($course['grade_id'] == '11') ? 'selected' : ''; ?>>Grade 11</option>
-                    <option value="12" <?php echo ($course['grade_id'] == '12') ? 'selected' : ''; ?>>Grade 12</option>
-                    <option value="13" <?php echo ($course['grade_id'] == '13') ? 'selected' : ''; ?>>Grade 13</option>
-
-                </select>
+            <div class="form-group">
+                <label for="location" class="form-label">Location*</label>
+                <input type="text" name="location" id="location" class="form-control" value="<?= e($course['location']); ?>">
+                <div class="error-message" id="locationError">Please enter a location</div>
             </div>
-        </div>
-        <div class="create-course-form-group">
-            <label for="duration">Course Duration (in weeks)</label>
-            <input type="number" value="<?php echo e($course['duration']); ?>" id="duration" name="duration" min="1" required>
-        </div>
+            <?php if ($course['billing_type'] == 'onetime'): ?>
+                <div class="form-group">
+                    <label for="price" class="form-label">Price*</label>
+                    <input type="text" name="price" id="price" class="form-control" value="<?= e($course['price']); ?>">
+                    <div class="error-message" id="locationError">Please enter a location</div>
+                </div>
+            <?php endif; ?>
+            <div class="form-group">
+                <label for="courseThumbnail" class="form-label">Change Course Thumbnail Image*</label>
+                <input type="file" id="courseThumbnail" name="courseThumbnail" class="form-control" accept="image/*">
+                <p class="hint-text">Upload a high-quality image to attract students. Recommended size: 1280x720px</p>
+                <div class="error-message" id="courseThumbnailError">Please upload a course thumbnail</div>
+            </div>
+            <div class="form-actions">
+                <input type="hidden" name="_METHOD" value="PUT" />
+                <button type="submit" class="btn btn-primary" id="createCourseBtn">
+                    <i class="fas fa-check"></i> Update Course
+                </button>
+            </div>
 
-        <div class="create-course-section">
-            <h2>Course Modules (Optional)</h2>
-            <div id="moduleContainer"></div>
-            <button type="button" class="create-course-add-button" id="addModuleBtn">Add Module</button>
         </div>
-        </div>
-
-        <button type="submit" class="create-course-submit">Update course</button>
     </form>
-
-
-    <script>
-        let moduleCount = 0;
-
-        function createModuleHTML(index) {
-            return `
-            <div class="create-course-module" id="module${index}">
-                <div class="create-course-module-header">
-                    <h3>Module ${index + 1}</h3>
-                    <button type="button" class="create-course-remove-button" onclick="removeModule(${index})">Remove</button>
-                </div>
-                <div class="create-course-form-group">
-                    <label for="moduleTitle${index}">Module Title</label>
-                    <input type="text" id="moduleTitle${index}" name="moduleTitle${index}">
-                </div>
-                <div class="create-course-form-group">
-                    <label for="moduleDescription${index}">Module Description</label>
-                    <textarea id="moduleDescription${index}" name="moduleDescription${index}"></textarea>
-                </div>
-                <div class="create-course-form-group">
-                    <label for="moduleResources${index}">Module Resources (comma-separated)</label>
-                    <input type="text" id="moduleResources${index}" name="moduleResources${index}">
-                </div>
-            </div>
-        `;
-        }
-
-        function addModule() {
-            const moduleContainer = document.getElementById('moduleContainer');
-            moduleContainer.insertAdjacentHTML('beforeend', createModuleHTML(moduleCount));
-            moduleCount++;
-        }
-
-        function removeModule(index) {
-            const module = document.getElementById(`module${index}`);
-            module.remove();
-        }
-
-        document.getElementById('addModuleBtn').addEventListener('click', addModule);
-
-        // document.getElementById('createCourseForm').addEventListener('submit', function(e) {
-        //     e.preventDefault();
-        //     alert('Course created successfully!');
-        //     // Here you would typically handle the form submission and course creation process
-        // });
-    </script>
-
 </section>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Form validation for Basic Course Information
+        function validateBasicInfo() {
+            let isValid = true;
+
+            // Validate basic course info
+            const requiredFields = [
+                'courseTitle',
+                'courseDescription',
+                'courseSubject',
+                'courseGrade',
+                'courseStartTime',
+                'courseEndTime',
+                'courseDay',
+                'location',
+                'courseThumbnail'
+            ];
+
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                const errorElement = document.getElementById(fieldId + 'Error');
+
+                if (!field.value) {
+                    errorElement.style.display = 'block';
+                    field.classList.add('error');
+                    isValid = false;
+                } else {
+                    errorElement.style.display = 'none';
+                    field.classList.remove('error');
+                }
+            });
+
+            return isValid;
+        }
+
+        // You can call this function as part of a larger form validation
+        // For example, inside a form submit event listener:
+
+        const form = document.getElementById('createCourseForm');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                if (!validateBasicInfo()) {
+                    e.preventDefault();
+                    // Scroll to first error
+                    const firstError = document.querySelector('.form-control.error');
+                    if (firstError) {
+                        firstError.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
+                    }
+                }
+            });
+        }
+    });
+</script>

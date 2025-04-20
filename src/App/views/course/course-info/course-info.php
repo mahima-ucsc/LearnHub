@@ -11,9 +11,13 @@
                 <div class="course-meta">
                     <div class="course-rating">★★★★★ 4.8 (256 reviews)</div>
                     <div class="course-info">
-                        <span>Duration: <?php echo e($course['duration']); ?> weeks</span> |
-                        <span>Level: <?php echo e($course['grade_id']); ?></span> |
-                        <span>Price: Rs. <?php echo e($course['price']); ?></span>
+                        <span>Participants: <?php echo e($participantCount); ?></span> |
+                        <span>Grade: <?php echo e($course['grade_id']); ?></span> |
+                        <?php if ($course['price']): ?>
+                            <span>
+                                Price: Rs. <?php echo e($course['price']); ?>
+                            </span>
+                        <?php endif; ?>
                     </div>
                     <?php if ($course['billing_type'] === 'onetime' && !$course['is_paid']): ?>
                         <a href="<?= "/payment/courses/" . $course['course_id'] ?>" class="enroll-button">Enroll Now</a>
