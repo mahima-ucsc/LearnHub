@@ -99,6 +99,9 @@ function registerRoutes(App $app)
     $app->get('/courses/test', [CoursesController::class, 'myCoursesTest']);
     $app->post('/courses/pin-course', [CoursesController::class, 'pinCourse']);
 
+
+    $app->delete('/course/{course_id}/module/{module_id}', [CoursesController::class, 'deleteCourseModule']);
+
     $app->get('/courses/{course_id}', [CoursesController::class, 'courseInfo']);
     $app->get('/courses/{course_id}/participants', [CoursesController::class, 'courseParticipant']);
     $app->delete('/courses/{course_id}/participants/remove/{user_id}', [CoursesController::class, 'RemoveCourseParticipant'], [TeacherOnlyMiddleware::class]);
@@ -110,6 +113,9 @@ function registerRoutes(App $app)
     $app->post('/course/create', [CoursesController::class, 'create']);
     $app->get('/course/{course_id}/module/create', [CoursesController::class, 'createModuleView']);
     $app->post('/course/{course_id}/module/create', [CoursesController::class, 'createModule']);
+
+
+    $app->post('/mark-attendance', [CoursesController::class, 'markAttendance']);
 
     // TODO: Remove or implement this route
     // $app->get('/courses/my/registered', [CoursesController::class, 'regCourses'], [AuthRequiredMiddleware::class]);

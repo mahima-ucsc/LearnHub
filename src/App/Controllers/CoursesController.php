@@ -101,6 +101,24 @@ class CoursesController
         $course = $this->courseService->getCourseById($params['course_id']);
         $participants = $this->courseService->getCourseParticipants((string) $params['course_id']);
         $participantCount = count($participants);
+
+        // Get user_ids of the students registered to the course 
+        $participantIds = [];
+        for ($i = 0; $i < $participantCount; $i++) {
+            $participantIds[$i] = $participants[$i]['user_id'];
+        }
+
+        // Check whether the current user is a participant of the course
+        $isParticipant = in_array($_SESSION['user'], $participantIds);
+
+        // Get user attendance
+        $attendance = $this->courseService->userAttendance($_SESSION['user']);
+        $attendanceData = [];
+        foreach ($attendance as $a) {
+            $attendanceData[$a['module_id']] = $a['is_attended'];
+        }
+
+
         /**
          * 'isPaid' property based on the course type:
          * - For one-time courses: Boolean value (true or false)
@@ -112,19 +130,25 @@ class CoursesController
         }
         if ($course['billing_type'] === 'onetime') {
             $courseModules = $this->courseService->getCourseModuleList($params['course_id']);
+            // Get module resources based on module ID
+            $moduleResources = [];
+            foreach ($courseModules as $module) {
+                $resources = $this->courseService->courseResourceList($module['course_id'], $module['module_id']);
+                $moduleResources[$module['module_id']] = $resources;
+            }
         } else {
             $content = $this->courseService->getCurrentContentAndPastContent($params['course_id']);
             $currentContent = $content['currentContent'];
             $pastContent = $content['pastContent'];
+            // Get module resources based on module ID
+            $allContent = $currentContent + $pastContent;
+            $moduleResources = [];
+            foreach ($allContent as $contentModule) {
+                $resources = $this->courseService->courseResourceList((int)$contentModule['course_id'], (int)$contentModule['modules'][0]['module_id']);
+                $moduleResources[$contentModule['modules'][0]['module_id']] = $resources;
+            }
         }
 
-        // TODO: Fetch module resources based on the updated database schema and course flow.
-        // Get module resources based on module ID
-        // $moduleResources = [];
-        // foreach ($courseModules as $module) {
-        //     $resources = $this->courseService->courseResourceList($module['course_id'], $module['module_id']);
-        //     $moduleResources[$module['module_id']] = $resources;
-        // }
         $assignments = $this->assignmentService->getAssignmentByCourse($params['course_id']);
 
         // Get module resources based on module ID
@@ -164,10 +188,12 @@ class CoursesController
                 'pastContent' => $pastContent ?? [],
                 'assignments' => $assignments,
                 'assignmentsResources' => $assignmentsResources,
-                // 'moduleResources' => $moduleResources,
+                'moduleResources' => $moduleResources,
                 'userReview' => $userReview,
                 'summeryOfReviews' => $summeryOfReviews,
-                'participantCount' => $participantCount
+                'participantCount' => $participantCount,
+                "isParticipant" => $isParticipant,
+                "attendanceData" => $attendanceData
 
             ]
         );
@@ -508,5 +534,34 @@ class CoursesController
         }
         $this->courseService->createModule($courseId, $type, $modulesData, 1);
         echo json_encode($modulesData);
+    }
+
+    public function deleteCourseModule(array $params)
+    {
+        $this->courseService->deleteModule($params['course_id'], $params['module_id']);
+        redirectTo($_SERVER['HTTP_REFERER']);
+    }
+
+    public function markAttendance()
+    {
+        try {
+            $json = file_get_contents('php://input');
+            $data = json_decode($json, true);
+            $this->courseService->markAttendance($data);
+            $result = [
+                "success" => true,
+                "message" => "Attendance marked successfully",
+                "receivedData" => $data
+            ];
+        } catch (Exception $e) {
+            $result = [
+                "success" => false,
+                "message" => $e->getMessage(),
+            ];
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($result);
+        exit;
     }
 }
