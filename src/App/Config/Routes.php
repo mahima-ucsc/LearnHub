@@ -144,7 +144,7 @@ function registerRoutes(App $app)
 
     // announcement
     $app->get('/courses/{course_id}/announcements/create', [AnnouncementController::class, 'announcementsFormView'], [AuthRequiredMiddleware::class]);
-    $app->post('/courses/{course_id}/announcements/create', [AnnouncementController::class, 'createAnnouncements']);
+    $app->post('/courses/{course_id}/announcements/create', [AnnouncementController::class, 'createAnnouncements'], [AuthRequiredMiddleware::class]);
     $app->get('/courses/{course_id}/announcements', [AnnouncementController::class, 'announcementsListView'], [AuthRequiredMiddleware::class]);
     $app->post('/announcements/mark-as-read', [AnnouncementController::class, 'markAsRead'], [AuthRequiredMiddleware::class]);
     $app->post('/announcements/mark-as-unread', [AnnouncementController::class, 'markAsUnread'], [AuthRequiredMiddleware::class]);
