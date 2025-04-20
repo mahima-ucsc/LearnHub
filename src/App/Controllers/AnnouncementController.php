@@ -17,7 +17,7 @@ class AnnouncementController
     public function announcementsFormView($params)
     {
         echo $this->view->render(
-            "User/Tutor/create_announcement.php",
+            "Tutor/create_announcement.php",
             [
                 'title' => 'create announcement',
                 'course_id' => $params['course_id']
