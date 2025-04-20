@@ -1,5 +1,7 @@
 <?php include $this->resolve("partials/_header.php"); ?>
 <link rel="stylesheet" href="/assets/styles/User/settings.css">
+<link rel="stylesheet" href="/assets/styles/components/toast.css">
+
 
 <section class="settings">
     <div class="settings-container">
@@ -70,17 +72,17 @@
                     </div>
                     <div class="form-group">
                         <label for="first_name">First Name</label>
-                        <input type="text" id="first_name" name="first_name" value="<?php echo e($userDetails['first_name']); ?>">
+                        <input type="text" id="first_name" name="first_name" value="<?php echo e($userDetails['first_name']); ?>" required>
                     </div>
 
                     <div class="form-group">
                         <label for="last_name">Last Name</label>
-                        <input type="text" id="last_name" name="last_name" value="<?php echo e($userDetails['last_name']); ?>">
+                        <input type="text" id="last_name" name="last_name" value="<?php echo e($userDetails['last_name']); ?>" required>
                     </div>
 
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" id="email" name="email" value="<?php echo e($userDetails['email']); ?>">
+                        <input type="email" id="email" name="email" value="<?php echo e($userDetails['email']); ?>" required>
                     </div>
 
                     <div class="form-group">
@@ -89,7 +91,7 @@
                     </div>
                     <div class="form-group">
                         <label for="date_of_birth">Date of Birth</label>
-                        <input type="date" id="date_of_birth" name="date_of_birth" value="<?php echo e($userDetails['date_of_birth']); ?>">
+                        <input type="date" id="date_of_birth" name="date_of_birth" value="<?php echo e($userDetails['date_of_birth']); ?>" required>
                     </div>
 
                     <div class="form-group full-width">
@@ -155,5 +157,9 @@
     </div>
 
 </section>
-
+<script>
+    window.serverErrors = <?php echo json_encode($errors ?? []); ?>;
+</script>
+<script src="/assets/js/components/toast.js"></script>
+<script src="/assets/js/settings/settings.js" defer></script>
 <?php include $this->resolve("partials/_footer.php"); ?>

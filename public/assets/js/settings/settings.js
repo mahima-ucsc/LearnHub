@@ -64,4 +64,13 @@ document.addEventListener("DOMContentLoaded", function () {
       reader.readAsDataURL(file);
     }
   });
+
+  // Show toast on form submission
+  if (window.serverErrors && Object.keys(window.serverErrors).length > 0) {
+    Object.entries(window.serverErrors).forEach(([field, messages]) => {
+      messages.forEach((msg) => {
+        showToast("Error", msg, "error");
+      });
+    });
+  }
 });
