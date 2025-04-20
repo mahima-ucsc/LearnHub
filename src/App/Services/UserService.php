@@ -51,7 +51,7 @@ class UserService
         )->count();
 
         if ($emailCount > 0) {
-            throw new ValidationException(['email' => 'Email taken']);
+            throw new ValidationException(['email' => ['This email address is already in use. Please try a different one.']]);
         }
     }
     public function canChangeEmail(string $email)
@@ -91,7 +91,7 @@ class UserService
         $_SESSION['user'] = $this->db->lastInsertId();
         $_SESSION['user_role'] = $_SESSION['temp_role'];
         unset($_SESSION['temp_role']);
-        unset($_SESSION['$tempUser']);
+        unset($_SESSION['tempUser']);
         unset($_SESSION['otp_hash']);
     }
 
