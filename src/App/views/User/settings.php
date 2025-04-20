@@ -1,8 +1,7 @@
 <?php include $this->resolve("partials/_header.php"); ?>
+<link rel="stylesheet" href="/assets/styles/User/settings.css">
+<link rel="stylesheet" href="/assets/styles/components/toast.css">
 
-<head>
-    <link rel="stylesheet" href="/assets/styles/User/settings.css">
-</head>
 
 <section class="settings">
     <div class="settings-container">
@@ -73,17 +72,17 @@
                     </div>
                     <div class="form-group">
                         <label for="first_name">First Name</label>
-                        <input type="text" id="first_name" name="first_name" value="<?php echo e($userDetails['first_name']); ?>">
+                        <input type="text" id="first_name" name="first_name" value="<?php echo e($userDetails['first_name']); ?>" required>
                     </div>
 
                     <div class="form-group">
                         <label for="last_name">Last Name</label>
-                        <input type="text" id="last_name" name="last_name" value="<?php echo e($userDetails['last_name']); ?>">
+                        <input type="text" id="last_name" name="last_name" value="<?php echo e($userDetails['last_name']); ?>" required>
                     </div>
 
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" id="email" name="email" value="<?php echo e($userDetails['email']); ?>">
+                        <input type="email" id="email" name="email" value="<?php echo e($userDetails['email']); ?>" required>
                     </div>
 
                     <div class="form-group">
@@ -92,7 +91,7 @@
                     </div>
                     <div class="form-group">
                         <label for="date_of_birth">Date of Birth</label>
-                        <input type="date" id="date_of_birth" name="date_of_birth" value="<?php echo e($userDetails['date_of_birth']); ?>">
+                        <input type="date" id="date_of_birth" name="date_of_birth" value="<?php echo e($userDetails['date_of_birth']); ?>" required>
                     </div>
 
                     <div class="form-group full-width">
@@ -156,68 +155,11 @@
             </div>
         </div>
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get all menu links
-            const menuLinks = document.querySelectorAll('.settings-menu a');
 
-            // Function to activate the saved section or default to "general"
-            function activateSectionFromStorage() {
-                const savedSectionId = localStorage.getItem('activeSection') || 'general';
-                menuLinks.forEach(link => {
-                    link.classList.toggle('active', link.getAttribute('href').substring(1) === savedSectionId);
-                });
-                document.querySelectorAll('.settings-section').forEach(section => {
-                    section.classList.toggle('active', section.id === savedSectionId);
-                });
-            }
-
-            // Initialize the page with the saved section
-            activateSectionFromStorage();
-
-            // Add click event listener to each link
-            menuLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-
-                    // Save the active section ID to localStorage
-                    const sectionId = this.getAttribute('href').substring(1);
-                    localStorage.setItem('activeSection', sectionId);
-
-                    // Activate the selected section
-                    activateSectionFromStorage();
-                });
-            });
-
-            // Profile Picture Preview
-            const profilePictureInput = document.getElementById('profilePicture');
-            const profileImagePreview = document.querySelector('.profile-image-preview img');
-
-            profilePictureInput.addEventListener('change', function(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        profileImagePreview.src = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-
-            // Cover Photo Preview
-            const coverPhotoInput = document.getElementById('coverPhoto');
-            const coverImagePreview = document.querySelector('.cover-image-preview img');
-
-            coverPhotoInput.addEventListener('change', function(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        coverImagePreview.src = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-        });
-    </script>
 </section>
+<script>
+    window.serverErrors = <?php echo json_encode($errors ?? []); ?>;
+</script>
+<script src="/assets/js/components/toast.js"></script>
+<script src="/assets/js/settings/settings.js" defer></script>
+<?php include $this->resolve("partials/_footer.php"); ?>
