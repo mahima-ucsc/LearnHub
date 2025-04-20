@@ -80,7 +80,7 @@
                 <button type="submit" class="login-button">Log in</button>
             </form>
             <a href="#" class="forgot-password">Forgot password?</a>
-            <p class="signup">Don't have and account? <a href="/register" style="color: #FFC400;"> Signup </a></p>
+            <p class="signup">Don't have and account? <a href="/register" style="color: #FFC400;"> Sign Up </a></p>
         </div>
     </div>
     <!-- Popup -->

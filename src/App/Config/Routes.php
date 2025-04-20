@@ -55,9 +55,9 @@ function registerRoutes(App $app)
     $app->get('/contact/successfull', [ContactController::class, 'successfull']);
 
     // User
+    $app->get('/register', [AuthController::class, 'registerRoleView'], [GuestOnlyMiddleware::class]);
     $app->post('/choose-role', [AuthController::class, 'chooseRole'], [GuestOnlyMiddleware::class]);
     $app->get('/register/create-account', [AuthController::class, 'registerView'], [GuestOnlyMiddleware::class]);
-    $app->get('/register', [AuthController::class, 'registerRoleView'], [GuestOnlyMiddleware::class]);
     $app->post('/register', [AuthController::class, 'register'], [GuestOnlyMiddleware::class]);
     $app->get('/register/verification', [AuthController::class, 'verificationView'], [GuestOnlyMiddleware::class]);
     $app->post('/verify-otp', [AuthController::class, 'verifyuser'], [GuestOnlyMiddleware::class]);

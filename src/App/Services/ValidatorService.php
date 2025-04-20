@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Framework\Rules\{RequiredRule, EmailRule, InRule, MatchRule, MinRule, UrlRule};
+use Framework\Rules\{DateShouldNotBeFutureRule, RequiredRule, EmailRule, InRule, MatchRule, MinRule, UrlRule};
 use Framework\Validator;
 use Framework\Exceptions\ValidationException;
 
@@ -22,6 +22,7 @@ class ValidatorService
         $this->validator->add('in', new InRule());
         $this->validator->add('url', new UrlRule());
         $this->validator->add('match', new MatchRule());
+        $this->validator->add('notFutureDate', new DateShouldNotBeFutureRule());
     }
 
     public function validateRegister(array $formData)
@@ -30,8 +31,8 @@ class ValidatorService
             "first_name" => ["required"],
             "last_name" => ["required"],
             "email" => ["required", "email"],
-            "date_of_birth" => ["required"],
-            "password" => ["required"],
+            "date_of_birth" => ["required", "notFutureDate"],
+            "password" => ["required", "min:8"],
             "confirmPassword" => ["required", "match:password"],
         ]);
     }
