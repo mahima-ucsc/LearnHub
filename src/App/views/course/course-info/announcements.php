@@ -55,7 +55,7 @@
                                     class="read_btn"
                                     announcement_id="<?php echo ($announcement['announcement_id']); ?>"
                                     is_read="<?php echo $announcement['is_read'] == 1 ? "true" : "false" ?>">
-                                    <?php echo  $announcement['is_read'] == 1 ? "Mark as unread" : "Mark as read" ?>
+                                    <?php echo  $announcement['is_read'] == 1 ? "Mark As Unead" : "Mark As Read" ?>
                                 </button>
                             </div>
                         </div>
@@ -69,8 +69,8 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             // Filter functionality
-            const filterButtons = document.querySelectorAll(".filter-button");
             const announcementItems = document.querySelectorAll(".announcement-item");
+            const filterButtons = document.querySelectorAll(".filter-button");
             checkEmptyState();
 
             // Add event listeners to filter buttons
@@ -101,14 +101,17 @@
                 });
             });
 
+            // |Add event listnets to togle isread btn
             document.querySelectorAll('.read_btn').forEach(button => {
                 button.addEventListener('click', function() {
                     const btn = this;
                     const announcement_id = btn.getAttribute('announcement_id');
                     const is_read = btn.getAttribute('is_read') === 'true';
+                    console.log(is_read);
+
 
                     // update button appearence
-                    btn.textContent = is_read ? "Mark As Unread" : "Mark As Read";
+                    btn.textContent = !is_read ? "Mark As Unread" : "Mark As Read";
                     btn.setAttribute('is_read', !is_read);
 
                     // send AJAX request
@@ -121,11 +124,11 @@
                         })
                         .then(response => response.text())
                         .then(data => {
+                            updateUnreadCount();
                             console.log(data);
                             document.getElementById('result').innerHTML = data;
                         })
                 })
-                updateUnreadCount();
             })
 
             // Mark as read/unread functionality

@@ -50,15 +50,19 @@ class AnnouncementController
 
     public function markAsButtonToggle()
     {
-        $is_read = $_POST['is_read'] == 'true';
+        if (!isset($_POST['announcement_id'], $_POST['is_read'], $_SESSION['user'])) {
+            http_response_code(400);
+            echo "Missing Required data";
+            return;
+        }
+
+        $is_read = $_POST['is_read'] === 'true' ? 1 : 0;
         $announcementId = $_POST['announcement_id'];
         $userId = $_SESSION['user'];
-        if ($is_read) {
-            $this->AnnouncementService->toggleMarkAsBtn($announcementId, $userId, $is_read);
-            echo "readed";
-        } else {
-            echo "unreaded";
-        }
+
+        $this->AnnouncementService->toggleMarkAsBtn($announcementId, $userId, $is_read);
+
+        echo $is_read ? "Marked as read" : "Marked as Unread";
     }
 
     public function markAsRead()

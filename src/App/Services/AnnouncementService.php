@@ -132,6 +132,7 @@ class AnnouncementService
 
     public function toggleMarkAsBtn($announcementId, $studentId, $is_read)
     {
+        echo ($announcementId . $studentId . $is_read);
         $this->db->query(
             "UPDATE announcements_read SET is_read = :is_read WHERE announcement_id = :announcement_id AND user_id = :student_id",
             [
