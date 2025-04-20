@@ -51,20 +51,18 @@
                                 ?>
                             </div>
                             <div class="announcement-actions">
-                                <!-- <form action="/announcements/mark-as-read" method="POST"> -->
-                                <!-- <input type="hidden" name='announcement_id' value="<?php echo $announcement['announcement_id'] ?>"> -->
                                 <button
                                     class="read_btn"
                                     announcement_id="<?php echo ($announcement['announcement_id']); ?>"
                                     is_read="<?php echo $announcement['is_read'] == 1 ? "true" : "false" ?>">
                                     <?php echo  $announcement['is_read'] == 1 ? "Mark as unread" : "Mark as read" ?>
                                 </button>
-                                <!-- </form> -->
                             </div>
                         </div>
                     </div>
                 <?php } ?>
             </div>
+            <div id="result"></div>
         </div>
     </div>
 
@@ -104,7 +102,7 @@
             });
 
             document.querySelectorAll('.read_btn').forEach(button => {
-                button.addEventListener('click', () => {
+                button.addEventListener('click', function() {
                     const btn = this;
                     const announcement_id = btn.getAttribute('announcement_id');
                     const is_read = btn.getAttribute('is_read') === 'true';
@@ -114,7 +112,7 @@
                     btn.setAttribute('is_read', !is_read);
 
                     // send AJAX request
-                    fetch('/announcements/mark-as', {
+                    fetch('/announcements/mark_as', {
                             method: 'POST',
                             headers: {
                                 'content-Type': "application/x-www-form-urlencoded"
@@ -123,9 +121,11 @@
                         })
                         .then(response => response.text())
                         .then(data => {
-                            updateUnreadCount();
+                            console.log(data);
+                            document.getElementById('result').innerHTML = data;
                         })
                 })
+                updateUnreadCount();
             })
 
             // Mark as read/unread functionality

@@ -130,6 +130,18 @@ class AnnouncementService
         )->find();
     }
 
+    public function toggleMarkAsBtn($announcementId, $studentId, $is_read)
+    {
+        $this->db->query(
+            "UPDATE announcements_read SET is_read = :is_read WHERE announcement_id = :announcement_id AND user_id = :student_id",
+            [
+                'announcement_id' => $announcementId,
+                'student_id' => $studentId,
+                'is_read' => $is_read,
+            ]
+        );
+    }
+
     public function markAsRead($announcementId, $studentId)
     {
         // dd([$announcementId, $studentId]);

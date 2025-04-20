@@ -48,6 +48,19 @@ class AnnouncementController
         );
     }
 
+    public function markAsButtonToggle()
+    {
+        $is_read = $_POST['is_read'] == 'true';
+        $announcementId = $_POST['announcement_id'];
+        $userId = $_SESSION['user'];
+        if ($is_read) {
+            $this->AnnouncementService->toggleMarkAsBtn($announcementId, $userId, $is_read);
+            echo "readed";
+        } else {
+            echo "unreaded";
+        }
+    }
+
     public function markAsRead()
     {
         $data = json_decode(file_get_contents('php://input'), true);
