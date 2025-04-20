@@ -1,8 +1,5 @@
 <?php include $this->resolve("partials/_header.php"); ?>
-
-<head>
-    <link rel="stylesheet" href="/assets/styles/User/settings.css">
-</head>
+<link rel="stylesheet" href="/assets/styles/User/settings.css">
 
 <section class="settings">
     <div class="settings-container">
@@ -221,3 +218,5 @@
         });
     </script>
 </section>
+
+<?php include $this->resolve("partials/_footer.php"); ?>
