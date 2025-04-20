@@ -217,6 +217,11 @@
         font-weight: 500;
     }
 
+    .hero-feature a {
+        text-decoration: none;
+        color: var(--dark);
+    }
+
     .hero-feature i {
         color: var(--dark);
     }
@@ -582,287 +587,24 @@
         }
     }
 
-    /* Courses Section */
-    .courses-section {
+
+    /* subjects Section */
+    .subjects-section {
         margin-bottom: 80px;
     }
 
-    .course-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 30px;
-    }
-
-    .feature-course-card {
-        background-color: var(--white);
-        border-radius: var(--radius);
-        overflow: hidden;
-        box-shadow: var(--shadow);
-        transition: var(--transition);
-        position: relative;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .feature-course-card:hover {
-        transform: translateY(-10px);
-        box-shadow: var(--shadow-hover);
-    }
-
-    .course-badge {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background-color: var(--primary);
-        color: var(--dark);
-        padding: 5px 12px;
-        border-radius: 30px;
-        font-size: 12px;
-        font-weight: bold;
-        z-index: 10;
-        transition: var(--transition);
-    }
-
-    .feature-course-card:hover .course-badge {
-        transform: scale(1.05);
-    }
-
-    .course-image {
-        height: 200px;
-        overflow: hidden;
-        position: relative;
-    }
-
-    .course-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.8s ease;
-    }
-
-    .feature-course-card:hover .course-image img {
-        transform: scale(1.05);
-    }
-
-    .course-content {
-        padding: 25px;
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-    }
-
-    .course-tutor {
-        display: flex;
-        align-items: center;
-        margin-bottom: 15px;
-    }
-
-    .tutor-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        overflow: hidden;
-        margin-right: 12px;
-        border: 2px solid var(--primary);
-    }
-
-    .tutor-avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .tutor-info {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .tutor-name {
-        font-size: 15px;
-        font-weight: 500;
-        color: var(--dark);
-    }
-
-    .tutor-role {
-        font-size: 13px;
-        color: var(--gray-dark);
-    }
-
-    .course-title {
-        font-size: 19px;
-        margin-bottom: 15px;
-        line-height: 1.4;
-        font-weight: 600;
-        color: var(--dark);
-        transition: var(--transition);
-    }
-
-    .feature-course-card:hover .course-title {
-        color: var(--primary);
-    }
-
-    .course-description {
-        font-size: 14px;
-        color: var(--gray-dark);
-        margin-bottom: 20px;
-        line-height: 1.6;
-    }
-
-    .course-meta {
-        display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 20px;
-        font-size: 14px;
-        color: var(--gray-dark);
-    }
-
-    .meta-item {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-
-    .meta-icon {
-        color: var(--primary);
-    }
-
-    .course-stats {
-        display: flex;
-        gap: 15px;
-        margin-bottom: 20px;
-    }
-
-    .course-stat {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 14px;
-        color: var(--gray-dark);
-    }
-
-    .course-stat i {
-        color: var(--primary);
-    }
-
-    .price-container {
-        margin-top: auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .course-price {
-        font-size: 22px;
-        font-weight: bold;
-        color: var(--primary-dark);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .original-price {
-        font-size: 16px;
-        color: var(--gray-dark);
-        text-decoration: line-through;
-        font-weight: normal;
-    }
-
-    .discount-badge {
-        padding: 4px 8px;
-        background-color: var(--accent);
-        color: var(--white);
-        border-radius: 4px;
-        font-size: 12px;
-    }
-
-    .add-to-cart {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background-color: var(--primary-light);
-        color: var(--primary-dark);
-        transition: var(--transition);
-        border: none;
-        cursor: pointer;
-        font-size: 16px;
-    }
-
-    .add-to-cart:hover {
-        background-color: var(--primary);
-        color: var(--dark);
-        transform: scale(1.1);
-    }
-
-    .course-footer {
-        padding: 15px 25px;
-        border-top: 1px solid var(--gray);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background-color: var(--gray-light);
-    }
-
-    .rating {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .rating-value {
-        font-weight: 600;
-        color: var(--dark);
-    }
-
-    .rating-stars {
-        color: var(--primary);
-    }
-
-    .rating-count {
-        font-size: 13px;
-        color: var(--gray-dark);
-    }
-
-    .enroll-now {
-        font-size: 14px;
-        font-weight: 500;
-        color: var(--primary-dark);
-        text-decoration: none;
-        transition: var(--transition);
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-
-    .enroll-now:hover {
-        color: var(--accent);
-    }
-
-    .enroll-now i {
-        transition: var(--transition);
-    }
-
-    .enroll-now:hover i {
-        transform: translateX(5px);
-    }
-
-    /* Categories Section */
-    .categories-section {
-        margin-bottom: 80px;
-    }
-
-    .category-cards {
+    .subject-cards {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         gap: 25px;
     }
 
-    .category-card {
+    .subject-cards a {
+        text-decoration: none;
+        color: var(--dark);
+    }
+
+    .subject-card {
         background-color: var(--white);
         border-radius: var(--radius);
         padding: 30px 20px;
@@ -878,30 +620,12 @@
         overflow: hidden;
     }
 
-    .category-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 5px;
-        background: var(--primary);
-        transform: scaleX(0);
-        transform-origin: right;
-        transition: transform 0.5s ease;
-    }
-
-    .category-card:hover::before {
-        transform: scaleX(1);
-        transform-origin: left;
-    }
-
-    .category-card:hover {
+    .subject-card:hover {
         transform: translateY(-10px);
         box-shadow: var(--shadow-hover);
     }
 
-    .category-icon {
+    .subject-icon {
         width: 60px;
         height: 60px;
         background-color: var(--primary-light);
@@ -914,18 +638,18 @@
         transition: var(--transition);
     }
 
-    .category-card:hover .category-icon {
+    .subject-card:hover .subject-icon {
         background-color: var(--primary);
         transform: scale(1.1);
     }
 
-    .category-name {
+    .subject-name {
         font-weight: 600;
         font-size: 17px;
         margin-bottom: 5px;
     }
 
-    .category-count {
+    .subject-count {
         color: var(--gray-dark);
         font-size: 14px;
     }
@@ -968,26 +692,6 @@
         transform: rotate(45deg);
         transition: var(--transition);
         opacity: 0;
-    }
-
-    .popular-tutor-card:hover::after {
-        animation: shine 1.5s ease;
-    }
-
-    @keyframes shine {
-        0% {
-            opacity: 0;
-            transform: translateX(-100%) rotate(45deg);
-        }
-
-        50% {
-            opacity: 1;
-        }
-
-        100% {
-            opacity: 0;
-            transform: translateX(100%) rotate(45deg);
-        }
     }
 
     .tutor-profile {
@@ -1786,7 +1490,7 @@
         <div class="hero-content">
             <h1>Discover, Learn, Share & Grow Together</h1>
             <p>Explore thousands of courses, share valuable resources, and request custom courses tailored to your specific learning journey.</p>
-            <form action="/test" method="get">
+            <form action="/courses" method="get" onsubmit="showLoader();">
                 <div class="search-container">
                     <div class="search-bar">
                         <i class="fas fa-search search-icon"></i>
@@ -1797,20 +1501,23 @@
             </form>
             <div class="hero-features">
                 <div class="hero-feature">
-                    <i class="fas fa-graduation-cap"></i>
-                    <span>2,500+ Courses</span>
+                    <a href="/courses">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span><?= e($roundedCourseCount); ?>+ Courses</span>
+
+                    </a>
                 </div>
                 <div class="hero-feature">
-                    <i class="fas fa-file-alt"></i>
-                    <span>Resource Hub</span>
+                    <a href="/resource">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Resource Hub</span>
+                    </a>
                 </div>
                 <div class="hero-feature">
-                    <i class="fas fa-clipboard-list"></i>
-                    <span>Custom Course Requests</span>
-                </div>
-                <div class="hero-feature">
-                    <i class="fas fa-users"></i>
-                    <span>Community Support</span>
+                    <a href="/course/request">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>Custom Course Requests</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -1900,271 +1607,24 @@
         </div>
     </section>
 <?php endif; ?>
-<section class="container courses-section">
-    <div class="section-header">
-        <div>
-            <h2 class="section-title">Featured Courses</h2>
-            <p class="section-description">Explore our most popular courses with highest ratings and enrollments</p>
-        </div>
-    </div>
 
-    <div class="course-grid">
-        <!-- Course 1 -->
-        <div class="feature-course-card">
-            <div class="course-badge">Sponsered</div>
-            <div class="course-image">
-                <img src="/assets/images/intro-to-web.jpg" alt="Web Development">
-            </div>
-            <div class="course-content">
-                <div class="course-tutor">
-                    <div class="tutor-avatar">
-                        <img src="/assets/images/user_placeholder.jpg" alt="John Doe">
-                    </div>
-                    <div class="tutor-info">
-                        <div class="tutor-name">John Doe</div>
-                        <div class="tutor-role">Lead Developer</div>
-                    </div>
-                </div>
-                <h3 class="course-title">Complete Web Development Bootcamp 2023</h3>
-                <p class="course-description">Learn web development from scratch with HTML, CSS, JavaScript, Node.js and more. Build real-world projects.</p>
-                <div class="course-meta">
-                    <div class="meta-item">
-                        <i class="fas fa-clock meta-icon"></i> 52 hours
-                    </div>
-                    <div class="meta-item">
-                        <i class="fas fa-video meta-icon"></i> 75 lectures
-                    </div>
-                    <div class="meta-item">
-                        <i class="fas fa-signal meta-icon"></i> All levels
-                    </div>
-                </div>
-                <div class="course-stats">
-                    <div class="course-stat">
-                        <i class="fas fa-user-graduate"></i>
-                        <span>8,240 students</span>
-                    </div>
-                    <div class="course-stat">
-                        <i class="fas fa-certificate"></i>
-                        <span>Certificate</span>
-                    </div>
-                </div>
-                <div class="price-container">
-                    <div class="course-price">
-                        $49.99
-                        <span class="original-price">$199.99</span>
-                        <span class="discount-badge">75% OFF</span>
-                    </div>
-                    <button class="add-to-cart">
-                        <i class="fas fa-shopping-cart"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="course-footer">
-                <div class="rating">
-                    <span class="rating-value">4.8</span>
-                    <div class="rating-stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                    </div>
-                    <span class="rating-count">(1,245)</span>
-                </div>
-                <a href="#" class="enroll-now">
-                    View Course <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
-        </div>
-        <!-- Course 2 -->
-        <div class="feature-course-card">
-            <div class="course-badge">Bestseller</div>
-            <div class="course-image">
-                <img src="/assets/images/intro-to-web.jpg" alt="Web Development">
-            </div>
-            <div class="course-content">
-                <div class="course-tutor">
-                    <div class="tutor-avatar">
-                        <img src="/assets/images/user_placeholder.jpg" alt="John Doe">
-                    </div>
-                    <div class="tutor-info">
-                        <div class="tutor-name">John Doe</div>
-                        <div class="tutor-role">Lead Developer</div>
-                    </div>
-                </div>
-                <h3 class="course-title">Complete Web Development Bootcamp 2023</h3>
-                <p class="course-description">Learn web development from scratch with HTML, CSS, JavaScript, Node.js and more. Build real-world projects.</p>
-                <div class="course-meta">
-                    <div class="meta-item">
-                        <i class="fas fa-clock meta-icon"></i> 52 hours
-                    </div>
-                    <div class="meta-item">
-                        <i class="fas fa-video meta-icon"></i> 75 lectures
-                    </div>
-                    <div class="meta-item">
-                        <i class="fas fa-signal meta-icon"></i> All levels
-                    </div>
-                </div>
-                <div class="course-stats">
-                    <div class="course-stat">
-                        <i class="fas fa-user-graduate"></i>
-                        <span>8,240 students</span>
-                    </div>
-                    <div class="course-stat">
-                        <i class="fas fa-certificate"></i>
-                        <span>Certificate</span>
-                    </div>
-                </div>
-                <div class="price-container">
-                    <div class="course-price">
-                        $49.99
-                        <span class="original-price">$199.99</span>
-                        <span class="discount-badge">75% OFF</span>
-                    </div>
-                    <button class="add-to-cart">
-                        <i class="fas fa-shopping-cart"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="course-footer">
-                <div class="rating">
-                    <span class="rating-value">4.8</span>
-                    <div class="rating-stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                    </div>
-                    <span class="rating-count">(1,245)</span>
-                </div>
-                <a href="#" class="enroll-now">
-                    View Course <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
-        </div>
-        <!-- Course 3 -->
-        <div class="feature-course-card">
-            <div class="course-badge">Bestseller</div>
-            <div class="course-image">
-                <img src="/assets/images/intro-to-web.jpg" alt="Web Development">
-            </div>
-            <div class="course-content">
-                <div class="course-tutor">
-                    <div class="tutor-avatar">
-                        <img src="/assets/images/user_placeholder.jpg" alt="John Doe">
-                    </div>
-                    <div class="tutor-info">
-                        <div class="tutor-name">John Doe</div>
-                        <div class="tutor-role">Lead Developer</div>
-                    </div>
-                </div>
-                <h3 class="course-title">Complete Web Development Bootcamp 2023</h3>
-                <p class="course-description">Learn web development from scratch with HTML, CSS, JavaScript, Node.js and more. Build real-world projects.</p>
-                <div class="course-meta">
-                    <div class="meta-item">
-                        <i class="fas fa-clock meta-icon"></i> 52 hours
-                    </div>
-                    <div class="meta-item">
-                        <i class="fas fa-video meta-icon"></i> 75 lectures
-                    </div>
-                    <div class="meta-item">
-                        <i class="fas fa-signal meta-icon"></i> All levels
-                    </div>
-                </div>
-                <div class="course-stats">
-                    <div class="course-stat">
-                        <i class="fas fa-user-graduate"></i>
-                        <span>8,240 students</span>
-                    </div>
-                    <div class="course-stat">
-                        <i class="fas fa-certificate"></i>
-                        <span>Certificate</span>
-                    </div>
-                </div>
-                <div class="price-container">
-                    <div class="course-price">
-                        $49.99
-                        <span class="original-price">$199.99</span>
-                        <span class="discount-badge">75% OFF</span>
-                    </div>
-                    <button class="add-to-cart">
-                        <i class="fas fa-shopping-cart"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="course-footer">
-                <div class="rating">
-                    <span class="rating-value">4.8</span>
-                    <div class="rating-stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                    </div>
-                    <span class="rating-count">(1,245)</span>
-                </div>
-                <a href="#" class="enroll-now">
-                    View Course <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
+<section class="container subjects-section">
+    <h2 class="section-title">Popular Subjects</h2>
+    <p class="section-description">Browse our subjects and find the right course for you</p>
 
-<section class="container categories-section">
-    <h2 class="section-title">Popular Categories</h2>
-    <p class="section-description">Browse our top categories and find the right course for you</p>
+    <div class="subject-cards">
+        <?php foreach ($subjectCounts as $sc): ?>
+            <a href="/courses?subject=<?= e($sc['subject_id']) ?>" onclick="showLoader();">
+                <div class="subject-card">
+                    <div class="subject-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3 class="subject-name"><?= e($sc['subject']); ?></h3>
+                    <p class="subject-count"><?= e($sc['course_count']); ?> courses</p>
+                </div>
+            </a>
+        <?php endforeach; ?>
 
-    <div class="category-cards">
-        <div class="category-card">
-            <div class="category-icon">
-                <i class="fas fa-code"></i>
-            </div>
-            <h3 class="category-name">Development</h3>
-            <p class="category-count">1,240 courses</p>
-        </div>
-
-        <div class="category-card">
-            <div class="category-icon">
-                <i class="fas fa-chart-line"></i>
-            </div>
-            <h3 class="category-name">Business</h3>
-            <p class="category-count">840 courses</p>
-        </div>
-
-        <div class="category-card">
-            <div class="category-icon">
-                <i class="fas fa-palette"></i>
-            </div>
-            <h3 class="category-name">Design</h3>
-            <p class="category-count">760 courses</p>
-        </div>
-
-        <div class="category-card">
-            <div class="category-icon">
-                <i class="fas fa-bullhorn"></i>
-            </div>
-            <h3 class="category-name">Marketing</h3>
-            <p class="category-count">620 courses</p>
-        </div>
-
-        <div class="category-card">
-            <div class="category-icon">
-                <i class="fas fa-camera"></i>
-            </div>
-            <h3 class="category-name">Photography</h3>
-            <p class="category-count">420 courses</p>
-        </div>
-
-        <div class="category-card">
-            <div class="category-icon">
-                <i class="fas fa-music"></i>
-            </div>
-            <h3 class="category-name">Music</h3>
-            <p class="category-count">380 courses</p>
-        </div>
     </div>
 </section>
 
@@ -2269,14 +1729,14 @@
         <div class="resource-cta">
             <h3>Ready to share or discover resources?</h3>
             <div class="cta-buttons">
-                <a href="#" class="btn btn-primary">Explore Resources</a>
-                <a href="#" class="btn btn-outline">Share a Resource</a>
+                <a href="/resource" class="btn btn-primary">Explore Resources</a>
+                <a href="/resource/create" class="btn btn-outline">Share a Resource</a>
             </div>
         </div>
     </div>
 
     <div class="featured-resources">
-        <h3 class="subsection-title">Top Resources This Week</h3>
+        <h3 class="subsection-title">Recent Resources</h3>
         <div class="resources-grid">
             <!-- Resource Card 1 -->
             <div class="resource-card">
@@ -2364,7 +1824,7 @@
                 <div class="step-number">1</div>
                 <div class="step-content">
                     <h3>Define Your Learning Needs</h3>
-                    <p>Specify the subject, skill level, learning objectives, and preferred teaching style in your request.</p>
+                    <p>Specify the subject, grade, learning objectives, and preferred teaching style etc. in your request.</p>
                 </div>
             </div>
 
@@ -2388,77 +1848,59 @@
         <div class="request-examples">
             <h3 class="subsection-title">Recent Course Requests</h3>
             <div class="request-cards">
-                <div class="request-card">
-                    <div class="request-header">
-                        <div class="requester">
-                            <img src="/assets/images/user_placeholder.jpg" alt="Requester">
-                            <span>Thomas W.</span>
-                        </div>
-                        <div class="request-status">
-                            <span class="status-open">Open</span>
-                            <span class="time-posted">Posted 2 days ago</span>
-                        </div>
-                    </div>
-                    <h4 class="request-title">Advanced Machine Learning for Financial Analysis</h4>
-                    <div class="request-details">
-                        <div class="detail-item">
-                            <i class="fas fa-graduation-cap"></i>
-                            <span>Advanced Level</span>
-                        </div>
-                        <div class="detail-item">
-                            <i class="fas fa-clock"></i>
-                            <span>30-40 hours</span>
-                        </div>
-                        <div class="detail-item">
-                            <i class="fas fa-dollar-sign"></i>
-                            <span>Budget: $300-500</span>
-                        </div>
-                    </div>
-                    <p class="request-brief">Looking for a comprehensive course on applying ML algorithms for financial data analysis, risk assessment, and predictive modeling. Need practical projects with real-world datasets...</p>
-                    <div class="request-footer">
-                        <span class="proposals-count"><i class="fas fa-user-tie"></i> 6 Tutor Proposals</span>
-                        <a href="#" class="view-details">View Details</a>
-                    </div>
-                </div>
+                <?php foreach ($recentCourseRequests as $request): ?>
+                    <div class="request-card">
+                        <div class="request-header">
+                            <div class="requester">
+                                <img src="/assets/images/user_placeholder.jpg" alt="Requester">
+                                <span><?php echo e($request['author']); ?></span>
+                            </div>
+                            <div class="request-status">
+                                <!-- <span class="time-posted">Posted 2 days ago</span> -->
+                                <span class="time-posted">
+                                    <?= e(
+                                        $request["updated_date"] === $request["created_date"] ?
+                                            "Posted on " . formatDate($request["created_date"], 'F j, Y') :
+                                            "Edited on " . formatDate($request["updated_date"], 'F j, Y')
+                                    ) ?>
+                                </span>
 
-                <div class="request-card">
-                    <div class="request-header">
-                        <div class="requester">
-                            <img src="/assets/images/user_placeholder.jpg" alt="Requester">
-                            <span>Priya M.</span>
+                            </div>
                         </div>
-                        <div class="request-status">
-                            <span class="status-open">Open</span>
-                            <span class="time-posted">Posted 1 week ago</span>
+                        <h4 class="request-title"><?php echo e($request['title']); ?></h4>
+                        <div class="request-details">
+                            <div class="detail-item">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>Grade <?php echo e($request['grade']); ?></span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-book"></i>
+                                <span>
+                                    <?php echo e($request['subject']); ?>
+                                </span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <span>
+                                    <?php echo e($request['location']); ?>
+                                </span>
+                            </div>
+                        </div>
+                        <p class="request-brief">
+                            <?php echo e(substr($request['description'], 0, 100) . (strlen($request['description']) > 100 ? '...' : '')); ?>
+                        </p>
+                        <div class="request-footer">
+                            <span class="proposals-count"><i class="fas fa-user-tie"></i> <?php echo e($request['comments_count']); ?> comments</span>
+                            <a href="/course/request/<?php echo e($request['request_id']); ?>" class="view-details">View Details</a>
                         </div>
                     </div>
-                    <h4 class="request-title">UX Research Methods for Product Teams</h4>
-                    <div class="request-details">
-                        <div class="detail-item">
-                            <i class="fas fa-graduation-cap"></i>
-                            <span>Intermediate Level</span>
-                        </div>
-                        <div class="detail-item">
-                            <i class="fas fa-clock"></i>
-                            <span>20-25 hours</span>
-                        </div>
-                        <div class="detail-item">
-                            <i class="fas fa-dollar-sign"></i>
-                            <span>Budget: $200-350</span>
-                        </div>
-                    </div>
-                    <p class="request-brief">Seeking a practical course on UX research methods suitable for product managers and designers. Should cover user interviews, usability testing, data analysis...</p>
-                    <div class="request-footer">
-                        <span class="proposals-count"><i class="fas fa-user-tie"></i> 12 Tutor Proposals</span>
-                        <a href="#" class="view-details">View Details</a>
-                    </div>
-                </div>
+                <?php endforeach; ?>
             </div>
 
             <div class="create-request-cta">
                 <h3>Have a specific learning need?</h3>
                 <p>Create a course request and get custom proposals from our expert tutors</p>
-                <a href="#" class="btn btn-primary">Create Course Request</a>
+                <a href="/course/request/create" class="btn btn-primary">Create Course Request</a>
             </div>
         </div>
     </div>

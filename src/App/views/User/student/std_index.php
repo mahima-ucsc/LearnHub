@@ -508,24 +508,6 @@
 </style>
 
 <section>
-    <div class="notification-panel" id="notificationPanel">
-        <h3 class="section-title">Notifications</h3>
-        <div class="notification-item">
-            <i class="fas fa-certificate" style="color: var(--theme-color)"></i>
-            <div class="notification-content">
-                <p>You've earned a new certificate!</p>
-                <span class="notification-time">2 hours ago</span>
-            </div>
-        </div>
-        <div class="notification-item">
-            <i class="fas fa-book" style="color: var(--theme-color)"></i>
-            <div class="notification-content">
-                <p>New course recommendation based on your interests</p>
-                <span class="notification-time">5 hours ago</span>
-            </div>
-        </div>
-    </div>
-
     <div class="main-content">
         <div class="left-content">
             <section class="std-hero">
@@ -622,7 +604,6 @@
                         <small>Advanced Web Development</small>
                     </div>
                 </div>
-                <!-- More feedback items -->
             </section>
         </div>
         <div class="right-content">
@@ -678,31 +659,6 @@
             </div>
         </div>
     </div>
-    <script>
-        // Show/hide notification panel
-        const notificationBtn = document.getElementById('notificationBtn');
-        const notificationPanel = document.getElementById('notificationPanel');
-
-        notificationBtn.addEventListener('click', () => {
-            notificationPanel.style.display = notificationPanel.style.display === 'none' ? 'block' : 'none';
-        });
-
-        // Category filter functionality
-        const categoryTags = document.querySelectorAll('.category-tag');
-        categoryTags.forEach(tag => {
-            tag.addEventListener('click', () => {
-                categoryTags.forEach(t => t.classList.remove('active'));
-                tag.classList.add('active');
-            });
-        });
-
-        // Close notification panel when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!notificationBtn.contains(e.target) && !notificationPanel.contains(e.target)) {
-                notificationPanel.style.display = 'none';
-            }
-        });
-    </script>
 </section>
 
 <?php include $this->resolve('partials/_footer.php') ?>
