@@ -1,8 +1,7 @@
 <?php include $this->resolve("partials/_header.php"); ?>
+<link rel="stylesheet" href="/assets/styles/User/settings.css">
+<link rel="stylesheet" href="/assets/styles/components/toast.css">
 
-<head>
-    <link rel="stylesheet" href="/assets/styles/User/settings.css">
-</head>
 
 <section class="settings">
     <div class="settings-container">
@@ -54,36 +53,19 @@
                         </div>
                     </div>
 
-                    <div class="form-group full-width cover-image-upload">
-                        <label>Chanege Cover Photo</label>
-                        <div class="cover-image-container">
-                            <div class="cover-image-preview">
-                                <img src="/assets/images/student-cover.jpg" alt="Cover Photo">
-                                <div class="overlay">
-                                    <label for="coverPhoto" class="upload-icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
-                                        </svg>
-                                    </label>
-                                    <input type="file" id="coverPhoto" name="coverPhoto" accept="image/*" class="file-input">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div class="form-group">
                         <label for="first_name">First Name</label>
-                        <input type="text" id="first_name" name="first_name" value="<?php echo e($userDetails['first_name']); ?>">
+                        <input type="text" id="first_name" name="first_name" value="<?php echo e($userDetails['first_name']); ?>" required>
                     </div>
 
                     <div class="form-group">
                         <label for="last_name">Last Name</label>
-                        <input type="text" id="last_name" name="last_name" value="<?php echo e($userDetails['last_name']); ?>">
+                        <input type="text" id="last_name" name="last_name" value="<?php echo e($userDetails['last_name']); ?>" required>
                     </div>
 
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" id="email" name="email" value="<?php echo e($userDetails['email']); ?>">
+                        <input type="email" id="email" name="email" value="<?php echo e($userDetails['email']); ?>" required>
                     </div>
 
                     <div class="form-group">
@@ -92,7 +74,7 @@
                     </div>
                     <div class="form-group">
                         <label for="date_of_birth">Date of Birth</label>
-                        <input type="date" id="date_of_birth" name="date_of_birth" value="<?php echo e($userDetails['date_of_birth']); ?>">
+                        <input type="date" id="date_of_birth" name="date_of_birth" value="<?php echo e($userDetails['date_of_birth']); ?>" required>
                     </div>
 
                     <div class="form-group full-width">
@@ -156,68 +138,11 @@
             </div>
         </div>
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get all menu links
-            const menuLinks = document.querySelectorAll('.settings-menu a');
 
-            // Function to activate the saved section or default to "general"
-            function activateSectionFromStorage() {
-                const savedSectionId = localStorage.getItem('activeSection') || 'general';
-                menuLinks.forEach(link => {
-                    link.classList.toggle('active', link.getAttribute('href').substring(1) === savedSectionId);
-                });
-                document.querySelectorAll('.settings-section').forEach(section => {
-                    section.classList.toggle('active', section.id === savedSectionId);
-                });
-            }
-
-            // Initialize the page with the saved section
-            activateSectionFromStorage();
-
-            // Add click event listener to each link
-            menuLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-
-                    // Save the active section ID to localStorage
-                    const sectionId = this.getAttribute('href').substring(1);
-                    localStorage.setItem('activeSection', sectionId);
-
-                    // Activate the selected section
-                    activateSectionFromStorage();
-                });
-            });
-
-            // Profile Picture Preview
-            const profilePictureInput = document.getElementById('profilePicture');
-            const profileImagePreview = document.querySelector('.profile-image-preview img');
-
-            profilePictureInput.addEventListener('change', function(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        profileImagePreview.src = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-
-            // Cover Photo Preview
-            const coverPhotoInput = document.getElementById('coverPhoto');
-            const coverImagePreview = document.querySelector('.cover-image-preview img');
-
-            coverPhotoInput.addEventListener('change', function(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        coverImagePreview.src = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-        });
-    </script>
 </section>
+<script>
+    window.serverErrors = <?php echo json_encode($errors ?? []); ?>;
+</script>
+<script src="/assets/js/components/toast.js"></script>
+<script src="/assets/js/settings/settings.js" defer></script>
+<?php include $this->resolve("partials/_footer.php"); ?>

@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\UserService;
+use App\Services\{UserService, ValidatorService};
 
 class UserController
 {
     public function __construct(
         private TemplateEngine $templateEngine,
-        private UserService $userService
+        private UserService $userService,
+        private ValidatorService $validatorService,
     ) {}
 
     public function deleteUser(array $params)
@@ -32,6 +33,7 @@ class UserController
 
     public function updateProfile()
     {
+        $this->validatorService->validateUpdateProfileDetails($_POST);
         $this->userService->canChangeEmail($_POST['email']);
         $this->userService->updateProfile($_POST);
         redirectTo('/settings');

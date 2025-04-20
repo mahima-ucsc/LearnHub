@@ -65,7 +65,7 @@ class UserService
         )->count();
 
         if ($emailCount > 0) {
-            throw new ValidationException(['email' => 'Email taken']);
+            throw new ValidationException(['email' => ['This email address is already in use. Please try a different one.']]);
         }
     }
 
