@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace App\Config;
 
 use App\Controllers\{
+    AnnouncementController,
     AdvertisementController,
     AlertController,
     AssignmentController,
