@@ -145,7 +145,11 @@
                     </div>
                 </div>
                 <div class="checkbox-wrapper">
-                    <input type="checkbox" id="terms" style="color:black;">
+                    <input
+                        type="checkbox"
+                        name="terms"
+                        id="terms"
+                        required>
                     <label for="terms">
                         <span class="checkbox">
                             <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
