@@ -3,37 +3,6 @@
 
 <link rel="stylesheet" href="/assets/styles/Course/announcement.css">
 
-<!-- array(13) {
-    ["id"]=>
-    int(1)
-    ["course_id"]=>
-    int(11)
-    ["title"]=>
-    string(10) "demo title"
-    ["content"]=>
-    string(16) "demo description"
-    ["tags"]=>
-    string(3) "assignment"
-    ["visibility"]=>
-    string(3) "all"
-    ["specific_emails"]=>
-    NULL
-    ["attachments"]=>
-    NULL
-    ["send_email"]=>
-    int(0)
-    ["created_at"]=>
-    string(19) "2025-04-15 08:47:46"
-    ["updated_at"]=>
-    string(19) "2025-04-15 08:47:46"
-    ["course_title"]=>
-    string(15) "සිංහල"
-    ["tutor_name"]=>
-    string(11) "admin admin"
-  } -->
-
-
-
 <section>
     <div class="container">
         <div class="announcements-container">
@@ -51,11 +20,13 @@
             </div>
 
             <div class="announcement-list">
-                <?php foreach ($announcements as $announcement) { ?>
-                    <div class="announcement-item" id="<?php echo ("announcement-" . $announcement['id']); ?>" data-type="<?php echo htmlspecialchars($announcement["category"]) ?>" data-read="<?php echo ($announcement['read_status'] == 1 ? 'true' : 'false'); ?>">
+                <?php
+                // dd($announcements);
+                foreach ($announcements as $announcement) { ?>
+                    <div class="announcement-item" id="<?php echo ("announcement-" . $announcement['announcement_id']); ?>" data-type="<?php echo htmlspecialchars($announcement["category"]) ?>" data-read="<?php echo ($announcement['is_read'] == 1 ? 'true' : 'false'); ?>">
                         <div class="announcement-header">
                             <div class="announcement-source">
-                                <?php echo $announcement['read_status'] == 0 ? ("<div class='unread-indicator'></div>") : ''; ?>
+                                <?php echo $announcement['is_read'] == 0 ? ("<div class='unread-indicator'></div>") : ''; ?>
                                 <div class="source-icon source-tutor">
                                     <?php echo strtoupper(substr($announcement['tutor_name'], 0, 1)); ?>
                                 </div>
@@ -80,7 +51,10 @@
                                 ?>
                             </div>
                             <div class="announcement-actions">
-                                <button class="<?php echo $announcement['read_status'] == 1 ? "mark-unread-btn" : "mark-read-btn" ?>"><?php echo  $announcement['read_status'] == 1 ? "mark as unread" : "mark as read" ?></button>
+                                <!-- <form action="/announcements/mark-as-read" method="POST"> -->
+                                <!-- <input type="hidden" name='announcement_id' value="<?php echo $announcement['announcement_id'] ?>"> -->
+                                <button class="<?php echo $announcement['is_read'] == 1 ? "mark-unread-btn" : "mark-read-btn" ?>"><?php echo  $announcement['is_read'] == 1 ? "Mark as unread" : "Mark as read" ?></button>
+                                <!-- </form> -->
                             </div>
                         </div>
                     </div>
@@ -142,7 +116,7 @@
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                id: announcementItem.getAttribute('id').split('-')[1]
+                                announcement_id: announcementItem.getAttribute('id').split('-')[1]
                             }),
                         })
                         .then((response) => {
@@ -198,7 +172,7 @@
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                id: announcementItem.getAttribute('id').split('-')[1]
+                                announcement_id: announcementItem.getAttribute('id').split('-')[1]
                             }),
                         })
                         .then((response) => {

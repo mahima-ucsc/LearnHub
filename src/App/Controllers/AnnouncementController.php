@@ -35,7 +35,8 @@ class AnnouncementController
     public function announcementsListView($params)
     {
         $courseId = $params['course_id'];
-        $announcements = $this->AnnouncementService->getAnnouncements($courseId);
+        $student_id = $_SESSION['user'];
+        $announcements = $this->AnnouncementService->getAnnouncements($courseId, $student_id);
         // $announcements = $this->AnnouncementService->getOneAnnouncements('1');
         // dd($announcements);
         echo $this->view->render(
@@ -50,10 +51,13 @@ class AnnouncementController
     public function markAsRead()
     {
         $data = json_decode(file_get_contents('php://input'), true);
-        $announcementId = $data['id'] ?? null;
+        $announcementId = $data['announcement_id'] ?? null;
+        // $announcementId = $_POST['announcement_id'];
+        $studentId = $_SESSION['user'];
+        // dd([$announcementId, $studentId]);
 
         if ($announcementId) {
-            $this->AnnouncementService->markAsRead($announcementId);
+            $this->AnnouncementService->markAsRead($announcementId, $studentId);
             echo json_encode(['status' => 'success', 'message' => 'Announcement marked as read']);
         } else {
             http_response_code(400);
@@ -64,10 +68,11 @@ class AnnouncementController
     public function markAsUnread()
     {
         $data = json_decode(file_get_contents('php://input'), true);
-        $announcementId = $data['id'] ?? null;
+        $announcementId = $data['announcement_id'] ?? null;
+        $studentId = $_SESSION['user'];
 
         if ($announcementId) {
-            $this->AnnouncementService->markAsUnread($announcementId);
+            $this->AnnouncementService->markAsUnread($announcementId, $studentId);
             echo json_encode(['status' => 'success', 'message' => 'Announcement marked as unread']);
         } else {
             http_response_code(400);

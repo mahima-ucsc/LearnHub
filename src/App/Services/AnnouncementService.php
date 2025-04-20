@@ -43,34 +43,64 @@ class AnnouncementService
                 throw new ValidationException(["File upload error: " . $e->getMessage()]);
             }
         }
-        // Insert data into the database
 
-        $this->db->query(
-            "INSERT INTO announcements (course_id, title, content, category, visibility, specific_emails, attachments, send_email)
-            VALUES (:course_id, :title, :content, :category, :visibility, :specific_emails, :attachments, :send_email)",
-            [
-                'course_id' => $formData['course_id'],
-                'title' => $formData['title'],
-                'content' => $formData['content'],
-                'category' => $formData['category'],
-                'visibility' => $formData['visibility'],
-                'specific_emails' => $formData['specific_emails'] ?? NULL,
-                'attachments' => !empty($attachments) ? json_encode($attachments) :  NULL,
-                'send_email' => $formData['send_email'],
-            ]
-        );
+        // Insert announcement data into the database
+        $this->db->beginTransaction();
+        try {
+            $this->db->query(
+                "INSERT INTO announcements (course_id, title, content, category, visibility, specific_emails, attachments, send_email)
+                VALUES (:course_id, :title, :content, :category, :visibility, :specific_emails, :attachments, :send_email)",
+                [
+                    'course_id' => $formData['course_id'],
+                    'title' => $formData['title'],
+                    'content' => $formData['content'],
+                    'category' => $formData['category'],
+                    'visibility' => $formData['visibility'],
+                    'specific_emails' => $formData['specific_emails'] ?? NULL,
+                    'attachments' => !empty($attachments) ? json_encode($attachments) :  NULL,
+                    'send_email' => $formData['send_email'],
+                ]
+            );
+
+            $announcementId = $this->db->lastInsertId();
+
+            $this->db->query(
+                "INSERT INTO announcements_read (user_id, announcement_id, is_read) 
+                SELECT sc.student_id, :announcement_id, 0 
+                FROM students_courses sc 
+                WHERE sc.course_id = :course_id",
+                [
+                    'announcement_id' => $announcementId,
+                    'course_id' => $formData['course_id']
+                ]
+            );
+
+            $this->db->commit();
+        } catch (Exception $e) {
+            $this->db->rollback();
+        }
     }
 
-    public function getAnnouncements($courseId)
+    public function getAnnouncements($courseId, $studentId)
     {
+        // dd([$courseId, $student_id]);
         return $this->db->query(
-            "SELECT announcements.*, courses.title AS course_title, CONCAT(users.first_name, ' ', users.last_name) AS tutor_name 
-            FROM announcements
-            INNER JOIN courses ON announcements.course_id = courses.course_id
-            INNER JOIN users ON courses.tutor_id = users.user_id
-            WHERE announcements.course_id = :courseId
-            ORDER BY announcements.created_at DESC",
-            ['courseId' => $courseId]
+            "SELECT 
+                a.*,
+                c.title AS course_title, 
+                CONCAT(u.first_name, ' ', u.last_name) AS tutor_name,
+                ar.is_read
+            FROM announcements a
+            JOIN students_courses sc ON sc.course_id = a.course_id
+            JOIN announcements_read ar ON ar.user_id = sc.student_id AND ar.announcement_id = a.announcement_id
+            JOIN courses c ON a.course_id = c.course_id
+            JOIN users u ON c.tutor_id = u.user_id
+            WHERE a.course_id = :course_id AND sc.student_id = :student_id
+            ORDER BY a.created_at DESC",
+            [
+                'course_id' => $courseId,
+                'student_id' => $studentId,
+            ]
         )->findAll();
     }
 
@@ -100,19 +130,26 @@ class AnnouncementService
         )->find();
     }
 
-    public function markAsRead($announcementId)
+    public function markAsRead($announcementId, $studentId)
     {
+        // dd([$announcementId, $studentId]);
         $this->db->query(
-            "UPDATE announcements SET read_status = 1 WHERE id = :announcementId",
-            ['announcementId' => $announcementId]
+            "UPDATE announcements_read SET is_read = 1 WHERE announcement_id = :announcement_id AND user_id = :student_id",
+            [
+                'announcement_id' => $announcementId,
+                'student_id' => $studentId,
+            ]
         );
     }
 
-    public function markAsUnread($announcement)
+    public function markAsUnread($announcementId, $studentId)
     {
         $this->db->query(
-            "UPDATE announcements SET read_status = 0 WHERE id = :announcementId",
-            ['announcementId' => $announcement]
+            "UPDATE announcements_read SET is_read = 0 WHERE announcement_id = :announcement_id AND user_id = :student_id",
+            [
+                'announcement_id' => $announcementId,
+                'student_id' => $studentId,
+            ]
         );
     }
 }
