@@ -6,7 +6,7 @@
 <section class="dashboard-section">
     <div class="container">
         <div class="section-header">
-            <h2 class="section-title">Dashboard Overview</h2>
+            <h2 class="section-title">Admin Dashboard Overview</h2>
             <p>Track Website performance</p>
         </div>
 
