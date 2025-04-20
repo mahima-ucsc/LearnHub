@@ -33,10 +33,10 @@
             <div class="form-group">
                 <label for="category"><i class="fas fa-exclamation-circle"></i> Category</label>
                 <select id="category" name="category">
-                    <option value="Assignments">Assignments</option>
-                    <option value="Event">Event</option>
-                    <option value="General">General</option>
-                    <option value="Reminder">Remainder</option>
+                    <option value="assignment">Assignments</option>
+                    <option value="event">Event</option>
+                    <option value="general">General</option>
+                    <option value="reminder">Remainder</option>
                 </select>
             </div>
 
@@ -71,7 +71,7 @@
 
             <div class="form-group">
                 <div class="checkbox-container">
-                    <input type="checkbox" id="sendEmail" name="sendEmail" value="1">
+                    <input type="checkbox" id="sendEmail" name="send_email" value="1">
                     <label for="sendEmail"><i class="fas fa-envelope"></i> Send email notification to students</label>
                 </div>
             </div>
