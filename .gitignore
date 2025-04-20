@@ -1,3 +1,4 @@
 src/App/views/User/test-dash.php
 public/storage/*
 logs/
+/vendor/
