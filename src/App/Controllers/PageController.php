@@ -86,7 +86,6 @@ class PageController
             $courses = $this->courseService->getStudentCourses((string)$_SESSION['user']);
             $userData = $this->userService->getUserProfile($_SESSION['user']);
             $courseThumbnailPath = Paths::STORAGE_UPLOADS . Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS;
-            // dd($courses);
             echo $this->view->render($path, [
                 "title" => "Dashboard",
                 'courses' => $courses,
@@ -95,10 +94,28 @@ class PageController
             ]);
             exit;
         } elseif ($_SESSION['user_role'] === "teacher") {
+
+            $courses = $this->courseService->getTeacherCourses((int)$_SESSION['user']);
+            $courseCount = count($courses);
+
+            // Get course_id's
+            $courseIds = [];
+            foreach ($courses as $c) {
+                $courseIds[] = $c['course_id'];
+            }
+
+            // Get number of students enrolled in teacher's courses
+            $studentCount = 0;
+            foreach ($courseIds as $id) {
+                $participants = $this->courseService->getCourseParticipants((string) $id);
+                $studentCount += count($participants);
+            }
+
             $path = "User/Tutor/teacher_index.php";
             echo $this->view->render($path, [
                 "title" => "Teacher Dashboard",
-                // 'users' => $users,
+                "courseCount" => $courseCount,
+                "studentCount" => $studentCount
             ]);
             exit;
         } elseif ($_SESSION['user_role'] === "admin") {
@@ -130,16 +147,29 @@ class PageController
 
     public function billingAndPayment()
     {
+        if (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'teacher') {
+            $revenue = $this->paymentService->getTeacherCourseIncome($_SESSION['user'])[0]['revenue'];
+
+            $courses = $this->courseService->getTeacherCourses((int)$_SESSION['user']);
+            $courseCount = count($courses);
+            $paymentDetails = $this->paymentService->getTeacherCoursesPaymentHistory((string)$_SESSION['user']);
+
+            echo $this->view->render('User/payment.php', [
+                'title' => "Billing & Payment",
+                "revenue" => $revenue,
+                "courseCount" => $courseCount,
+                "paymentDetails" => $paymentDetails
+            ]);
+        } elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'student') {
+            $paymentDetails = $this->paymentService->getUserPaymentHistory($_SESSION['user']);
+            echo $this->view->render('User/payment.php', [
+                'title' => "Billing & Payment",
+                "paymentDetails" => $paymentDetails
+            ]);
+        }
+
         echo $this->view->render('User/payment.php', [
             'title' => "Billing & Payment"
-        ]);
-    }
-    public function teacherU()
-    {
-        $users = $this->userService->getAllUsers();
-        echo $this->view->render('User/Admin/user_managment.php', [
-            'title' => "User Managment",
-            'users' => $users
         ]);
     }
     public function courseManagment()
@@ -275,7 +305,6 @@ class PageController
     public function adManagment()
     {
         $advertisements = $this->advertisementService->getAdvertisements();
-        // dd($advertisements);
         echo $this->view->render("User/Admin/admin_ad_managment.php", [
             "title" => "Ad Managment",
             "advertisements" => $advertisements
