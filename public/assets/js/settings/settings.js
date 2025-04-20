@@ -50,21 +50,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Cover Photo Preview
-  const coverPhotoInput = document.getElementById("coverPhoto");
-  const coverImagePreview = document.querySelector(".cover-image-preview img");
-
-  coverPhotoInput.addEventListener("change", function (event) {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        coverImagePreview.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-  });
-
   // Show toast on form submission
   if (window.serverErrors && Object.keys(window.serverErrors).length > 0) {
     Object.entries(window.serverErrors).forEach(([field, messages]) => {
