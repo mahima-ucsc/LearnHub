@@ -53,7 +53,11 @@
                             <div class="announcement-actions">
                                 <!-- <form action="/announcements/mark-as-read" method="POST"> -->
                                 <!-- <input type="hidden" name='announcement_id' value="<?php echo $announcement['announcement_id'] ?>"> -->
-                                <button class="<?php echo $announcement['is_read'] == 1 ? "mark-unread-btn" : "mark-read-btn" ?>"><?php echo  $announcement['is_read'] == 1 ? "Mark as unread" : "Mark as read" ?></button>
+                                <button
+                                    class="<?php echo $announcement['is_read'] == 1 ? "mark-unread-btn" : "mark-read-btn" ?>"
+                                    is_read="<?php echo $announcement['is_read'] == 1 ? "true" : "false" ?>">
+                                    <?php echo  $announcement['is_read'] == 1 ? "Mark as unread" : "Mark as read" ?>
+                                </button>
                                 <!-- </form> -->
                             </div>
                         </div>
@@ -122,6 +126,7 @@
                         .then((response) => {
                             if (!response.ok) {
                                 throw new Error('Failed to mark as read');
+                                alert('Failed to mark as read');
                             }
                             return response.json();
                         })
