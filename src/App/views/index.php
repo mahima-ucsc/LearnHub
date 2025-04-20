@@ -1489,7 +1489,7 @@
     <div class="container">
         <div class="hero-content">
             <h1>Discover, Learn, Share & Grow Together</h1>
-            <p>Explore thousands of courses, share valuable resources, and request custom courses tailored to your specific learning journey.</p>
+            <p>Explore courses, share valuable resources, and request custom courses tailored to your specific learning journey.</p>
             <form action="/courses" method="get" onsubmit="showLoader();">
                 <div class="search-container">
                     <div class="search-bar">
