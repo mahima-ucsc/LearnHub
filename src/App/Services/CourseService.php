@@ -958,4 +958,23 @@ class CourseService
             redirectTo('server-error');
         }
     }
+
+    public function deleteModule(string $courseId, string $moduleId)
+    {
+        try {
+            $this->db->query(
+                "DELETE FROM course_modules
+                WHERE course_id = :courseId
+                AND module_id = :moduleId",
+                [
+                    "courseId" => $courseId,
+                    "moduleId" => $moduleId
+                ]
+            );
+            redirectTo($_SERVER['HTTP_REFERER']);
+        } catch (Exception $e) {
+            error_log("Failed to delete course module: " . $e->getMessage());
+            redirectTo('/server-error');
+        }
+    }
 }

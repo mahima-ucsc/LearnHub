@@ -112,10 +112,23 @@ class CoursesController
         }
         if ($course['billing_type'] === 'onetime') {
             $courseModules = $this->courseService->getCourseModuleList($params['course_id']);
+            // Get module resources based on module ID
+            $moduleResources = [];
+            foreach ($courseModules as $module) {
+                $resources = $this->courseService->courseResourceList($module['course_id'], $module['module_id']);
+                $moduleResources[$module['module_id']] = $resources;
+            }
         } else {
             $content = $this->courseService->getCurrentContentAndPastContent($params['course_id']);
             $currentContent = $content['currentContent'];
             $pastContent = $content['pastContent'];
+            // Get module resources based on module ID
+            $allContent = $currentContent + $pastContent;
+            $moduleResources = [];
+            foreach ($allContent as $contentModule) {
+                $resources = $this->courseService->courseResourceList((int)$contentModule['course_id'], (int)$contentModule['modules'][0]['module_id']);
+                $moduleResources[$contentModule['modules'][0]['module_id']] = $resources;
+            }
         }
 
         // TODO: Fetch module resources based on the updated database schema and course flow.
@@ -164,7 +177,7 @@ class CoursesController
                 'pastContent' => $pastContent ?? [],
                 'assignments' => $assignments,
                 'assignmentsResources' => $assignmentsResources,
-                // 'moduleResources' => $moduleResources,
+                'moduleResources' => $moduleResources,
                 'userReview' => $userReview,
                 'summeryOfReviews' => $summeryOfReviews,
                 'participantCount' => $participantCount
@@ -508,5 +521,10 @@ class CoursesController
         }
         $this->courseService->createModule($courseId, $type, $modulesData, 1);
         echo json_encode($modulesData);
+    }
+
+    public function deleteCourseModule(array $params)
+    {
+        $this->courseService->deleteModule($params['course_id'], $params['module_id']);
     }
 }

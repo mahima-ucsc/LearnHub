@@ -10,7 +10,7 @@ document.querySelectorAll(".period-item").forEach((period) => {
 });
 
 document.querySelectorAll(".module-item").forEach((module) => {
-  module.addEventListener("click", (e) => {
+  module.querySelector(".module-header").addEventListener("click", (e) => {
     const moduleContent = module.querySelector(".module-content");
     const chevron = module.querySelector(".module-toggle .chevron-icon");
 

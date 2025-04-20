@@ -1,3 +1,5 @@
+<?php include $this->resolve("components/delete_modal.php"); ?>
+
 <div class="module-item">
     <div class="module-header">
         <div class="module-title">
@@ -5,15 +7,23 @@
             <span class="module-duration">8 hours</span>
         </div>
         <div class="module-toggle">
-            <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
+            <i class="chevron-icon fa-solid fa-chevron-down"></i>
         </div>
     </div>
 
     <div class="module-content" id="module-<?php echo e($module['module_id']); ?>">
         <div class="module-description">
-            <p><?php echo e($module['description']); ?></p>
+            <div class="desciption">
+                <p><?php echo e($module['description']); ?></p>
+            </div>
+            <div class="module-action">
+                <?php if (!empty($_SESSION['user']) && $course['tutor_id'] == $_SESSION['user']): ?>
+                    <button class="module-delete-btn" onclick="showModal('/course/<?= $course['course_id'] ?>/module/<?= $module['module_id'] ?>');">
+                        Delete
+                    </button>
+                <?php endif; ?>
+
+            </div>
         </div>
 
         <div class="module-resources">
@@ -22,8 +32,12 @@
                 <?php foreach ($moduleResources[$module['module_id']] as $resource): ?>
                     <li>
                         <a href="/course/<?php echo e($course['course_id']) ?>/module/<?php echo e($module['module_id']) ?>/resource/<?php echo e($resource['resource_id']) ?>" class="resource-link">
-                            <span class="resource-icon">📄</span>
-                            <?php echo e($resource['resource_path']) ?>
+                            <div class="resource-attachment">
+                                <span class="resource-icon"><i class="fa-solid fa-file"></i></span>
+                                <p>
+                                    <?php echo e($resource['resource_path']) ?>
+                                </p>
+                            </div>
                         </a>
                     </li>
                 <?php endforeach; ?>

@@ -277,7 +277,7 @@
                                         <a href="/courses/review/edit/<?php echo e($review['review_id']); ?>">Edit</a>
                                     </div>
                                     <div class="menu-button">
-                                        <button onclick="showModal(<?php echo e($review['review_id']); ?>)">delete</button>
+                                        <button onclick="showModal(<?php echo e($review['review_id']); ?>)">Delete</button>
                                     </div>
 
                                 </div>
@@ -358,23 +358,6 @@
     <script src="/assets/js/courses/course-info.js" defer></script>
     <!-- TODO: Move this script to course-info.js. Do not use inline functions -->
     <script>
-        function toggleParticipantList() {
-            const participantList = document.getElementById('participant-list');
-            participantList.classList.toggle('active');
-
-            document.querySelector('.dropdown-chevron').classList.toggle('rotated');
-        }
-
-        function viewAllParticipants() {
-            alert('Redirecting to view all participants...');
-            // Add logic here to redirect or display all participants
-        }
-
-        function viewAllParticipants() {
-            // Redirect to a page or open a modal displaying all participants
-            window.location.href = '/course/participants';
-        }
-
         function toggleAssignment(headerElement) {
             const assignmentItem = headerElement.closest('.assignment-item');
             const content = assignmentItem.querySelector('.assignment-content');
@@ -400,11 +383,6 @@
                 cartOptions.style.display = 'none';
             }
         }
-    }
-
-    function editCourse() {
-        alert('Edit course clicked!');
-        // Add your edit logic here
     }
 
     //Delete confirmation
