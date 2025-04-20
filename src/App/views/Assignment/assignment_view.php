@@ -10,9 +10,14 @@
 
     <div class="assignment-card">
         <?php if (!empty($_SESSION['user']) && $_SESSION['user'] === $assignment['tutor_id']): ?>
-            <div class="edit-assignment">
-                <a href="/courses/<?php echo e($course['course_id']); ?>/assignment/<?php echo e($assignment['assignment_id']); ?>/edit"><i class="fa-solid fa-pen-to-square"></i>
+            <div class="teacher-actions">
+                <a href="/courses/<?php echo e($course['course_id']); ?>/assignment/<?php echo e($assignment['assignment_id']); ?>/edit" class="teacher-action-btn edit-btn">
+                    <i class="fa-solid fa-pen-to-square"></i>
                     Edit Assignment
+                </a>
+                <a href="/courses/<?php echo e($course['course_id']); ?>/assignment/<?php echo e($assignment['assignment_id']); ?>/review" class="teacher-action-btn review-btn">
+                    <i class="fa-solid fa-clipboard-check"></i>
+                    Review Submissions
                 </a>
             </div>
         <?php endif; ?>
