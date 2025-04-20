@@ -1,317 +1,317 @@
 .settings {
-    padding: 2rem;
-    background-color: #f8f9fa;
-    min-height: 100vh;
-    margin-top: 50px;
+  padding: 2rem;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  margin-top: 50px;
 }
 
 .settings-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    gap: 2rem;
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 2rem;
-    flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 2rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  flex-wrap: wrap;
 }
 
 .settings-nav {
-    flex: 0 0 250px;
-    border-right: 1px solid #eee;
-    padding-right: 2rem;
-    min-width: 200px;
+  flex: 0 0 250px;
+  border-right: 1px solid #eee;
+  padding-right: 2rem;
+  min-width: 200px;
 }
 
 .settings-nav h2 {
-    margin-bottom: 1.5rem;
-    color: #333;
-    font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+  font-size: 1.5rem;
 }
 
 .settings-menu {
-    list-style: none;
-    padding: 0;
+  list-style: none;
+  padding: 0;
 }
 
 .settings-menu li {
-    margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .settings-menu a {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    color: #666;
-    text-decoration: none;
-    border-radius: 6px;
-    transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: #666;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.3s ease;
 }
 
 .settings-menu a:hover {
-    background-color: #FFC400;
-    color: #333;
+  background-color: #ffc400;
+  color: #333;
 }
 
 .settings-menu a.active {
-    background-color: #ffe79a;
+  background-color: #ffe79a;
 }
 
 .menu-icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 12px;
+  width: 20px;
+  height: 20px;
+  margin-right: 12px;
 }
 
 .settings-content {
-    flex: 1;
-    width: 100%;
+  flex: 1;
+  width: 100%;
 }
 
 .settings-section {
-    display: none;
+  display: none;
 }
 
 .settings-section.active {
-    display: block;
+  display: block;
 }
 
 .settings-section h2 {
-    margin-bottom: 2rem;
-    color: #333;
-    font-size: 1.5rem;
+  margin-bottom: 2rem;
+  color: #333;
+  font-size: 1.5rem;
 }
 
 .settings-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
 }
 
 .form-group {
-    flex: 0 0 calc(50% - 0.75rem);
+  flex: 0 0 calc(50% - 0.75rem);
 }
 
 .form-group.full-width {
-    flex: 0 0 100%;
+  flex: 0 0 100%;
 }
 
 .form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: #555;
-    font-weight: 500;
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #555;
+  font-weight: 500;
 }
 
 .form-group input,
 .form-group textarea {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    transition: border-color 0.3s ease;
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: border-color 0.3s ease;
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
-    border-color: #2563eb;
-    outline: none;
+  border-color: #2563eb;
+  outline: none;
 }
 
 .save-button {
-    background-color: #FFC400;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.3s ease;
-    margin-top: 1rem;
+  background-color: #ffc400;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem;
 }
 
 .save-button:hover {
-    background-color: #ffd95d;
+  background-color: #ffd95d;
 }
 
 /* Change profile picture and cover photo */
 .profile-image-upload,
 .cover-image-upload {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
 }
 
 .image-upload-container,
 .cover-image-container {
-    position: relative;
-    width: 100%;
-    display: flex;
-    justify-content: center;
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .profile-image-preview,
 .cover-image-preview {
-    position: relative;
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 3px solid #f0f0f0;
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #f0f0f0;
 }
 
 .cover-image-preview {
-    width: 100%;
-    height: 300px;
-    border-radius: 12px;
-    border: none;
+  width: 100%;
+  height: 300px;
+  border-radius: 12px;
+  border: none;
 }
 
 .profile-image-preview img,
 .cover-image-preview img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .profile-image-preview .overlay,
 .cover-image-preview .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .profile-image-preview:hover .overlay,
 .cover-image-preview:hover .overlay {
-    opacity: 1;
+  opacity: 1;
 }
 
 .upload-icon {
-    color: white;
-    cursor: pointer;
-    width: 50px;
-    height: 50px;
+  color: white;
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
 }
 
 .file-input {
-    display: none;
+  display: none;
 }
 
 @media screen and (max-width: 480px) {
-    .settings-container {
-        flex-direction: column;
-        padding: 1rem;
-    }
+  .settings-container {
+    flex-direction: column;
+    padding: 1rem;
+  }
 
-    .settings-nav {
-        flex: 0 0 100%;
-        border-right: none;
-        margin-bottom: 1rem;
-        padding-right: 1rem;
-    }
+  .settings-nav {
+    flex: 0 0 100%;
+    border-right: none;
+    margin-bottom: 1rem;
+    padding-right: 1rem;
+  }
 
-    .settings-nav h2 {
-        font-size: 1.25rem;
-    }
+  .settings-nav h2 {
+    font-size: 1.25rem;
+  }
 
-    .settings-menu a {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
-    }
+  .settings-menu a {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
 
-    .settings-content {
-        width: 100%;
-    }
+  .settings-content {
+    width: 100%;
+  }
 
-    .form-group {
-        flex: 0 0 100%;
-    }
+  .form-group {
+    flex: 0 0 100%;
+  }
 
-    .form-group label {
-        font-size: 0.875rem;
-    }
+  .form-group label {
+    font-size: 0.875rem;
+  }
 
-    .form-group input,
-    .form-group textarea {
-        font-size: 0.9rem;
-    }
+  .form-group input,
+  .form-group textarea {
+    font-size: 0.9rem;
+  }
 
-    .save-button {
-        width: 100%;
-        padding: 0.75rem 1rem;
-        font-size: 0.95rem;
-    }
+  .save-button {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+  }
 
-    .settings-section h2 {
-        font-size: 1.25rem;
-    }
+  .settings-section h2 {
+    font-size: 1.25rem;
+  }
 }
 
 @media screen and (max-width: 768px) {
-    .settings-container {
-        flex-direction: column;
-        padding: 1.5rem;
-    }
+  .settings-container {
+    flex-direction: column;
+    padding: 1.5rem;
+  }
 
-    .settings-nav {
-        flex: 0 0 200px;
-        margin-bottom: 1rem;
-    }
+  .settings-nav {
+    flex: 0 0 200px;
+    margin-bottom: 1rem;
+  }
 
-    .form-group {
-        flex: 0 0 calc(50% - 0.75rem);
-    }
+  .form-group {
+    flex: 0 0 calc(50% - 0.75rem);
+  }
 
-    .save-button {
-        width: 100%;
-    }
+  .save-button {
+    width: 100%;
+  }
 }
 
 @media screen and (max-width: 1024px) {
-    .settings-container {
-        flex-direction: column;
-        padding: 1.5rem;
-    }
+  .settings-container {
+    flex-direction: column;
+    padding: 1.5rem;
+  }
 
-    .settings-nav {
-        flex: 0 0 200px;
-        margin-bottom: 1rem;
-    }
+  .settings-nav {
+    flex: 0 0 200px;
+    margin-bottom: 1rem;
+  }
 
-    .form-group {
-        flex: 0 0 calc(50% - 0.75rem);
-    }
+  .form-group {
+    flex: 0 0 calc(50% - 0.75rem);
+  }
 
-    .save-button {
-        width: 100%;
-    }
+  .save-button {
+    width: 100%;
+  }
 }
 
 @media screen and (min-width: 1201px) {
-    .settings-container {
-        flex-direction: row;
-        padding: 2rem;
-    }
+  .settings-container {
+    flex-direction: row;
+    padding: 2rem;
+  }
 
-    .settings-nav {
-        flex: 0 0 250px;
-    }
+  .settings-nav {
+    flex: 0 0 250px;
+  }
 
-    .settings-content {
-        width: auto;
-    }
+  .settings-content {
+    width: auto;
+  }
 
-    .form-group {
-        flex: 0 0 calc(50% - 0.75rem);
-    }
+  .form-group {
+    flex: 0 0 calc(50% - 0.75rem);
+  }
 }
