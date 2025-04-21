@@ -2,6 +2,19 @@
   --btn-active-color: #ffc400;
   --btn-deactive-color: #f5f7fa;
   --btn-border-color: #ddd;
+  --primary-color: #ffc400;
+  --primary-light: rgba(255, 196, 0, 0.15);
+  --dark-color: #333;
+  --light-color: #f4f4f4;
+  --danger-color: #dc3545;
+  --success-color: #28a745;
+  --border-radius: 12px;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  --transition: all 0.3s ease;
+  --card-bg: #ffffff;
+  --text-color: #333333;
+  --text-secondary: #666666;
+  --border-color: #eaeaea;
 }
 
 * {
@@ -73,6 +86,102 @@ header {
   font-size: 20px;
   font-weight: bold;
   color: #2c3e50;
+}
+
+/* filter section */
+
+/* Dropdown styles */
+.filter-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown toggle button */
+.filter-dropdown .dropdown-toggle {
+  padding: 10px 20px;
+  background-color: var(--btn-active-color);
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.filter-dropdown .dropdown-toggle:hover {
+  background-color: var(--primary-dark);
+  transform: scale(1.05);
+}
+
+/* Dropdown menu */
+.filter-dropdown .dropdown-menu {
+  position: absolute;
+  top: 130%;
+  left: auto;
+  display: none;
+  flex-direction: column;
+  background-color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  border-radius: 8px;
+  z-index: 1;
+  transition: opacity 0.3s ease, transform 0.2s ease;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-10px);
+  row-gap: 3px;
+}
+
+.filter-dropdown .dropdown-menu.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* Filter buttons inside dropdown */
+.filter-dropdown .filter-button {
+  padding: 10px 15px;
+  background-color: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  border-radius: 5px;
+  font-size: 13px;
+}
+
+.filter-dropdown .filter-button:hover {
+  background-color: #f0f0f0;
+  color: var(--primary-color);
+}
+
+.filter-dropdown .filter-button.active {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: bold;
+}
+
+/* Add subtle shadow to dropdown toggle button */
+.filter-dropdown .dropdown-toggle {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Add smooth transition for dropdown menu */
+.filter-dropdown .dropdown-menu {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .filter-controls {

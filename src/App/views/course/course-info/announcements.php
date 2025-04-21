@@ -4,58 +4,6 @@
 <link rel="stylesheet" href="/assets/styles/Course/announcement.css">
 
 <style>
-    /* Dropdown styles */
-    .dropdown {
-        position: relative;
-        display: inline-block;
-    }
-
-    .dropdown-toggle {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 8px 16px;
-        cursor: pointer;
-        border-radius: 4px;
-    }
-
-    .dropdown-toggle:hover {
-        background-color: #0056b3;
-    }
-
-    .dropdown-menu {
-        display: none;
-        position: absolute;
-        background-color: white;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 4px;
-        margin-top: 8px;
-        z-index: 1000;
-        min-width: 150px;
-    }
-
-    .dropdown-menu .filter-button {
-        display: block;
-        width: 100%;
-        padding: 8px 16px;
-        text-align: left;
-        background: none;
-        border: none;
-        cursor: pointer;
-    }
-
-    .dropdown-menu .filter-button:hover {
-        background-color: #f1f1f1;
-    }
-
-    .dropdown-menu .filter-button.active {
-        font-weight: bold;
-        color: #007bff;
-    }
-
-    .dropdown:hover .dropdown-menu {
-        display: block;
-    }
 </style>
 
 <section>
@@ -66,7 +14,7 @@
                     Announcements <span class="notification-badge"></span>
                 </div>
                 <div class="filter-controls">
-                    <div class="dropdown">
+                    <div class="filter-dropdown" id="dropdown">
                         <button class="dropdown-toggle">Filter</button>
                         <div class="dropdown-menu">
                             <button class="filter-button active" data-filter="all">All</button>
@@ -128,7 +76,6 @@
                     </div>
                 <?php } ?>
             </div>
-            <div id="result"></div>
         </div>
     </div>
 
@@ -157,7 +104,6 @@
             // apply current filter
             function applyCurrentFilter() {
                 const activeFilter = document.querySelector('.filter-button.active').getAttribute('data-filter');
-                console.log(activeFilter);
                 announcementItems.forEach((item) => {
                     const category = item.getAttribute("category");
                     const itemRead = item.getAttribute("data-read");
@@ -187,7 +133,6 @@
                     const announcementItem = btn.closest(".announcement-item");
                     const unreadIndicator = announcementItem.querySelector(".unread-indicator");
                     let sourceDiv = announcementItem.querySelector(".announcement-source");
-                    console.log(is_read);
 
 
                     // update button appearence
@@ -219,7 +164,6 @@
                         .then(response => response.text())
                         .then(data => {
                             updateUnreadCount();
-                            console.log(data);
                             document.getElementById('result').innerHTML = data;
                         })
                 })
@@ -266,6 +210,32 @@
 
             // Initial unread count update
             updateUnreadCount();
+        });
+    </script>
+
+    <script>
+        let dropdown = document.getElementById("dropdown");
+        let menu = dropdown.querySelector(".dropdown-menu");
+
+        let timer;
+
+        dropdown.addEventListener("mouseenter", () => {
+            timer = setTimeout(() => {
+                menu.style.display = "flex";
+                setTimeout(() => {
+                    menu.style.opacity = "1";
+                    menu.style.pointerEvents = "auto";
+                }, 10);
+            }, 200); // 0.5 second delay
+        });
+
+        dropdown.addEventListener("mouseleave", () => {
+            clearTimeout(timer);
+            menu.style.opacity = "0";
+            menu.style.pointerEvents = "none";
+            setTimeout(() => {
+                menu.style.display = "none";
+            }, 200); // matches the CSS transition time
         });
     </script>
 </section>
