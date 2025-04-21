@@ -39,6 +39,13 @@ class UserController
         redirectTo('/settings');
     }
 
+    public function updateProfilePicture()
+    {
+        $this->validatorService->validateImg($_FILES['profile_picture']);
+        $this->userService->updateProfilePicture($_FILES['profile_picture']);
+        redirectTo($_SERVER['HTTP_REFERER']);
+    }
+
     public function updatePassword()
     {
         $this->userService->updatePassword($_POST);

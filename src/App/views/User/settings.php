@@ -34,12 +34,15 @@
             <!-- General Settings Section -->
             <div id="general" class="settings-section active">
                 <h2>General Settings</h2>
-                <form class="settings-form" action="/update-profile" method="POST">
+                <form class="profile-picture-form" action="/update-profile-picture" method="POST" enctype="multipart/form-data">
                     <div class="form-group full-width profile-image-upload">
                         <label>Change Profile Picture</label>
                         <div class="image-upload-container">
                             <div class="profile-image-preview">
-                                <img src="/assets/images/user.jpeg" alt="Profile Picture">
+                                <img src="<?= isset($userDetails['profile_picture_url'])
+                                                ? $userDetails['profile_picture_url'] :
+                                                "/assets/images/user.jpeg" ?>"
+                                    alt="Profile Picture">
                                 <div class="overlay">
                                     <label for="profilePicture" class="upload-icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -47,12 +50,14 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
                                         </svg>
                                     </label>
-                                    <input type="file" id="profilePicture" name="profilePicture" accept="image/*" class="file-input">
+                                    <input type="file" id="profilePicture" name="profile_picture" accept="image/*" class="file-input">
                                 </div>
                             </div>
                         </div>
                     </div>
+                </form>
 
+                <form class="settings-form" action="/update-profile" method="POST">
                     <div class="form-group">
                         <label for="first_name">First Name</label>
                         <input type="text" id="first_name" name="first_name" value="<?php echo e($userDetails['first_name']); ?>" required>
