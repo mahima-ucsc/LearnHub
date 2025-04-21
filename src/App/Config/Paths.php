@@ -13,4 +13,5 @@ class Paths
     // realtive paths to uploads
     public const RELATIVE_COURSE_THUMBNAIL_UPLOADS = 'courses/thumbnails';
     public const RELATIVE_MODULE_ATTACHMENT_UPLOADS = 'courses/modules/attachments';
+    public const RELATIVE_USER_PROFILE_PICTURE_UPLOADS = 'profile-pictures';
 }
