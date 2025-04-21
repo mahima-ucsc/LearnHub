@@ -13,7 +13,7 @@
                 <div class="filter-controls">
                     <button class="filter-button active" data-filter="all">All</button>
                     <button class="filter-button" data-filter="assignments">Assignments</button>
-                    <button class="filter-button" data-filter="general">general</button>
+                    <button class="filter-button" data-filter="general">General</button>
                     <button class="filter-button" data-filter="read">Read</button>
                     <button class="filter-button" data-filter="unread">Unread</button>
                 </div>
@@ -23,10 +23,10 @@
                 <?php
                 // dd($announcements);
                 foreach ($announcements as $announcement) { ?>
-                    <div class="announcement-item" id="<?php echo ("announcement-" . $announcement['announcement_id']); ?>" data-type="<?php echo htmlspecialchars($announcement["category"]) ?>" data-read="<?php echo ($announcement['is_read'] == 1 ? 'true' : 'false'); ?>">
+                    <div class="announcement-item <?php echo $announcement['is_read'] == 1 ? 'read' : ''; ?>" id="<?php echo ("announcement-" . $announcement['announcement_id']); ?>" data-type="<?php echo htmlspecialchars($announcement["category"]) ?>" data-read="<?php echo ($announcement['is_read'] == 1 ? 'true' : 'false'); ?>">
                         <div class="announcement-header">
                             <div class="announcement-source">
-                                <?php echo $announcement['is_read'] == 0 ? ("<div class='unread-indicator'></div>") : ''; ?>
+                                <div class='unread-indicator' style="display: <?php echo $announcement['is_read'] == 1 ? 'none' : 'block'; ?>"></div>
                                 <div class="source-icon source-tutor">
                                     <?php echo strtoupper(substr($announcement['tutor_name'], 0, 1)); ?>
                                 </div>
@@ -55,7 +55,7 @@
                                     class="read_btn"
                                     announcement_id="<?php echo ($announcement['announcement_id']); ?>"
                                     is_read="<?php echo $announcement['is_read'] == 1 ? "true" : "false" ?>">
-                                    <?php echo  $announcement['is_read'] == 1 ? "Mark As Unead" : "Mark As Read" ?>
+                                    <?php echo  $announcement['is_read'] == 1 ? "Mark As Unread" : "Mark As Read" ?>
                                 </button>
                             </div>
                         </div>
@@ -107,6 +107,9 @@
                     const btn = this;
                     const announcement_id = btn.getAttribute('announcement_id');
                     const is_read = btn.getAttribute('is_read') === 'true';
+                    const announcementItem = btn.closest(".announcement-item");
+                    const unreadIndicator = announcementItem.querySelector(".unread-indicator");
+                    let sourceDiv = announcementItem.querySelector(".announcement-source");
                     console.log(is_read);
 
 
@@ -114,6 +117,26 @@
                     btn.textContent = !is_read ? "Mark As Unread" : "Mark As Read";
                     btn.setAttribute('is_read', !is_read);
 
+                    // update styles
+                    if (!is_read) {
+                        unreadIndicator.style.display = "none";
+                        announcementItem.classList.add("read");
+
+                        if (document.querySelector('.filter-button[data-filter="unread"].active')) {
+                            announcementItem.style.display = "none";
+                            console.log("unread .active to none")
+                            checkEmptyState();
+                        }
+                    } else {
+                        announcementItem.classList.remove("read");
+                        unreadIndicator.style.display = "block";
+                        // If we're in read filter, this item should disappear
+                        if (document.querySelector('.filter-button[data-filter="read"].active')) {
+                            announcementItem.style.display = "none";
+                            console.log("unread .active to none");
+                            checkEmptyState();
+                        }
+                    }
                     // send AJAX request
                     fetch('/announcements/mark_as', {
                             method: 'POST',
@@ -131,166 +154,6 @@
                 })
             })
 
-            // Mark as read/unread functionality
-            let markReadButtons = document.querySelectorAll(".mark-read-btn");
-            let markUnreadButtons = document.querySelectorAll(".mark-unread-btn");
-
-            // Add event listeners to mark-as-read buttons in the items that are unread states
-            markReadButtons.forEach((button) => {
-                button.addEventListener("click", function() {
-                    const buttonValue = this.className;
-                    const announcementItem = this.closest(".announcement-item");
-                    const unreadIndicator = announcementItem.querySelector(".unread-indicator");
-
-                    // Send POST request to mark announcement as read
-                    fetch('/announcements/mark-as-read', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                announcement_id: announcementItem.getAttribute('id').split('-')[1]
-                            }),
-                        })
-                        .then((response) => {
-                            if (!response.ok) {
-                                throw new Error('Failed to mark as read');
-                                alert('Failed to mark as read');
-                            }
-                            return response.json();
-                        })
-                        .then((data) => {
-                            console.log('Announcement marked as read:', data);
-                            // Change item's state to read
-                            announcementItem.classList.add("read");
-                            announcementItem.setAttribute("data-read", "true");
-
-                            // Update unread count
-                            updateUnreadCount();
-
-                            this.textContent = 'Mark as unread';
-                            this.className = 'mark-unread-btn';
-
-                            // Remove unread indicator
-                            if (unreadIndicator) {
-                                unreadIndicator.remove();
-                            }
-
-                            // If we're in read filter, this item should disappear
-                            if (document.querySelector('.filter-button[data-filter="unread"].active')) {
-                                announcementItem.style.display = "none";
-                                checkEmptyState();
-                                console.log("unread .active to none")
-                            }
-                        })
-                        .catch((error) => {
-                            console.error('Error:', error);
-                        });
-
-
-                });
-            });
-
-            // Add event listeners to mark-as-unread buttons in the items that are read states
-            markUnreadButtons.forEach((button) => {
-                button.addEventListener("click", function() {
-                    let buttonValue = this.className;
-                    let announcementItem = this.closest(".announcement-item");
-                    let unreadIndicator = document.createElement("div");
-                    let sourceDiv = announcementItem.querySelector(".announcement-source");
-
-                    // Send POST request to mark announcement as unread
-                    fetch('/announcements/mark-as-unread', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                announcement_id: announcementItem.getAttribute('id').split('-')[1]
-                            }),
-                        })
-                        .then((response) => {
-                            if (!response.ok) {
-                                throw new Error('Failed to mark as read');
-                            }
-                            return response.json();
-                        })
-                        .then((data) => {
-                            console.log('Announcement marked as read:', data);
-                            // Change item's state to read
-                            announcementItem.classList.remove("read");
-                            announcementItem.setAttribute("data-read", "false");
-
-                            // Change button text
-                            this.textContent = "Mark as read";
-                            this.className = "mark-read-btn";
-
-                            // Add unread indicator if not already present
-                            if (!announcementItem.querySelector(".unread-indicator")) {
-                                unreadIndicator.className = "unread-indicator";
-                                sourceDiv.prepend(unreadIndicator);
-                            }
-
-                            // If we're in read filter, this item should disappear
-                            if (document.querySelector('.filter-button[data-filter="read"].active')) {
-                                announcementItem.style.display = "none";
-                                console.log("unread .active to none");
-                            }
-                            // Update unread count
-                            updateUnreadCount();
-                            checkEmptyState();
-                        })
-                        .catch((error) => {
-                            console.error('Error:', error);
-                        });
-
-
-                });
-            });
-
-            // Delegate event for dynamically changed buttons
-            document.addEventListener("click", function(e) {
-                if (e.target && e.target.classList.contains("mark-unread-btn")) {
-                    const announcementItem = e.target.closest(".announcement-item");
-                    announcementItem.classList.remove("read");
-                    announcementItem.setAttribute("data-read", "false");
-
-
-                    // Add unread indicator
-                    const sourceDiv = announcementItem.querySelector(
-                        ".announcement-source"
-                    );
-                    const unreadIndicator = document.createElement("div");
-                    unreadIndicator.className = "unread-indicator";
-                    sourceDiv.prepend(unreadIndicator);
-
-                    // Change button text
-                    e.target.textContent = "Mark as read";
-                    e.target.className = "mark-read-btn";
-
-                    // Update unread count
-                    updateUnreadCount();
-                }
-
-                if (e.target && e.target.classList.contains("mark-read-btn")) {
-                    const announcementItem = e.target.closest(".announcement-item");
-                    announcementItem.classList.add("read");
-                    announcementItem.setAttribute("data-read", "true");
-
-                    // Remove unread indicator
-                    const unreadIndicator = announcementItem.querySelector(".unread-indicator");
-                    if (unreadIndicator) {
-                        unreadIndicator.remove();
-                    }
-
-                    // Change button text
-                    e.target.textContent = "Mark as unread";
-                    e.target.className = "mark-unread-btn";
-
-                    // Update unread count
-                    updateUnreadCount();
-                }
-            });
 
             // Function to update unread count badge
             function updateUnreadCount() {
