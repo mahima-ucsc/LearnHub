@@ -99,4 +99,35 @@ class AnnouncementController
             echo json_encode(['status' => 'error', 'message' => 'Invalid announcement ID']);
         }
     }
+
+    public function downloadAttachment($params)
+    {
+        dd($params);
+        $file = $_POST['file_name'] ?? null;
+        $Dir = __DIR__ . '/../../../public/assets/uploads/announcement/';
+        if ($file) {
+            // prevents directory traversal
+            $safeFileName = basename($file);
+            $filePath = $Dir . $safeFileName;
+
+            if (file_exists($file)) {
+                header('Content-Description: File Transfer');
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment; filename="' . $safeFileName . '"');
+                header('Content-Length: ' . filesize($filePath));
+
+                // Clean output buffer and flush system output buffer
+                ob_clean();
+                flush();
+                readfile($filePath);
+                exit;
+            } else {
+                http_response_code(404);
+                echo "File not found!";
+            }
+        } else {
+            http_response_code(400);
+            echo "No file name specified.";
+        }
+    }
 }

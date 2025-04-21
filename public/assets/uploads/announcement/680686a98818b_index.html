@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prevent Immediate Submission</title>
+    <script>
+        function handleSubmit(event) {
+            // Prevent the default form submission
+            event.preventDefault();
+
+            // Perform any checks or actions here
+            const reviewId = document.getElementById('reviewId').value; // Example of getting a review ID
+            if (confirm("Are you sure you want to delete review ID: " + reviewId + "?")) {
+                // If confirmed, update the form action
+                document.getElementById('submit').action = '/course/review/delete/' + reviewId;
+
+                // Submit the form programmatically
+                document.getElementById('submit').submit();
+            } else {
+                console.log("Submission canceled.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <form id="submit" method="POST" onsubmit="handleSubmit(event)">
+        <input type="hidden" id="reviewId" value="123"> <!-- Example review ID -->
+        <button type="submit">Delete Review</button>
+    </form>
+</body>
+</html>         
