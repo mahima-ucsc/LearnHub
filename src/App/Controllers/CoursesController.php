@@ -28,43 +28,30 @@ class CoursesController
     // Search courses
     public function course()
     {
-        $page = $_GET['p'] ?? 1;
-        $page = (int) $page;
-        $length = 9;
-        $offset = ($page - 1) * $length;
+        $page = (int) ($_GET['p'] ?? 1);
+        $itemsPerPage = 9;
+        $offset = ($page - 1) * $itemsPerPage;
 
-        $searchTerm = $_GET['s'] ?? null;
-        $location = $_GET['location'] ?? null;
-        $searchTerm = trim($_GET['s'] ?? '');
-        $subject = $_GET['subject'] ?? 'all';
-        $price = $_GET['price'] ?? 'all';
-        $type = $_GET['type'] ?? 'all';
-        $rating = $_GET['rating'] ?? 'all';
-        $sort = $_GET['sort'] ?? '';
+        // Get search parameters
+        $searchParams = [
+            's' => $_GET['s'] ?? '',
+            'location' => $_GET['location'] ?? null,
+            'subject' => $_GET['subject'] ?? 'all',
+            'type' => $_GET['type'] ?? 'all',
+            'price' => $_GET['price'] ?? 'all',
+            'sort' => $_GET['sort'] ?? '',
+        ];
 
         [$courses, $courseCount] = $this->courseService->searchCourse(
-            $length,
+            $itemsPerPage,
             $offset
         );
 
         $courseLocations = $this->courseService->getLocations();
         $subjects = $this->subjectService->getSubjects();
 
-        $lastPage = ceil($courseCount / $length);
-        $pages = $lastPage ? range(1, $lastPage) : [];
+        $pagination = generatePagination($courseCount, $page, $itemsPerPage, $searchParams);
 
-        $pageLinks = array_map(
-            fn($pageNum) => http_build_query([
-                'p' => $pageNum,
-                's' => $searchTerm,
-                "location" => $location,
-                "type" => $type,
-                "subject" => $subject,
-                "sort" => $sort
-
-            ]),
-            $pages
-        );
 
         echo $this->view->render('course/Courses.php', [
             "title" => "Search Course",
@@ -72,27 +59,7 @@ class CoursesController
             "courseLocations" => $courseLocations,
             "courseCount" => $courseCount,
             "subjects" => $subjects,
-            "currentPage" => $page,
-            "previousPageQuery" => http_build_query([
-                'p' => $page - 1,
-                's' => $searchTerm,
-                "location" => $location,
-                "type" => $type,
-                "subject" => $subject,
-                "sort" => $sort
-            ]),
-            "lastPage" => $lastPage,
-            "nextPageQuery" => http_build_query([
-                'p' => $page + 1,
-                's' => $searchTerm,
-                "location" => $location,
-                "type" => $type,
-                "subject" => $subject,
-                "sort" => $sort
-            ]),
-            "pageLinks" => $pageLinks,
-            "searchTerm" => $searchTerm,
-            "location" => $location
+            'pagination' => $pagination
         ]);
     }
 
@@ -198,6 +165,7 @@ class CoursesController
             ]
         );
     }
+
     /**
      * This function is used when creating a course. Initially, it saves the course data in the session 
      * and then redirects to the next page to add course modules. The add module view sends a POST request 
