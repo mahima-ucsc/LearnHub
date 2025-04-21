@@ -121,12 +121,20 @@ class AnnouncementService
     public function getOneAnnouncements($announcementId)
     {
         return $this->db->query(
-            "SELECT announcements.*, courses.title AS course_title, CONCAT(users.first_name, ' ', users.last_name) AS tutor_name 
+            "SELECT announcements.*, CONCAT(users.first_name, ' ', users.last_name) AS tutor_name 
             FROM announcements
             INNER JOIN courses ON announcements.course_id = courses.course_id
             INNER JOIN users ON courses.tutor_id = users.user_id
             WHERE announcements.id = :announcementId;",
             ['announcementId' => $announcementId]
+        )->find();
+    }
+
+    public function getcourseTitle($course_id)
+    {
+        return $this->db->query(
+            "SELECT title FROM courses WHERE course_id = :course_id ",
+            ['course_id' => $course_id]
         )->find();
     }
 

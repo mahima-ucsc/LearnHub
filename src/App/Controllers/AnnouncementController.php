@@ -37,13 +37,15 @@ class AnnouncementController
         $courseId = $params['course_id'];
         $student_id = $_SESSION['user'];
         $announcements = $this->AnnouncementService->getAnnouncements($courseId, $student_id);
+        $courseTitle = $this->AnnouncementService->getcourseTitle($courseId);
         // $announcements = $this->AnnouncementService->getOneAnnouncements('1');
-        // dd($announcements);
+        // dd($courseTitle);
         echo $this->view->render(
             "course/course-info/announcements.php",
             [
                 'title' => 'Announcements',
                 'announcements' => $announcements,
+                'course_title' => $courseTitle['title'],
             ]
         );
     }
