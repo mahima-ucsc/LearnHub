@@ -9,7 +9,8 @@
 <section>
     <div class="container">
         <div class="title-header">
-            <a href="/courses/<?php echo $course_id; ?>"><?php echo $course_title; ?></a> / Announcements
+            <a href="/courses/<?php echo $course_id; ?>"><?php echo $course_title; ?></a> <a href="/courses/<?php echo $course_id; ?>/announcements">/ Announcements</a>
+            <div class="filter-title" id='filter-title'></div>
         </div>
         <div class="announcements-container">
             <div class="announcements-header">
@@ -101,8 +102,45 @@
 
                     // Show/hide announcements based on filter
                     applyCurrentFilter();
+                    addfilterTitle();
                 });
             });
+
+            // add filter type in to the tytle
+            function addfilterTitle() {
+                const activeFilter = document.querySelector('.filter-button.active').getAttribute('data-filter');
+                const filterTitle = document.getElementById('filter-title');
+
+                let titleText = '';
+                switch (activeFilter) {
+                    case 'all':
+                        titleText = '/ All';
+                        break;
+                    case 'unread':
+                        titleText = '/ Unread';
+                        break;
+                    case 'read':
+                        titleText = '/ Read';
+                        break;
+                    case 'assignment':
+                        titleText = '/ Assignment';
+                        break;
+                    case 'general':
+                        titleText = '/ General';
+                        break;
+                    case 'remainder':
+                        titleText = '/ Remainder ';
+                        break;
+                    case 'event':
+                        titleText = '/ Event';
+                        break;
+                    default:
+                        titleText = '';
+                }
+
+                filterTitle.textContent = titleText;
+            }
+
 
             // apply current filter
             function applyCurrentFilter() {
@@ -121,7 +159,6 @@
                         item.style.display = category === activeFilter ? "block" : "none";
                     }
                 });
-
                 checkEmptyState();
             }
 
@@ -211,8 +248,9 @@
                 }
             }
 
-            // Initial unread count update
+            // Initial update
             updateUnreadCount();
+            addfilterTitle();
         });
     </script>
 

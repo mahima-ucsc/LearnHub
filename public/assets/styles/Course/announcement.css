@@ -37,7 +37,7 @@
 }
 
 .title-header {
-  background: linear-gradient(135deg, #ffc400, #ffae00);
+  background: linear-gradient(135deg, #ffc400, #ffcd62);
   color: #333;
   padding: 20px 30px;
   font-family: "Poppins", sans-serif;
@@ -96,7 +96,7 @@
 }
 
 .title-header:hover {
-  background: linear-gradient(135deg, #ffc400, rgb(238, 255, 80), #ffc400);
+  background: linear-gradient(135deg, #ffc400, #ffdf27, #ffe02f);
   background-size: 200% 200%;
   animation: goldGradientShift 4s ease infinite;
   transition: all 0.4s ease;
@@ -199,7 +199,7 @@ header {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   padding: 10px;
   border-radius: 8px;
-  z-index: 1;
+  z-index: 1000;
   transition: opacity 0.3s ease, transform 0.2s ease;
   opacity: 0;
   pointer-events: none;
@@ -282,6 +282,7 @@ header {
 }
 
 .announcement-list {
+  min-height: 250px;
   max-height: 600px;
   overflow-y: scroll;
 }
