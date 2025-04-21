@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\{CourseRequestService, UserService, CourseService, AdvertisementService, PaymentService, ResourceService, ReviewService};
+use App\Services\{CourseRequestService, UserService, CourseService, AdvertisementService, PaymentService, ResourceService};
 use APP\Config\Paths;
 
 
@@ -18,27 +18,16 @@ class PageController
         private CourseRequestService $courseRequestService,
         private AdvertisementService $advertisementService,
         private PaymentService $paymentService,
-        private ResourceService $resourceService,
-        private ReviewService $reviewService
+        private ResourceService $resourceService
     ) {}
 
     public function home()
     {
         $advertisements = $this->advertisementService->getApprovedAds();
-        $courseCount = $this->courseService->getNoOfCourses();
-        $roundedCourseCount = floor($courseCount / 10) * 10;
-        $subjectCourseCount = $this->courseService->getCourseCountBySubject(10);
-        $recentCourseRequests = $this->courseRequestService->getRecentCourseRequest(2);
-
-        //TODO: must implement after development of resource component is finished
-        // $recentResources = $this->resourceService->getRecentResource(3);
 
         echo $this->view->render('index.php', [
             "title" => "Home",
-            "advertisements" => $advertisements,
-            "roundedCourseCount" => $roundedCourseCount,
-            "subjectCounts" => $subjectCourseCount,
-            "recentCourseRequests" => $recentCourseRequests
+            "advertisements" => $advertisements
         ]);
     }
     public function helpAndSupportReview()
@@ -50,17 +39,8 @@ class PageController
 
     public function about()
     {
-        $courseCount = $this->courseService->getNoOfCourses();
-        $roundedCourseCount = floor($courseCount / 10) * 10;
-        $userCount = $this->userService->getUserCount();
-        $roundedTeacherCount = ($userCount['teachers'] / 10) * 10;
-        $roundedStudentCount = ($userCount['students'] / 10) * 10;
-
         echo $this->view->render('about.php', [
-            "title" => "About",
-            "roundedCourseCount" => $roundedCourseCount,
-            "roundedTeacherCount" => $roundedTeacherCount,
-            "roundedStudentCount" => $roundedStudentCount
+            "title" => "About"
         ]);
     }
 
@@ -289,7 +269,7 @@ class PageController
             $userCount = $this->userService->getUserCount();
         }
         echo $this->view->render($path, [
-            "title" => "User Managment",
+            "title" => "Teacher",
             "users" => $users,
             "userCount" => $userCount
         ]);
@@ -320,32 +300,6 @@ class PageController
                 'resources' => $resources
             ]
         );
-    }
-    public function profile()
-    {
-        $userDetails = $this->userService->getUserProfile();
-        $userReview = $this->reviewService->getUserReview();
-        [$courses, $courseCount] = $this->courseService->searchCourse(
-            3,
-            0
-        );
-        echo $this->view->render('Tutor/profile.php', [
-            "title" => "Profile",
-            "userDetails" => $userDetails,
-            "userReview" => $userReview,
-            "courses" => $courses
-        ]);
-    }
-
-    public function tutorProfile()
-    {
-        $userReview = $this->reviewService->getUserReview();
-        $userDetails = $this->userService->getUserProfile();
-        echo $this->view->render('Tutor/profile.php', [
-            "title" => "Tutor",
-            "userDetails" => $userDetails,
-            "userReview" => $userReview
-        ]);
     }
     public function test()
     {

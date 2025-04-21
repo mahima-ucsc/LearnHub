@@ -902,7 +902,7 @@ class CourseService
         }
     }
 
-    public function getStudentCourses(string $id)
+    public function getStudentCourses(int $id)
     {
         try {
             return $this->db->query(
@@ -924,6 +924,7 @@ class CourseService
             redirectTo('/server-error');
         }
     }
+<<<<<<< HEAD
 
     /**
      * Gets the count of courses grouped by subject.
@@ -1025,4 +1026,6 @@ class CourseService
             redirectTo('/server-error');
         }
     }
+=======
+>>>>>>> announcement/feature
 }

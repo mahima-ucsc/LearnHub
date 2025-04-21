@@ -195,29 +195,24 @@ class UserService
 
     public function getUserCount()
     {
-        try {
-            $students =  $this->db->query(
-                "SELECT COUNT(*) FROM users WHERE user_role = 'student'"
-            )->count();
+        $students =  $this->db->query(
+            "SELECT COUNT(*) FROM users WHERE user_role = 'student'"
+        )->count();
 
-            $teachers = $this->db->query(
-                "SELECT COUNT(*) FROM users WHERE user_role = 'teacher'"
-            )->count();
-            $admin = $this->db->query(
-                "SELECT COUNT(*) FROM users WHERE user_role = 'admin'"
-            )->count();
+        $teachers = $this->db->query(
+            "SELECT COUNT(*) FROM users WHERE user_role = 'teacher'"
+        )->count();
+        $admin = $this->db->query(
+            "SELECT COUNT(*) FROM users WHERE user_role = 'admin'"
+        )->count();
 
-            $count = [
-                'students' => $students,
-                'teachers' => $teachers,
-                'admin' => $admin
-            ];
+        $count = [
+            'students' => $students,
+            'teachers' => $teachers,
+            'admin' => $admin
+        ];
 
-            return $count;
-        } catch (Exception $e) {
-            error_log("Failed to fetch user count: " . $e->getMessage());
-            redirectTo('/server-error');
-        }
+        return $count;
     }
 
     public function updateProfile(array $formData)

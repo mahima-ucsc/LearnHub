@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Config\{AppConstants, Paths};
-use App\Services\{AssignmentService, CourseRequestService, UserService, ValidatorService, CourseService, ReviewService, SubjectService, FileService, ContactService, ResourceService, AdvertisementService, NotificationService, PaymentService};
+use App\Services\{AnnouncementService, AssignmentService, CourseRequestService, UserService, ValidatorService, CourseService, ReviewService, SubjectService, FileService, ContactService, ResourceService, AdvertisementService, NotificationService, PaymentService};
 use Framework\{Container, Database, TemplateEngine};
 
 return [
@@ -63,5 +63,9 @@ return [
     NotificationService::class => function (Container $container) {
         $db = $container->get(Database::class);
         return new NotificationService($db);
+    },
+    AnnouncementService::class => function (Container $container) {
+        $db = $container->get(Database::class);
+        return new AnnouncementService($db);
     }
 ];

@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) NOT NULL,
     phone_no VARCHAR(15),
     date_of_birth DATE NOT NULL,
-    description TEXT,
+    description VARCHAR(255),
     joined_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_login DATETIME,
     profile_picture_url TEXT,
@@ -455,4 +455,28 @@ CREATE TABLE IF NOT EXISTS student_module_attendance(
     FOREIGN KEY(student_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY(course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
     FOREIGN KEY (module_id) REFERENCES course_modules(module_id) ON DELETE CASCADE
+
+-- table for announcements
+CREATE TABLE IF NOT EXISTS announcements (
+    announcement_id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+    course_id BIGINT(20) UNSIGNED NOT NULL, 
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    category ENUM('assignment', 'event', 'general', 'news', 'reminder') NOT NULL DEFAULT 'general',
+    visibility ENUM('all', 'specific') NOT NULL DEFAULT 'all',
+    specific_emails JSON DEFAULT NULL, -- Stores specific emails as JSON
+    attachments TEXT DEFAULT NULL, -- Stores file paths of uploaded attachments
+    send_email BOOLEAN NOT NULL DEFAULT FALSE, -- Indicates if email notifications are sent
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS announcements_read (
+    announcements_read_id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+    announcement_id BIGINT(20) NOT NULL,
+    user_id BIGINT(20) UNSIGNED NOT NULL,
+    is_read BOOLEAN NOT NULL DEFAULT FALSE,
+    FOREIGN KEY (announcement_id) REFERENCES announcements(announcement_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
