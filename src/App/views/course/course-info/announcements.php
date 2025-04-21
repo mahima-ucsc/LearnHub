@@ -3,6 +3,61 @@
 
 <link rel="stylesheet" href="/assets/styles/Course/announcement.css">
 
+<style>
+    /* Dropdown styles */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-toggle {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .dropdown-toggle:hover {
+        background-color: #0056b3;
+    }
+
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+        margin-top: 8px;
+        z-index: 1000;
+        min-width: 150px;
+    }
+
+    .dropdown-menu .filter-button {
+        display: block;
+        width: 100%;
+        padding: 8px 16px;
+        text-align: left;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    .dropdown-menu .filter-button:hover {
+        background-color: #f1f1f1;
+    }
+
+    .dropdown-menu .filter-button.active {
+        font-weight: bold;
+        color: #007bff;
+    }
+
+    .dropdown:hover .dropdown-menu {
+        display: block;
+    }
+</style>
+
 <section>
     <div class="container">
         <div class="announcements-container">
@@ -11,9 +66,16 @@
                     Announcements <span class="notification-badge"></span>
                 </div>
                 <div class="filter-controls">
-                    <button class="filter-button active" data-filter="all">All</button>
-                    <button class="filter-button" data-filter="assignments">Assignments</button>
-                    <button class="filter-button" data-filter="general">General</button>
+                    <div class="dropdown">
+                        <button class="dropdown-toggle">Filter</button>
+                        <div class="dropdown-menu">
+                            <button class="filter-button active" data-filter="all">All</button>
+                            <button class="filter-button" data-filter="assignment">Assignment</button>
+                            <button class="filter-button" data-filter="general">General</button>
+                            <button class="filter-button" data-filter="remainder">Remainder</button>
+                            <button class="filter-button" data-filter="event">Event</button>
+                        </div>
+                    </div>
                     <button class="filter-button" data-filter="read">Read</button>
                     <button class="filter-button" data-filter="unread">Unread</button>
                 </div>
@@ -23,7 +85,11 @@
                 <?php
                 // dd($announcements);
                 foreach ($announcements as $announcement) { ?>
-                    <div class="announcement-item <?php echo $announcement['is_read'] == 1 ? 'read' : ''; ?>" id="<?php echo ("announcement-" . $announcement['announcement_id']); ?>" data-type="<?php echo htmlspecialchars($announcement["category"]) ?>" data-read="<?php echo ($announcement['is_read'] == 1 ? 'true' : 'false'); ?>">
+                    <div
+                        class="announcement-item <?php echo $announcement['is_read'] == 1 ? 'read' : ''; ?>"
+                        id="<?php echo ("announcement-" . $announcement['announcement_id']); ?>"
+                        category="<?php echo htmlspecialchars($announcement["category"]) ?>"
+                        data-read="<?php echo ($announcement['is_read'] == 1 ? 'true' : 'false'); ?>">
                         <div class="announcement-header">
                             <div class="announcement-source">
                                 <div class='unread-indicator' style="display: <?php echo $announcement['is_read'] == 1 ? 'none' : 'block'; ?>"></div>
@@ -84,25 +150,36 @@
                     const filter = this.getAttribute("data-filter");
 
                     // Show/hide announcements based on filter
-                    announcementItems.forEach((item) => {
-                        if (filter === "all") {
-                            item.style.display = "block";
-                        } else if (filter === "unread") {
-                            item.style.display = item.getAttribute("data-read") === "false" ? "block" : "none";
-                        } else if (filter === "read") {
-                            item.style.display = item.getAttribute("data-read") === "true" ? "block" : "none";
-                        } else {
-                            item.style.display = item.getAttribute("data-type") === filter ? "block" : "none";
-                        }
-                    });
-
-                    // Check if there are any visible announcements
-                    checkEmptyState();
+                    applyCurrentFilter();
                 });
             });
 
+            // apply current filter
+            function applyCurrentFilter() {
+                const activeFilter = document.querySelector('.filter-button.active').getAttribute('data-filter');
+                console.log(activeFilter);
+                announcementItems.forEach((item) => {
+                    const category = item.getAttribute("category");
+                    const itemRead = item.getAttribute("data-read");
+
+                    if (activeFilter === "all") {
+                        item.style.display = "block";
+                    } else if (activeFilter === "unread") {
+                        item.style.display = itemRead === "false" ? "block" : "none";
+                    } else if (activeFilter === "read") {
+                        item.style.display = itemRead === "true" ? "block" : "none";
+                    } else {
+                        item.style.display = category === activeFilter ? "block" : "none";
+                    }
+                });
+
+                checkEmptyState();
+            }
+
+
             // |Add event listnets to togle isread btn
             document.querySelectorAll('.read_btn').forEach(button => {
+
                 button.addEventListener('click', function() {
                     const btn = this;
                     const announcement_id = btn.getAttribute('announcement_id');
@@ -116,32 +193,26 @@
                     // update button appearence
                     btn.textContent = !is_read ? "Mark As Unread" : "Mark As Read";
                     btn.setAttribute('is_read', !is_read);
+                    announcementItem.setAttribute("data-read", (!is_read).toString());
+
 
                     // update styles
                     if (!is_read) {
                         unreadIndicator.style.display = "none";
                         announcementItem.classList.add("read");
 
-                        if (document.querySelector('.filter-button[data-filter="unread"].active')) {
-                            announcementItem.style.display = "none";
-                            console.log("unread .active to none")
-                            checkEmptyState();
-                        }
                     } else {
                         announcementItem.classList.remove("read");
                         unreadIndicator.style.display = "block";
-                        // If we're in read filter, this item should disappear
-                        if (document.querySelector('.filter-button[data-filter="read"].active')) {
-                            announcementItem.style.display = "none";
-                            console.log("unread .active to none");
-                            checkEmptyState();
-                        }
+
                     }
+
+                    applyCurrentFilter();
                     // send AJAX request
                     fetch('/announcements/mark_as', {
                             method: 'POST',
                             headers: {
-                                'content-Type': "application/x-www-form-urlencoded"
+                                'Content-Type': "application/x-www-form-urlencoded"
                             },
                             body: `announcement_id=${announcement_id}&is_read=${!is_read}`
                         })
