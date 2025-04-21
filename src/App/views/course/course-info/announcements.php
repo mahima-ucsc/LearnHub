@@ -7,78 +7,9 @@
 </style>
 
 <section>
-
-    <style>
-        /* Announcement Header Styling with Gold Theme */
-        .title-header {
-            background: linear-gradient(135deg, #ffc400, #ffae00);
-            color: #333;
-            padding: 20px 30px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 24px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(255, 196, 0, 0.3);
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .title-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 6px;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.6);
-        }
-
-        .title-header::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100px;
-            height: 100px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            z-index: 1;
-        }
-
-        /* Make sure PHP output is styled properly */
-        .title-header .course-title {
-            font-weight: 700;
-        }
-
-        /* Optional: Add animation for a subtle effect */
-        @keyframes goldGradientShift {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
-        .title-header:hover {
-            background: linear-gradient(135deg, #ffc400, rgb(238, 255, 80), #ffc400);
-            background-size: 200% 200%;
-            animation: goldGradientShift 4s ease infinite;
-            transition: all 0.4s ease;
-        }
-    </style>
     <div class="container">
         <div class="title-header">
-            <?php echo $course_title ?> / Announcements
+            <a href="/courses/<?php echo $course_id; ?>"><?php echo $course_title; ?></a> / Announcements
         </div>
         <div class="announcements-container">
             <div class="announcements-header">

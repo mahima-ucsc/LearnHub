@@ -46,6 +46,7 @@ class AnnouncementController
                 'title' => 'Announcements',
                 'announcements' => $announcements,
                 'course_title' => $courseTitle['title'],
+                'course_id' => $courseId,
             ]
         );
     }
