@@ -79,10 +79,12 @@ class CoursesController
         $isParticipant = in_array($_SESSION['user'], $participantIds);
 
         // Get user attendance
-        $attendance = $this->courseService->userAttendance($_SESSION['user']);
-        $attendanceData = [];
-        foreach ($attendance as $a) {
-            $attendanceData[$a['module_id']] = $a['is_attended'];
+        if (!empty($_SESSION['user']) && $isParticipant) {
+            $attendance = $this->courseService->userAttendance($_SESSION['user']);
+            $attendanceData = [];
+            foreach ($attendance as $a) {
+                $attendanceData[$a['module_id']] = $a['is_attended'];
+            }
         }
 
 
@@ -160,7 +162,7 @@ class CoursesController
                 'summeryOfReviews' => $summeryOfReviews,
                 'participantCount' => $participantCount,
                 "isParticipant" => $isParticipant,
-                "attendanceData" => $attendanceData
+                "attendanceData" => $attendanceData ?? []
 
             ]
         );
