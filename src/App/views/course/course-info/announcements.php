@@ -4,6 +4,72 @@
 <link rel="stylesheet" href="/assets/styles/Course/announcement.css">
 
 <style>
+    /* Attachment List Styling */
+    .attachments-list {
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+
+    .attachments-list ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        background-color: #f9f9f9;
+    }
+
+    .attachments-list li {
+        padding: 10px 15px;
+        border-bottom: 1px solid #e0e0e0;
+        display: flex;
+        align-items: center;
+    }
+
+    .attachments-list li:last-child {
+        border-bottom: none;
+    }
+
+    .attachments-list li a {
+        color: #2563eb;
+        text-decoration: none;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        transition: color 0.2s ease;
+    }
+
+    .attachments-list li a:hover {
+        color: #1e40af;
+        text-decoration: underline;
+    }
+
+    .attachments-list li a:before {
+        content: "";
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%232563eb'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13'%3E%3C/path%3E%3C/svg%3E");
+        background-size: contain;
+        background-repeat: no-repeat;
+    }
+
+    /* Empty state styling */
+    .attachments-list:empty {
+        display: none;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+        .attachments-list li {
+            padding: 12px 10px;
+        }
+
+        .attachments-list li a {
+            font-size: 13px;
+        }
+    }
 </style>
 
 <section>
@@ -57,6 +123,22 @@
                         </div>
                         <div class="announcement-content">
                             <?php echo htmlspecialchars($announcement['content']); ?>
+                        </div>
+                        <div class="attachments-list" style="display: <?php echo (isset($announcement['attachments'])) ? 'block' : 'none'; ?>">
+                            <?php
+                            echo "<ul>";
+
+                            if (isset($announcement['attachments'])) {
+                                $files = json_decode($announcement['attachments']);
+                                foreach ($files as $file) {
+                                    // Remove prefix before underscore using regex
+                                    $display_name = preg_replace('/^[^_]+_/', '', $file);
+                                    echo "<li><a href='#' onclick='downloadAttachment(\"" . htmlspecialchars($file) . "\")'>" . htmlspecialchars($display_name) . "</a></li>";
+                                }
+                            }
+
+                            echo "</ul>";
+                            ?>
                         </div>
                         <div class="announcement-footer">
                             <div class="announcement-tags">
@@ -279,6 +361,36 @@
             }, 200); // matches the CSS transition time
         });
     </script>
+
+    <script>
+        function downloadAttachment(fileName) {
+            const formData = new FormData();
+            formData.append("file_name", fileName);
+
+            fetch("/courses/1/announcements/attachments", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error("Download failed");
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    alert("Error downloading file: " + error.message);
+                });
+        }
+    </script>
+
 </section>
 
 <?php include $this->resolve("partials/_footer.php"); ?>

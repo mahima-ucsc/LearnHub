@@ -157,7 +157,7 @@ function registerRoutes(App $app)
     $app->post('/announcements/mark-as-read', [AnnouncementController::class, 'markAsRead'], [AuthRequiredMiddleware::class]);
     $app->post('/announcements/mark_as', [AnnouncementController::class, 'markAsButtonToggle'], [AuthRequiredMiddleware::class]);
     $app->post('/announcements/mark-as-unread', [AnnouncementController::class, 'markAsUnread'], [AuthRequiredMiddleware::class]);
-
+    $app->post('/courses/{course_id}/announcements/attachments', [AnnouncementController::class, 'downloadAttachment'], [AuthRequiredMiddleware::class]);
 
     // course Reviews
     $app->get('/course/review/{course}/{page}', [ReviewController::class, 'getCourseReview']);
