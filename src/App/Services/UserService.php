@@ -26,6 +26,12 @@ class UserService
             WHERE user_id = :userId",
             ['userId' => $_SESSION['user']]
         )->find();
+        if ($userDetails['profile_picture_url'] !== null) {
+            $userDetails['profile_picture_url'] =
+                Paths::UPLOAD_FOLDER_RELATIVE_TO_PUBLIC . "/" .
+                Paths::RELATIVE_USER_PROFILE_PICTURE_UPLOADS .
+                '/' . $userDetails['profile_picture_url'];
+        }
 
         unset($userDetails['password']);
 

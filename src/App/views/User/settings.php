@@ -39,7 +39,10 @@
                         <label>Change Profile Picture</label>
                         <div class="image-upload-container">
                             <div class="profile-image-preview">
-                                <img src="/assets/images/user.jpeg" alt="Profile Picture">
+                                <img src="<?= isset($userDetails['profile_picture_url'])
+                                                ? $userDetails['profile_picture_url'] :
+                                                "/assets/images/user.jpeg" ?>"
+                                    alt="Profile Picture">
                                 <div class="overlay">
                                     <label for="profilePicture" class="upload-icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
