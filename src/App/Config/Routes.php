@@ -42,7 +42,6 @@ function registerRoutes(App $app)
     $app->get('/tutor/{tutor-id}', [PageController::class, 'tutorProfile'], [AuthRequiredMiddleware::class]);
     $app->get('/alert', [AlertController::class, 'alert']);
     $app->get('/help-and-support', [PageController::class, 'helpAndSupport']);
-    $app->get('/announcements/create', [PageController::class, 'createAnnouncements']);
     $app->get('/tech', [PageController::class, 'teacher']);
 
     $app->get('/user-managment', [PageController::class, 'userManagment']);
