@@ -90,7 +90,7 @@ class AuthController
         redirectTo('/login');
     }
 
-    public function createTutorProfile()
+    public function createTutorProfileView()
     {
         $subjects = $this->SubjectService->getSubjects();
         echo $this->view->render(
@@ -100,5 +100,12 @@ class AuthController
                 'subjects' => $subjects,
             ]
         );
+    }
+
+    public function createTutorProfile()
+    {
+        dd($_POST);
+        $this->userService->createTutorProfile($_POST);
+        // redirectTo("/tutor/$_SESSION['user']");
     }
 }

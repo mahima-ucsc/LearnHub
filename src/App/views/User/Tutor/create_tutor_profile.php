@@ -361,13 +361,11 @@
                         <select name="subjects[${count}][subject_id]">
                             <option value="">Select a subject...</option>
                             <option value="1">Mathematics</option>
-                            <option value="2">Computer Science</option>
-                            <option value="3">Physics</option>
-                            <option value="4">Chemistry</option>
-                            <option value="5">Biology</option>
-                            <option value="6">English</option>
-                            <option value="7">History</option>
-                            <option value="8">Economics</option>
+                            <?php
+                            foreach ($subjects as $subject) {
+                                echo "<option value='" . $subject['subject_id'] . "'>" . $subject['subject_title'] . "</option>";
+                            }
+                            ?>
                         </select>
                     </div>
                     <div class="form-group">
