@@ -130,7 +130,6 @@ class CoursesController
         // get course reviews
         $userReview = [];
         $userReview = $this->courseService->getReviewForcourse($params['course_id']);
-
         //calculate summery of reviews
         $summeryOfReviews = [];
         $totalReviews = count($userReview);
@@ -144,8 +143,7 @@ class CoursesController
         $summeryOfReviews = ['totalReviews' => $totalReviews, 'avgRating' => $avgRating, 'starCount' => $starCount];
 
         // get tutor profile
-        $user = $this->userService->getUserProfile($course['tutor_id']);
-
+        $user = $this->userService->getUserDetailsById((string)$course['tutor_id']);
         echo $this->view->render(
             'course/course-info/course-info.php',
             [

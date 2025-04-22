@@ -248,12 +248,8 @@
                 <thead>
                     <tr>
                         <th>Title</th>
-                        <th>Students</th>
-                        <th>Lessons</th>
-                        <th>Rating</th>
                         <th>Price</th>
                         <th>Revenue</th>
-                        <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -267,12 +263,8 @@
                         <?php foreach ($courses as $course): ?>
                             <tr>
                                 <td><?php echo e($course['title']); ?></td>
-                                <td>150</td>
-                                <td>8</td>
-                                <td>4.2</td>
                                 <td><?php echo e($course['price']) ?></td>
                                 <td>15000</td>
-                                <td><span class="course-status status-${course.status}">Active</span></td>
                                 <td>
                                     <button class="action-btn btn-edit" onclick="window.location.href='/course/edit/<?php echo e($course['course_id']) ?>'">
                                         <i class="fas fa-edit"></i>
