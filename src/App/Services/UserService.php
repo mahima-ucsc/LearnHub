@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Config\Paths;
 use App\views\components\Alert;
 use Framework\Database;
 use Framework\Exceptions\ValidationException;
@@ -13,7 +14,10 @@ use PHPMailer\PHPMailer\Exception;
 
 class UserService
 {
-    public function __construct(private Database $db) {}
+    public function __construct(
+        private Database $db,
+        private FileService $fileService
+    ) {}
 
     public function getUserProfile()
     {
@@ -22,6 +26,12 @@ class UserService
             WHERE user_id = :userId",
             ['userId' => $_SESSION['user']]
         )->find();
+        if ($userDetails['profile_picture_url'] !== null) {
+            $userDetails['profile_picture_url'] =
+                Paths::UPLOAD_FOLDER_RELATIVE_TO_PUBLIC . "/" .
+                Paths::RELATIVE_USER_PROFILE_PICTURE_UPLOADS .
+                '/' . $userDetails['profile_picture_url'];
+        }
 
         unset($userDetails['password']);
 
@@ -65,7 +75,7 @@ class UserService
         )->count();
 
         if ($emailCount > 0) {
-            throw new ValidationException(['email' => 'Email taken']);
+            throw new ValidationException(['email' => ['This email address is already in use. Please try a different one.']]);
         }
     }
 
@@ -226,6 +236,19 @@ class UserService
                 "dob" => $formData['date_of_birth'],
                 "location" => $formData['location'],
                 "user_id" => $_SESSION['user']
+            ]
+        );
+    }
+
+    public function updateProfilePicture(array $file)
+    {
+        $fileName =  $this->fileService->uploadFile(Paths::RELATIVE_USER_PROFILE_PICTURE_UPLOADS, $file);
+
+        $this->db->query(
+            "UPDATE users SET profile_picture_url = :profile_picture_url WHERE user_id = :user_id",
+            [
+                'profile_picture_url' => $fileName,
+                'user_id' => $_SESSION['user']
             ]
         );
     }

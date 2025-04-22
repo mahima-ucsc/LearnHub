@@ -74,6 +74,7 @@ function registerRoutes(App $app)
     $app->get('/create-ad', [PageController::class, 'createAd'], [TeacherOnlyMiddleware::class]);
     $app->post('/update-profile', [UserController::class, 'updateProfile'], [AuthRequiredMiddleware::class]);
     $app->post('/update-password', [UserController::class, 'updatePassword'], [AuthRequiredMiddleware::class]);
+    $app->post('/update-profile-picture', [UserController::class, 'updateProfilePicture'], [AuthRequiredMiddleware::class]);
 
     // Admin operations
     $app->post('/approve-post', [PostController::class, 'approveCourseRequest']);
@@ -99,6 +100,9 @@ function registerRoutes(App $app)
     $app->get('/courses/test', [CoursesController::class, 'myCoursesTest']);
     $app->post('/courses/pin-course', [CoursesController::class, 'pinCourse']);
 
+
+    $app->delete('/course/{course_id}/module/{module_id}', [CoursesController::class, 'deleteCourseModule']);
+
     $app->get('/courses/{course_id}', [CoursesController::class, 'courseInfo']);
     $app->get('/courses/{course_id}/participants', [CoursesController::class, 'courseParticipant']);
     $app->delete('/courses/{course_id}/participants/remove/{user_id}', [CoursesController::class, 'RemoveCourseParticipant'], [TeacherOnlyMiddleware::class]);
@@ -110,6 +114,9 @@ function registerRoutes(App $app)
     $app->post('/course/create', [CoursesController::class, 'create']);
     $app->get('/course/{course_id}/module/create', [CoursesController::class, 'createModuleView']);
     $app->post('/course/{course_id}/module/create', [CoursesController::class, 'createModule']);
+
+
+    $app->post('/mark-attendance', [CoursesController::class, 'markAttendance']);
 
     // TODO: Remove or implement this route
     // $app->get('/courses/my/registered', [CoursesController::class, 'regCourses'], [AuthRequiredMiddleware::class]);

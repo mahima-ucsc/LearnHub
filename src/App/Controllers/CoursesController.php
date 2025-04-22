@@ -28,43 +28,30 @@ class CoursesController
     // Search courses
     public function course()
     {
-        $page = $_GET['p'] ?? 1;
-        $page = (int) $page;
-        $length = 9;
-        $offset = ($page - 1) * $length;
+        $page = (int) ($_GET['p'] ?? 1);
+        $itemsPerPage = 9;
+        $offset = ($page - 1) * $itemsPerPage;
 
-        $searchTerm = $_GET['s'] ?? null;
-        $location = $_GET['location'] ?? null;
-        $searchTerm = trim($_GET['s'] ?? '');
-        $subject = $_GET['subject'] ?? 'all';
-        $price = $_GET['price'] ?? 'all';
-        $type = $_GET['type'] ?? 'all';
-        $rating = $_GET['rating'] ?? 'all';
-        $sort = $_GET['sort'] ?? '';
+        // Get search parameters
+        $searchParams = [
+            's' => $_GET['s'] ?? '',
+            'location' => $_GET['location'] ?? null,
+            'subject' => $_GET['subject'] ?? 'all',
+            'type' => $_GET['type'] ?? 'all',
+            'price' => $_GET['price'] ?? 'all',
+            'sort' => $_GET['sort'] ?? '',
+        ];
 
         [$courses, $courseCount] = $this->courseService->searchCourse(
-            $length,
+            $itemsPerPage,
             $offset
         );
 
         $courseLocations = $this->courseService->getLocations();
         $subjects = $this->subjectService->getSubjects();
 
-        $lastPage = ceil($courseCount / $length);
-        $pages = $lastPage ? range(1, $lastPage) : [];
+        $pagination = generatePagination($courseCount, $page, $itemsPerPage, $searchParams);
 
-        $pageLinks = array_map(
-            fn($pageNum) => http_build_query([
-                'p' => $pageNum,
-                's' => $searchTerm,
-                "location" => $location,
-                "type" => $type,
-                "subject" => $subject,
-                "sort" => $sort
-
-            ]),
-            $pages
-        );
 
         echo $this->view->render('course/Courses.php', [
             "title" => "Search Course",
@@ -72,27 +59,7 @@ class CoursesController
             "courseLocations" => $courseLocations,
             "courseCount" => $courseCount,
             "subjects" => $subjects,
-            "currentPage" => $page,
-            "previousPageQuery" => http_build_query([
-                'p' => $page - 1,
-                's' => $searchTerm,
-                "location" => $location,
-                "type" => $type,
-                "subject" => $subject,
-                "sort" => $sort
-            ]),
-            "lastPage" => $lastPage,
-            "nextPageQuery" => http_build_query([
-                'p' => $page + 1,
-                's' => $searchTerm,
-                "location" => $location,
-                "type" => $type,
-                "subject" => $subject,
-                "sort" => $sort
-            ]),
-            "pageLinks" => $pageLinks,
-            "searchTerm" => $searchTerm,
-            "location" => $location
+            'pagination' => $pagination
         ]);
     }
 
@@ -101,6 +68,26 @@ class CoursesController
         $course = $this->courseService->getCourseById($params['course_id']);
         $participants = $this->courseService->getCourseParticipants((string) $params['course_id']);
         $participantCount = count($participants);
+
+        // Get user_ids of the students registered to the course 
+        $participantIds = [];
+        for ($i = 0; $i < $participantCount; $i++) {
+            $participantIds[$i] = $participants[$i]['user_id'];
+        }
+
+        // Check whether the current user is a participant of the course
+        $isParticipant = in_array($_SESSION['user'], $participantIds);
+
+        // Get user attendance
+        if (!empty($_SESSION['user']) && $isParticipant) {
+            $attendance = $this->courseService->userAttendance($_SESSION['user']);
+            $attendanceData = [];
+            foreach ($attendance as $a) {
+                $attendanceData[$a['module_id']] = $a['is_attended'];
+            }
+        }
+
+
         /**
          * 'isPaid' property based on the course type:
          * - For one-time courses: Boolean value (true or false)
@@ -112,19 +99,25 @@ class CoursesController
         }
         if ($course['billing_type'] === 'onetime') {
             $courseModules = $this->courseService->getCourseModuleList($params['course_id']);
+            // Get module resources based on module ID
+            $moduleResources = [];
+            foreach ($courseModules as $module) {
+                $resources = $this->courseService->courseResourceList($module['course_id'], $module['module_id']);
+                $moduleResources[$module['module_id']] = $resources;
+            }
         } else {
             $content = $this->courseService->getCurrentContentAndPastContent($params['course_id']);
             $currentContent = $content['currentContent'];
             $pastContent = $content['pastContent'];
+            // Get module resources based on module ID
+            $allContent = $currentContent + $pastContent;
+            $moduleResources = [];
+            foreach ($allContent as $contentModule) {
+                $resources = $this->courseService->courseResourceList((int)$contentModule['course_id'], (int)$contentModule['modules'][0]['module_id']);
+                $moduleResources[$contentModule['modules'][0]['module_id']] = $resources;
+            }
         }
 
-        // TODO: Fetch module resources based on the updated database schema and course flow.
-        // Get module resources based on module ID
-        // $moduleResources = [];
-        // foreach ($courseModules as $module) {
-        //     $resources = $this->courseService->courseResourceList($module['course_id'], $module['module_id']);
-        //     $moduleResources[$module['module_id']] = $resources;
-        // }
         $assignments = $this->assignmentService->getAssignmentByCourse($params['course_id']);
 
         // Get module resources based on module ID
@@ -164,14 +157,17 @@ class CoursesController
                 'pastContent' => $pastContent ?? [],
                 'assignments' => $assignments,
                 'assignmentsResources' => $assignmentsResources,
-                // 'moduleResources' => $moduleResources,
+                'moduleResources' => $moduleResources,
                 'userReview' => $userReview,
                 'summeryOfReviews' => $summeryOfReviews,
-                'participantCount' => $participantCount
+                'participantCount' => $participantCount,
+                "isParticipant" => $isParticipant,
+                "attendanceData" => $attendanceData ?? []
 
             ]
         );
     }
+
     /**
      * This function is used when creating a course. Initially, it saves the course data in the session 
      * and then redirects to the next page to add course modules. The add module view sends a POST request 
@@ -508,5 +504,34 @@ class CoursesController
         }
         $this->courseService->createModule($courseId, $type, $modulesData, 1);
         echo json_encode($modulesData);
+    }
+
+    public function deleteCourseModule(array $params)
+    {
+        $this->courseService->deleteModule($params['course_id'], $params['module_id']);
+        redirectTo($_SERVER['HTTP_REFERER']);
+    }
+
+    public function markAttendance()
+    {
+        try {
+            $json = file_get_contents('php://input');
+            $data = json_decode($json, true);
+            $this->courseService->markAttendance($data);
+            $result = [
+                "success" => true,
+                "message" => "Attendance marked successfully",
+                "receivedData" => $data
+            ];
+        } catch (Exception $e) {
+            $result = [
+                "success" => false,
+                "message" => $e->getMessage(),
+            ];
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($result);
+        exit;
     }
 }

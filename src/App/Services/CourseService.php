@@ -958,4 +958,71 @@ class CourseService
             redirectTo('server-error');
         }
     }
+
+    public function deleteModule(string $courseId, string $moduleId)
+    {
+        try {
+            $this->db->query(
+                "DELETE FROM course_modules
+                WHERE course_id = :courseId
+                AND module_id = :moduleId",
+                [
+                    "courseId" => $courseId,
+                    "moduleId" => $moduleId
+                ]
+            );
+        } catch (Exception $e) {
+            error_log("Failed to delete course module: " . $e->getMessage());
+            redirectTo('/server-error');
+        }
+    }
+
+    public function markAttendance(array $data)
+    {
+        try {
+            $is_attended = $data['attended'] ? 1 : 0;
+            return $this->db->query(
+                "INSERT INTO 
+                student_module_attendance(
+                student_id,
+                course_id,
+                module_id,
+                attended_date,
+                is_attended
+                ) VALUES(
+                :student_id,
+                :course_id,
+                :module_id,
+                CURRENT_TIMESTAMP,
+                :is_attended)",
+                [
+                    "student_id" => $_SESSION['user'],
+                    "course_id" => $data['course_id'],
+                    "module_id" => $data['module_id'],
+                    "is_attended" => $is_attended
+                ]
+            );
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+
+    public function userAttendance(int $id)
+    {
+        try {
+            return $this->db->query(
+                "SELECT
+                module_id,
+                is_attended
+                FROM student_module_attendance
+                WHERE student_id = :id",
+                [
+                    'id' => $id
+                ]
+            )->findAll();
+        } catch (Exception $e) {
+            error_log("Failed to fetch student attendance: " . $e->getMessage());
+            redirectTo('/server-error');
+        }
+    }
 }

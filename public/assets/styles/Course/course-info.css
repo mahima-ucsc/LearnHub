@@ -318,6 +318,26 @@ body {
   border-radius: 20px;
 }
 
+.module-delete-btn{
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #ff4d4d;
+  color: #ffffff;
+}
+
+.module-delete-btn{
+  text-decoration: none;
+}
+
+.module-delete-btn:hover{
+  background-color: #e67373;
+}
+
 .module-toggle,
 .period-toggle {
   display: flex;
@@ -348,12 +368,29 @@ body {
 
 .module-description {
   margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .module-resources {
   margin-bottom: 1.5rem;
 }
 
+.module-resources li{
+  list-style-type: none;
+}
+
+.resource-attachment{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 20px;
+}
+.resource-attachment p{
+  font-family: Poppins;
+  font-weight: 600;
+}
 .module-complete-toggle {
   display: flex;
   align-items: center;
@@ -551,8 +588,7 @@ body {
 }
 
 .resource-icon {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
+  font-size: 20px;
   color: var(--primary-color);
 }
 

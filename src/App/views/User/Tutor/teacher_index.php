@@ -640,22 +640,8 @@
     <div class="container teacher-hero-content">
         <div class="teacher-hero-text">
             <h1>Transform Your Knowledge Into Income</h1>
-            <p>Create, sell, and manage your online courses with our powerful platform designed for educators.</p>
-            <a href="#" class="btn btn-primary">Start Teaching Today</a>
-        </div>
-        <div class="teacher-hero-stats">
-            <div class="stat-item">
-                <h3>50K+</h3>
-                <p>Active Teachers</p>
-            </div>
-            <div class="stat-item">
-                <h3>$10M+</h3>
-                <p>Teacher Earnings</p>
-            </div>
-            <div class="stat-item">
-                <h3>1M+</h3>
-                <p>Students Taught</p>
-            </div>
+            <p>Create, sell, and manage your online courses with our powerful platform designed for you.</p>
+            <a href="/advertisement/create" class="btn btn-primary">Boost your course!</a>
         </div>
     </div>
 </section>
@@ -669,12 +655,12 @@
         <div class="quick-stats">
             <div class="stat-card">
                 <i class="fas fa-users fa-2x" style="color: var(--theme-color)"></i>
-                <div class="stat-value">1,234</div>
+                <div class="stat-value"><?= e($studentCount); ?></div>
                 <p>Active Students</p>
             </div>
             <div class="stat-card">
                 <i class="fas fa-graduation-cap fa-2x" style="color: var(--theme-color)"></i>
-                <div class="stat-value">15</div>
+                <div class="stat-value"><?= e($courseCount); ?></div>
                 <p>Active Courses</p>
             </div>
             <div class="stat-card">
@@ -829,13 +815,13 @@
         data: {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
             datasets: [{
-                label: 'Student Engagement',
+                label: 'Student Enrolment',
                 data: [65, 78, 90, 85, 92, 88],
                 borderColor: '#2ECC71',
                 tension: 0.4,
                 fill: false
             }, {
-                label: 'Revenue ($K)',
+                label: 'Revenue (Rs.)',
                 data: [35, 42, 48, 45, 55, 60],
                 borderColor: '#FFC400',
                 tension: 0.4,

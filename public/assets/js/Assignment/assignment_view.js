@@ -185,7 +185,6 @@ document.addEventListener("DOMContentLoaded", function () {
               "There was a problem removing file. Please try again.",
               "error"
             );
-            alert("Error removing file. Please try again.");
             setTimeout(() => {
               window.location.reload();
             }, 1000);
