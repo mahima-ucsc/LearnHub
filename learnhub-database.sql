@@ -481,3 +481,45 @@ CREATE TABLE IF NOT EXISTS announcements_read (
     FOREIGN KEY (announcement_id) REFERENCES announcements(announcement_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
+
+-- tutor profile details
+CREATE TABLE IF NOT EXISTS TutorProfiles(
+    tutor_profile_id BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY,
+    tutor_id BIGINT(20) UNSIGNED NOT NULL,
+    title VARCHAR(255),
+    bio TEXT,
+    FOREIGN KEY (tutor_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+-- Table to store subjects taught by tutors
+CREATE TABLE IF NOT EXISTS TutorSubjects (
+    tutor_id BIGINT(20) UNSIGNED NOT NULL,
+    subject_id BIGINT(20) UNSIGNED NOT NULL,
+    years_experience INTEGER,
+    PRIMARY KEY (tutor_id, subject_id),
+    FOREIGN KEY (tutor_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (subject_id) REFERENCES subjects(subject_id) ON DELETE CASCADE
+);
+
+-- Table to store education details of tutors
+CREATE TABLE IF NOT EXISTS TutorEducation (
+    education_id  BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY,
+    tutor_id BIGINT(20) UNSIGNED NOT NULL,
+    degree VARCHAR(255) NOT NULL,
+    institution VARCHAR(255) NOT NULL,
+    field_of_study VARCHAR(255),
+    start_date DATE,
+    end_date DATE,
+    FOREIGN KEY (tutor_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+-- Availability schedule
+CREATE TABLE TutorAvailability (
+    availability_id SERIAL PRIMARY KEY,
+    tutor_id BIGINT(20) UNSIGNED NOT NULL,
+    day_of_week INTEGER NOT NULL, -- 0=Sunday, 1=Monday, etc.
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    is_recurring BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (tutor_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
