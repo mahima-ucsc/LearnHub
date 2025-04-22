@@ -17,6 +17,19 @@ CREATE TABLE IF NOT EXISTS users (
     is_verified BOOLEAN NOT NULL DEFAULT FALSE
 );
 
+-- Table to store user interest subject which will be useed for course suggessions
+CREATE TABLE IF NOT EXISTS user_interest(
+    interest_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+    user_id BIGINT(20) UNSIGNED NOT NULL,
+    subject_id BIGINT(20) UNSIGNED NOT NULL,
+
+    PRIMARY KEY(interest_id),
+    FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY(subject_id) REFERENCES subjects(subject_id) ON DELETE CASCADE
+);
+
+
+
 -- Table for grades
 CREATE TABLE IF NOT EXISTS grades (
     grade_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -373,6 +386,7 @@ CREATE TABLE IF NOT EXISTS shared_resources (
     price DECIMAL(10,2) DEFAULT 0,
     resource_url TEXT,
     user_id BIGINT(20) UNSIGNED NOT NULL,
+    created_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP()
     
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     PRIMARY KEY(resource_id)

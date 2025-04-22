@@ -177,15 +177,6 @@ class CoursesController
      * 
      * @deprecated This function is deprecated due to the new flow that allows creating courses without modules.
      */
-    public function saveCourseData()
-    {
-        $thumbnail = $_FILES['thumbnail'] ?? null;
-        $this->validatorService->validateImg($thumbnail);
-        $this->fileService->upload("courses", $thumbnail); // Save image temporary
-
-        $_SESSION['courseData'] = $_POST;
-        redirectTo('/course/create/add-module');
-    }
 
     public function addModuleView()
     {
@@ -223,15 +214,6 @@ class CoursesController
         );
     }
 
-    public function userCourses()
-    {
-        echo $this->view->render(
-            "User/user_courses.php",
-            [
-                'title' => "ICT 2024 A/L"
-            ]
-        );
-    }
 
     public function successMessage()
     {
@@ -533,5 +515,32 @@ class CoursesController
         header('Content-Type: application/json');
         echo json_encode($result);
         exit;
+    }
+
+    public function userCourses()
+    {
+        $page = (int) ($_GET['p'] ?? 1);
+        $itemsPerPage = 9;
+        $offset = ($page - 1) * $itemsPerPage;
+
+        // Get search parameters
+        $searchParams = [
+            's' => $_GET['s'] ?? '',
+        ];
+
+        [$courses, $courseCount] = $this->courseService->getUserCourses(
+            $itemsPerPage,
+            $offset
+        );
+
+        $pagination = generatePagination($courseCount, $page, $itemsPerPage, $searchParams);
+
+
+        echo $this->view->render('User/user_courses.php', [
+            "title" => "Search Course",
+            "courses" => $courses,
+            "courseCount" => $courseCount,
+            'pagination' => $pagination
+        ]);
     }
 }

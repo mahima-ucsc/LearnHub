@@ -280,7 +280,7 @@
                                 <td>15000</td>
                                 <td><span class="course-status status-${course.status}">Active</span></td>
                                 <td>
-                                    <button class="action-btn btn-edit" onclick="window.location.href='/manage-course/edit/<?php echo e($course['course_id']) ?>'">
+                                    <button class="action-btn btn-edit" onclick="window.location.href='/course/edit/<?php echo e($course['course_id']) ?>'">
                                         <i class="fas fa-edit"></i>
                                     </button>
                                     <button class="action-btn btn-delete" onclick="event.stopPropagation(); showModal('/manage-course/delete/<?php echo e($course['course_id']) ?>')">

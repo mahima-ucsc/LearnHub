@@ -228,13 +228,6 @@
             <div class="stat-value" id="totalRevenue">Rs. <?php echo e($revenue); ?></div>
             <div class="stat-label">Total Revenue</div>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fas fa-star"></i>
-            </div>
-            <div class="stat-value" id="averageRating">4.0</div>
-            <div class="stat-label">Average Rating</div>
-        </div>
     </div>
 
     <!-- Courses Table -->
@@ -246,6 +239,7 @@
 
                     <i class="fas fa-search"></i>
                     <input type="text" placeholder="Search courses..." class="search-input" id="searchInput" name="s" value="<?php echo ($_GET['s']); ?>">
+                    <input type="hidden" name="p" value="1">
                 </form>
             </div>
         </div>
@@ -280,7 +274,7 @@
                                 <td>15000</td>
                                 <td><span class="course-status status-${course.status}">Active</span></td>
                                 <td>
-                                    <button class="action-btn btn-edit" onclick="window.location.href='/manage-course/edit/<?php echo e($course['course_id']) ?>'">
+                                    <button class="action-btn btn-edit" onclick="window.location.href='/course/edit/<?php echo e($course['course_id']) ?>'">
                                         <i class="fas fa-edit"></i>
                                     </button>
                                     <button class="action-btn btn-delete" onclick="event.stopPropagation(); showModal('/manage-course/delete/<?php echo e($course['course_id']) ?>')">
@@ -298,7 +292,10 @@
                 </tbody>
             </table>
         </div>
+        <?php include $this->resolve('components/pagination.php'); ?>
+
     </div>
+
     <?php include $this->resolve('components/delete_modal.php'); ?>
 
 </div>

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\{CourseRequestService, UserService, CourseService, AdvertisementService, PaymentService, ResourceService, ReviewService};
+use App\Services\{CourseRequestService, UserService, CourseService, AdvertisementService, PaymentService, ResourceService, ReviewService, SubjectService};
 use APP\Config\Paths;
-
+use Exception;
 
 class PageController
 {
@@ -19,7 +19,8 @@ class PageController
         private AdvertisementService $advertisementService,
         private PaymentService $paymentService,
         private ResourceService $resourceService,
-        private ReviewService $reviewService
+        private ReviewService $reviewService,
+        private SubjectService $subjectService
     ) {}
 
     public function home()
@@ -147,38 +148,74 @@ class PageController
 
     public function billingAndPayment()
     {
+        $page = (int) ($_GET['p'] ?? 1);
+        $itemsPerPage = 9;
+        $offset = ($page - 1) * $itemsPerPage;
+
+        $searchParams = [
+            's' => $_GET['s'] ?? '',
+            'status' => $_GET['status'] ?? 'all',
+            'date' => $_GET['date'] ?? 'all',
+        ];
+
+        [$paymentDetails, $count] = $this->paymentService->getPaymentHistory(
+            $itemsPerPage,
+            $offset
+        );
+
+        $pagination = generatePagination($count, $page, $itemsPerPage, $searchParams);
+
+
         if (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'teacher') {
             $revenue = $this->paymentService->getTeacherCourseIncome($_SESSION['user'])[0]['revenue'];
 
             $courses = $this->courseService->getTeacherCourses((int)$_SESSION['user']);
             $courseCount = count($courses);
-            $paymentDetails = $this->paymentService->getTeacherCoursesPaymentHistory((string)$_SESSION['user']);
+            // $paymentDetails = $this->paymentService->getTeacherCoursesPaymentHistory((string)$_SESSION['user']);
 
             echo $this->view->render('User/payment.php', [
                 'title' => "Billing & Payment",
                 "revenue" => $revenue,
                 "courseCount" => $courseCount,
-                "paymentDetails" => $paymentDetails
+                "paymentDetails" => $paymentDetails,
+                'pagination' => $pagination
             ]);
         } elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'student') {
-            $paymentDetails = $this->paymentService->getUserPaymentHistory($_SESSION['user']);
+            // $paymentDetails = $this->paymentService->getStudentPaymentHistory($_SESSION['user']);
             echo $this->view->render('User/payment.php', [
                 'title' => "Billing & Payment",
-                "paymentDetails" => $paymentDetails
+                "paymentDetails" => $paymentDetails,
+                'pagination' => $pagination
+            ]);
+        } elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'admin') {
+            // $paymentDetails = $this->paymentService->getPaymentHistory();
+            echo $this->view->render('User/payment.php', [
+                'title' => "Billing & Payment",
+                "paymentDetails" => $paymentDetails,
+                'pagination' => $pagination
             ]);
         }
-
-        echo $this->view->render('User/payment.php', [
-            'title' => "Billing & Payment"
-        ]);
     }
     public function courseManagment()
     {
+        $page = (int) ($_GET['p'] ?? 1);
+        $itemsPerPage = 9;
+        $offset = ($page - 1) * $itemsPerPage;
+        $searchParams = [
+            's' => $_GET['s'] ?? ''
+        ];
         if ($_SESSION['user_role'] === 'teacher') {
-            $courses = $this->courseService->getTeacherCourses($_SESSION['user']);
-            $courseCount = count($courses);
+            // $courses = $this->courseService->getTeacherCourses($_SESSION['user']);
+            // $courseCount = count($courses);
+
+            [$courses, $courseCount] = $this->courseService->searchCourse(
+                $itemsPerPage,
+                $offset
+            );
+
             $revenue = $this->paymentService->getTeacherCourseIncome($_SESSION['user']);
             $revenue = $revenue[0]['revenue'];
+            $pagination = generatePagination($courseCount, $page, $itemsPerPage, $searchParams);
         } else {
             $courseCount = $this->courseService->getNoOfCourses();
             $courses = $this->courseService->getCourseList();
@@ -189,7 +226,8 @@ class PageController
             'title' => "Course Managment",
             'courseCount' => $courseCount,
             "courses" => $courses,
-            'revenue' => $revenue
+            'revenue' => $revenue,
+            'pagination' => $pagination
         ]);
     }
     public function unauthorizedAccess()
@@ -221,33 +259,38 @@ class PageController
         );
     }
 
-    public function interest()
+    public function interestView()
     {
+        $subjects = $this->subjectService->getSubjects();
         echo $this->view->render(
             'interest_selection.php',
             [
-                'title' => "Pick Your Interest"
+                'title' => "Select Your Interests",
+                'subjects' => $subjects
             ]
         );
     }
-    public function interestSkip()
+
+    public function interest()
     {
-        echo $this->view->render(
-            'index.php',
-            [
-                'title' => "Pick Your Interest"
-            ]
-        );
+        try {
+            $json = file_get_contents('php://input');
+            $data = json_decode($json, true);
+            $this->userService->saveUserInterest($data['interests']);
+            $data = [
+                "success" => false,
+                "message" => "Success"
+            ];
+        } catch (Exception $e) {
+            $data = [
+                "success" => false,
+                "message" => $e->getMessage()
+            ];
+        }
+
+        echo json_encode($data);
     }
-    public function interestContinue()
-    {
-        echo $this->view->render(
-            'index.php',
-            [
-                'title' => "Pick Your Interest"
-            ]
-        );
-    }
+
     public function createAd()
     {
         echo $this->view->render(
@@ -350,7 +393,7 @@ class PageController
     public function test()
     {
 
-        echo $this->view->render("test.php", [
+        echo $this->view->render("User/user_courses.php", [
             "title" => "Post Managment"
         ]);
     }

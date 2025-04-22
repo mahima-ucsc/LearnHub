@@ -95,4 +95,65 @@ class ResourceService
 
         return $this->db->rowCount() > 0;
     }
+
+    public function searchResource(int $limit, int $offset)
+    {
+        $searchTerm = $_GET['s'] ?? '';
+        $subject = $_GET['subject'] ?? 'all';
+        $type = $_GET['type'] ?? 'all';
+        $price = $_GET['price'] ?? 'all';
+        $sort = $_GET['sort'] ?? '';
+
+        $whereConditions = [];
+        $params = [];
+
+        if (!empty($searchTerm)) {
+            $whereConditions[] = "(sr.title LIKE :term OR sr.description LIKE :term OR u.first_name LIKE :term OR u.last_name LIKE :term OR CONCAT(u.first_name , ' ', u.last_name) LIKE :term)";
+            $params['term'] = "%{$searchTerm}%";
+        }
+
+        if ($subject !== 'all') {
+            $whereConditions[] = "sr.subject_id = :subject";
+            $params["subject"] = $subject;
+        }
+
+        if ($price !== 'all') {
+            $whereConditions[] = "sr.price = :price";
+            $params["price"] = $price;
+        }
+
+        $whereClause = !empty($whereConditions) ? "WHERE " . implode(" AND ", $whereConditions) : "";
+        $orderClause = "";
+        switch ($sort) {
+            case 'newest':
+                $orderClause = "ORDER BY sr.created_date DESC";
+                break;
+            case 'oldest':
+                $orderClause = "ORDER BY sr.created_date ASC";
+                break;
+            case 'price_low':
+                $orderClause = "ORDER BY sr.price ASC";
+                break;
+            case 'price_high':
+                $orderClause = "ORDER BY sr.price DESC";
+                break;
+        }
+
+        $resources = $this->db->query(
+            "SELECT sr.*, CONCAT(u.first_name, ' ', u.last_name) as username FROM shared_resources sr
+            JOIN users u ON u.user_id = sr.user_id
+            {$whereClause}
+            {$orderClause}
+            LIMIT {$limit} OFFSET {$offset}",
+            $params
+        )->findAll();
+        $resourceCount = $this->db->query(
+            "SELECT COUNT(*) FROM shared_resources sr
+            JOIN users u ON u.user_id = sr.user_id
+            {$whereClause}",
+            $params
+        )->count();
+
+        return [$resources, $resourceCount];
+    }
 }

@@ -19,7 +19,7 @@
     <!-- Form Container -->
     <div class="container">
         <div class="form-container">
-            <form id="resource-form" class="resource-form" method="post" enctype="multipart/form-data" action>
+            <form id="resource-form" class="resource-form" method="post" enctype="multipart/form-data">
                 <div class="form-content">
                     <!-- Basic Information Section -->
                     <div class="form-section">
