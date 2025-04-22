@@ -62,9 +62,8 @@ function registerRoutes(App $app)
     $app->get('/register/verification', [AuthController::class, 'verificationView'], [GuestOnlyMiddleware::class]);
     $app->post('/verify-otp', [AuthController::class, 'verifyuser'], [GuestOnlyMiddleware::class]);
     $app->post('/resend-otp', [AuthController::class, 'resendOtp'], [GuestOnlyMiddleware::class]);
-    $app->get('/interest', [PageController::class, 'interest'], [AuthRequiredMiddleware::class]);
-    $app->get('/interest/skip', [PageController::class, 'interestSkip'], [AuthRequiredMiddleware::class]);
-    $app->get('/interest/continue', [PageController::class, 'interestContinue'], [AuthRequiredMiddleware::class]);
+    $app->get('/interest', [PageController::class, 'interestView'], [AuthRequiredMiddleware::class]);
+    $app->post('/interest', [PageController::class, 'interest'], [AuthRequiredMiddleware::class]);
 
     $app->get('/login', [AuthController::class, 'loginView'], [GuestOnlyMiddleware::class]);
     $app->post('/login', [AuthController::class, 'login'],  [GuestOnlyMiddleware::class]);
@@ -91,12 +90,8 @@ function registerRoutes(App $app)
     $app->get('/course/edit/{course_id}', [CoursesController::class, 'courseEditView']);
     $app->put('/course/edit/{course_id}', [CoursesController::class, 'editCourse']);
     $app->delete('/manage-course/delete/{course}', [CoursesController::class, 'deleteCourse'], [TeacherOnlyMiddleware::class]);
-    $app->get('/courses/my-courses/{course_id}', [CoursesController::class, 'courseInfo'], [AuthRequiredMiddleware::class]);
-    $app->get('/courses/my-courses/{course_id}/participant', [CoursesController::class, 'courseParticipant'], [TeacherOnlyMiddleware::class]);
     $app->get('/courses/my-courses/{course_id}/participant/stats/{participant_id}', [CoursesController::class, 'courseParticipantStat'], [TeacherOnlyMiddleware::class]);
-    $app->get('/course/create/old', [CoursesController::class, 'createCourseView']);
-    $app->post('/save-course-data', [CoursesController::class, 'saveCourseData'], [TeacherOnlyMiddleware::class]);
-    $app->get('/courses/my-courses', [CoursesController::class, 'myCourses'], [AuthRequiredMiddleware::class]);
+    $app->get('/courses/mycourses', [CoursesController::class, 'userCourses'], [AuthRequiredMiddleware::class]);
     $app->get('/courses/test', [CoursesController::class, 'myCoursesTest']);
     $app->post('/courses/pin-course', [CoursesController::class, 'pinCourse']);
 
@@ -118,9 +113,6 @@ function registerRoutes(App $app)
 
     $app->post('/mark-attendance', [CoursesController::class, 'markAttendance']);
 
-    // TODO: Remove or implement this route
-    // $app->get('/courses/my/registered', [CoursesController::class, 'regCourses'], [AuthRequiredMiddleware::class]);
-    $app->get('/courses/user', [CoursesController::class, 'userCourses'], [StudentOnlyMiddleware::class]);
     $app->get('/course/create/add-module', [CoursesController::class, 'addModuleView']);
     $app->get('/course/create/success', [CoursesController::class, 'successMessage']);
 
@@ -183,10 +175,6 @@ function registerRoutes(App $app)
     $app->post('/approve-advertisement', [AdvertisementController::class, 'approve']);
     $app->post('/reject-advertisement', [AdvertisementController::class, 'reject']);
 
-    $app->get('/test', [PageController::class, 'test']);
-    $app->post('/test', [PageController::class, 'testPost']);
-    $app->get('/post', [PageController::class, 'post']);
-    $app->get('/test/help', [PageController::class, 'helpAndSupportReview']);
 
     // Notifications
     $app->get('/api/notifications', [NotificationController::class, 'getUserNotifications'], [NotificationMiddleware::class]);
@@ -202,6 +190,10 @@ function registerRoutes(App $app)
 
     $app->get('/unauthorized-access', [PageController::class, 'unauthorizedAccess']);
     $app->get('/server-error', [PageController::class, 'internalServerError']);
+
+
+    $app->get('/test', [PageController::class, 'test']);
+    $app->get('/test/help', [PageController::class, 'helpAndSupportReview']);
 
     // Catch-all route for 404 page
     $app->get('/{any:.*}', [PageController::class, 'notFound']);
