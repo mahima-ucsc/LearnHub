@@ -25,7 +25,9 @@
                 </div>
             </div>
             <div class="teacher-section">
-                <img src="/assets/images/user.jpeg" alt="John Doe" class="teacher-avatar">
+                <img src="<?= isset($user['profile_picture_url'])
+                                ? $user['profile_picture_url'] :
+                                "/assets/images/user_placeholder.jpg" ?>" alt="John Doe" class="teacher-avatar">
                 <div class="teacher-info">
                     <h3> <?php echo e($user['first_name']); ?> <?php echo e($user['last_name']); ?></h3>
                     <p><?php echo e($user['description']); ?></p>
