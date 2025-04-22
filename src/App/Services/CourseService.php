@@ -1025,4 +1025,52 @@ class CourseService
             redirectTo('/server-error');
         }
     }
+
+    public function getUserCourses(int $length, int $offset)
+    {
+        // Get all search parameters
+        $searchTerm = trim($_GET['s'] ?? '');
+
+        $courses = $this->db->query(
+            "SELECT DISTINCT
+        c.*,
+        u.first_name as first_name,
+        u.last_name,
+        s.subject_title AS subject
+        FROM courses c
+        JOIN course_payments cp ON cp.course_id = c.course_id
+        JOIN subjects s ON s.subject_id = c.subject_id
+        JOIN users u ON u.user_id = c.tutor_id
+        WHERE cp.user_id = :user_id
+        AND ((u.first_name LIKE :term 
+        OR u.last_name LIKE :term 
+        OR CONCAT(u.first_name, ' ', u.last_name) LIKE :term 
+        OR c.title LIKE :term))
+        LIMIT {$length} OFFSET {$offset}",
+            [
+                'term' => "%{$searchTerm}%",
+                'user_id' => $_SESSION['user']
+            ]
+        )->findAll();
+
+        // Get total count for pagination
+        $courseCount = $this->db->query(
+            "SELECT COUNT(DISTINCT c.course_id)
+        FROM courses c
+        JOIN course_payments cp ON cp.course_id = c.course_id
+        JOIN subjects s ON s.subject_id = c.subject_id
+        JOIN users u ON u.user_id = c.tutor_id
+        WHERE cp.user_id = :user_id
+        AND ((u.first_name LIKE :term 
+        OR u.last_name LIKE :term 
+        OR CONCAT(u.first_name, ' ', u.last_name) LIKE :term 
+        OR c.title LIKE :term))",
+            [
+                'term' => "%{$searchTerm}%",
+                'user_id' => $_SESSION['user']
+            ]
+        )->count();
+
+        return [$courses, $courseCount];
+    }
 }
