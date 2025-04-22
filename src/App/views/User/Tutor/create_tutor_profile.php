@@ -194,6 +194,9 @@
 </head>
 
 <body>
+    <?php
+    // dd($subjects); 
+    ?>
     <div class="container">
         <div class="form-header">
             <h1>Create Your Tutor Profile</h1>
@@ -201,7 +204,7 @@
         </div>
 
         <form id="tutorProfileForm" action="/api/tutor/profile" method="POST">
-            <input type="hidden" id="tutorId" name="tutor_id" value="1001">
+            <input type="hidden" id="tutorId" name="tutor_id" value="<?php echo $_SESSION['user'] ?>">
 
             <!-- Basic Information -->
             <div class="form-card">
@@ -238,14 +241,11 @@
                                     <label>Subject</label>
                                     <select name="subjects[0][subject_id]">
                                         <option value="">Select a subject...</option>
-                                        <option value="1">Mathematics</option>
-                                        <option value="2">Computer Science</option>
-                                        <option value="3">Physics</option>
-                                        <option value="4">Chemistry</option>
-                                        <option value="5">Biology</option>
-                                        <option value="6">English</option>
-                                        <option value="7">History</option>
-                                        <option value="8">Economics</option>
+                                        <?php
+                                        foreach ($subjects as $subject) {
+                                            echo "<option value='" . $subject['subject_id'] . "'>" . $subject['subject_title'] . "</option>";
+                                        }
+                                        ?>
                                     </select>
                                 </div>
                                 <div class="form-group">

@@ -6,7 +6,7 @@ namespace App\Controllers;
 
 use Framework\TemplateEngine;
 use Framework\Exceptions\ValidationException;
-use App\Services\{ValidatorService, UserService};
+use App\Services\{ValidatorService, UserService, SubjectService};
 
 class AuthController
 {
@@ -14,6 +14,7 @@ class AuthController
         private TemplateEngine $view,
         private ValidatorService $validatorService,
         private UserService $userService,
+        private SubjectService $SubjectService,
     ) {}
 
     public function registerView()
@@ -91,10 +92,12 @@ class AuthController
 
     public function createTutorProfile()
     {
+        $subjects = $this->SubjectService->getSubjects();
         echo $this->view->render(
             "User/Tutor/create_tutor_profile.php",
             [
-                "title" => "creat your profile"
+                "title" => "creat your profile",
+                'subjects' => $subjects,
             ]
         );
     }
