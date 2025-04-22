@@ -14,13 +14,43 @@ class ResourceController
 
     public function resource()
     {
-        $resouces = $this->resourceService->getResources();
-        // dd($resouces);
+
+        $page = (int) ($_GET['p'] ?? 1);
+        $itemsPerPage = 6;
+        $offset = ($page - 1) * $itemsPerPage;
+
+        // Get search parameters
+        $searchParams = [
+            's' => $_GET['s'] ?? '',
+            'subject' => $_GET['subject'] ?? 'all',
+            'type' => $_GET['type'] ?? 'all',
+            'price' => $_GET['price'] ?? 'all',
+            'sort' => $_GET['sort'] ?? '',
+        ];
+
+        [$resouces, $resourceCount] = $this->resourceService->searchResource(
+            $itemsPerPage,
+            $offset
+        );
+
+        $pagination = generatePagination($resourceCount, $page, $itemsPerPage, $searchParams);
+
         echo $this->view->render('Resource/resource.php', [
             'title' => 'Resource',
-            'resources' => $resouces
+            'resources' => $resouces,
+            'pagination' => $pagination,
+            'resourceCount' => $resourceCount
         ]);
     }
+    // public function resource()
+    // {
+    //     $resouces = $this->resourceService->getResources();
+    //     // dd($resouces);
+    //     echo $this->view->render('Resource/resource.php', [
+    //         'title' => 'Resource',
+    //         'resources' => $resouces
+    //     ]);
+    // }
     public function createView()
     {
         echo $this->view->render('Resource/create.php', [
@@ -30,13 +60,13 @@ class ResourceController
 
     public function create()
     {
-        // dd($_POST);
         $this->resourceService->create($_POST, $_FILES);
+        redirectTo('/resource');
     }
     public function myResources()
     {
         $userId = $_SESSION['user'];
-        $resources = $this->resourceService->getResourcesByUser($userId);
+        $resources = $this->resourceService->getResourcesByUser((int)$userId);
 
         echo $this->view->render('Resource/my_resources.php', [
             'title' => 'My Resources',
@@ -49,7 +79,7 @@ class ResourceController
         $resourceId = (int)$params['resource_id'];
 
         // Ensure the resource belongs to the logged-in user
-        $userId = $_SESSION['user']; // Assuming user_id is stored in the session
+        $userId = (int)$_SESSION['user']; // Assuming user_id is stored in the session
         $isDeleted = $this->resourceService->deleteResource($resourceId, $userId);
 
         if ($isDeleted) {
