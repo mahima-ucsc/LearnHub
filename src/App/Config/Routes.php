@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace App\Config;
 
 use App\Controllers\{
+    AnnouncementController,
     AdvertisementController,
     AlertController,
     AssignmentController,
@@ -146,6 +147,15 @@ function registerRoutes(App $app)
     $app->delete('/resource/delete/{resource_id}', [ResourceController::class, 'deleteResource'], [AuthRequiredMiddleware::class]);
     $app->get('/resource/edit/{resource_id}', [ResourceController::class, 'editView'], [AuthRequiredMiddleware::class]);
     $app->post('/resource/edit/{resource_id}', [ResourceController::class, 'updateResource'], [AuthRequiredMiddleware::class]);
+
+    // announcement
+    $app->get('/courses/{course_id}/announcements/create', [AnnouncementController::class, 'announcementsFormView'], [AuthRequiredMiddleware::class]);
+    $app->post('/courses/{course_id}/announcements/create', [AnnouncementController::class, 'createAnnouncements'], [AuthRequiredMiddleware::class]);
+    $app->get('/courses/{course_id}/announcements', [AnnouncementController::class, 'announcementsListView'], [AuthRequiredMiddleware::class]);
+    $app->post('/announcements/mark-as-read', [AnnouncementController::class, 'markAsRead'], [AuthRequiredMiddleware::class]);
+    $app->post('/announcements/mark_as', [AnnouncementController::class, 'markAsButtonToggle'], [AuthRequiredMiddleware::class]);
+    $app->post('/announcements/mark-as-unread', [AnnouncementController::class, 'markAsUnread'], [AuthRequiredMiddleware::class]);
+    $app->post('/courses/{course_id}/announcements/attachments', [AnnouncementController::class, 'downloadAttachment'], [AuthRequiredMiddleware::class]);
 
     // course Reviews
     $app->get('/course/review/{course}/{page}', [ReviewController::class, 'getCourseReview']);
