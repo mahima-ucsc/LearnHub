@@ -136,9 +136,12 @@
             // Toggle Free/Paid Resource
             const freeToggle = document.getElementById('free-toggle');
             const priceField = document.querySelector('.price-field');
+            const priceInput = document.getElementById('resource-price');
 
+            // Set initial visibility of the price field
             if (freeToggle.checked) {
                 priceField.classList.remove('active');
+                priceInput.value = ''; // Clear the price if free is selected
             } else {
                 priceField.classList.add('active');
             }
@@ -147,6 +150,7 @@
             freeToggle.addEventListener('change', function() {
                 if (this.checked) {
                     priceField.classList.remove('active');
+                    priceInput.value = ''; // Clear the price when toggled to free
                 } else {
                     priceField.classList.add('active');
                 }
