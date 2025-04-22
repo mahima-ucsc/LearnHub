@@ -50,6 +50,12 @@ function registerRoutes(App $app)
     $app->get('/post-managment', [PageController::class, 'postManagment']);
     $app->get('/advertisement-managment', [PageController::class, 'adManagment']);
 
+    // Admin Resource managment
+    $app->get('/resource-managment', [PageController::class, 'resourceManagment']);
+    $app->post('/resource-managment/approve/{resource_id}', [ResourceController::class, 'approveResource']);
+    $app->post('/resource-managment/reject/{resource_id}', [ResourceController::class, 'rejectResource']);
+    $app->delete('/resource-managment/delete/{resource_id}', [ResourceController::class, 'deleteResourceAdmin']);
+
     // Contact
     $app->get('/contact', [ContactController::class, 'contact']);
     $app->post('/contact', [ContactController::class, 'submitContactForm']);
