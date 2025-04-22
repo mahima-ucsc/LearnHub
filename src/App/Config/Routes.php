@@ -39,7 +39,7 @@ function registerRoutes(App $app)
     $app->get('/profile', [PageController::class, 'profile'], [AuthRequiredMiddleware::class]);
     $app->get('/dashboard', [PageController::class, 'dashboard'], [AuthRequiredMiddleware::class]);
     $app->get('/settings', [PageController::class, 'settings'], [AuthRequiredMiddleware::class]);
-    $app->get('/tutor', [PageController::class, 'tutorProfile'], [AuthRequiredMiddleware::class]);
+    $app->get('/tutor/{tutor-id}', [PageController::class, 'tutorProfile'], [AuthRequiredMiddleware::class]);
     $app->get('/alert', [AlertController::class, 'alert']);
     $app->get('/help-and-support', [PageController::class, 'helpAndSupport']);
     $app->get('/announcements/create', [PageController::class, 'createAnnouncements']);

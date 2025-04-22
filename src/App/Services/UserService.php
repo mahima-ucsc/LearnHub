@@ -38,6 +38,27 @@ class UserService
         return $userDetails;
     }
 
+    public function getTutorProfile(string $tutorId)
+    {
+        $tutorDetails = $this->db->query(
+            "SELECT * FROM users
+            WHERE user_id = :tutor_id",
+            ['tutor_id' => $tutorId]
+        )->find();
+        if ($tutorDetails['profile_picture_url'] !== null) {
+            $tutorDetails['profile_picture_url'] =
+                Paths::UPLOAD_FOLDER_RELATIVE_TO_PUBLIC . "/" .
+                Paths::RELATIVE_USER_PROFILE_PICTURE_UPLOADS .
+                '/' . $tutorDetails['profile_picture_url'];
+        }
+
+        unset($tutorDetails['password']);
+
+        // dd($tutorDetails);
+
+        return $tutorDetails;
+    }
+
     public function getUserDetailsById(string $id)
     {
         $userDetails = $this->db->query(

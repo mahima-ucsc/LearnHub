@@ -337,13 +337,13 @@ class PageController
         ]);
     }
 
-    public function tutorProfile()
+    public function tutorProfile($params)
     {
         $userReview = $this->reviewService->getUserReview();
-        $userDetails = $this->userService->getUserProfile();
+        $tutorDetails = $this->userService->getTutorProfile($params['tutor-id']);
         echo $this->view->render('Tutor/profile.php', [
             "title" => "Tutor",
-            "userDetails" => $userDetails,
+            "tutorDetails" => $tutorDetails,
             "userReview" => $userReview
         ]);
     }
