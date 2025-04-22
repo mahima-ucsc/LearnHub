@@ -2,6 +2,9 @@
 <link rel="stylesheet" href="/assets/styles/User/settings.css">
 <link rel="stylesheet" href="/assets/styles/components/toast.css">
 
+<?php if (!empty($_SESSION['user']) && ($_SESSION['user_role'] == 'admin' || $_SESSION['user_role'] = 'teacher')): ?>
+    <?php include $this->resolve('User/sidebar.php'); ?>
+<?php endif; ?>
 
 <section class="settings">
     <div class="settings-container">
@@ -41,7 +44,7 @@
                             <div class="profile-image-preview">
                                 <img src="<?= isset($userDetails['profile_picture_url'])
                                                 ? $userDetails['profile_picture_url'] :
-                                                "/assets/images/user.jpeg" ?>"
+                                                "/assets/images/user_placeholder.jpg" ?>"
                                     alt="Profile Picture">
                                 <div class="overlay">
                                     <label for="profilePicture" class="upload-icon">
