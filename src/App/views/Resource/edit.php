@@ -71,15 +71,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="tags-input">Tags (Press Enter after each tag)</label>
-                            <div class="tags-input-container">
-                                <input type="text" id="tags-input" class="tags-input" placeholder="Add relevant tags...">
-                                <!-- <input type="text" id="tags-input" class="tags-input" placeholder="Add relevant tags..." value='<?php echo json_encode($resource['tags']); ?>'> -->
 
-                            </div>
-                            <input type="hidden" id="tags-hidden" name="tags">
-                        </div>
                     </div>
 
                     <!-- Pricing Section -->
