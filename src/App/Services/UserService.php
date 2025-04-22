@@ -293,7 +293,6 @@ class UserService
 
         $HVcode = password_hash((string)$verificationCode, PASSWORD_BCRYPT, ["const" => 12]);
         $_SESSION['otp_hash'] = $HVcode;
-        // dd([$verificationCode, $HVcode, $email]);
 
         try {
             // server settings
@@ -364,6 +363,29 @@ class UserService
             return true;
         } catch (Exception $e) {
             throw new ValidationException(['email' => "Message could not be sent. Mailer Error: {$mail->ErrorInfo}"]);
+        }
+    }
+    public function saveUserInterest(array $interest)
+    {
+        try {
+            $userId = $_SESSION['user'];
+            foreach ($interest as $i) {
+                $this->db->query(
+                    "INSERT INTO user_interest(
+                    user_id,
+                    subject_id
+                    ) VALUES(
+                    :user_id,
+                    :subject_id
+                    )",
+                    [
+                        "user_id" => $userId,
+                        "subject_id" => $i
+                    ]
+                );
+            }
+        } catch (Exception $e) {
+            throw $e;
         }
     }
 }

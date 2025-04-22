@@ -56,7 +56,11 @@ class AuthController
     {
         if (password_verify($_POST['verificationCode'], $_SESSION['otp_hash'])) {
             $this->userService->create($_SESSION['tempUser']);
-            redirectTo('/');
+            if ($_SESSION['user_role'] == "student") {
+                redirectTo('/interest');
+            } else {
+                redirectTo("/");
+            }
         } else {
             throw new ValidationException(['verificationCode' => ['Invalid verification code']]);
         }
