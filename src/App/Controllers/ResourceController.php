@@ -6,7 +6,8 @@ namespace App\Controllers;
 
 use Framework\TemplateEngine;
 use App\Services\ResourceService;
-
+use Error;
+use Exception;
 
 class ResourceController
 {
@@ -83,7 +84,7 @@ class ResourceController
         $isDeleted = $this->resourceService->deleteResource($resourceId, $userId);
 
         if ($isDeleted) {
-            redirectTo('/resource/my-resources'); // Redirect to the resources page
+            redirectTo($_SERVER['HTTP_REFERER']); // Redirect to the resources page
         } else {
             echo "Failed to delete the resource.";
         }
@@ -118,6 +119,40 @@ class ResourceController
             redirectTo('/resource/my-resources'); // Redirect to the resources page
         } else {
             echo "Failed to update the resource.";
+        }
+    }
+
+    public function approveResource(array $params)
+    {
+
+        try {
+            $this->resourceService->approveResource((string)$params['resource_id']);
+            redirectTo('/resource-managment');
+        } catch (Exception $e) {
+            error_log("Error approving resource: " . $e->getMessage());
+            redirectTo('/server-error');
+        }
+    }
+    public function rejectResource(array $params)
+    {
+
+        try {
+            $this->resourceService->rejectResource((string)$params['resource_id']);
+            redirectTo('/resource-managment');
+        } catch (Exception $e) {
+            error_log("Error approving resource: " . $e->getMessage());
+            redirectTo('/server-error');
+        }
+    }
+    public function deleteResourceAdmin(array $params)
+    {
+
+        try {
+            $this->resourceService->deleteResourceAdmin((string)$params['resource_id']);
+            redirectTo('/resource-managment');
+        } catch (Exception $e) {
+            error_log("Error approving resource: " . $e->getMessage());
+            redirectTo('/server-error');
         }
     }
 }

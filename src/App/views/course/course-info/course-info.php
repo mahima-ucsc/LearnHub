@@ -27,7 +27,7 @@
             <div class="teacher-section">
                 <img src="<?= isset($user['profile_picture_url'])
                                 ? $user['profile_picture_url'] :
-                                "/assets/images/user_placeholder.jpg" ?>" alt="John Doe" class="teacher-avatar">
+                                "/assets/images/user_placeholder.jpg" ?>" alt="User Avatar" class="teacher-avatar">
                 <div class="teacher-info">
                     <h3> <?php echo e($user['first_name']); ?> <?php echo e($user['last_name']); ?></h3>
                     <p><?php echo e($user['description']); ?></p>
@@ -233,7 +233,9 @@
                 <div class="review-item">
                     <div class="review-header">
                         <!-- avatar -->
-                        <img src="<?php echo htmlspecialchars($review['profile_picture_url']); ?>" alt="<?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
+                        <img src="<?= isset($review['profile_picture_url'])
+                                        ? $user['profile_picture_url'] :
+                                        "/assets/images/user_placeholder.jpg" ?>"" alt=" <?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
                         <!-- since when-->
                         <div class="review-meta">
                             <span class="review-name"><?php echo htmlspecialchars($review['name']); ?></span>
