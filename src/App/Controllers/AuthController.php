@@ -88,4 +88,14 @@ class AuthController
         $this->userService->logout();
         redirectTo('/login');
     }
+
+    public function createTutorProfile()
+    {
+        echo $this->view->render(
+            "User/Tutor/create_tutor_profile.php",
+            [
+                "title" => "creat your profile"
+            ]
+        );
+    }
 }
