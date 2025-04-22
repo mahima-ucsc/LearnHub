@@ -335,7 +335,7 @@ class PageController
     {
         $userReview = $this->reviewService->getUserReview();
         $tutorDetails = $this->userService->getTutorProfile($params['tutor-id']);
-        echo $this->view->render('Tutor/profile.php', [
+        echo $this->view->render('User/Tutor/tutorProfile.php', [
             "title" => "Tutor",
             "tutorDetails" => $tutorDetails,
             "userReview" => $userReview
