@@ -386,7 +386,8 @@ CREATE TABLE IF NOT EXISTS shared_resources (
     price DECIMAL(10,2) DEFAULT 0,
     resource_url TEXT,
     user_id BIGINT(20) UNSIGNED NOT NULL,
-    created_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP()
+    created_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending'
     
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     PRIMARY KEY(resource_id)
