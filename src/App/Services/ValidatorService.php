@@ -34,8 +34,7 @@ class ValidatorService
             "email" => ["required", "email"],
             "date_of_birth" => ["required", "notFutureDate"],
             "password" => ["required", "min:8"],
-            "confirmPassword" => ["required", "match:password"],
-            "phone_no" => ["phoneno"],
+            "confirmPassword" => ["required", "match:password"]
         ]);
     }
 
