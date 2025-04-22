@@ -414,4 +414,46 @@ class PaymentService
             redirectTo('/server-error');
         }
     }
+
+    public function getTeacherCoursesPaymentHistory(string $teacherId)
+    {
+        try {
+            return $this->db->query(
+                "SELECT 
+                p.*,
+                c.title
+                FROM payments p
+                JOIN course_payments cp ON cp.payment_id = p.payment_id
+                JOIN courses c ON c.course_id = cp.course_id
+                WHERE c.tutor_id = :id",
+                [
+                    'id' => $teacherId
+                ]
+            )->findAll();
+        } catch (Exception $e) {
+            error_log("Failed to fetch teacher payment hisoty: " . $e->getMessage());
+            redirectTo('/server-error');
+        }
+    }
+
+    public function getUserPaymentHistory(int $id)
+    {
+        try {
+            return $this->db->query(
+                "SELECT 
+                p.*,
+                c.title
+                FROM payments p
+                JOIN course_payments cp ON cp.payment_id = p.payment_id
+                JOIN courses c ON c.course_id = cp.course_id
+                WHERE cp.user_id = :id",
+                [
+                    'id' => $id
+                ]
+            )->findAll();
+        } catch (Exception $e) {
+            error_log("Failed to fetch teacher payment hisoty: " . $e->getMessage());
+            redirectTo('/server-error');
+        }
+    }
 }

@@ -15,12 +15,12 @@ class MinRule implements RuleInterface
             throw new InvalidArgumentException("Minimum length not specified");
         }
 
-        $length = (int) $params[0];
-        return $data[$field] >= $length;
+        $minLength = (int) $params[0];
+        return strlen((string)($data[$field])) >= $minLength;
     }
 
     public function getMessage(array $data, string $field, array $params): string
     {
-        return "Must be at least {$params[0]}.";
+        return "Must be at least {$params[0]} characters long.";
     }
 }

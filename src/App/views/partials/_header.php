@@ -83,7 +83,7 @@
                             </a>
                         <?php endif; ?>
                         <?php if ($_SESSION["user_role"] === 'admin' || $_SESSION["user_role"] === 'teacher'): ?>
-                            <a href="<?php echo ($_SESSION["user_role"] === 'admin' ? '/admin-dashboard?tab=dashboard' : 'dashboard'); ?>">
+                            <a href='/dashboard'>
 
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <rect x="3" y="3" width="7" height="7"></rect>

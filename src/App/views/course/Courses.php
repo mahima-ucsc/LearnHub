@@ -478,80 +478,6 @@
         color: var(--success);
     }
 
-    /* Pagination */
-    .pagination-course-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 15px;
-        margin: 40px 0;
-    }
-
-    .pagination-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 10px 15px;
-        background-color: var(--white);
-        color: var(--dark);
-        border-radius: var(--radius-sm);
-        text-decoration: none;
-        font-weight: 500;
-        box-shadow: var(--shadow);
-        transition: var(--transition);
-    }
-
-    .pagination-btn:hover {
-        background-color: var(--gray);
-        transform: translateY(-2px);
-    }
-
-    .pagination-btn i {
-        margin: 0 5px;
-    }
-
-    .page-numbers {
-        display: flex;
-        gap: 8px;
-    }
-
-    .page-numbers a {
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: var(--white);
-        color: var(--dark);
-        border-radius: var(--radius-sm);
-        text-decoration: none;
-        font-weight: 500;
-        box-shadow: var(--shadow);
-        transition: var(--transition);
-    }
-
-    .page-numbers a:hover:not(.active-page) {
-        background-color: var(--gray);
-        transform: translateY(-2px);
-    }
-
-    .page-numbers a.active-page {
-        background-color: var(--primary);
-        color: var(--dark);
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 576px) {
-        .pagination-course-container {
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .page-numbers {
-            order: -1;
-        }
-    }
-
     /* Responsive Adjustments */
     @media (max-width: 992px) {
         .course-hero h1 {
@@ -801,8 +727,8 @@
                     <span class="filter-label">Course type:</span>
                     <select class="filter-select" name="type">
                         <option value="all" <?php echo (!isset($_GET['type']) || $_GET['type'] === 'all') ? 'selected' : ''; ?>>Any type</option>
-                        <option value="onetime" <?php echo (isset($_GET['type']) && $_GET['type'] === 'under25') ? 'selected' : ''; ?>>One time payment</option>
-                        <option value="recurring" <?php echo (isset($_GET['type']) && $_GET['type'] === 'under25') ? 'selected' : ''; ?>>Monthly payment</option>
+                        <option value="onetime" <?php echo (isset($_GET['type']) && $_GET['type'] === 'onetime') ? 'selected' : ''; ?>>One time payment</option>
+                        <option value="recurring" <?php echo (isset($_GET['type']) && $_GET['type'] === 'recurring') ? 'selected' : ''; ?>>Monthly payment</option>
                     </select>
                 </div>
                 <div class="filter-group">
@@ -940,26 +866,7 @@
         <?php endforeach; ?>
     </section>
 
-    <!-- Pagination -->
-    <div class="pagination-course-container">
-        <?php if ($currentPage > 1) : ?>
-            <a href="?<?php echo e($previousPageQuery); ?>" class="pagination-btn prev-btn" onclick="showLoader()">
-                <i class="fas fa-chevron-left"></i> Previous
-            </a>
-        <?php endif; ?>
-        <div class="page-numbers">
-            <?php foreach ($pageLinks as $pageNum => $query): ?>
-                <a href="?<?php echo e($query); ?>" class="<?php echo $pageNum + 1 === $currentPage ? "active-page" : "" ?>" onclick="showLoader()">
-                    <?php echo ($pageNum + 1); ?>
-                </a>
-            <?php endforeach; ?>
-        </div>
-        <?php if ($currentPage < $lastPage): ?>
-            <a href="?<?php echo e($nextPageQuery); ?>" class="pagination-btn next-btn" onclick="showLoader();changePage(1)">
-                Next <i class="fas fa-chevron-right"></i>
-            </a>
-        <?php endif; ?>
-    </div>
+    <?php include $this->resolve('components/pagination.php'); ?>
 </div>
 
 <script>

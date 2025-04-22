@@ -12,7 +12,7 @@
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
-.edit-assignment {
+/* .edit-assignment {
     padding-top: 15px;
     padding-right: 15px;
     display: flex;
@@ -22,8 +22,51 @@
 .edit-assignment a {
     text-decoration: none;
     color: black;
+} */
+
+.teacher-actions {
+    display: flex;
+    gap: 15px;
+    padding-top: 15px;
+    padding-right: 15px;
+    margin-bottom: 15px;
+    justify-content: end;
+    flex-wrap: wrap;
 }
 
+.teacher-action-btn {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.teacher-action-btn i {
+    margin-right: 8px;
+}
+
+.teacher-action-btn {
+    background-color: var(--color-primary-light);
+    color: var(--color-primary);
+}
+
+.teacher-action-btn:hover {
+    background-color: var(--color-primary);
+    color: #ffc400;
+}
+
+.review-btn {
+    background-color: var(--color-success-light, #e6f4ea);
+    color: var(--color-success, #28a745);
+}
+
+.review-btn:hover {
+    background-color: var(--color-success, #28a745);
+    color: white;
+}
 .assignment-container {
     max-width: 1000px;
     margin: 3rem auto;

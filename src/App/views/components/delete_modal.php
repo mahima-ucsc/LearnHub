@@ -156,7 +156,7 @@
         </div>
         <div class="modal-footer">
             <button onclick="hideModal()" class="btn btn-cancel">Cancel</button>
-            <form id="deleteForm" method="POST">
+            <form id="deleteForm" method="POST" onsubmit="showLoader();">
                 <?php include $this->resolve("partials/_csrf.php"); ?>
                 <input type="hidden" name="_METHOD" value="DELETE" />
                 <button type="submit" class="btn btn-delete-action">Delete</button>

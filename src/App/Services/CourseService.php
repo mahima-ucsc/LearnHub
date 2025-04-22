@@ -411,37 +411,7 @@ class CourseService
     }
 
 
-    public function update(array $formData, int $id)
-    {
-        $this->db->query(
-            "UPDATE courses
-            SET title = :title,
-            description = :description,
-            subject_id = :subject_id,
-            grade_id = :grade_id,
-            start_time = :start_time,
-            end_time = :end_time,
-            day = :day,
-            price = :price,
-            pricing_period = :pricing_period,
-            duration = :duration
-            WHERE course_id = :course_id",
-            [
-                'course_id' => $id,
-                'title' => $formData['title'],
-                'description' => $formData['description'],
-                'subject_id' => $formData['subject_id'],
-                'grade_id' => $formData['grade_id'],
-                'start_time' => $formData['start_time'],
-                'end_time' => $formData['end_time'],
-                'day' => $formData['day'],
-                'price' => $formData['price'],
-                'pricing_period' => $formData['pricing_period'],
-                'duration' => $formData['duration'],
 
-            ]
-        );
-    }
 
     public function delete(int $id)
     {
@@ -529,15 +499,25 @@ class CourseService
     public function getCourseParticipants(string $id)
     {
         $searchTerm = $_GET['s'] ?? '';
-        return $this->db->query(
-            "SELECT U.first_name, U.last_name, U.user_id, U.email, SC.* from users U
-            JOIN students_courses SC ON U.user_id = SC.student_id
-            WHERE SC.course_id = :id AND (U.first_name LIKE :term OR U.last_name LIKE :term)",
+        $participants = $this->db->query(
+            "SELECT DISTINCT
+            u.user_id,
+            CONCAT(u.first_name, ' ', u.last_name) AS username,
+            u.email
+            FROM users u
+            JOIN course_payments cp ON u.user_id = cp.user_id
+            WHERE cp.course_id = :id 
+            AND(
+            u.first_name LIKE :term 
+            OR u.last_name LIKE :term 
+            OR CONCAT(u.first_name, ' ', u.last_name) LIKE :term
+            );",
             [
                 "id" => $id,
                 "term" => "%{$searchTerm}%"
             ]
         )->findAll();
+        return $participants;
     }
 
     public function RemoveParticipant(string $courseId, string $userId)
@@ -861,6 +841,43 @@ class CourseService
         }
     }
 
+    public function update(array $course, array $formData, int $id)
+    {
+        $params = [
+            'course_id' => $id,
+            'title' => $formData['courseTitle'],
+            'description' => $formData['courseDescription'],
+            'subject_id' => $formData['subject'],
+            'grade_id' => $formData['grade'],
+            'start_time' => $formData['courseStartTime'],
+            'end_time' => $formData['courseEndTime'],
+            'day' => $formData['courseday'],
+            'price' => $formData['price'],
+        ];
+
+        $sql = "UPDATE courses
+                SET title = :title,
+                description = :description,
+                subject_id = :subject_id,
+                grade_id = :grade_id,
+                start_time = :start_time,
+                end_time = :end_time,
+                day = :day,
+                price = :price";
+
+        $courseThumbnail = $_FILES['courseThumbnail'] ?? null;
+        if ($courseThumbnail['name']) {
+            $thumbnailFileName = $this->fileService->uploadFile(Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS, $courseThumbnail);
+            unlink(Paths::STORAGE_UPLOADS . "/" . Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS . "/" . $course['thumbnail_url']);
+            $sql .= ", thumbnail_url = :thumbnail_url";
+            $params['thumbnail_url'] = $thumbnailFileName;
+        }
+
+        $sql .= " WHERE course_id = :course_id";
+
+        $this->db->query($sql, $params);
+    }
+
     public function getLocations()
     {
         return $this->db->query(
@@ -904,6 +921,107 @@ class CourseService
         } catch (Exception $e) {
 
             error_log('Failed to fetch student courses: ' . $e->getMessage());
+            redirectTo('/server-error');
+        }
+    }
+
+    /**
+     * Gets the count of courses grouped by subject.
+     * 
+     * This function retrieves the number of courses for each subject from the database,
+     * orders them by course count in descending order, and optionally limits the results.
+     * 
+     * @param int $limit Optional. The maximum number of records to return. If 0, returns all records.
+     * @return array An array of objects containing subject_id, subject title, and course count.
+     * @throws Exception If database query fails, logs error and redirects to error page.
+     */
+    public function getCourseCountBySubject(int $limit = 0)
+    {
+
+        try {
+            if ($limit != 0) {
+                $limitClause = "LIMIT " . $limit;
+            }
+            return $this->db->query(
+                "SELECT
+                s.subject_id,
+                s.subject_title AS subject,
+                COUNT(c.course_id) AS course_count
+                FROM subjects s
+                JOIN courses c ON c.subject_id = s.subject_id
+                GROUP BY s.subject_id
+                ORDER BY course_count DESC
+                {$limitClause} "
+            )->findAll();
+        } catch (Exception $e) {
+            error_log("Failed fetch course count by subject" . $e->getMessage());
+            redirectTo('server-error');
+        }
+    }
+
+    public function deleteModule(string $courseId, string $moduleId)
+    {
+        try {
+            $this->db->query(
+                "DELETE FROM course_modules
+                WHERE course_id = :courseId
+                AND module_id = :moduleId",
+                [
+                    "courseId" => $courseId,
+                    "moduleId" => $moduleId
+                ]
+            );
+        } catch (Exception $e) {
+            error_log("Failed to delete course module: " . $e->getMessage());
+            redirectTo('/server-error');
+        }
+    }
+
+    public function markAttendance(array $data)
+    {
+        try {
+            $is_attended = $data['attended'] ? 1 : 0;
+            return $this->db->query(
+                "INSERT INTO 
+                student_module_attendance(
+                student_id,
+                course_id,
+                module_id,
+                attended_date,
+                is_attended
+                ) VALUES(
+                :student_id,
+                :course_id,
+                :module_id,
+                CURRENT_TIMESTAMP,
+                :is_attended)",
+                [
+                    "student_id" => $_SESSION['user'],
+                    "course_id" => $data['course_id'],
+                    "module_id" => $data['module_id'],
+                    "is_attended" => $is_attended
+                ]
+            );
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+
+    public function userAttendance(int $id)
+    {
+        try {
+            return $this->db->query(
+                "SELECT
+                module_id,
+                is_attended
+                FROM student_module_attendance
+                WHERE student_id = :id",
+                [
+                    'id' => $id
+                ]
+            )->findAll();
+        } catch (Exception $e) {
+            error_log("Failed to fetch student attendance: " . $e->getMessage());
             redirectTo('/server-error');
         }
     }

@@ -17,7 +17,7 @@ return [
     UserService::class => function (Container $container) {
         // return $container->resolve(UserService::class);
         $db = $container->get(Database::class);
-        return new UserService($db);
+        return new UserService($db, new FileService($db));
     },
     CourseService::class => function (Container $container) {
         // return $container->resolve(CourseService::class);

@@ -11,9 +11,13 @@
                 <div class="course-meta">
                     <div class="course-rating">★★★★★ 4.8 (256 reviews)</div>
                     <div class="course-info">
-                        <span>Duration: <?php echo e($course['duration']); ?> weeks</span> |
-                        <span>Level: <?php echo e($course['grade_id']); ?></span> |
-                        <span>Price: Rs. <?php echo e($course['price']); ?></span>
+                        <span>Participants: <?php echo e($participantCount); ?></span> |
+                        <span>Grade: <?php echo e($course['grade_id']); ?></span> |
+                        <?php if ($course['price']): ?>
+                            <span>
+                                Price: Rs. <?php echo e($course['price']); ?>
+                            </span>
+                        <?php endif; ?>
                     </div>
                     <?php if ($course['billing_type'] === 'onetime' && !$course['is_paid']): ?>
                         <a href="<?= "/payment/courses/" . $course['course_id'] ?>" class="enroll-button">Enroll Now</a>
@@ -273,7 +277,7 @@
                                         <a href="/courses/review/edit/<?php echo e($review['review_id']); ?>">Edit</a>
                                     </div>
                                     <div class="menu-button">
-                                        <button onclick="showModal(<?php echo e($review['review_id']); ?>)">delete</button>
+                                        <button onclick="showDeleteModal(<?php echo e($review['review_id']); ?>)">Delete</button>
                                     </div>
 
                                 </div>
@@ -352,25 +356,10 @@
 
 
     <script src="/assets/js/courses/course-info.js" defer></script>
+    <script src="/assets/js/components/toast.js"></script>
+
     <!-- TODO: Move this script to course-info.js. Do not use inline functions -->
     <script>
-        function toggleParticipantList() {
-            const participantList = document.getElementById('participant-list');
-            participantList.classList.toggle('active');
-
-            document.querySelector('.dropdown-chevron').classList.toggle('rotated');
-        }
-
-        function viewAllParticipants() {
-            alert('Redirecting to view all participants...');
-            // Add logic here to redirect or display all participants
-        }
-
-        function viewAllParticipants() {
-            // Redirect to a page or open a modal displaying all participants
-            window.location.href = '/course/participants';
-        }
-
         function toggleAssignment(headerElement) {
             const assignmentItem = headerElement.closest('.assignment-item');
             const content = assignmentItem.querySelector('.assignment-content');
@@ -398,24 +387,19 @@
         }
     }
 
-    function editCourse() {
-        alert('Edit course clicked!');
-        // Add your edit logic here
-    }
-
     //Delete confirmation
-    const modal = document.getElementById('deleteModal');
+    const deleteModal = document.getElementById('deleteModal');
 
-    function showModal(reviewId) {
+    function showDeleteModal(reviewId) {
         event.preventDefault(); // Prevent the form from submitting immediately
-        modal.style.display = 'block'; // show comform allert
+        deleteModal.style.display = 'block'; // show comform allert
         console.log(reviewId);
         document.getElementById('delete-review_id').value = reviewId; // set the review id to the hidden input
         document.body.style.overflow = 'hidden'; // Prevent scrolling of background content
     }
 
     function hideModal() {
-        modal.style.display = 'none';
+        deleteModal.style.display = 'none';
 
         // Restore scrolling
         document.body.style.overflow = 'auto';
@@ -429,14 +413,14 @@
 
     // Close modal when clicking outside
     window.onclick = function(event) {
-        if (event.target === modal) {
+        if (event.target === deleteModal) {
             hideModal();
         }
     }
 
     // Close modal on escape key press
     document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape' && modal.style.display === 'block') {
+        if (event.key === 'Escape' && deleteModal.style.display === 'block') {
             hideModal();
         }
     });
@@ -483,7 +467,7 @@
                                                         <a href="/course/review/edit/${element.review_id}">Edit</a>
                                                     </div>
                                                     <div class="menu-button">
-                                                        <button onclick="showModal(${element.review_id})">delete</button>
+                                                        <button onclick="showDeleteModal(${element.review_id})">delete</button>
                                                     </div>
 
                                                 </div>

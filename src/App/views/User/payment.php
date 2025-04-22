@@ -12,16 +12,12 @@
 
     <div class="summary-cards">
         <div class="summary-card">
-            <h3>Total Spent</h3>
-            <div class="value">Rs. 7800.00</div>
+            <h3>Total Revenue</h3>
+            <div class="value">Rs. <?= e($revenue); ?></div>
         </div>
         <div class="summary-card">
             <h3>Active Courses</h3>
-            <div class="value">7</div>
-        </div>
-        <div class="summary-card">
-            <h3>Last Payment</h3>
-            <div class="value">Rs. 1900.00</div>
+            <div class="value"><?= e($courseCount); ?></div>
         </div>
     </div>
 
@@ -50,38 +46,29 @@
                     </tr>
                 </thead>
                 <tbody id="transaction-table">
-                    <tr>
-                        <td>03/15/2024</td>
-                        <td>TRX-789012</td>
-                        <td>Advanced Web Development</td>
-                        <td>Rs. 1900.00</td>
-                        <td><span class="status-badge status-success">Success</span></td>
-                        <td><a href="#" class="invoice-link"><i class="fas fa-download"></i> Download</a></td>
-                    </tr>
-                    <tr>
-                        <td>03/10/2024</td>
-                        <td>TRX-789011</td>
-                        <td>UI/UX Design Basics</td>
-                        <td>Rs. 1400.00</td>
-                        <td><span class="status-badge status-success">Success</span></td>
-                        <td><a href="#" class="invoice-link"><i class="fas fa-download"></i> Download</a></td>
-                    </tr>
-                    <tr>
-                        <td>03/05/2024</td>
-                        <td>TRX-789010</td>
-                        <td>Digital Marketing Essentials</td>
-                        <td>Rs. 2000.00</td>
-                        <td><span class="status-badge status-pending">Pending</span></td>
-                        <td><a href="#" class="invoice-link"><i class="fas fa-download"></i> Download</a></td>
-                    </tr>
-                    <tr>
-                        <td>02/28/2024</td>
-                        <td>TRX-789009</td>
-                        <td>Data Science Fundamentals</td>
-                        <td>Rs. 2500.00</td>
-                        <td><span class="status-badge status-failed">Failed</span></td>
-                        <td><a href="#" class="invoice-link"><i class="fas fa-download"></i> Download</a></td>
-                    </tr>
+                    <?php foreach ($paymentDetails as $payment): ?>
+                        <tr>
+                            <td><?= formatDate(e($payment['created_date']), "Y-m-d"); ?></td>
+                            <td>TRX-<?= e($payment['payment_id']); ?></td>
+                            <td><?= e($payment['title']); ?></td>
+                            <td>Rs.<?= e($payment['amount']); ?></td>
+
+                            <td>
+                                <?php if ($payment['payment_status'] == 2): ?>
+                                    <span class="status-badge status-success">Success</span>
+                                <?php elseif ($payment['payment_status'] == 0): ?>
+                                    <span class="status-badge status-pending">Pending</span>
+                                <?php elseif ($payment['payment_status'] == -1): ?>
+                                    <span class="status-badge status-canceled">Canceled</span>
+                                <?php elseif ($payment['payment_status'] == -2): ?>
+                                    <span class="status-badge status-failed">Failed</span>
+                                <?php else: ?>
+                                    <span class="status-badge">Unknown</span>
+                                <?php endif; ?>
+                            </td>
+                            <td><a href="#" class="invoice-link"><i class="fas fa-download"></i> Download</a></td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>

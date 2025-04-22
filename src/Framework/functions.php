@@ -28,3 +28,64 @@ function formatDate($date, $format = 'F j, Y, g:i a')
     $dateTime = new DateTime($date);
     return $dateTime->format($format);
 }
+
+
+/**
+ * Generate pagination data for displaying items in pages
+ *
+ * @param int $totalItems Total number of items to paginate
+ * @param int $currentPage Current page number (defaults to 1)
+ * @param int $itemsPerPage Number of items per page (defaults to 10)
+ * @param array $queryParams Additional query parameters to preserve in pagination links
+ * @return array Pagination data including page links, offsets, and navigation links
+ */
+function generatePagination(int $totalItems, int $currentPage = 1, int $itemsPerPage = 10, array $queryParams = []): array
+{
+    // Ensure current page is valid
+    $currentPage = max(1, $currentPage);
+
+    // Calculate offset for database query
+    $offset = ($currentPage - 1) * $itemsPerPage;
+
+    // Calculate last page
+    $lastPage = ceil($totalItems / $itemsPerPage);
+
+    // Generate array of page numbers
+    $pages = $lastPage ? range(1, $lastPage) : [];
+
+    // Create page links with all query parameters
+    $pageLinks = array_map(
+        function ($pageNum) use ($queryParams) {
+            return http_build_query(array_merge(
+                ['p' => $pageNum],
+                $queryParams
+            ));
+        },
+        $pages
+    );
+
+    // Create previous and next page query strings
+    $previousPageQuery = http_build_query(array_merge(
+        ['p' => max(1, $currentPage - 1)],
+        $queryParams
+    ));
+
+    $nextPageQuery = http_build_query(array_merge(
+        ['p' => min($lastPage, $currentPage + 1)],
+        $queryParams
+    ));
+
+    return [
+        'currentPage' => $currentPage,
+        'itemsPerPage' => $itemsPerPage,
+        'totalItems' => $totalItems,
+        'offset' => $offset,
+        'lastPage' => $lastPage,
+        'pages' => $pages,
+        'pageLinks' => $pageLinks,
+        'previousPageQuery' => $previousPageQuery,
+        'nextPageQuery' => $nextPageQuery,
+        'hasPreviousPage' => $currentPage > 1,
+        'hasNextPage' => $currentPage < $lastPage,
+    ];
+}
