@@ -1,72 +1,189 @@
 <?php include $this->resolve("partials/_header.php"); ?>
 
 <link rel="stylesheet" href="/assets/styles/Tutor/tutor_profile.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <section class="profile">
     <div class="main-container">
-        <div class="left-container">
-            <div class="avatar">
-                <!-- User avatar image -->
-                <img src="/assets/images/user.jpeg" alt="John Doe">
+        <div class="profile-grid">
+            <!-- Left sidebar with tutor info -->
+            <div class="profile-sidebar">
+                <div class="avatar-container">
+                    <?php if ($tutorDetails['profile_picture_url']): ?>
+                        <img class="avatar" src="/storage/uploads/profile/<?php echo e($tutorDetails['profile_picture_url']); ?>" alt="<?php echo e($tutorDetails['first_name'] . ' ' . $tutorDetails['last_name']); ?>">
+                    <?php else: ?>
+                        <img class="avatar" src="/assets/images/user.jpeg" alt="<?php echo e($tutorDetails['first_name'] . ' ' . $tutorDetails['last_name']); ?>">
+                    <?php endif; ?>
+                </div>
+
+                <h1 class="tutor-name"><?php echo e($tutorDetails['first_name'] . ' ' . $tutorDetails['last_name']); ?></h1>
+                <p class="joined-date">
+                    <i class="fas fa-calendar-alt"></i>
+                    Joined <?php echo e(date('F Y', strtotime($tutorDetails['joined_date']))); ?>
+                </p>
+
+                <?php if ($tutorDetails['profile_title']): ?>
+                    <p class="bio-text"><?php echo e($tutorDetails['profile_title']); ?></p>
+                <?php endif; ?>
+
+                <div class="section-divider"></div>
+
+                <h2 class="section-title">
+                    <i class="fas fa-user"></i> About Me
+                </h2>
+                <p class="bio-text">
+                    <?php if ($tutorDetails['profile_bio']): ?>
+                        <?php echo e($tutorDetails['profile_bio']); ?>
+                    <?php elseif ($tutorDetails['description']): ?>
+                        <?php echo e($tutorDetails['description']); ?>
+                    <?php else: ?>
+                        Professional tutor with a passion for teaching.
+                    <?php endif; ?>
+                </p>
+
+                <?php if ($tutorDetails['subject_title'] || $tutorDetails['field_of_study']): ?>
+                    <h2 class="section-title">
+                        <i class="fas fa-tags"></i> Specializations
+                    </h2>
+                    <div class="tag-container">
+                        <?php if ($tutorDetails['subject_title']): ?>
+                            <span class="tag"><?php echo e($tutorDetails['subject_title']); ?></span>
+                        <?php endif; ?>
+                        <?php if ($tutorDetails['field_of_study']): ?>
+                            <span class="tag"><?php echo e($tutorDetails['field_of_study']); ?></span>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
             </div>
-            <div class="user-data">
-                <!-- User name and username -->
-                <h1 class="name">
-                    <?php echo e($tutorDetails['first_name'] . ' ' . $tutorDetails['last_name']); ?>
-                </h1>
-                <p class="username">@john_doe</p>
-            </div>
-            <h2>About Me</h2>
-            <!-- User bio -->
-            <p class="user-bio">Passionate learner and aspiring software developer. I love exploring new technologies and pushing my boundaries in the world of coding.</p>
 
-            <div class="tags">
-                <h4>#TAGS</h4>
-                <!-- List of tags -->
-                <p>computer science</p>
-                <p>physics</p>
-                <p>chemistry</p>
-                <p>English</p>
-            </div>
+            <!-- Right content area -->
+            <div class="profile-content">
+                <!-- Contact Information -->
+                <div class="profile-card">
+                    <h2 class="section-title">
+                        <i class="fas fa-address-card"></i> Contact Information
+                    </h2>
 
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span><?php echo e($tutorDetails['email']); ?></span>
+                    </div>
 
+                    <?php if ($tutorDetails['phone_no']): ?>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span><?php echo e($tutorDetails['phone_no']); ?></span>
+                        </div>
+                    <?php endif; ?>
 
-        </div>
-        <div class="right-container">
-            <div class="user-info">
+                    <?php if ($tutorDetails['location']): ?>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span><?php echo e($tutorDetails['location']); ?></span>
+                        </div>
+                    <?php endif; ?>
 
-                <h2>About Me</h2>
-                <!-- User bio -->
-                <p class="user-bio">Passionate learner and aspiring software developer. I love exploring new technologies and pushing my boundaries in the world of coding.</p>
+                    <?php if (!$tutorDetails['phone_no'] && !$tutorDetails['location']): ?>
+                        <p class="empty-state">Additional contact information not provided.</p>
+                    <?php endif; ?>
+                </div>
 
-                <h3>Contact Information</h3>
-                <!-- Contact information list -->
-                <ul class="contact-list">
-                    <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
-                    <li><i class="fas fa-envelope"></i> johndoe@email.com</li>
-                    <li><i class="fas fa-map-marker-alt"></i> New York, NY</li>
-                </ul>
+                <!-- Educational Background -->
+                <div class="profile-card">
+                    <h2 class="section-title">
+                        <i class="fas fa-graduation-cap"></i> Educational Background
+                    </h2>
 
-                <h3>Social Media</h3>
-                <!-- Social media links -->
-                <ul class="social-list">
-                    <li><a href="#"><i class="fab fa-twitter"></i> @john_doe</a></li>
-                    <li><a href="#"><i class="fab fa-linkedin"></i> linkedin.com/in/johndoe</a></li>
-                    <li><a href="#"><i class="fab fa-github"></i> github.com/johndoe</a></li>
-                </ul>
+                    <?php if ($tutorDetails['degree'] || $tutorDetails['institution'] || $tutorDetails['field_of_study']): ?>
+                        <div class="info-grid">
+                            <?php if ($tutorDetails['degree']): ?>
+                                <div class="info-item">
+                                    <div class="info-label">Degree</div>
+                                    <div class="info-value"><?php echo e($tutorDetails['degree']); ?></div>
+                                </div>
+                            <?php endif; ?>
 
-                <h3>Skills</h3>
-                <!-- List of skills -->
-                <ul class="skills-list">
-                    <li>JavaScript</li>
-                    <li>Python</li>
-                    <li>React</li>
-                    <li>Node.js</li>
-                    <li>SQL</li>
-                </ul>
+                            <?php if ($tutorDetails['institution']): ?>
+                                <div class="info-item">
+                                    <div class="info-label">Institution</div>
+                                    <div class="info-value"><?php echo e($tutorDetails['institution']); ?></div>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php if ($tutorDetails['field_of_study']): ?>
+                                <div class="info-item">
+                                    <div class="info-label">Field of Study</div>
+                                    <div class="info-value"><?php echo e($tutorDetails['field_of_study']); ?></div>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php if ($tutorDetails['education_start'] && $tutorDetails['education_end']): ?>
+                                <div class="info-item">
+                                    <div class="info-label">Duration</div>
+                                    <div class="info-value"><?php echo e(date('Y', strtotime($tutorDetails['education_start']))); ?> - <?php echo e(date('Y', strtotime($tutorDetails['education_end']))); ?></div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    <?php else: ?>
+                        <p class="empty-state">Educational background information not provided.</p>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Teaching Experience -->
+                <div class="profile-card">
+                    <h2 class="section-title">
+                        <i class="fas fa-chalkboard-teacher"></i> Teaching Experience
+                    </h2>
+
+                    <?php if ($tutorDetails['years_experience'] || $tutorDetails['subject_title']): ?>
+                        <div class="info-grid">
+                            <?php if ($tutorDetails['years_experience']): ?>
+                                <div class="info-item">
+                                    <div class="info-label">Years of Experience</div>
+                                    <div class="info-value"><?php echo e($tutorDetails['years_experience']); ?> years</div>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php if ($tutorDetails['subject_title']): ?>
+                                <div class="info-item">
+                                    <div class="info-label">Subject Expertise</div>
+                                    <div class="info-value"><?php echo e($tutorDetails['subject_title']); ?></div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    <?php else: ?>
+                        <p class="empty-state">Teaching experience information not provided.</p>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Availability -->
+                <div class="profile-card">
+                    <h2 class="section-title">
+                        <i class="fas fa-clock"></i> Availability
+                    </h2>
+
+                    <?php if ($tutorDetails['day_of_week'] && $tutorDetails['start_time'] && $tutorDetails['end_time']): ?>
+                        <div class="availability-grid">
+                            <div class="day-slot">
+                                <div class="day-name"><?php echo e($tutorDetails['day_of_week']); ?></div>
+                                <div class="time-slot">
+                                    <?php echo e(date('g:i A', strtotime($tutorDetails['start_time']))); ?> -
+                                    <?php echo e(date('g:i A', strtotime($tutorDetails['end_time']))); ?>
+                                </div>
+                                <?php if ($tutorDetails['is_recurring']): ?>
+                                    <div class="time-slot">(Weekly)</div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php else: ?>
+                        <p class="empty-state">Availability schedule not provided.</p>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
     </div>
+
+
     <div class="teacher-courses-section">
         <div class="teacher-course-title">
             <h2>
