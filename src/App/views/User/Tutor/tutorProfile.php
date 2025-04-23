@@ -260,170 +260,167 @@
     </div>
 
     <!-- reviews from students -->
-    <div class="reviews-section">
-        <h2 class="review-title">Student Reviews</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Review Section -->
+    <div class="course-section reviews-section">
+        <h2 class="section-title">Student Reviews</h2>
         <div class="reviews-summary">
+            <!-- summary of reating -->
             <div class="overall-rating">
-                <div class="rating-number">4.8</div>
+                <div class="rating-number"><?php echo number_format($summeryOfReviews['avgRating'], 1) ?> / 5</div>
                 <div class="rating-stars">
-                    <span class="star active">★</span>
-                    <span class="star active">★</span>
-                    <span class="star active">★</span>
-                    <span class="star active">★</span>
-                    <span class="star half-active">★</span>
-                </div>
-                <div class="rating-text">256 Total Reviews</div>
-            </div>
-            <div class="rating-breakdown">
-                <div class="rating-bar">
-                    <span class="rating-label">5 Stars</span>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 65%"></div>
-                    </div>
-                    <span class="rating-percentage">65%</span>
-                </div>
-                <div class="rating-bar">
-                    <span class="rating-label">4 Stars</span>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 25%"></div>
-                    </div>
-                    <span class="rating-percentage">25%</span>
-                </div>
-                <div class="rating-bar">
-                    <span class="rating-label">3 Stars</span>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 8%"></div>
-                    </div>
-                    <span class="rating-percentage">8%</span>
-                </div>
-                <div class="rating-bar">
-                    <span class="rating-label">2 Stars</span>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 2%"></div>
-                    </div>
-                    <span class="rating-percentage">2%</span>
-                </div>
-            </div>
-        </div>
-        <!-- Review Cards -->
-        <!-- Current user reviews-->
-        <?php foreach ($userReview as $review) : ?>
-            <div class="review-card">
-                <div class="review-header">
-                    <div class="reviewer-info">
-                        <img src="/assets/images/user.jpeg" alt="Sarah Johnson" class="reviewer-avatar">
-                        <div>
-                            <div class="reviewer-name"><?php echo e($tutorDetails['first_name'] . ' ' . $userDetails['last_name']); ?></div>
-                            <div class="review-course">
-                                <i class="fas fa-graduation-cap"></i>
-                                Advanced JavaScript Mastery
-                            </div>
-                        </div>
-                    </div>
-                    <span class="review-date">2 weeks ago</span>
-                    <div class="cart-menu">
-                        <div class="cart-btn" onclick="toggleCartMenu(this)">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
-                            </svg>
-                        </div>
-                        <!-- Option menu-->
-                        <div class="cart-options">
-                            <a class="menu-button" href="/review/edit/<?php echo e($review['review_id']); ?>">Edit</a>
-                            <a href="#" class="menu-button" onclick="showModal()">Delete</a>
-                        </div>
-                    </div>
-                </div>
-                <p class="review-text"><?php echo $review['review'] ?></p>
-                <div class="review-rating">
                     <?php
-                    for ($i = 0; $i < $review['rating']; $i++) {
-                        echo '<i class="fas fa-star"></i>';
+                    if (($summeryOfReviews['avgRating'] - floor($summeryOfReviews['avgRating'])) > 0.4) {
+                        $flag = true;
+                    }
+                    for ($i = 1; $i <= 5; $i++) {
+
+                        if ($i <= $summeryOfReviews['avgRating']) {
+                            echo '<span class="star active">★</span>';
+                        } else if ($flag) {
+                            echo '<span class="star half-active">★</span>';
+                            $flag = false;
+                        } else {
+                            echo '<span class="star">★</span>';
+                        }
                     }
                     ?>
                 </div>
+                <div class="rating-text"><?php echo $summeryOfReviews['totalReviews'] ?> Total Reviews</div>
             </div>
-            <!-- Delete confirmation -->
-
-            <div id="deleteModal" class="modal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title">Confirm Delete</h3>
-                    </div>
-                    <div class="modal-body">
-                        Are you sure you want to delete this item? This action cannot be undone.
-                    </div>
-                    <div class="modal-footer">
-                        <button onclick="hideModal()" class="btn btn-cancel">Cancel</button>
-                        <form method="POST" action="/review/delete/<?php echo e($review['review_id']); ?>">
-
-                            <?php include $this->resolve("partials/_csrf.php"); ?>
-                            <input type="hidden" name="_METHOD" value="DELETE" />
-                            <button type="submit" class="btn btn-delete">Delete</button>
-
-                        </form>
-                    </div>
-                </div>
-            </div>
-        <?php endforeach; ?>
-        <div class="review-card">
-            <div class="review-header">
-                <div class="reviewer-info">
-                    <img src="/assets/images/user.jpeg" alt="Sarah Johnson" class="reviewer-avatar">
-                    <div>
-                        <div class="reviewer-name">Sarah Johnson</div>
-                        <div class="review-course">
-                            <i class="fas fa-graduation-cap"></i>
-                            Advanced JavaScript Mastery
+            <!-- all ratings with percentage -->
+            <div class="rating-breakdown">
+                <?php
+                krsort($summeryOfReviews['starCount']);
+                foreach ($summeryOfReviews['starCount'] as $key => $value) : ?>
+                    <div class="rating-bar">
+                        <span class="rating-label"><?php echo $key ?> Stars</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: <?php echo $summeryOfReviews['totalReviews'] > 0 ? ($value / $summeryOfReviews['totalReviews']) * 100 : 0; ?>%"></div>
                         </div>
+                        <span class="rating-percentage"><?php echo number_format($summeryOfReviews['totalReviews'], 2) > 0 ? number_format($value / $summeryOfReviews['totalReviews'], 2) * 100 : 0; ?> %</span>
                     </div>
-                </div>
-                <span class="review-date">2 weeks ago</span>
-            </div>
-            <p class="review-text">This course exceeded my expectations! John's teaching style is clear and engaging. The practical examples really helped me understand complex concepts.</p>
-            <div class="review-rating">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
+                <?php endforeach; ?>
             </div>
         </div>
 
-        <div class="review-card">
-            <div class="review-header">
-                <div class="reviewer-info">
-                    <img src="/assets/images/user.jpeg" alt="Michael Chen" class="reviewer-avatar">
-                    <div>
-                        <div class="reviewer-name">Michael Chen</div>
-                        <div class="review-course">
-                            <i class="fas fa-graduation-cap"></i>
-                            React & Redux for Beginners
+        <!-- user review list -->
+        <div class="reviews-list">
+            <?php
+            foreach ($userReview as $review): ?>
+                <div class="review-item">
+                    <div class="review-header">
+                        <!-- avatar -->
+                        <img src="<?= isset($review['profile_picture_url'])
+                                        ? $user['profile_picture_url'] :
+                                        "/assets/images/user_placeholder.jpg" ?>" alt=" <?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
+                        <!-- since when-->
+                        <div class="review-meta">
+                            <span class="review-name"><?php echo htmlspecialchars($review['name']); ?></span>
+                            <span class="review-date" id="review-date-<?php echo $review['review_id']; ?>">
+                                <?php
+                                $datetime = new DateTime($review['date']);
+                                $date = $datetime->format('Y-m-d');
+                                $days = calcDateDiff($date);
+                                if ($days['years'] > 0) {
+                                    echo ($days['years']) . " years ago";
+                                } else if ($days['months'] > 0) {
+                                    echo ($days['months']) . " months ago";
+                                } else if ($days['days'] > 0) {
+                                    echo ($days['days']) . " days ago";
+                                } else {
+                                    echo "Today";
+                                }
+                                ?>
+                            </span>
                         </div>
+                        <!-- review rate -->
+                        <div class="review-rating">
+                            <?php
+                            for ($i = 1; $i <= 5; $i++) {
+                                echo $i <= $review['rating']
+                                    ? '<span class="star active">★</span>'
+                                    : '<span class="star">★</span>';
+                            }
+                            ?>
+                        </div>
+                        <!-- edit and delete menue -->
+                        <?php
+                        if ($review['user_id'] === $_SESSION['user'] || $_SESSION['user_role'] === "admin") : ?>
+                            <div class="cart-menu">
+                                <div class="cart-btn" onclick="toggleCartMenu(this)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+                                    </svg>
+                                </div>
+                                <!-- Option menu-->
+                                <div class="cart-options">
+                                    <div class="menu-button">
+                                        <a href="/courses/review/edit/<?php echo e($review['review_id']); ?>">Edit</a>
+                                    </div>
+                                    <div class="menu-button">
+                                        <button onclick="showDeleteModal(<?php echo e($review['review_id']); ?>)">Delete</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                    <!-- user review text -->
+                    <div class="review-body">
+                        <p><?php echo htmlspecialchars($review['review']); ?></p>
                     </div>
                 </div>
-                <span class="review-date">1 month ago</span>
-            </div>
-            <p class="review-text">Great introduction to React! The course structure is well thought out and the projects are very practical. John is always quick to respond to questions.</p>
-            <div class="review-rating">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="far fa-star"></i>
+            <?php endforeach; ?>
+        </div>
+
+        <!-- delete comformation allert -->
+        <div id="deleteModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Confirm Delete</h3>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this item? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <button onclick="hideModal()" class="btn btn-cancel">Cancel</button>
+                    <form id='submit' method="POST" action="/delete-course-review">
+                        <?php include $this->resolve("partials/_csrf.php"); ?>
+                        <input type="hidden" id="delete-review_id" name="review_id" value="" />
+                        <button type="submit" class="btn btn-delete">Delete</button>
+                    </form>
+                </div>
             </div>
         </div>
 
-        <!-- Load More Button -->
-        <div class="load-more-container">
-            <button class="load-more-btn">
-                Load More Reviews
-            </button>
+        <!-- pagination -->
+        <div class="pagination">
+            <button class="btn" onclick="getmorereview()">Show more</button>
         </div>
+
         <!-- Add review -->
         <div class="add-review-section">
             <h3>Add Your Review</h3>
-            <form class="review-form" id="newReviewForm" method="POST" action="/add-review">
+            <form class="review-form" id="newReviewForm" method="POST" action="/add-course-review">
                 <div class="rating-input">
                     <div class="star-rating">
                         <input type="radio" id="star5" name="rating" value="5" required>
@@ -448,7 +445,7 @@
                         placeholder="Share your experience with this course..."
                         required></textarea>
                 </div>
-                <input type="hidden" name="tutor_id" value="1" />
+                <input type="hidden" name="course_id" value=<?php echo ($course['course_id']) ?> />
 
                 <button type="submit" class="submit-review-btn">
                     Submit Review
@@ -459,7 +456,7 @@
 </section>
 
 <script>
-    // Cart menu
+    // Toggle the display of the cart options
     function toggleCartMenu(button) {
         const cartOptions = button.nextElementSibling;
         cartOptions.style.display = cartOptions.style.display === 'block' ? 'none' : 'block';
@@ -472,23 +469,19 @@
         }
     }
 
-    function editCourse() {
-        alert('Edit course clicked!');
-        // Add your edit logic here
-    }
-
     //Delete confirmation
-    const modal = document.getElementById('deleteModal');
+    const deleteModal = document.getElementById('deleteModal');
 
-    function showModal() {
-        modal.style.display = 'block';
-
-        // Prevent scrolling of background content
-        document.body.style.overflow = 'hidden';
+    function showDeleteModal(reviewId) {
+        event.preventDefault(); // Prevent the form from submitting immediately
+        deleteModal.style.display = 'block'; // show comform allert
+        console.log(reviewId);
+        document.getElementById('delete-review_id').value = reviewId; // set the review id to the hidden input
+        document.body.style.overflow = 'hidden'; // Prevent scrolling of background content
     }
 
     function hideModal() {
-        modal.style.display = 'none';
+        deleteModal.style.display = 'none';
 
         // Restore scrolling
         document.body.style.overflow = 'auto';
@@ -502,27 +495,132 @@
 
     // Close modal when clicking outside
     window.onclick = function(event) {
-        if (event.target === modal) {
+        if (event.target === deleteModal) {
             hideModal();
         }
     }
 
     // Close modal on escape key press
     document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape' && modal.style.display === 'block') {
+        if (event.key === 'Escape' && deleteModal.style.display === 'block') {
             hideModal();
         }
     });
 
-    function toggleCartMenu(button) {
-        const cartOptions = button.nextElementSibling;
-        cartOptions.style.display = cartOptions.style.display === 'block' ? 'none' : 'block';
+    // Show more reviews
+    let counter = 0;
 
-        // Close the menu if clicked outside
-        window.onclick = function(event) {
-            if (!button.contains(event.target) && !cartOptions.contains(event.target)) {
-                cartOptions.style.display = 'none';
-            }
+    function getmorereview() {
+        event.preventDefault();
+        const courseID = <?php echo json_encode($course['course_id']); ?>;
+        console.log()
+        fetch(`/course/review/${courseID}/${counter}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    data.forEach(element => {
+                        document.querySelector('.reviews-list')
+                            .insertAdjacentHTML('beforeend', `
+                                <div class="review-item">
+                                    <div class="review-header">
+                                        <!-- avatar -->
+                                        <img src="${element.profile_picture_url ? element.profile_picture_url : "/assets/images/user_placeholder.jpg"}" alt="${element.name}" class="review-avatar">
+                                        <!-- since when-->
+                                        <div class="review-meta">
+                                            <span class="review-name">${element.name}</span>
+                                            <span class="review-date" id="review-date-${element.review_id}">${getDateDifference(element.date)}</span>
+                                        </div>
+                                        <!-- review rate -->
+                                        <div class="review-rating">
+                                            ${generateStarRating(element.rating)} 
+                                        </div>
+                                        <!-- edit and delete menue -->
+                                        <?php
+                                        if ($review['user_id'] === $_SESSION['user'] || $_SESSION['user_role'] === "admin") : ?>
+                                            <div class="cart-menu">
+                                                <div class="cart-btn" onclick="toggleCartMenu(this)">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+                                                    </svg>
+                                                </div>
+                                                <!-- Option menu-->
+                                                <div class="cart-options">
+                                                    <div class="menu-button">
+                                                        <a href="/course/review/edit/${element.review_id}">Edit</a>
+                                                    </div>
+                                                    <div class="menu-button">
+                                                        <button onclick="showDeleteModal(${element.review_id})">delete</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <!-- user review text -->
+                                    <div class="review-body">
+                                        <p><?php echo $element['rating'] ?></p>  
+                                    </div>
+                                </div>
+                            `);
+                    });
+                } else {
+                    alert('No more reviews to load');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching reviews:', error);
+                alert('An error occurred while loading more reviews.');
+            });
+
+        counter++;
+    }
+
+    // Function to calculate the difference between two dates
+    function getDateDifference(dateString) {
+        const inputDate = new Date(dateString);
+        const today = new Date();
+
+        // Calculate the time difference in milliseconds
+        const diffTime = today - inputDate;
+
+        // Calculate days difference
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        const diffMonths = Math.floor(diffDays / 30);
+        const diffYears = Math.floor(diffDays / 365);
+
+        if (diffYears > 0) {
+            return `${diffYears} year${diffYears > 1 ? 's' : ''} ago`;
+        } else if (diffMonths > 0) {
+            return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
+        } else if (diffDays > 0) {
+            return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+        } else {
+            return "Today";
         }
     }
+
+    // Function to generate star rating HTML
+    function generateStarRating(rating) {
+        let stars = '';
+        for (let i = 1; i <= 5; i++) {
+            stars += `<span class="star ${i <= rating ? 'active' : ''}">★</span>`;
+        }
+        return stars;
+    }
 </script>
+
+<?php
+function calcDateDiff($startDate)
+{
+    $start = new DateTime($startDate);
+    $end = new DateTime();
+
+    $diff = $start->diff($end);
+
+    return [
+        'years' => $diff->y,
+        'months' => $diff->m,
+        'days' => $diff->d
+    ];
+}
+?>
