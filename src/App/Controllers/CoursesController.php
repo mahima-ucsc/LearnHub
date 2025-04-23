@@ -317,43 +317,7 @@ class CoursesController
             $this->validatorService->validateImg($courseThumbnail);
             $thumbnailFileName = $this->fileService->uploadFile(Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS, $courseThumbnail);
 
-            // Process module attachments
-            $moduleAttachments = [];
-            if (isset($_FILES['modules']['name'][0]['attachments'])) {
-                foreach ($_FILES['modules']['name'][0]['attachments'] as $index => $filename) {
-                    if (!empty($filename)) {
-                        $moduleAttachments[] = [
-                            'name' => $_FILES['modules']['name'][0]['attachments'][$index],
-                            'type' => $_FILES['modules']['type'][0]['attachments'][$index],
-                            'tmp_name' => $_FILES['modules']['tmp_name'][0]['attachments'][$index],
-                            'error' => $_FILES['modules']['error'][0]['attachments'][$index],
-                            'size' => $_FILES['modules']['size'][0]['attachments'][$index]
-                        ];
-                    }
-                }
-            }
 
-            // Prepare modules data
-            $modulesData = [];
-            if (isset($_POST['modules']) && is_array($_POST['modules'])) {
-                foreach ($_POST['modules'] as $index => $module) {
-                    $moduleData = [
-                        'title' => $module['title'],
-                        'description' => $module['description'],
-                        'price' => floatval($module['price']),
-                        'start_date' => $module['moduleStartTime'],
-                        'end_date' => $module['moduleEndTime'],
-                        'has_free_trial' => isset($module['hasFreeTrial']) && $module['hasFreeTrial'] === 'on',
-                        'free_trial_start_date' => $module['freeTrialStartDate'] ?? null,
-                        'free_trial_end_date' => $module['freeTrialEndDate'] ?? null,
-                        'duration_minutes' => (isset($module['hours']) ? intval($module['hours']) * 60 : 0) +
-                            (isset($module['minutes']) ? intval($module['minutes']) : 0),
-                        'attachments' => $moduleAttachments
-                    ];
-
-                    $modulesData[] = $moduleData;
-                }
-            }
 
 
             // Prepare course data
@@ -370,15 +334,14 @@ class CoursesController
                 'price' => isset($_POST['fullCoursePrice']) ? floatval($_POST['fullCoursePrice']) : null,
                 'location' => $_POST['location'],
                 'thumbnail_url' => $thumbnailFileName,
-                'modules' => $modulesData
             ];
 
             // Create the course with modules
-            $courseId = $this->courseService->createCourseWithModules($courseData, $_FILES);
+            $courseId = $this->courseService->createCourse($courseData, $_FILES);
 
             // Redirect to my courses page
             if ($courseId) {
-                echo json_encode("Success");
+                redirectTo($_SERVER['HTTP_REFERER'] . "?m=success");
             } else {
                 // Handle error
                 echo json_encode("Error");
@@ -437,53 +400,43 @@ class CoursesController
     public function createModuleView(array $params)
     {
         $courseId = $params['course_id'];
+        $course = $this->courseService->getCourseById((string)$courseId);
+        if ($course['billing_type'] == "recurring") {
+            $courseSubPeriods = $this->courseService->getRecurringCourseSubPeriods((string)$courseId);
+        }
         echo $this->view->render('/course/create_module.php', [
-            "title" => "Create Module"
+            "title" => "Create Module",
+            "course" => $course,
+            "courseSubPeriods" => $courseSubPeriods ?? []
         ]);
     }
     public function createModule(array $params)
     {
+
         $courseId = $params['course_id'];
         $course = $this->courseService->getCourseById($courseId);
         $type = $course['billing_type'];
         // Process module attachments
         $moduleAttachments = [];
-        if (isset($_FILES['modules']['name'][0]['attachments'])) {
-            foreach ($_FILES['modules']['name'][0]['attachments'] as $index => $filename) {
+        if (isset($_FILES['moduleAttachments']['name'])) {
+            foreach ($_FILES['moduleAttachments']['name'] as $index => $filename) {
                 if (!empty($filename)) {
                     $moduleAttachments[] = [
-                        'name' => $_FILES['modules']['name'][0]['attachments'][$index],
-                        'type' => $_FILES['modules']['type'][0]['attachments'][$index],
-                        'tmp_name' => $_FILES['modules']['tmp_name'][0]['attachments'][$index],
-                        'error' => $_FILES['modules']['error'][0]['attachments'][$index],
-                        'size' => $_FILES['modules']['size'][0]['attachments'][$index]
+                        'name' => $_FILES['moduleAttachments']['name'][$index],
+                        'type' => $_FILES['moduleAttachments']['type'][$index],
+                        'tmp_name' => $_FILES['moduleAttachments']['tmp_name'][$index],
+                        'error' => $_FILES['moduleAttachments']['error'][$index],
+                        'size' => $_FILES['moduleAttachments']['size'][$index]
                     ];
                 }
             }
         }
         // Prepare modules data
-        $modulesData = [];
-        if (isset($_POST['modules']) && is_array($_POST['modules'])) {
-            foreach ($_POST['modules'] as $index => $module) {
-                $moduleData = [
-                    'title' => $module['title'],
-                    'description' => $module['description'],
-                    'price' => floatval($module['price']),
-                    'start_date' => $module['moduleStartTime'],
-                    'end_date' => $module['moduleEndTime'],
-                    'has_free_trial' => isset($module['hasFreeTrial']) && $module['hasFreeTrial'] === 'on',
-                    'free_trial_start_date' => $module['freeTrialStartDate'] ?? null,
-                    'free_trial_end_date' => $module['freeTrialEndDate'] ?? null,
-                    'duration_minutes' => (isset($module['hours']) ? intval($module['hours']) * 60 : 0) +
-                        (isset($module['minutes']) ? intval($module['minutes']) : 0),
-                    'attachments' => $moduleAttachments
-                ];
+        $moduleData = $_POST;
+        $moduleData['attachments'] = $moduleAttachments;
 
-                $modulesData[] = $moduleData;
-            }
-        }
-        $this->courseService->createModule($courseId, $type, $modulesData, 1);
-        echo json_encode($modulesData);
+        $this->courseService->createModule($courseId, $type, $moduleData);
+        redirectTo($_SERVER['HTTP_REFERER'] . "?m=success");
     }
 
     public function deleteCourseModule(array $params)

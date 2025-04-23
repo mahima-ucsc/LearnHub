@@ -2,7 +2,35 @@
 <?php include $this->resolve("course/sidebar/sidebar.php"); ?>
 
 <link rel="stylesheet" href="/assets/styles/Course/course-info.css">
+<style>
+    .add-module-btn {
+        padding: 12px 24px;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: var(--transition);
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: transparent;
+        border: 2px solid var(--gray);
+        color: var(--gray-dark);
+        border: 1px solid;
+        border-radius: 15px;
+    }
 
+    .add-module-btn i {
+        margin-right: 8px;
+    }
+
+    .add-module-btn:hover {
+        border-color: var(--primary);
+        color: var(--primary-dark);
+        transform: translateY(-3px);
+    }
+</style>
 <section class="course-info-container">
     <div class="course-page-wrapper">
         <div class="main-content">
@@ -41,6 +69,10 @@
                 </p>
             </div>
 
+            <button type="button" id="addModuleBtn" class="add-module-btn"
+                onclick="window.location.href='/course/<?= $course['course_id'] ?>/module/create'">
+                <i class="fas fa-plus"></i> Add New Module
+            </button>
             <?php if ($course['billing_type'] === 'onetime' && $course['is_paid']): ?>
                 <div class="course-section">
                     <h2 class="section-title">Course Modules</h2>
