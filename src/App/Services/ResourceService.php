@@ -6,7 +6,7 @@ namespace App\Services;
 
 use Framework\Database;
 use App\Config\Paths;
-
+use Exception;
 
 class ResourceService
 {
@@ -40,6 +40,14 @@ class ResourceService
         return $this->db->query(
             "SELECT sr.*, CONCAT(u.first_name, ' ', u.last_name) as username FROM shared_resources sr
             JOIN users u ON u.user_id = sr.user_id"
+        )->findAll();
+    }
+    public function getPendingResources()
+    {
+        return $this->db->query(
+            "SELECT sr.*, CONCAT(u.first_name, ' ', u.last_name) as username FROM shared_resources sr
+            JOIN users u ON u.user_id = sr.user_id
+            WHERE sr.status = 'pending'"
         )->findAll();
     }
 
@@ -104,9 +112,18 @@ class ResourceService
         $price = $_GET['price'] ?? 'all';
         $sort = $_GET['sort'] ?? '';
 
+        $status = 'approved';
+        if ($_SESSION['user_role'] == 'admin') {
+            $status = $_GET['status'] ?? 'all';
+        }
+
         $whereConditions = [];
         $params = [];
 
+        if ($status !== 'all') {
+            $whereConditions[] = "sr.status = :status";
+            $params["status"] = $status;
+        }
         if (!empty($searchTerm)) {
             $whereConditions[] = "(sr.title LIKE :term OR sr.description LIKE :term OR u.first_name LIKE :term OR u.last_name LIKE :term OR CONCAT(u.first_name , ' ', u.last_name) LIKE :term)";
             $params['term'] = "%{$searchTerm}%";
@@ -124,6 +141,7 @@ class ResourceService
 
         $whereClause = !empty($whereConditions) ? "WHERE " . implode(" AND ", $whereConditions) : "";
         $orderClause = "";
+
         switch ($sort) {
             case 'newest':
                 $orderClause = "ORDER BY sr.created_date DESC";
@@ -155,5 +173,50 @@ class ResourceService
         )->count();
 
         return [$resources, $resourceCount];
+    }
+
+    public function approveResource(string $id)
+    {
+        try {
+            $this->db->query(
+                "UPDATE shared_resources
+                SET status = 'approved'
+                WHERE resource_id = :id",
+                [
+                    "id" => $id
+                ]
+            );
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+    public function rejectResource(string $id)
+    {
+        try {
+            $this->db->query(
+                "UPDATE shared_resources
+                SET status = 'rejected'
+                WHERE resource_id = :id",
+                [
+                    "id" => $id
+                ]
+            );
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+    public function deleteResourceAdmin(string $id)
+    {
+        try {
+            $this->db->query(
+                "DELETE FROM shared_resources
+                WHERE resource_id = :id",
+                [
+                    "id" => $id
+                ]
+            );
+        } catch (Exception $e) {
+            throw $e;
+        }
     }
 }
