@@ -397,10 +397,7 @@ class PageController
         dd("user profile");
         $userDetails = $this->userService->getUserProfile();
         $userReview = $this->reviewService->getUserReview();
-        [$courses, $courseCount] = $this->courseService->searchCourse(
-            3,
-            0
-        );
+        [$courses, $courseCount] = $this->courseService->searchCourse(3, 0);
         echo $this->view->render('User/profile.php', [
             "title" => "Profile",
             "userDetails" => $userDetails,
@@ -413,10 +410,13 @@ class PageController
     {
         $userReview = $this->reviewService->getUserReview();
         $tutorDetails = $this->userService->getTutorProfile($params['tutor-id']);
+        $courses = $this->courseService->getTutorcourses($params['tutor-id']);
+        // dd($courses);
         echo $this->view->render('User/Tutor/tutorProfile.php', [
             "title" => "Tutor",
             "tutorDetails" => $tutorDetails,
-            "userReview" => $userReview
+            "userReview" => $userReview,
+            "courses" => $courses,
         ]);
     }
     public function test()

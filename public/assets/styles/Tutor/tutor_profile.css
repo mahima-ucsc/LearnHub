@@ -311,15 +311,20 @@
 
 .teacher-course-title {
   margin-bottom: 12px;
+  margin-bottom: 30px;
   font-size: 20px;
 }
 
 /* Course Card Styles */
 .courses-grid {
+  padding: 25px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(292px, 1fr));
   gap: 25px;
   margin-bottom: 40px;
+  max-height: 800px;
+  overflow-x: auto;
+  width: 100%;
 }
 
 .course-card-link {
