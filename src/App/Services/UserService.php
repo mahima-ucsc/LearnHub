@@ -26,6 +26,7 @@ class UserService
             WHERE user_id = :userId",
             ['userId' => $_SESSION['user']]
         )->find();
+        // dd($userDetails);
         if ($userDetails['profile_picture_url'] !== null) {
             $userDetails['profile_picture_url'] =
                 Paths::UPLOAD_FOLDER_RELATIVE_TO_PUBLIC . "/" .
@@ -62,6 +63,12 @@ class UserService
             WHERE user_id = :userId",
             ['userId' => $id]
         )->find();
+        if ($userDetails['profile_picture_url'] !== null) {
+            $userDetails['profile_picture_url'] =
+                Paths::UPLOAD_FOLDER_RELATIVE_TO_PUBLIC . "/" .
+                Paths::RELATIVE_USER_PROFILE_PICTURE_UPLOADS .
+                '/' . $userDetails['profile_picture_url'];
+        }
 
         unset($userDetails['password']);
 
@@ -310,7 +317,6 @@ class UserService
 
         $HVcode = password_hash((string)$verificationCode, PASSWORD_BCRYPT, ["const" => 12]);
         $_SESSION['otp_hash'] = $HVcode;
-        // dd([$verificationCode, $HVcode, $email]);
 
         try {
             // server settings
@@ -456,6 +462,29 @@ class UserService
         } catch (Exception $e) {
             $this->db->rollback();
             error_log("Failed to create tutor profile: " . $e->getMessage());
+        }
+    }
+
+    public function saveUserInterest(array $interest)
+    {
+        try {
+            $userId = $_SESSION['user'];
+            foreach ($interest as $i) {
+                $this->db->query(
+                    "INSERT INTO user_interest(
+                    user_id,
+                    subject_id
+                    ) VALUES(
+                    :user_id,
+                    :subject_id
+                    )",
+                    [
+                        "user_id" => $userId,
+                        "subject_id" => $i
+                    ]
+                );
+            }
+        } catch (Exception $e) {
             throw $e;
         }
     }

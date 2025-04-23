@@ -57,8 +57,15 @@ class AuthController
     {
         if (password_verify($_POST['verificationCode'], $_SESSION['otp_hash'])) {
             $this->userService->create($_SESSION['tempUser']);
-            $tutorId = $_SESSION['user'];
-            redirectTo("/tutor/{$tutorId}/create_profile");
+            if ($_SESSION['user_role'] == "student") {
+                redirectTo('/interest');
+            }
+            if ($_SESSION['user_role'] == "teacher") {
+                $tutorId = $_SESSION['user'];
+                redirectTo("/tutor/{$tutorId}/create_profile");
+            } else {
+                redirectTo("/");
+            }
         } else {
             throw new ValidationException(['verificationCode' => ['Invalid verification code']]);
         }

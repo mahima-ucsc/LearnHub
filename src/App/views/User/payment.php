@@ -1,8 +1,12 @@
 <?php include $this->resolve('partials/_header.php'); ?>
 
-<head>
-    <link rel="stylesheet" href="/assets/styles/User/payment.css">
-</head>
+<link rel="stylesheet" href="/assets/styles/User/payment.css">
+
+
+<!-- Include sidebar for users except students -->
+<?php if (!empty($_SESSION['user']) && ($_SESSION['user_role'] == 'admin' || $_SESSION['user_role'] = 'teacher')): ?>
+    <?php include $this->resolve('User/sidebar.php'); ?>
+<?php endif; ?>
 
 <section class="payment-container">
     <div class="payment-header">
@@ -22,16 +26,21 @@
     </div>
 
     <div class="card">
-        <div class="filters">
-            <input type="text" class="filter-input" id="search" placeholder="Search transactions...">
-            <select class="filter-input" id="status-filter">
-                <option value="">All Statuses</option>
-                <option value="success">Successful</option>
-                <option value="pending">Pending</option>
-                <option value="failed">Failed</option>
-            </select>
-            <input type="date" class="filter-input" id="date-filter">
-        </div>
+        <form method="GET">
+            <div class="filters">
+                <input type="text" class="filter-input" id="search" name="s" placeholder="Search transactions..." value="<?= $_GET['s'] ? e($_GET['s']) : '' ?>">
+                <select class="filter-input" id="status-filter" name="status">
+                    <option value="all">All Statuses</option>
+                    <option value="2" <?= $_GET['status'] == 2 ? 'selected' : '' ?>>Successful</option>
+                    <option value="0" <?= $_GET['status'] == 0 ? 'selected' : '' ?>>Pending</option>
+                    <option value="-2" <?= $_GET['status'] == -2 ? 'selected' : '' ?>>Failed</option>
+                    <option value="-1" <?= $_GET['status'] == -1 ? 'selected' : '' ?>>Canceled</option>
+                </select>
+                <input type="date" class="filter-input" id="date-filter" name="date" value="<?= $_GET['date'] ? e($_GET['date']) : '' ?>">
+                <button type="submit" class="payment-filter-btn">Apply Filter</button>
+            </div>
+            <a href="/billing-and-payment" class="clear-filter">Clear Filters</a>
+        </form>
 
         <div class="table-container">
             <table>
@@ -74,10 +83,8 @@
         </div>
 
         <div class="pagination" id="pagination">
-            <button class="page-button">1</button>
-            <button class="page-button active">2</button>
-            <button class="page-button">3</button>
-            <button class="page-button">Next</button>
+            <?php include $this->resolve('components/pagination.php'); ?>
+
         </div>
     </div>
 </section>

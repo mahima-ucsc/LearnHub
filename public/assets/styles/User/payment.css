@@ -97,6 +97,16 @@ th:hover {
     text-decoration: underline;
 }
 
+.payment-filter-btn{
+    cursor: pointer;
+    font-size: 15px;
+    background-color: #FFC400;
+    border: none;
+}
+
+.clear-filter{
+    color: black;
+}
 .pagination {
     display: flex;
     justify-content: flex-end;

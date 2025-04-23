@@ -436,7 +436,7 @@ class PaymentService
         }
     }
 
-    public function getUserPaymentHistory(int $id)
+    public function getStudentPaymentHistory(int $id)
     {
         try {
             return $this->db->query(
@@ -451,6 +451,111 @@ class PaymentService
                     'id' => $id
                 ]
             )->findAll();
+        } catch (Exception $e) {
+            error_log("Failed to fetch teacher payment hisoty: " . $e->getMessage());
+            redirectTo('/server-error');
+        }
+    }
+    public function getPaymentHistory(int $length = 9, int $offset = 0)
+    {
+        try {
+            $searchTerm = trim($_GET['s'] ?? '');
+            $status = $_GET['status'] ?? 'all';
+            $date = (isset($_GET['date']) && $_GET['date'] !== '') ? $_GET['date'] : 'all';
+
+            $whereConditions = [];
+            $params = [];
+
+            // Search condition
+            if (!empty($searchTerm)) {
+                $whereConditions[] = "(c.title LIKE :search OR p.payment_id LIKE :search)";
+                $params['search'] = "%{$searchTerm}%";
+            }
+
+            // Status condition
+            if ($status !== 'all') {
+                $whereConditions[] = "p.payment_status = :status";
+                $params['status'] = $status;
+            }
+
+            // Date condition
+            if ($date !== 'all') {
+                $whereConditions[] = "DATE(p.created_date) = :date";
+                $params['date'] = $date;
+            }
+
+            $whereClause = !empty($whereConditions) ? "WHERE " . implode(" AND ", $whereConditions) : "";
+            if (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'teacher') {
+                $params['id'] = $_SESSION['user'];
+                $paymentDetails = $this->db->query(
+                    "SELECT 
+                    p.*,
+                    c.title
+                    FROM payments p
+                    JOIN course_payments cp ON cp.payment_id = p.payment_id
+                    JOIN courses c ON c.course_id = cp.course_id
+                    {$whereClause}
+                    AND c.tutor_id = :id
+                    LIMIT {$length} OFFSET {$offset}",
+                    $params
+                )->findAll();
+
+                $count = $this->db->query(
+                    "SELECT 
+                    COUNT(p.payment_id)
+                    FROM payments p
+                    JOIN course_payments cp ON cp.payment_id = p.payment_id
+                    JOIN courses c ON c.course_id = cp.course_id
+                    WHERE c.tutor_id = :id",
+                    $params
+                )->count();
+            } elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'student') {
+                $params['id'] = $_SESSION['user'];
+                $paymentDetails = $this->db->query(
+                    "SELECT 
+                    p.*,
+                    c.title
+                    FROM payments p
+                    JOIN course_payments cp ON cp.payment_id = p.payment_id
+                    JOIN courses c ON c.course_id = cp.course_id
+                    {$whereClause}
+                    AND cp.user_id = :id
+                    LIMIT {$length} OFFSET {$offset}",
+                    $params
+                )->findAll();
+                $count = $this->db->query(
+                    "SELECT 
+                    COUNT(p.payment_id)
+                    FROM payments p
+                    JOIN course_payments cp ON cp.payment_id = p.payment_id
+                    JOIN courses c ON c.course_id = cp.course_id
+                    WHERE cp.user_id = :id",
+                    $params
+                )->count();
+            } elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'admin') {
+
+                $paymentDetails = $this->db->query(
+                    "SELECT 
+                    p.*,
+                    c.title
+                    FROM payments p
+                    JOIN course_payments cp ON cp.payment_id = p.payment_id
+                    JOIN courses c ON c.course_id = cp.course_id
+                    {$whereClause}
+                    LIMIT {$length} OFFSET {$offset}",
+                    $params
+                )->findAll();
+                $count = $this->db->query(
+                    "SELECT 
+                    COUNT(p.payment_id)
+                    FROM payments p
+                    JOIN course_payments cp ON cp.payment_id = p.payment_id
+                    JOIN courses c ON c.course_id = cp.course_id
+                    "
+                )->count();
+            }
+
+            return [$paymentDetails, $count];
         } catch (Exception $e) {
             error_log("Failed to fetch teacher payment hisoty: " . $e->getMessage());
             redirectTo('/server-error');

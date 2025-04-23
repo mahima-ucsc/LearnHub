@@ -1,4 +1,5 @@
 <?php include $this->resolve('partials/_header.php') ?>
+<link rel="stylesheet" href="/assets/styles/Course/courses.css">
 
 <style>
     :root {
@@ -80,90 +81,28 @@
         text-decoration: none;
     }
 
-    .courses-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 300px));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .course-card-link {
+    .explore-courses {
+        display: inline-block;
+        background: var(--theme-color);
+        color: #fff;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
         text-decoration: none;
-        color: inherit;
-        display: block;
-        transition: var(--transition);
-    }
-
-    .course-card-link:hover {
-        transform: translateY(-5px);
-    }
-
-    .course-card-link:hover .course-card {
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-    }
-
-    .course-card {
-        background: white;
-        border-radius: 15px;
-        overflow: hidden;
-        transition: transform 0.3s, box-shadow 0.3s;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .course-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-    }
-
-    .course-image {
-        position: relative;
-    }
-
-    .course-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
-        border-radius: 15px 15px 0 0;
-    }
-
-    .course-tag {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        background: rgba(255, 255, 255, 0.9);
-        padding: 0.3rem 0.8rem;
-        border-radius: 12px;
-        font-size: 0.8rem;
-        color: var(--text-dark);
-    }
-
-    .course-content {
-        padding: 1.5rem;
-    }
-
-    .course-time {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.9rem;
-        color: var(--text-light);
-        margin: 0.5rem 0;
-    }
-
-    .course-meta {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        font-weight: 500;
         margin-top: 1rem;
-        color: var(--text-light);
-        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 3px 8px rgba(255, 196, 0, 0.3);
     }
 
-    .course-title {
-        font-size: 1.1rem;
-        color: var(--text-dark);
-        margin-bottom: 0.5rem;
+    .explore-courses:hover {
+        background: var(--dark-theme);
+        transform: translateY(-3px);
+        box-shadow: 0 5px 12px rgba(255, 177, 0, 0.4);
+    }
+
+    .explore-courses:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 6px rgba(255, 177, 0, 0.4);
     }
 
     .progress-bar {
@@ -518,45 +457,59 @@
             <section class="enrolled-courses">
                 <h2 class="section-title">
                     Your courses
-                    <a href="#" class="view-all">View All</a>
+                    <a href="/courses/mycourses" class="view-all">View All</a>
                 </h2>
-                <div class="courses-grid">
-                    <?php
-                    $limit = count($courses) >= 3 ? 3 : count($courses);
-                    for ($i = 0; $i < $limit; $i++): ?>
-                        <a href="/courses/<?php echo e($courses[$i]['course_id']); ?>" class="course-card-link">
-                            <div class="course-card">
+                <?php if (empty($courses)): ?>
+                    <p>You have not registered for any course yet!</p>
+                    <a href="/courses" class="explore-courses" onclick="showLoader();">You Explore courses here!</a>
+                <?php else: ?>
+                    <div class="courses-grid">
+                        <?php
+                        $limit = count($courses) >= 3 ? 3 : count($courses);
+                        for ($i = 0; $i < $limit; $i++): ?>
+                            <a href="/courses/<?php echo e($courses[$i]['course_id']); ?>" class="course-card-link">
+                                <div class="course-card">
 
-                                <div class="course-image">
-                                    <img src="/storage/uploads/courses/thumbnails/<?php echo e($courses[$i]['thumbnail_url']) ?>" alt="">
-                                    <span class="course-tag"><?php echo e($courses[$i]['day']) ?></span>
-                                </div>
-                                <div class="course-content">
-                                    <h3 class="course-title"><?php echo e($courses[$i]['title']) ?></h3>
-                                    <div class="course-time">
-                                        <i class="fas fa-clock"></i>
-                                        <span><?php echo e(date('h:i A', strtotime($courses[$i]['start_time']))); ?> - <?php echo e(date('h:i A', strtotime($courses[$i]['end_time']))); ?></span>
+                                    <div class="course-image">
+                                        <img src="/storage/uploads/courses/thumbnails/<?php echo e($courses[$i]['thumbnail_url']) ?>" alt="">
+                                        <span class="course-location"><?php echo e($courses[$i]['day']) ?></span>
                                     </div>
-                                    <div class="instructor-info">
-                                        <div class="instructor-avatar">
-                                            <i class="fas fa-user"></i>
+                                    <div class="course-content">
+                                        <div class="course-content-header">
+                                            <h3 class="course-title">
+                                                <?php echo e($courses[$i]['title']); ?>
+                                            </h3>
+                                            <div class="course-subject">
+                                                <span>
+                                                    <?php echo e($courses[$i]['subject']); ?>
+                                                </span>
+                                            </div>
                                         </div>
-                                        <span><?php echo e($courses[$i]['teacher']) ?></span>
+                                        <div class="course-time">
+                                            <i class="fas fa-clock"></i>
+                                            <span><?php echo e(date('h:i A', strtotime($courses[$i]['start_time']))); ?> - <?php echo e(date('h:i A', strtotime($courses[$i]['end_time']))); ?></span>
+                                        </div>
+                                        <div class="instructor-info">
+                                            <div class="instructor-avatar">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                            <span><?php echo e($courses[$i]['teacher']) ?></span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </a>
-                    <?php endfor; ?>
-                </div>
+                            </a>
+                        <?php endfor; ?>
+                    </div>
+                <?php endif; ?>
             </section>
             <section class="recommended-section">
                 <h2 class="section-title">Recommended for you</h2>
                 <div class="category-filter">
-                    <div class="category-tag active">All</div>
-                    <div class="category-tag">Development</div>
-                    <div class="category-tag">Design</div>
-                    <div class="category-tag">Business</div>
-                    <div class="category-tag">Marketing</div>
+                    <div class="category-tag <?= $_GET['category'] == 'All' ? 'active' : '' ?>">All</div>
+                    <div class="category-tag <?= $_GET['category'] == 'Development' ? 'active' : '' ?>">Development</div>
+                    <div class="category-tag <?= $_GET['category'] == 'Design' ? 'active' : '' ?>">Design</div>
+                    <div class="category-tag <?= $_GET['category'] == 'Business' ? 'active' : '' ?>">Business</div>
+                    <div class="category-tag <?= $_GET['category'] == 'Marketing' ? 'active' : '' ?>">Marketing</div>
                 </div>
                 <div class="courses-grid">
                     <div class="course-card">
@@ -586,25 +539,6 @@
                     </div>
                 </div>
             </section>
-            <section class="feedback-section">
-                <h2 class="section-title">Recent Reviews</h2>
-                <div class="feedback-item">
-                    <div class="instructor-avatar">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="feedback-content">
-                        <div class="rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <p>"Great course! The instructor was very clear and helpful."</p>
-                        <small>Advanced Web Development</small>
-                    </div>
-                </div>
-            </section>
         </div>
         <div class="right-content">
             <div class="calendar">
@@ -631,7 +565,7 @@
             <div class="student-quick-access">
                 <h3>Quick Access</h3>
 
-                <a href="/my-resources" class="student-resource-access">
+                <a href="/resource/my-resources" class="student-resource-access">
                     <div class="student-access-item">
                         <div class="access-icon">
                             <i class="fas fa-file-alt fa-lg"></i>
@@ -651,7 +585,19 @@
                         </div>
                         <div>
                             <h4>My Posts</h4>
-                            <p>View your course request and comments</p>
+                            <p>View your course requests</p>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </a>
+                <a href="/courserequest-managment" class="student-resource-access">
+                    <div class="student-access-item">
+                        <div class="access-icon">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                        <div>
+                            <h4>My Courses</h4>
+                            <p>View your courses</p>
                         </div>
                         <i class="fas fa-chevron-right"></i>
                     </div>
@@ -659,6 +605,36 @@
             </div>
         </div>
     </div>
+    <form class="suggession-form" method="get"></form>
 </section>
+<script>
+    // Get all category tags
+    const categoryTags = document.querySelectorAll(".category-tag");
+    const suggessionForm = document.querySelector(".suggession-form");
 
+    // Add click event listener to each category tag
+    categoryTags.forEach(tag => {
+        tag.addEventListener("click", function() {
+            categoryTags.forEach(t => t.classList.remove("active"));
+
+            this.classList.add("active");
+
+            // Clear previous input if exists
+            const existingInput = suggessionForm.querySelector('input[name="category"]');
+            if (existingInput) {
+                existingInput.remove();
+            }
+
+            // Create and append hidden input with category value
+            const hiddenInput = document.createElement("input");
+            hiddenInput.type = "hidden";
+            hiddenInput.name = "category";
+            hiddenInput.value = this.innerText;
+            suggessionForm.appendChild(hiddenInput);
+
+            // Submit the form
+            suggessionForm.submit();
+        });
+    });
+</script>
 <?php include $this->resolve('partials/_footer.php') ?>
