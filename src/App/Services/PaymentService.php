@@ -452,7 +452,7 @@ class PaymentService
                 ]
             )->findAll();
         } catch (Exception $e) {
-            error_log("Failed to fetch teacher payment hisoty: " . $e->getMessage());
+            error_log("Failed to fetch student payment hisoty: " . $e->getMessage());
             redirectTo('/server-error');
         }
     }
@@ -484,9 +484,10 @@ class PaymentService
                 $params['date'] = $date;
             }
 
-            $whereClause = !empty($whereConditions) ? "WHERE " . implode(" AND ", $whereConditions) : "";
+            $whereClause = !empty($whereConditions) ? "AND " . implode(" AND ", $whereConditions) : "";
             if (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'teacher') {
                 $params['id'] = $_SESSION['user'];
+
                 $paymentDetails = $this->db->query(
                     "SELECT 
                     p.*,
@@ -494,8 +495,8 @@ class PaymentService
                     FROM payments p
                     JOIN course_payments cp ON cp.payment_id = p.payment_id
                     JOIN courses c ON c.course_id = cp.course_id
+                    WHERE c.tutor_id = :id
                     {$whereClause}
-                    AND c.tutor_id = :id
                     LIMIT {$length} OFFSET {$offset}",
                     $params
                 )->findAll();
@@ -506,7 +507,8 @@ class PaymentService
                     FROM payments p
                     JOIN course_payments cp ON cp.payment_id = p.payment_id
                     JOIN courses c ON c.course_id = cp.course_id
-                    WHERE c.tutor_id = :id",
+                    WHERE c.tutor_id = :id
+                    {$whereClause}",
                     $params
                 )->count();
             } elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'student') {
@@ -518,8 +520,8 @@ class PaymentService
                     FROM payments p
                     JOIN course_payments cp ON cp.payment_id = p.payment_id
                     JOIN courses c ON c.course_id = cp.course_id
+                    WHERE cp.user_id = :id
                     {$whereClause}
-                    AND cp.user_id = :id
                     LIMIT {$length} OFFSET {$offset}",
                     $params
                 )->findAll();
@@ -529,7 +531,8 @@ class PaymentService
                     FROM payments p
                     JOIN course_payments cp ON cp.payment_id = p.payment_id
                     JOIN courses c ON c.course_id = cp.course_id
-                    WHERE cp.user_id = :id",
+                    WHERE cp.user_id = :id
+                    {$whereClause}",
                     $params
                 )->count();
             } elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'admin') {
@@ -541,6 +544,7 @@ class PaymentService
                     FROM payments p
                     JOIN course_payments cp ON cp.payment_id = p.payment_id
                     JOIN courses c ON c.course_id = cp.course_id
+                    WHERE 1 = 1
                     {$whereClause}
                     LIMIT {$length} OFFSET {$offset}",
                     $params
@@ -551,14 +555,116 @@ class PaymentService
                     FROM payments p
                     JOIN course_payments cp ON cp.payment_id = p.payment_id
                     JOIN courses c ON c.course_id = cp.course_id
-                    "
+                    {$whereClause}",
+                    $params
                 )->count();
             }
 
             return [$paymentDetails, $count];
         } catch (Exception $e) {
-            error_log("Failed to fetch teacher payment hisoty: " . $e->getMessage());
+            error_log("Failed to fetch payment hisoty: " . $e->getMessage());
             redirectTo('/server-error');
+        }
+    }
+    public function getWithdrawalHistory(int $length = 9, int $offset = 0)
+    {
+        try {
+            $searchTerm = trim($_GET['s'] ?? '');
+            $status = $_GET['status'] ?? 'all';
+            $date = (isset($_GET['date']) && $_GET['date'] !== '') ? $_GET['date'] : 'all';
+
+            $whereConditions = [];
+            $params = [];
+
+            // Search condition
+            if (!empty($searchTerm)) {
+                $whereConditions[] = "u.first_name LIKE :term OR u.last_name LIKE :term OR CONCAT(u.first_name, ' ', u.last_name) LIKE :term";
+                $params['search'] = "%{$searchTerm}%";
+            }
+
+            // Status condition
+            if ($status !== 'all') {
+                $whereConditions[] = "tw.status = :status";
+                $params['status'] = $status;
+            }
+
+            // Date condition
+            if ($date !== 'all') {
+                $whereConditions[] = "DATE(tw.date_requested) = :date";
+                $params['date'] = $date;
+            }
+
+            $whereClause = !empty($whereConditions) ? "AND " . implode(" AND ", $whereConditions) : "";
+            if (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'teacher') {
+                $detailsQuery = "
+                SELECT 
+                tw.*,
+                CONCAT(u.first_name, ' ', u.last_name) AS username
+                FROM teacher_withdrawal tw
+                JOIN users u ON u.user_id = tw.teacher_id
+                WHERE tw.teacher_id = :user_id
+                {$whereClause}
+                LIMIT {$length} OFFSET {$offset}";
+
+                $countQuery = "
+                SELECT 
+                COUNT(tw.withdrawal_id)
+                FROM teacher_withdrawal tw
+                JOIN users u ON u.user_id = tw.teacher_id
+                WHERE tw.teacher_id = :user_id
+                {$whereClause}";
+
+                $params['user_id'] = $_SESSION['user'];
+            } elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'admin') {
+                $detailsQuery = "
+                SELECT 
+                tw.*,
+                CONCAT(u.first_name, ' ', u.last_name) AS username
+                FROM teacher_withdrawal tw
+                JOIN users u ON u.user_id = tw.teacher_id
+                WHERE 1 = 1
+                {$whereClause}
+                LIMIT {$length} OFFSET {$offset}";
+
+                $countQuery = "
+                SELECT 
+                COUNT(tw.withdrawal_id)
+                FROM teacher_withdrawal tw
+                JOIN users u ON u.user_id = tw.teacher_id
+                WHERE 1 = 1
+                {$whereClause}";
+            }
+            $withdrawalHistory = $this->db->query($detailsQuery, $params)->findAll();
+            $count = $this->db->query($countQuery, $params)->count();
+
+            return [$withdrawalHistory, $count];
+        } catch (Exception $e) {
+            error_log("Failed to fetch payment hisoty: " . $e->getMessage());
+            redirectTo('/server-error');
+        }
+    }
+
+    public function requestWithdrawal(array $formData)
+    {
+        try {
+            $this->db->query(
+                "INSERT INTO teacher_withdrawal
+                (teacher_id,
+                amount,
+                bank_details)
+                VALUES(
+                :id,
+                :amount,
+                :bank_details
+                )",
+                [
+                    "amount" => $formData['amount'],
+                    'bank_details' => $formData['bank_details'],
+                    "id" => $_SESSION['user']
+                ]
+            );
+        } catch (Exception $e) {
+            throw $e;
         }
     }
 }

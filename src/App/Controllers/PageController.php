@@ -196,6 +196,43 @@ class PageController
             ]);
         }
     }
+
+    public function walletView()
+    {
+        $page = (int) ($_GET['p'] ?? 1);
+        $itemsPerPage = 9;
+        $offset = ($page - 1) * $itemsPerPage;
+
+        $searchParams = [
+            's' => $_GET['s'] ?? '',
+            'status' => $_GET['status'] ?? 'all',
+            'date' => $_GET['date'] ?? 'all',
+        ];
+
+        [$withdrawalHistory, $count] = $this->paymentService->getWithdrawalHistory(
+            $itemsPerPage,
+            $offset
+        );
+
+        $pagination = generatePagination($count, $page, $itemsPerPage, $searchParams);
+
+        echo $this->view->render('User/Tutor/wallet.php', [
+            'title' => "Billing & Payment",
+            'withdrawalHistory' => $withdrawalHistory
+        ]);
+    }
+
+    public function requestWithdrawal()
+    {
+        try {
+            $formData = $_POST;
+            $formData['bank_details'] = nl2br($formData['bank_details']);
+            $this->paymentService->requestWithdrawal($_POST);
+        } catch (Exception $e) {
+            error_log("Failed to request withdrawal: " . $e->getMessage());
+            redirectTo("/server-error");
+        }
+    }
     public function courseManagment()
     {
         $page = (int) ($_GET['p'] ?? 1);

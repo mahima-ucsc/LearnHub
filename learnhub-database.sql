@@ -496,3 +496,15 @@ CREATE TABLE IF NOT EXISTS announcements_read (
     FOREIGN KEY (announcement_id) REFERENCES announcements(announcement_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
+
+-- Table for teacher withdraw
+CREATE TABLE IF NOT EXISTS teacher_withdrawal(
+    withdrawal_id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+    teacher_id BIGINT(20) UNSIGNED NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    status ENUM('pending', 'completed', 'failed') DEFAULT 'pending',
+    date_requested DATE NOT NULL DEFAULT CURRENT_DATE,
+    bank_details TEXT,
+
+    FOREIGN KEY (teacher_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
