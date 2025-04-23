@@ -4,6 +4,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <section class="profile">
+    <!-- teacher's bio -->
     <div class="main-container">
         <div class="profile-grid">
             <!-- Left sidebar with tutor info -->
@@ -183,7 +184,7 @@
         </div>
     </div>
 
-
+    <!-- teacher's courses -->
     <div class="teacher-courses-section">
         <div class="teacher-course-title">
             <h2>
@@ -257,6 +258,8 @@
             <?php endforeach; ?>
         </section>
     </div>
+
+    <!-- reviews from students -->
     <div class="reviews-section">
         <h2 class="review-title">Student Reviews</h2>
         <div class="reviews-summary">
@@ -454,6 +457,7 @@
         </div>
     </div>
 </section>
+
 <script>
     // Cart menu
     function toggleCartMenu(button) {
@@ -522,5 +526,3 @@
         }
     }
 </script>
-
-</html>
