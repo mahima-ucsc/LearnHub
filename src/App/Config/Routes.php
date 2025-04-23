@@ -84,8 +84,8 @@ function registerRoutes(App $app)
 
     // tutor
     $app->get('/tutor/{tutor-id}', [PageController::class, 'tutorProfile'], [AuthRequiredMiddleware::class]);
-    $app->get('/tutor/{tutor-id}/create_profile', [AuthController::class, 'createTutorProfileView'], [AuthRequiredMiddleware::class]);
-    $app->post('/api/tutor/profile_create', [AuthController::class, 'createTutorProfile'], [AuthRequiredMiddleware::class]);
+    $app->get('/tutor/{tutor-id}/create_profile', [AuthController::class, 'createTutorProfileView'], [TeacherOnlyMiddleware::class]);
+    $app->post('/api/tutor/profile_create', [AuthController::class, 'createTutorProfile'], [TeacherOnlyMiddleware::class]);
 
     // Student
     $app->get('/my-resource', [PageController::class, 'userResourceView']);
