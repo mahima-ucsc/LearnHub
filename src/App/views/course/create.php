@@ -1,15 +1,19 @@
 <?php include $this->resolve("partials/_header.php"); ?>
 
 <link rel="stylesheet" href="/assets/styles/Course/create_course.css">
-
+<style>
+    .active {
+        display: block;
+    }
+</style>
 <div class="container">
     <div class="page-header">
         <h1 class="page-title">Create New Course</h1>
         <p class="page-subtitle">Share your knowledge with the world by creating an engaging course. Choose your course format and start building your content.</p>
     </div>
 
-    <div id="successMessage" class="success-message">
-        Your course has been created successfully! You can now add more content or publish it.
+    <div id="successMessage" class="success-message <?= $_GET['m'] == 'success' ? 'active' : ''; ?>">
+        Your course has been created successfully! You can now add course modules from course page.
     </div>
 
     <form id="createCourseForm" method="POST" enctype="multipart/form-data" action="/course/create">
@@ -101,13 +105,13 @@
                 <div class="course-type-option" id="fullCourseOption">
                     <i class="fas fa-box"></i>
                     <h3>Complete Course</h3>
-                    <p>Create all modules upfront and set a price for the entire course.</p>
+                    <p>Set a price for the entire course.</p>
                 </div>
 
                 <div class="course-type-option" id="monthlyCourseOption">
                     <i class="fas fa-calendar-alt"></i>
-                    <h3>Monthly Course</h3>
-                    <p>Add modules over time and set individual prices for each module.</p>
+                    <h3>Recurring Course</h3>
+                    <p>Organize course content into time-based access periods, each with customizable pricing.</p>
                 </div>
             </div>
 
@@ -118,24 +122,12 @@
             <div id="fullCoursePricing" class="collapse-content">
                 <div class="form-group">
                     <label for="fullCoursePrice" class="form-label">Course Price*</label>
-                    <input type="number" id="fullCoursePrice" name="fullCoursePrice" class="form-control" placeholder="Enter price (in $)" step="0.01" min="0">
+                    <input type="number" id="fullCoursePrice" name="fullCoursePrice" class="form-control" placeholder="Enter price (in Rs.)" step="0.01" min="0">
                     <div class="error-message" id="fullCoursePriceError">Please enter a valid price</div>
                 </div>
             </div>
         </div>
 
-        <!-- Modules Card -->
-        <div class="card">
-            <h2 class="section-title">Course Modules</h2>
-
-            <div id="modulesList" class="module-list">
-                <!-- Modules will be added here dynamically -->
-            </div>
-
-            <button type="button" id="addModuleBtn" class="btn btn-outline">
-                <i class="fas fa-plus"></i> Add New Module
-            </button>
-        </div>
 
         <!-- Form Actions -->
         <div class="form-actions">
@@ -146,113 +138,18 @@
     </form>
 </div>
 
-<!-- Module Template (hidden, used for JavaScript cloning) -->
-<template id="moduleTemplate">
-    <div class="module-item">
-        <div class="module-header">
-            <h3 class="module-title">Module <span class="module-number"></span></h3>
-            <div class="module-actions">
-                <button type="button" class="btn btn-flat toggle-module-content">
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-                <button type="button" class="btn btn-flat remove-module">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        </div>
-
-        <div class="module-content collapse-content show">
-            <div class="form-group">
-                <label class="form-label">Module Title*</label>
-                <input type="text" name="moduleTitle" class="form-control module-title-input" placeholder="e.g., Introduction to React Hooks" required>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Module Description</label>
-                <textarea name="moduleDescription" class="form-control textarea-control module-description-input" placeholder="What will students learn in this module?"></textarea>
-            </div>
-
-            <div class="monthly-module-pricing">
-                <div class="form-group">
-                    <label class="form-label">Module Price*</label>
-                    <input type="number" name="modulePrice" class="form-control module-price-input" placeholder="Enter price (in $)" step="0.01" min="0">
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="moduleStartTime">Start Time*</label>
-                        <input type="date" name="moduleStartTime" id="moduleStartTime" class="form-control module-start-time">
-                        <div class="error-message" id="moduleStartTimeError">Please enter a start time</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="moduleEndTime">End Time*</label>
-                        <input type="date" name="moduleEndTime" id="moduleEndTime" class="form-control module-end-time">
-                        <div class="error-message" id="moduleEndTimeError">Please enter a end time</div>
-                    </div>
-                </div>
-
-                <div class="toggle-container">
-                    <label class="toggle-switch">
-                        <input type="checkbox" name="moduleFreeTrial" class="module-free-trial-checkbox">
-                        <span class="toggle-slider"></span>
-                    </label>
-                    <span class="toggle-label">Enable free trial period</span>
-                </div>
-
-                <div class="module-free-trial-input collapse-content">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Free Trial Start Date*</label>
-                            <input type="date" name="moduleFreeTrialStartDate" class="form-control module-free-trial-start-date">
-                            <div class="error-message">Please enter a valid start date</div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Free Trial End Date*</label>
-                            <input type="date" name="moduleFreeTrialEndDate" class="form-control module-free-trial-end-date">
-                            <div class="error-message">Please enter a valid end date</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Estimated Completion Time</label>
-                <div class="form-row">
-                    <div class="form-group">
-                        <input type="number" class="form-control module-hours" placeholder="Hours" min="0">
-                    </div>
-                    <div class="form-group">
-                        <input type="number" class="form-control module-minutes" placeholder="Minutes" min="0" max="59">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Module Attachments</label>
-                <div class="module-attachments drop-zone">
-                    <p><i class="fas fa-cloud-upload-alt"></i> Drag files here or click to upload</p>
-                    <input type="file" name="moduleAttachments" class="module-file-input" multiple style="display: none;">
-                </div>
-                <ul class="module-attachments-list"></ul>
-                <p class="hint-text">Upload any supporting materials for this module (PDFs, presentations, code samples, etc.)</p>
-            </div>
-        </div>
-    </div>
-</template>
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Elements
-        const form = document.getElementById('createCourseForm');
+        // const form = document.getElementById('createCourseForm');
         const fullCourseOption = document.getElementById('fullCourseOption');
         const monthlyCourseOption = document.getElementById('monthlyCourseOption');
         const courseTypeInput = document.getElementById('courseType');
         const fullCoursePricing = document.getElementById('fullCoursePricing');
-        const addModuleBtn = document.getElementById('addModuleBtn');
-        const modulesList = document.getElementById('modulesList');
-        const successMessage = document.getElementById('successMessage');
-        const saveAsDraftBtn = document.getElementById('saveAsDraftBtn');
-        const createCourseBtn = document.getElementById('createCourseBtn');
+        const fullCoursePrice = document.getElementById('fullCoursePrice');
+        // const successMessage = document.getElementById('successMessage');
+        // const createCourseBtn = document.getElementById('createCourseBtn');
 
-        let moduleCounter = 0;
 
         // Course Type Selection
         fullCourseOption.addEventListener('click', function() {
@@ -266,6 +163,7 @@
         function selectCourseType(type) {
             fullCourseOption.classList.remove('selected');
             monthlyCourseOption.classList.remove('selected');
+            fullCoursePrice.value = "";
 
             if (type === 'full') {
                 fullCourseOption.classList.add('selected');
@@ -289,392 +187,144 @@
 
             document.getElementById('courseTypeError').style.display = 'none';
 
-            // Add at least one module if none exists
-            if (modulesList.children.length === 0) {
-                addModule();
-            }
         }
 
-        // Add New Module
-        addModuleBtn.addEventListener('click', addModule);
-
-        function addModule() {
-            moduleCounter++;
-
-            // Clone the module template
-            const template = document.getElementById('moduleTemplate');
-            const moduleNode = document.importNode(template.content, true);
-
-            // Update module number
-            moduleNode.querySelector('.module-number').textContent = moduleCounter;
-
-            const moduleIndex = moduleCounter - 1;
-            moduleNode.querySelector('.module-title-input').name = `modules[${moduleIndex}][title]`;
-            moduleNode.querySelector('.module-description-input').name = `modules[${moduleIndex}][description]`;
-            moduleNode.querySelector('.module-hours').name = `modules[${moduleIndex}][hours]`;
-            moduleNode.querySelector('.module-minutes').name = `modules[${moduleIndex}][minutes]`;
-            moduleNode.querySelector('.module-start-time').name = `modules[${moduleIndex}][moduleStartTime]`;
-            moduleNode.querySelector('.module-end-time').name = `modules[${moduleIndex}][moduleEndTime]`;
-
-
-            moduleNode.querySelector('.module-price-input').name = `modules[${moduleIndex}][price]`;
-            moduleNode.querySelector('.module-free-trial-checkbox').name = `modules[${moduleIndex}][hasFreeTrial]`;
-            moduleNode.querySelector('.module-free-trial-start-date').name = `modules[${moduleIndex}][freeTrialStartDate]`;
-            moduleNode.querySelector('.module-free-trial-end-date').name = `modules[${moduleIndex}][freeTrialEndDate]`;
-
-            moduleNode.querySelector('.module-file-input').name = `modules[${moduleIndex}][attachments][]`;
-
-
-            // Add event listeners
-            const toggleBtn = moduleNode.querySelector('.toggle-module-content');
-            const removeBtn = moduleNode.querySelector('.remove-module');
-            const moduleContent = moduleNode.querySelector('.module-content');
-            const freeTrialCheckbox = moduleNode.querySelector('.module-free-trial-checkbox');
-            const freeTrialInput = moduleNode.querySelector('.module-free-trial-input');
-
-            toggleBtn.addEventListener('click', function() {
-                moduleContent.classList.toggle('show');
-                const icon = this.querySelector('i');
-                icon.classList.toggle('fa-chevron-down');
-                icon.classList.toggle('fa-chevron-up');
-            });
-
-            removeBtn.addEventListener('click', function() {
-                if (confirm('Are you sure you want to remove this module?')) {
-                    this.closest('.module-item').remove();
-                    updateModuleNumbers();
+        addEventListener("DOMContentLoaded", () => {
+            setTimeout(() => {
+                const successMessage = document.getElementById("successMessage");
+                if (successMessage) {
+                    successMessage.classList.remove('active');
                 }
-            });
-
-            freeTrialCheckbox.addEventListener('change', function() {
-                if (this.checked) {
-                    freeTrialInput.classList.add('show');
-                } else {
-                    freeTrialInput.classList.remove('show');
-                }
-            });
-
-            // Set display state for pricing based on course type
-            if (courseTypeInput.value === 'full') {
-                moduleNode.querySelector('.monthly-module-pricing').style.display = 'none';
-            }
-
-            // Append the new module
-            modulesList.appendChild(moduleNode);
-
-            // Initialize file attachments for this new module
-            initializeModuleAttachments(modulesList.lastElementChild);
-        }
-
-        // Update module numbers after deletion
-        function updateModuleNumbers() {
-            const modules = modulesList.querySelectorAll('.module-item');
-            modules.forEach((module, index) => {
-                module.querySelector('.module-number').textContent = index + 1;
-            });
-            moduleCounter = modules.length;
-        }
-
-        // Handle module attachments
-        function initializeModuleAttachments(moduleNode) {
-            const dropZone = moduleNode.querySelector('.module-attachments');
-            const fileInput = moduleNode.querySelector('.module-file-input');
-            const attachmentsList = moduleNode.querySelector('.module-attachments-list');
-
-            // Create DataTransfer object to manage files
-            const dataTransfer = new DataTransfer();
-
-            // Click on drop zone to trigger file input
-            dropZone.addEventListener('click', () => {
-                fileInput.click();
-            });
-
-            // Handle drag & drop events
-            dropZone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                dropZone.style.borderColor = 'var(--primary)';
-            });
-
-            dropZone.addEventListener('dragleave', (e) => {
-                e.preventDefault();
-                dropZone.style.borderColor = 'var(--gray)';
-            });
-
-            dropZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                dropZone.style.borderColor = 'var(--gray)';
-                handleFiles(e.dataTransfer.files);
-            });
-
-            // When files are selected via the file input
-            fileInput.addEventListener('change', (e) => {
-                handleFiles(e.target.files);
-            });
-
-            // Add files to DataTransfer and update the preview
-            function handleFiles(files) {
-                for (let i = 0; i < files.length; i++) {
-                    dataTransfer.items.add(files[i]);
-                }
-                // Update the file input with our DataTransfer files
-                fileInput.files = dataTransfer.files;
-                renderPreview();
-            }
-
-            // Format file size in a readable way
-            function formatFileSize(bytes) {
-                if (bytes === 0) return '0 Bytes';
-                const k = 1024;
-                const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-                const i = Math.floor(Math.log(bytes) / Math.log(k));
-                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-            }
-
-            // Render the attachments preview
-            function renderPreview() {
-                // Clear the current list
-                attachmentsList.innerHTML = '';
-
-                // Create a preview for each file
-                Array.from(fileInput.files).forEach((file, index) => {
-                    const listItem = document.createElement('li');
-
-                    // Add file icon
-                    const icon = document.createElement('i');
-                    icon.className = `fas fa-file file-icon`;
-                    listItem.appendChild(icon);
-
-                    // Add file name
-                    const fileName = document.createElement('span');
-                    fileName.textContent = file.name;
-                    fileName.className = 'file-name';
-                    listItem.appendChild(fileName);
-
-                    // Add file size
-                    const fileSize = document.createElement('span');
-                    fileSize.textContent = formatFileSize(file.size);
-                    fileSize.className = 'file-size';
-                    listItem.appendChild(fileSize);
-
-                    // Create a remove button for each file
-                    const removeBtn = document.createElement('button');
-                    removeBtn.innerHTML = '<i class="fas fa-times"></i>';
-                    removeBtn.className = 'remove-file';
-                    removeBtn.type = 'button';
-                    removeBtn.addEventListener('click', () => removeFile(index));
-                    listItem.appendChild(removeBtn);
-
-                    attachmentsList.appendChild(listItem);
-                });
-            }
-
-            // Remove a file from the DataTransfer list
-            function removeFile(index) {
-                // Create a new DataTransfer object and add back every file except the one to remove
-                const newDataTransfer = new DataTransfer();
-                Array.from(fileInput.files).forEach((file, i) => {
-                    if (i !== index) {
-                        newDataTransfer.items.add(file);
-                    }
-                });
-                // Update our DataTransfer and file input
-                fileInput.files = newDataTransfer.files;
-                renderPreview();
-            }
-        }
+            }, 2000);
+        })
 
         // Form validation
-        function validateForm() {
-            let isValid = true;
+        // function validateForm() {
+        //     let isValid = true;
 
-            // Validate basic course info
-            const requiredFields = ['courseTitle', 'courseDescription', 'courseSubject', 'courseGrade', 'courseThumbnail'];
+        //     // Validate basic course info
+        //     const requiredFields = ['courseTitle', 'courseDescription', 'courseSubject', 'courseGrade', 'courseThumbnail'];
 
-            requiredFields.forEach(fieldId => {
-                const field = document.getElementById(fieldId);
-                const errorElement = document.getElementById(fieldId + 'Error');
+        //     requiredFields.forEach(fieldId => {
+        //         const field = document.getElementById(fieldId);
+        //         const errorElement = document.getElementById(fieldId + 'Error');
 
-                if (!field.value) {
-                    errorElement.style.display = 'block';
-                    field.classList.add('error');
-                    isValid = false;
-                } else {
-                    errorElement.style.display = 'none';
-                    field.classList.remove('error');
-                }
-            });
+        //         if (!field.value) {
+        //             errorElement.style.display = 'block';
+        //             field.classList.add('error');
+        //             isValid = false;
+        //         } else {
+        //             errorElement.style.display = 'none';
+        //             field.classList.remove('error');
+        //         }
+        //     });
 
-            // Validate course type
-            if (!courseTypeInput.value) {
-                document.getElementById('courseTypeError').style.display = 'block';
-                isValid = false;
-            }
+        //     // Validate course type
+        //     if (!courseTypeInput.value) {
+        //         document.getElementById('courseTypeError').style.display = 'block';
+        //         isValid = false;
+        //     }
 
-            // Validate pricing based on course type
-            if (courseTypeInput.value === 'full') {
-                const priceField = document.getElementById('fullCoursePrice');
-                const priceError = document.getElementById('fullCoursePriceError');
+        //     // Validate pricing based on course type
+        //     if (courseTypeInput.value === 'full') {
+        //         const priceField = document.getElementById('fullCoursePrice');
+        //         const priceError = document.getElementById('fullCoursePriceError');
 
-                if (!priceField.value || parseFloat(priceField.value) < 0) {
-                    priceError.style.display = 'block';
-                    priceField.classList.add('error');
-                    isValid = false;
-                } else {
-                    priceError.style.display = 'none';
-                    priceField.classList.remove('error');
-                }
+        //         if (!priceField.value || parseFloat(priceField.value) < 0) {
+        //             priceError.style.display = 'block';
+        //             priceField.classList.add('error');
+        //             isValid = false;
+        //         } else {
+        //             priceError.style.display = 'none';
+        //             priceField.classList.remove('error');
+        //         }
 
-                // Validate free trial period if enabled
-                if (hasFreeTrialPeriod.checked) {
-                    const startDateField = document.getElementById('freeTrialStartDate');
-                    const endDateField = document.getElementById('freeTrialEndDate');
-                    const startDateError = document.getElementById('freeTrialStartDateError');
-                    const endDateError = document.getElementById('freeTrialEndDateError');
+        //         // Validate free trial period if enabled
+        //         if (hasFreeTrialPeriod.checked) {
+        //             const startDateField = document.getElementById('freeTrialStartDate');
+        //             const endDateField = document.getElementById('freeTrialEndDate');
+        //             const startDateError = document.getElementById('freeTrialStartDateError');
+        //             const endDateError = document.getElementById('freeTrialEndDateError');
 
-                    if (!startDateField.value) {
-                        startDateError.style.display = 'block';
-                        startDateField.classList.add('error');
-                        isValid = false;
-                    } else {
-                        startDateError.style.display = 'none';
-                        startDateField.classList.remove('error');
-                    }
+        //             if (!startDateField.value) {
+        //                 startDateError.style.display = 'block';
+        //                 startDateField.classList.add('error');
+        //                 isValid = false;
+        //             } else {
+        //                 startDateError.style.display = 'none';
+        //                 startDateField.classList.remove('error');
+        //             }
 
-                    if (!endDateField.value) {
-                        endDateError.style.display = 'block';
-                        endDateField.classList.add('error');
-                        isValid = false;
-                    } else if (new Date(endDateField.value) <= new Date(startDateField.value)) {
-                        endDateError.textContent = 'End date must be after start date';
-                        endDateError.style.display = 'block';
-                        endDateField.classList.add('error');
-                        isValid = false;
-                    } else {
-                        endDateError.style.display = 'none';
-                        endDateField.classList.remove('error');
-                    }
-                }
-            }
+        //             if (!endDateField.value) {
+        //                 endDateError.style.display = 'block';
+        //                 endDateField.classList.add('error');
+        //                 isValid = false;
+        //             } else if (new Date(endDateField.value) <= new Date(startDateField.value)) {
+        //                 endDateError.textContent = 'End date must be after start date';
+        //                 endDateError.style.display = 'block';
+        //                 endDateField.classList.add('error');
+        //                 isValid = false;
+        //             } else {
+        //                 endDateError.style.display = 'none';
+        //                 endDateField.classList.remove('error');
+        //             }
+        //         }
+        //     }
 
-            // Validate modules
-            const modules = modulesList.querySelectorAll('.module-item');
-            if (modules.length === 0) {
-                alert('Please add at least one module to your course');
-                isValid = false;
-            } else {
-                modules.forEach((module, index) => {
-                    const titleInput = module.querySelector('.module-title-input');
-
-                    if (!titleInput.value) {
-                        titleInput.classList.add('error');
-                        isValid = false;
-                    } else {
-                        titleInput.classList.remove('error');
-                    }
-
-                    // Validate module price if monthly course
-                    if (courseTypeInput.value === 'monthly') {
-                        const priceInput = module.querySelector('.module-price-input');
-
-                        if (!priceInput.value || parseFloat(priceInput.value) < 0) {
-                            priceInput.classList.add('error');
-                            isValid = false;
-                        } else {
-                            priceInput.classList.remove('error');
-                        }
-
-                        // Validate free trial period if enabled for this module
-                        const freeTrialCheckbox = module.querySelector('.module-free-trial-checkbox');
-                        if (freeTrialCheckbox.checked) {
-                            const startDateInput = module.querySelector('.module-free-trial-start-date');
-                            const endDateInput = module.querySelector('.module-free-trial-end-date');
-                            const errorElements = module.querySelectorAll('.module-free-trial-input .error-message');
-
-                            if (!startDateInput.value) {
-                                startDateInput.classList.add('error');
-                                errorElements[0].style.display = 'block';
-                                isValid = false;
-                            } else {
-                                startDateInput.classList.remove('error');
-                                errorElements[0].style.display = 'none';
-                            }
-
-                            if (!endDateInput.value) {
-                                endDateInput.classList.add('error');
-                                errorElements[1].style.display = 'block';
-                                isValid = false;
-                            } else if (new Date(endDateInput.value) <= new Date(startDateInput.value)) {
-                                endDateInput.classList.add('error');
-                                errorElements[1].textContent = 'End date must be after start date';
-                                errorElements[1].style.display = 'block';
-                                isValid = false;
-                            } else {
-                                endDateInput.classList.remove('error');
-                                errorElements[1].style.display = 'none';
-                            }
-                        }
-                    }
-                });
-            }
-
-            return isValid;
-        }
+        //     return isValid;
+        // }
 
         // Form submission
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
+        // form.addEventListener('submit', function(e) {
+        //     e.preventDefault();
 
-            if (validateForm()) {
-                // Disable buttons and show loading state
-                createCourseBtn.disabled = true;
-                saveAsDraftBtn.disabled = true;
-                createCourseBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+        //     if (validateForm()) {
+        //         // Disable buttons and show loading state
+        //         createCourseBtn.disabled = true;
+        //         createCourseBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
 
-                // Use fetch API to submit the form
-                fetch('/course/create', {
-                        method: 'POST',
-                        body: new FormData(form)
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Server returned error: ' + response.status);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        // Show success message
-                        successMessage.style.display = 'block';
-                        console.log(data);
+        //         // Use fetch API to submit the form
+        //         fetch('/course/create', {
+        //                 method: 'POST',
+        //                 body: new FormData(form)
+        //             })
+        //             .then(response => {
+        //                 if (!response.ok) {
+        //                     throw new Error('Server returned error: ' + response.status);
+        //                 }
+        //                 return response.json();
+        //             })
+        //             .then(data => {
+        //                 // Show success message
+        //                 successMessage.style.display = 'block';
+        //                 console.log(data);
 
-                        // Scroll to top to see success message
-                        window.scrollTo({
-                            top: 0,
-                            behavior: 'smooth'
-                        });
+        //                 // Scroll to top to see success message
+        //                 window.scrollTo({
+        //                     top: 0,
+        //                     behavior: 'smooth'
+        //                 });
 
-                        // Reset form after showing the message
-                        setTimeout(() => {
-                            form.reset();
-                            modulesList.innerHTML = '';
-                            moduleCounter = 0;
-                            fullCourseOption.classList.remove('selected');
-                            monthlyCourseOption.classList.remove('selected');
-                            fullCoursePricing.classList.remove('show');
-                            courseTypeInput.value = '';
-                        }, 3000);
-                    })
-                    .catch(error => {
-                        // Show error message
-                        alert('Error submitting form: ' + error.message);
-                    })
-                    .finally(() => {
-                        // Re-enable buttons
-                        createCourseBtn.disabled = false;
-                        saveAsDraftBtn.disabled = false;
-                        createCourseBtn.innerHTML = '<i class="fas fa-check"></i> Create Course';
-                    });
-            }
-        });
+        //                 // Reset form after showing the message
+        //                 setTimeout(() => {
+        //                     form.reset();
+        //                     fullCourseOption.classList.remove('selected');
+        //                     monthlyCourseOption.classList.remove('selected');
+        //                     fullCoursePricing.classList.remove('show');
+        //                     courseTypeInput.value = '';
+        //                 }, 3000);
+        //             })
+        //             .catch(error => {
+        //                 // Show error message
+        //                 alert('Error submitting form: ' + error.message);
+        //             })
+        //             .finally(() => {
+        //                 // Re-enable buttons
+        //                 createCourseBtn.disabled = false;
+        //                 createCourseBtn.innerHTML = '<i class="fas fa-check"></i> Create Course';
+        //             });
+        //     }
+        // });
 
     });
 </script>
