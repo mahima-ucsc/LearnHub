@@ -390,7 +390,7 @@ class UserService
 
     public function createTutorProfile($formData)
     {
-        dd($formData);
+        // dd($formData);
         $tutorId = $_SESSION['user'];
         $this->db->beginTransaction();
 
@@ -418,14 +418,6 @@ class UserService
                     ]
                 );
             }
-        } else {
-            $this->db->query(
-                "INSERT INTO TutorSubjects (tutor_id, subject_id, years_experience)
-                VALUES (:tutor_id, NULL, NULL);",
-                [
-                    'tutor_id' => $tutorId,
-                ]
-            );
         }
 
         // insert education details
@@ -480,5 +472,7 @@ class UserService
         }
 
         $this->db->commit();
+
+        dd($formData);
     }
 }
