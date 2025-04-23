@@ -393,6 +393,7 @@ class UserService
         dd($formData);
         $tutorId = $_SESSION['user'];
         $this->db->beginTransaction();
+
         // insert basic info
         $this->db->query(
             "INSERT INTO TutorProfiles (tutor_id, title, bio)
@@ -405,11 +406,11 @@ class UserService
         );
 
         // insert subjects
-        if (isset($formData['subjects'])) {
+        if (isset($formData['subjects']) && is_array($formData['subjects'])) {
             foreach ($formData['subjects'] as $subject) {
                 $this->db->query(
                     "INSERT INTO TutorSubjects (tutor_id, subject_id, years_experience)
-            VALUES (:tutor_id, :subject_id, :years_experience);",
+                VALUES (:tutor_id, :subject_id, :years_experience);",
                     [
                         'tutor_id' => $tutorId,
                         'subject_id' => $subject['subject_id'],
@@ -417,10 +418,18 @@ class UserService
                     ]
                 );
             }
+        } else {
+            $this->db->query(
+                "INSERT INTO TutorSubjects (tutor_id, subject_id, years_experience)
+                VALUES (:tutor_id, NULL, NULL);",
+                [
+                    'tutor_id' => $tutorId,
+                ]
+            );
         }
 
         // insert education details
-        if (isset($formData['educations'])) {
+        if (isset($formData['educations']) && is_array($formData['educations'])) {
             foreach ($formData['educations'] as $education) {
                 $this->db->query(
                     "INSERT INTO TutorEducation (tutor_id, degree, institution, field_of_study, start_date, end_date)
@@ -435,24 +444,41 @@ class UserService
                     ]
                 );
             }
+        } else {
+            $this->db->query(
+                "INSERT INTO TutorEducation (tutor_id, degree, institution, field_of_study, start_date, end_date)
+                VALUES (:tutor_id, NULL, NULL, NULL, NULL, NULL);",
+                [
+                    'tutor_id' => $tutorId,
+                ]
+            );
         }
 
         // insert availabile time slots
-        if (isset($formData['availability'])) {
+        if (isset($formData['availability']) && is_array($formData['availability'])) {
             foreach ($formData['availability'] as $timeSlot) {
                 $this->db->query(
                     "INSERT INTO TutorAvailability (tutor_id, day_of_week, start_time, end_time, is_recurring)
-                VALUES (:tutor_id, :day_of_week, :start_time, :end_time, :is_recurring);",
+                    VALUES (:tutor_id, :day_of_week, :start_time, :end_time, :is_recurring);",
                     [
                         'tutor_id' => $tutorId,
                         'day_of_week' => $timeSlot['day_of_week'],
                         'start_time' => $timeSlot['start_time'],
                         'end_time' => $timeSlot['end_time'],
                         'is_recurring' => $timeSlot['is_recurring'],
-
                     ]
                 );
             }
+        } else {
+            $this->db->query(
+                "INSERT INTO TutorAvailability (tutor_id, day_of_week, start_time, end_time, is_recurring)
+                VALUES (:tutor_id, NULL, NULL, NULL, NULL);",
+                [
+                    'tutor_id' => $tutorId,
+                ]
+            );
         }
+
+        $this->db->commit();
     }
 }
