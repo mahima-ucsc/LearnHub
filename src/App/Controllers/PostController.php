@@ -56,7 +56,6 @@ class PostController
         $sort = $_GET['sort'] ?? 'recent';
 
         [$courseRequests, $requestCount] = $this->courseRequestService->getApprovedCourseRequests($length, $offset);
-
         $lastPage = ceil($requestCount / $length);
         $pages = $lastPage ? range(1, $lastPage) : [];
 
