@@ -317,13 +317,14 @@ class PageController
     }
     public function profile()
     {
+        dd("user profile");
         $userDetails = $this->userService->getUserProfile();
         $userReview = $this->reviewService->getUserReview();
         [$courses, $courseCount] = $this->courseService->searchCourse(
             3,
             0
         );
-        echo $this->view->render('Tutor/profile.php', [
+        echo $this->view->render('User/profile.php', [
             "title" => "Profile",
             "userDetails" => $userDetails,
             "userReview" => $userReview,
