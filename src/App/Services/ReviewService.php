@@ -159,4 +159,24 @@ class ReviewService
         }
         return $userReview;
     }
+
+    public function getSummeryOfReview(string $coruseId)
+    {
+        $userReview = $this->db->query(
+            "SELECT rating FROM course_review WHERE course_id = :course_id",
+            [
+                'course_id' => $coruseId
+            ]
+        )->findAll();
+        $totalReviews = count($userReview);
+        $starCount = [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0];
+        $totalRating = 0;
+        foreach ($userReview as $review) {
+            $totalRating += $review['rating'];
+            $starCount[$review['rating']]++;
+        }
+        $avgRating = $totalReviews > 0 ? ($totalRating / $totalReviews) : 0;
+        $summeryOfReviews = ['totalReviews' => $totalReviews, 'avgRating' => $avgRating, 'starCount' => $starCount];
+        return ($summeryOfReviews);
+    }
 }
