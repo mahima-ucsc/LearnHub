@@ -411,11 +411,22 @@ class PageController
         $userReview = $this->reviewService->getUserReview();
         $tutorDetails = $this->userService->getTutorProfile($params['tutor-id']);
         $courses = $this->courseService->getTutorcourses($params['tutor-id']);
+        $totalReviews = count($userReview);
+        $starCount = [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0];
+        $totalRating = 0;
+        foreach ($userReview as $review) {
+            $totalRating += $review['rating'];
+            $starCount[$review['rating']]++;
+        }
+        $avgRating = $totalReviews > 0 ? ($totalRating / $totalReviews) : 0;
+        $summeryOfReviews = ['totalReviews' => $totalReviews, 'avgRating' => $avgRating, 'starCount' => $starCount];
+
         // dd($courses);
         echo $this->view->render('User/Tutor/tutorProfile.php', [
             "title" => "Tutor",
             "tutorDetails" => $tutorDetails,
             "userReview" => $userReview,
+            'summeryOfReviews' => $summeryOfReviews,
             "courses" => $courses,
         ]);
     }
