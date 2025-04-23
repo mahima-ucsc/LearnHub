@@ -523,3 +523,45 @@ CREATE TABLE TutorAvailability (
     is_recurring BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (tutor_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
+
+-- View to get the full profile of tutors
+CREATE OR REPLACE VIEW view_tutor_full_profile AS
+SELECT 
+    u.user_id,
+    u.first_name,
+    u.last_name,
+    u.email,
+    u.phone_no,
+    u.date_of_birth,
+    u.description,
+    u.joined_date,
+    u.profile_picture_url,
+    u.location,
+    u.user_role,
+
+    tp.title AS profile_title,
+    tp.bio AS profile_bio,
+    
+    s.subject_title,
+    ts.years_experience,
+    
+    te.degree,
+    te.institution,
+    te.field_of_study,
+    te.start_date AS education_start,
+    te.end_date AS education_end,
+    
+    ta.day_of_week,
+    ta.start_time,
+    ta.end_time,
+    ta.is_recurring
+
+FROM users u
+
+LEFT JOIN TutorProfiles tp ON u.user_id = tp.tutor_id
+LEFT JOIN TutorSubjects ts ON u.user_id = ts.tutor_id
+LEFT JOIN subjects s ON ts.subject_id = s.subject_id
+LEFT JOIN TutorEducation te ON u.user_id = te.tutor_id
+LEFT JOIN TutorAvailability ta ON u.user_id = ta.tutor_id
+
+WHERE u.user_role = 'teacher';
