@@ -390,10 +390,69 @@ class UserService
 
     public function createTutorProfile($formData)
     {
-        $this->db->beginTransaction();
-        $this->db->query(
-            " "
-        );
         dd($formData);
+        $tutorId = $_SESSION['user'];
+        $this->db->beginTransaction();
+        // insert basic info
+        $this->db->query(
+            "INSERT INTO TutorProfiles (tutor_id, title, bio)
+            VALUES (:tutor_id, :title, :bio);",
+            [
+                'tutor_id' => $tutorId,
+                'title' => !empty($formData['title']) ? $formData['title'] : null,
+                'bio' => !empty($formData['bio']) ? $formData['bio'] : null,
+            ]
+        );
+
+        // insert subjects
+        if (isset($formData['subjects'])) {
+            foreach ($formData['subjects'] as $subject) {
+                $this->db->query(
+                    "INSERT INTO TutorSubjects (tutor_id, subject_id, years_experience)
+            VALUES (:tutor_id, :subject_id, :years_experience);",
+                    [
+                        'tutor_id' => $tutorId,
+                        'subject_id' => $subject['subject_id'],
+                        'years_experience' => $subject['years_experience'],
+                    ]
+                );
+            }
+        }
+
+        // insert education details
+        if (isset($formData['educations'])) {
+            foreach ($formData['educations'] as $education) {
+                $this->db->query(
+                    "INSERT INTO TutorEducation (tutor_id, degree, institution, field_of_study, start_date, end_date)
+                    VALUES (:tutor_id, :degree, :institution, :field_of_study, :start_date, :end_date);",
+                    [
+                        'tutor_id' => $tutorId,
+                        'degree' => $education['degree'],
+                        'institution' => $education['institution'],
+                        'field_of_study' => $education['field_of_study'],
+                        'start_date' => $education['start_date'],
+                        'end_date' => $education['end_date'],
+                    ]
+                );
+            }
+        }
+
+        // insert availabile time slots
+        if (isset($formData['availability'])) {
+            foreach ($formData['availability'] as $timeSlot) {
+                $this->db->query(
+                    "INSERT INTO TutorAvailability (tutor_id, day_of_week, start_time, end_time, is_recurring)
+                VALUES (:tutor_id, :day_of_week, :start_time, :end_time, :is_recurring);",
+                    [
+                        'tutor_id' => $tutorId,
+                        'day_of_week' => $timeSlot['day_of_week'],
+                        'start_time' => $timeSlot['start_time'],
+                        'end_time' => $timeSlot['end_time'],
+                        'is_recurring' => $timeSlot['is_recurring'],
+
+                    ]
+                );
+            }
+        }
     }
 }

@@ -274,25 +274,25 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Degree</label>
-                                    <input type="text" name="education[0][degree]" placeholder="e.g. Ph.D., M.S., B.S.">
+                                    <input type="text" name="educations[0][degree]" placeholder="e.g. Ph.D., M.S., B.S.">
                                 </div>
                                 <div class="form-group">
                                     <label>Field of Study</label>
-                                    <input type="text" name="education[0][field_of_study]" placeholder="e.g. Applied Mathematics">
+                                    <input type="text" name="educations[0][field_of_study]" placeholder="e.g. Applied Mathematics">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label>Institution</label>
-                                <input type="text" name="education[0][institution]" placeholder="e.g. Massachusetts Institute of Technology">
+                                <input type="text" name="educations[0][institution]" placeholder="e.g. Massachusetts Institute of Technology">
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Start Date</label>
-                                    <input type="date" name="education[0][start_date]">
+                                    <input type="date" name="educations[0][start_date]">
                                 </div>
                                 <div class="form-group">
                                     <label>End Date</label>
-                                    <input type="date" name="education[0][end_date]">
+                                    <input type="date" name="educations[0][end_date]">
                                 </div>
                             </div>
                         </div>
@@ -394,25 +394,25 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Degree</label>
-                        <input type="text" name="education[${count}][degree]" placeholder="e.g. Ph.D., M.S., B.S.">
+                        <input type="text" name="educations[${count}][degree]" placeholder="e.g. Ph.D., M.S., B.S.">
                     </div>
                     <div class="form-group">
                         <label>Field of Study</label>
-                        <input type="text" name="education[${count}][field_of_study]" placeholder="e.g. Applied Mathematics">
+                        <input type="text" name="educations[${count}][field_of_study]" placeholder="e.g. Applied Mathematics">
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Institution</label>
-                    <input type="text" name="education[${count}][institution]" placeholder="e.g. Massachusetts Institute of Technology">
+                    <input type="text" name="educations[${count}][institution]" placeholder="e.g. Massachusetts Institute of Technology">
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label>Start Date</label>
-                        <input type="date" name="education[${count}][start_date]">
+                        <input type="date" name="educations[${count}][start_date]">
                     </div>
                     <div class="form-group">
                         <label>End Date</label>
-                        <input type="date" name="education[${count}][end_date]">
+                        <input type="date" name="educations[${count}][end_date]">
                     </div>
                 </div>
             `;

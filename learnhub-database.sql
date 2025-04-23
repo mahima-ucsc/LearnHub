@@ -484,7 +484,7 @@ CREATE TABLE IF NOT EXISTS announcements_read (
 
 -- tutor profile details
 CREATE TABLE IF NOT EXISTS TutorProfiles(
-    tutor_profile_id BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY,
+    tutor_profile_id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     tutor_id BIGINT(20) UNSIGNED NOT NULL,
     title VARCHAR(255),
     bio TEXT,
@@ -503,7 +503,7 @@ CREATE TABLE IF NOT EXISTS TutorSubjects (
 
 -- Table to store education details of tutors
 CREATE TABLE IF NOT EXISTS TutorEducation (
-    education_id  BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY,
+    education_id  BIGINT(20) UNSIGNED AUTO_INCREMENT  PRIMARY KEY,
     tutor_id BIGINT(20) UNSIGNED NOT NULL,
     degree VARCHAR(255) NOT NULL,
     institution VARCHAR(255) NOT NULL,
@@ -515,7 +515,7 @@ CREATE TABLE IF NOT EXISTS TutorEducation (
 
 -- Availability schedule
 CREATE TABLE TutorAvailability (
-    availability_id SERIAL PRIMARY KEY,
+    availability_id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
     tutor_id BIGINT(20) UNSIGNED NOT NULL,
     day_of_week INTEGER NOT NULL, -- 0=Sunday, 1=Monday, etc.
     start_time TIME NOT NULL,
