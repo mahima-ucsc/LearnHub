@@ -394,7 +394,23 @@ class PaymentService
                 [
                     'id' => $id
                 ]
-            )->findAll();
+            )->find();
+        } catch (Exception $e) {
+            error_log("Fail to fetch the teacher course income: " . $e->getMessage());
+            redirectTo('/server-error');
+        }
+    }
+    public function getWithdrawedAmount(int $id)
+    {
+        try {
+            return $this->db->query(
+                "SELECT SUM(amount) AS total_amount
+                FROM teacher_withdrawal
+                WHERE teacher_id = :id",
+                [
+                    'id' => $id
+                ]
+            )->find();
         } catch (Exception $e) {
             error_log("Fail to fetch the teacher course income: " . $e->getMessage());
             redirectTo('/server-error');
@@ -661,6 +677,41 @@ class PaymentService
                     "amount" => $formData['amount'],
                     'bank_details' => $formData['bank_details'],
                     "id" => $_SESSION['user']
+                ]
+            );
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+
+    public function completeWithdraw(string $id, string $userId)
+    {
+        try {
+            $this->db->query(
+                "UPDATE teacher_withdrawal
+                SET status = 'completed'
+                WHERE withdrawal_id = :id
+                AND teacher_id = :user_id",
+                [
+                    "id" => $id,
+                    "user_id" => $userId
+                ]
+            );
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+    public function cancelWithdrawal(string $id, string $userId)
+    {
+        try {
+            $this->db->query(
+                "UPDATE teacher_withdrawal
+                SET status = 'canceled'
+                WHERE withdrawal_id = :id
+                AND teacher_id = :user_id",
+                [
+                    "id" => $id,
+                    "user_id" => $userId
                 ]
             );
         } catch (Exception $e) {

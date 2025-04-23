@@ -109,7 +109,7 @@
         color: #ffc107;
     }
 
-    .status-failed {
+    .status-canceled {
         background-color: #f8d7da;
         color: #dc3545;
     }
@@ -238,19 +238,18 @@
         </div>
         <?php unset($_SESSION['error_message']); ?>
     <?php endif; ?>
-
     <div class="summary-cards">
         <div class="summary-card">
             <h3>All-Time Revenue</h3>
-            <div class="value">Rs. <?= e($revenue); ?></div>
+            <div class="value">Rs. <?= e($totalRevenue); ?></div>
         </div>
         <div class="summary-card">
             <h3>Withdrawn Amount</h3>
-            <div class="value">Rs. <?= e($withdrawnAmount ?? 0); ?></div>
+            <div class="value">Rs. <?= e($withdrawedAmount ?? 0); ?></div>
         </div>
         <div class="summary-card">
             <h3>Available Balance</h3>
-            <div class="value">Rs. <?= e($availableBalance ?? ($revenue - ($withdrawnAmount ?? 0))); ?></div>
+            <div class="value">Rs. <?= e($balance ?? ($revenue - ($withdrawnAmount ?? 0))); ?></div>
         </div>
     </div>
 
@@ -321,8 +320,8 @@
                                         <span class="status-badge status-success">Completed</span>
                                     <?php elseif ($withdrawal['status'] == 'pending'): ?>
                                         <span class="status-badge status-pending">Pending</span>
-                                    <?php elseif ($withdrawal['status'] == 'failed'): ?>
-                                        <span class="status-badge status-failed">Failed</span>
+                                    <?php elseif ($withdrawal['status'] == 'canceled'): ?>
+                                        <span class="status-badge status-canceled">Canceled</span>
                                     <?php endif; ?>
                                 </td>
                             </tr>
@@ -334,6 +333,7 @@
                     <?php endif; ?>
                 </tbody>
             </table>
+            <?php include $this->resolve('components/pagination.php'); ?>
         </div>
     </div>
 </section>

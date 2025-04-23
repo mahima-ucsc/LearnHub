@@ -365,6 +365,10 @@
                 <span class="menu-icon"><i class="fas fa-chart-line"></i></span>
                 Revenue Reports
             </a>
+            <a href="/wallet" class="menu-item">
+                <span class="menu-icon"><i class="fa-solid fa-wallet"></i></span>
+                Wallet
+            </a>
         </div>
 
         <div class="sidebar-section">
