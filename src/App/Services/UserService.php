@@ -41,8 +41,7 @@ class UserService
     public function getTutorProfile(string $tutorId)
     {
         $tutorDetails = $this->db->query(
-            "SELECT * FROM users
-            WHERE user_id = :tutor_id",
+            "SELECT * FROM view_tutor_full_profile WHERE user_id = :tutor_id;",
             ['tutor_id' => $tutorId]
         )->find();
         if ($tutorDetails['profile_picture_url'] !== null) {
@@ -53,9 +52,6 @@ class UserService
         }
 
         unset($tutorDetails['password']);
-
-        // dd($tutorDetails);
-
         return $tutorDetails;
     }
 
