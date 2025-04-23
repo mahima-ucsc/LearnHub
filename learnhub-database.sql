@@ -502,7 +502,7 @@ CREATE TABLE IF NOT EXISTS teacher_withdrawal(
     withdrawal_id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
     teacher_id BIGINT(20) UNSIGNED NOT NULL,
     amount DECIMAL(10, 2) NOT NULL,
-    status ENUM('pending', 'completed', 'failed') DEFAULT 'pending',
+    status ENUM('pending', 'completed', 'canceled') DEFAULT 'pending',
     date_requested DATE NOT NULL DEFAULT CURRENT_DATE,
     bank_details TEXT,
 
