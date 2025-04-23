@@ -75,12 +75,18 @@ function registerRoutes(App $app)
     $app->get('/login', [AuthController::class, 'loginView'], [GuestOnlyMiddleware::class]);
     $app->post('/login', [AuthController::class, 'login'],  [GuestOnlyMiddleware::class]);
     $app->get('/logout', [AuthController::class, 'logout'], [AuthRequiredMiddleware::class]);
-    $app->get('/billing-and-payment', [PageController::class, 'billingAndPayment'], [AuthRequiredMiddleware::class]);
     $app->get('/mycourses', [PageController::class, 'myCourses'], [AuthRequiredMiddleware::class]);
     $app->get('/create-ad', [PageController::class, 'createAd'], [TeacherOnlyMiddleware::class]);
     $app->post('/update-profile', [UserController::class, 'updateProfile'], [AuthRequiredMiddleware::class]);
     $app->post('/update-password', [UserController::class, 'updatePassword'], [AuthRequiredMiddleware::class]);
     $app->post('/update-profile-picture', [UserController::class, 'updateProfilePicture'], [AuthRequiredMiddleware::class]);
+
+    //Billing and payments
+    $app->get('/billing-and-payment', [PageController::class, 'billingAndPayment'], [AuthRequiredMiddleware::class]);
+    $app->get('/wallet', [PageController::class, 'walletView'], [AuthRequiredMiddleware::class]);
+    $app->post('/request-withdrawal', [PageController::class, 'requestWithdrawal'], [AuthRequiredMiddleware::class]);
+
+
 
     // Admin operations
     $app->post('/approve-post', [PostController::class, 'approveCourseRequest']);
