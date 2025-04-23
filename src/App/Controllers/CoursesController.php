@@ -394,7 +394,7 @@ class CoursesController
     public function getTeacherCourses()
     {
         $teacherId =  $_SESSION['user'];
-        return $this->courseService->getTeacherCourses($teacherId);
+        return $this->courseService->getTeacherCourses((int)$teacherId);
     }
 
     public function createModuleView(array $params)

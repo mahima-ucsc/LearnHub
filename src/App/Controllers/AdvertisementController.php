@@ -17,7 +17,7 @@ class AdvertisementController
 
     public function createView()
     {
-        $courses = $this->courseService->getTeacherCourses($_SESSION['user']);
+        $courses = $this->courseService->getTeacherCourses((int)$_SESSION['user']);
         echo $this->view->render(
             "Advertisement/create.php",
             [
