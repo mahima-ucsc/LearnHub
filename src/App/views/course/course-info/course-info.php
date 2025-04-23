@@ -267,7 +267,7 @@
                         <!-- avatar -->
                         <img src="<?= isset($review['profile_picture_url'])
                                         ? $user['profile_picture_url'] :
-                                        "/assets/images/user_placeholder.jpg" ?>"" alt=" <?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
+                                        "/assets/images/user_placeholder.jpg" ?>" alt=" <?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
                         <!-- since when-->
                         <div class="review-meta">
                             <span class="review-name"><?php echo htmlspecialchars($review['name']); ?></span>
@@ -478,7 +478,7 @@
                                 <div class="review-item">
                                     <div class="review-header">
                                         <!-- avatar -->
-                                        <img src="${element.profile_picture_url}" alt="${element.name}" class="review-avatar">
+                                        <img src="${element.profile_picture_url ? element.profile_picture_url : "/assets/images/user_placeholder.jpg"}" alt="${element.name}" class="review-avatar">
                                         <!-- since when-->
                                         <div class="review-meta">
                                             <span class="review-name">${element.name}</span>
