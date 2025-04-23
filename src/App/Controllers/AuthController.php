@@ -104,7 +104,7 @@ class AuthController
 
     public function createTutorProfile()
     {
-        dd($_POST);
+        // dd($_POST);
         $this->userService->createTutorProfile($_POST);
         // redirectTo("/tutor/$_SESSION['user']");
     }

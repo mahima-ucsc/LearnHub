@@ -203,7 +203,7 @@
             <p>Complete the form below to set up your profile information for students</p>
         </div>
 
-        <form id="tutorProfileForm" action="/api/tutor/profile" method="POST">
+        <form id="tutorProfileForm" action="/api/tutor/profile_create" method="POST">
             <input type="hidden" id="tutorId" name="tutor_id" value="<?php echo $_SESSION['user'] ?>">
 
             <!-- Basic Information -->
