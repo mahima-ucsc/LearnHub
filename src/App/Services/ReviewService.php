@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use Framework\Database;
+use App\Config\Paths;
 
 class ReviewService
 {
@@ -150,6 +151,12 @@ class ReviewService
                 'course_id' => $courseId,
             ]
         )->findAll();
+        if ($userReview['profile_picture_url'] !== null) {
+            $userReview['profile_picture_url'] =
+                Paths::UPLOAD_FOLDER_RELATIVE_TO_PUBLIC . "/" .
+                Paths::RELATIVE_USER_PROFILE_PICTURE_UPLOADS .
+                '/' . $userReview['profile_picture_url'];
+        }
         return $userReview;
     }
 }
