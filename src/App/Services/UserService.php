@@ -44,7 +44,7 @@ class UserService
         $tutorDetails = $this->db->query(
             "SELECT * FROM view_tutor_full_profile WHERE user_id = :tutor_id;",
             ['tutor_id' => $tutorId]
-        )->findAll();
+        )->find();
         if ($tutorDetails['profile_picture_url'] !== null) {
             $tutorDetails['profile_picture_url'] =
                 Paths::UPLOAD_FOLDER_RELATIVE_TO_PUBLIC . "/" .
@@ -633,7 +633,8 @@ class UserService
     public function getTutorSubjects(string $tutorId)
     {
         return $this->db->query(
-            "SELECT * FROM TutorSubjects 
+            "SELECT ts.*, s.subject_title FROM TutorSubjects ts 
+            JOIN subjects s ON ts.subject_id = s.subject_id
             WHERE tutor_id = :tutor_id",
             [
                 'tutor_id' => $tutorId,

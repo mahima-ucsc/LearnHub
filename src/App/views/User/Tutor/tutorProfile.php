@@ -23,8 +23,8 @@
                     Joined <?php echo e(date('F Y', strtotime($tutorDetails['joined_date']))); ?>
                 </p>
 
-                <?php if ($tutorDetails['profile_title']): ?>
-                    <p class="bio-text"><?php echo e($tutorDetails['profile_title']); ?></p>
+                <?php if ($tutorBasic['title']): ?>
+                    <p class="bio-text"><?php echo e($tutorBasic['title']); ?></p>
                 <?php endif; ?>
 
                 <div class="section-divider"></div>
@@ -33,8 +33,8 @@
                     <i class="fas fa-user"></i> About Me
                 </h2>
                 <p class="bio-text">
-                    <?php if ($tutorDetails['profile_bio']): ?>
-                        <?php echo e($tutorDetails['profile_bio']); ?>
+                    <?php if ($tutorBasic['bio']): ?>
+                        <?php echo e($tutorBasic['bio']); ?>
                     <?php elseif ($tutorDetails['description']): ?>
                         <?php echo e($tutorDetails['description']); ?>
                     <?php else: ?>
@@ -42,19 +42,21 @@
                     <?php endif; ?>
                 </p>
 
-                <?php if ($tutorDetails['subject_title'] || $tutorDetails['field_of_study']): ?>
-                    <h2 class="section-title">
-                        <i class="fas fa-tags"></i> Specializations
-                    </h2>
-                    <div class="tag-container">
-                        <?php if ($tutorDetails['subject_title']): ?>
-                            <span class="tag"><?php echo e($tutorDetails['subject_title']); ?></span>
-                        <?php endif; ?>
-                        <?php if ($tutorDetails['field_of_study']): ?>
-                            <span class="tag"><?php echo e($tutorDetails['field_of_study']); ?></span>
-                        <?php endif; ?>
-                    </div>
-                <?php endif; ?>
+                <h2 class="section-title">
+                    <i class="fas fa-tags"></i> Specializations
+                </h2>
+                <div class="tag-container">
+                    <?php if ($tutorSubjects): ?>
+                        <?php foreach ($tutorSubjects as $tutorSubject): ?>
+                            <span class="tag"><?php echo e($tutorSubject['subject_title']); ?></span>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                    <?php if ($tutorEducations): ?>
+                        <?php foreach ($tutorEducations as $tutorEducation): ?>
+                            <span class="tag"><?php echo e($tutorEducation['field_of_study']); ?></span>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
             </div>
 
             <!-- Right content area -->
@@ -96,35 +98,37 @@
                     </h2>
 
                     <?php if ($tutorDetails['degree'] || $tutorDetails['institution'] || $tutorDetails['field_of_study']): ?>
-                        <div class="info-grid">
-                            <?php if ($tutorDetails['degree']): ?>
-                                <div class="info-item">
-                                    <div class="info-label">Degree</div>
-                                    <div class="info-value"><?php echo e($tutorDetails['degree']); ?></div>
-                                </div>
-                            <?php endif; ?>
+                        <?php foreach ($tutorEducations as $tutorEducation): ?>
+                            <div class="info-grid">
+                                <?php if ($tutorEducation['degree']): ?>
+                                    <div class="info-item">
+                                        <div class="info-label">Degree</div>
+                                        <div class="info-value"><?php echo e($tutorEducation['degree']); ?></div>
+                                    </div>
+                                <?php endif; ?>
 
-                            <?php if ($tutorDetails['institution']): ?>
-                                <div class="info-item">
-                                    <div class="info-label">Institution</div>
-                                    <div class="info-value"><?php echo e($tutorDetails['institution']); ?></div>
-                                </div>
-                            <?php endif; ?>
+                                <?php if ($tutorEducation['institution']): ?>
+                                    <div class="info-item">
+                                        <div class="info-label">Institution</div>
+                                        <div class="info-value"><?php echo e($tutorEducation['institution']); ?></div>
+                                    </div>
+                                <?php endif; ?>
 
-                            <?php if ($tutorDetails['field_of_study']): ?>
-                                <div class="info-item">
-                                    <div class="info-label">Field of Study</div>
-                                    <div class="info-value"><?php echo e($tutorDetails['field_of_study']); ?></div>
-                                </div>
-                            <?php endif; ?>
+                                <?php if ($tutorEducation['field_of_study']): ?>
+                                    <div class="info-item">
+                                        <div class="info-label">Field of Study</div>
+                                        <div class="info-value"><?php echo e($tutorEducation['field_of_study']); ?></div>
+                                    </div>
+                                <?php endif; ?>
 
-                            <?php if ($tutorDetails['education_start'] && $tutorDetails['education_end']): ?>
-                                <div class="info-item">
-                                    <div class="info-label">Duration</div>
-                                    <div class="info-value"><?php echo e(date('Y', strtotime($tutorDetails['education_start']))); ?> - <?php echo e(date('Y', strtotime($tutorDetails['education_end']))); ?></div>
-                                </div>
-                            <?php endif; ?>
-                        </div>
+                                <?php if ($tutorEducation['start_date'] && $tutorEducation['end_date']): ?>
+                                    <div class="info-item">
+                                        <div class="info-label">Duration</div>
+                                        <div class="info-value"><?php echo e(date('Y', strtotime($tutorEducation['start_date']))); ?> - <?php echo e(date('Y', strtotime($tutorEducation['end_date']))); ?></div>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; ?>
                     <?php else: ?>
                         <p class="empty-state">Educational background information not provided.</p>
                     <?php endif; ?>
