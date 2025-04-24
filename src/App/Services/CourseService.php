@@ -1058,7 +1058,9 @@ class CourseService
     public function getTutorcourses(string $tutorId)
     {
         $courses = $this->db->query(
-            "SELECT * FROM courses WHERE tutor_id = :tutor_id ORDER BY published_date DESC ",
+            "SELECT c.*, g.grade_name FROM courses c
+            JOIN grades g ON c.grade_id = g.grade_id
+            WHERE c.tutor_id = :tutor_id ORDER BY published_date DESC LIMIT 3 ",
             [
                 'tutor_id' => $tutorId
             ]

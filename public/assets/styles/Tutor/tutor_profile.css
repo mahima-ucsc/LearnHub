@@ -138,6 +138,8 @@
 }
 
 .contact-item {
+  padding-top: 12px;
+  margin-left: 12px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -303,6 +305,27 @@
   margin-bottom: 12px;
   margin-bottom: 30px;
   font-size: 20px;
+}
+
+.more-course {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.more-course .btn {
+  color: #393d3d;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  margin: 0 5px;
+  font-size: 0.9rem;
+}
+
+.more-course .btn:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Course Card Styles */
@@ -504,6 +527,12 @@
 
 .course-detail i.fa-money-bill {
   color: var(--success);
+}
+
+.divider {
+  margin: 15px 0;
+  border: 0;
+  border-top: 1.5px solid var(--primary);
 }
 
 /* =========================

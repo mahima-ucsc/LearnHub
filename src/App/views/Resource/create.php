@@ -19,7 +19,7 @@
     <!-- Form Container -->
     <div class="container">
         <div class="form-container">
-            <form id="resource-form" class="resource-form" method="post" enctype="multipart/form-data">
+            <form id="resource-form" class="resource-form" method="post" enctype="multipart/form-data" action="/resource/create">
                 <div class="form-content">
                     <!-- Basic Information Section -->
                     <div class="form-section">
@@ -27,46 +27,79 @@
 
                         <div class="form-group">
                             <label for="resource-title">Resource Title *</label>
-                            <input type="text" id="resource-title" name="title" class="form-control" placeholder="Enter a descriptive title" required>
-                            <div class="invalid-feedback">Please provide a title for your resource</div>
+                            <input
+                                type="text"
+                                id="resource-title"
+                                name="title"
+                                class="form-control"
+                                placeholder="Enter a descriptive title"
+                                value="<?= isset($oldFormData['title']) ? e($oldFormData['title']) : '' ?>">
+
+                            <?php if (array_key_exists('title', $errors)) : ?>
+                                <div class='createResource-error'>
+                                    <?php echo e($errors['title'][0]); ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
                         <div class="form-group">
                             <label for="resource-description">Description *</label>
-                            <textarea id="resource-description" name="description" class="form-control" placeholder="Describe what users will learn from this resource" required></textarea>
-                            <div class="invalid-feedback">Please provide a description</div>
+                            <textarea
+                                id="resource-description"
+                                name="description"
+                                class="form-control"
+                                placeholder="Describe what users will learn from this resource"><?= isset($oldFormData['description']) ? e($oldFormData['description']) : '' ?></textarea>
+                            <?php if (array_key_exists('description', $errors)) : ?>
+                                <div class='createResource-error'>
+                                    <?php echo e($errors['description'][0]); ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
                         <div class="form-row">
                             <div class="form-col">
                                 <div class="form-group">
                                     <label for="resource-type">Resource Type *</label>
-                                    <select id="resource-type" name="type" class="form-control" required>
+                                    <select
+                                        id="resource-type"
+                                        name="type"
+                                        class="form-control">
                                         <option value="">Select type</option>
-                                        <option value="PDF">PDF</option>
-                                        <option value="Video">Video</option>
-                                        <option value="Code">Code Snippets</option>
-                                        <option value="Template">Template</option>
-                                        <option value="Ebook">Ebook</option>
-                                        <option value="Tool">Tool</option>
+                                        <option value="PDF" <?= isset($oldFormData['type']) && $oldFormData['type'] === 'PDF' ? 'selected' : '' ?>>PDF</option>
+                                        <option value="Video" <?= isset($oldFormData['type']) && $oldFormData['type'] === 'Video' ? 'selected' : '' ?>>Video</option>
+                                        <option value="Code" <?= isset($oldFormData['type']) && $oldFormData['type'] === 'Code' ? 'selected' : '' ?>>Code Snippets</option>
+                                        <option value="Template" <?= isset($oldFormData['type']) && $oldFormData['type'] === 'Template' ? 'selected' : '' ?>>Template</option>
+                                        <option value="Ebook" <?= isset($oldFormData['type']) && $oldFormData['type'] === 'Ebook' ? 'selected' : '' ?>>Ebook</option>
+                                        <option value="Tool" <?= isset($oldFormData['type']) && $oldFormData['type'] === 'Tool' ? 'selected' : '' ?>>Tool</option>
                                     </select>
-                                    <div class="invalid-feedback">Please select a resource type</div>
+                                    <?php if (array_key_exists('type', $errors)) : ?>
+                                        <div class='createResource-error'>
+                                            <?php echo e($errors['type'][0]); ?>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
                             </div>
 
                             <div class="form-col">
                                 <div class="form-group">
                                     <label for="resource-category">Category *</label>
-                                    <select id="resource-category" name="category" class="form-control" required>
+                                    <select
+                                        id="resource-category"
+                                        name="category"
+                                        class="form-control">
                                         <option value="">Select category</option>
-                                        <option value="Programming">Programming</option>
-                                        <option value="Design">Design</option>
-                                        <option value="Marketing">Marketing</option>
-                                        <option value="Data Science">Data Science</option>
-                                        <option value="Business">Business</option>
-                                        <option value="Academic">Academic</option>
+                                        <option value="Programming" <?= isset($oldFormData['category']) && $oldFormData['category'] === 'Programming' ? 'selected' : '' ?>>Programming</option>
+                                        <option value="Design" <?= isset($oldFormData['category']) && $oldFormData['category'] === 'Design' ? 'selected' : '' ?>>Design</option>
+                                        <option value="Marketing" <?= isset($oldFormData['category']) && $oldFormData['category'] === 'Marketing' ? 'selected' : '' ?>>Marketing</option>
+                                        <option value="Data Science" <?= isset($oldFormData['category']) && $oldFormData['category'] === 'Data Science' ? 'selected' : '' ?>>Data Science</option>
+                                        <option value="Business" <?= isset($oldFormData['category']) && $oldFormData['category'] === 'Business' ? 'selected' : '' ?>>Business</option>
+                                        <option value="Academic" <?= isset($oldFormData['category']) && $oldFormData['category'] === 'Academic' ? 'selected' : '' ?>>Academic</option>
                                     </select>
-                                    <div class="invalid-feedback">Please select a category</div>
+                                    <?php if (array_key_exists('category', $errors)) : ?>
+                                        <div class='createResource-error'>
+                                            <?php echo e($errors['category'][0]); ?>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -81,15 +114,34 @@
                         <div class="toggle-container">
                             <span class="toggle-label">This is a free resource</span>
                             <label class="switch">
-                                <input type="checkbox" id="free-toggle" name="is_free" checked>
+                                <input
+                                    type="checkbox"
+                                    id="free-toggle"
+                                    name="is_free"
+                                    <?= isset($oldFormData['is_free']) && $oldFormData['is_free'] == '1' ? 'checked' : '' ?>>
+
                                 <span class="slider"></span>
                             </label>
                         </div>
 
-                        <div class="form-group price-field">
+                        <div class="form-group price-field <?= isset($oldFormData['is_free']) && $oldFormData['is_free'] == '1' ? '' : 'active' ?>">
                             <label for="resource-price">Price (Rs.) *</label>
-                            <input type="number" id="resource-price" name="price" class="form-control" placeholder="Enter price" min="0.99" step="0.01">
-                            <div class="invalid-feedback">Please enter a valid price (minimum $0.99)</div>
+                            <input
+                                type="number"
+                                id="resource-price"
+                                name="price"
+                                class="form-control"
+                                placeholder="Enter price"
+                                min="0.99"
+                                step="0.01"
+                                value="<?= isset($oldFormData['price']) ? e($oldFormData['price']) : '' ?>">
+
+                            <?php if (array_key_exists('price', $errors)) : ?>
+                                <div class='createResource-error'>
+                                    <?php echo e($errors['price'][0]); ?>
+                                </div>
+                            <?php endif; ?>
+
                         </div>
                     </div>
 
@@ -109,17 +161,25 @@
 
                             <div class="form-group">
                                 <label for="resource-url">External Resource URL</label>
-                                <input type="url" id="resource-url" name="resource_url" class="form-control" placeholder="https://">
+                                <input type="url"
+                                    id="resource-url"
+                                    name="resource_url"
+                                    class="form-control"
+                                    placeholder="https://"
+                                    value="<?= isset($oldFormData['resource_url']) ? e($oldFormData['resource_url']) : '' ?>">
                                 <div class="invalid-feedback">Please enter a valid URL or upload a file</div>
+                                <?php if (array_key_exists('resource_url', $errors)) : ?>
+                                    <div class='createResource-error'>
+                                        <?php echo e($errors['resource_url'][0]); ?>
+                                    </div>
+                                <?php endif; ?>
+
                             </div>
                         </div>
                     </div>
 
                     <!-- Form Actions -->
                     <div class="form-actions">
-                        <button type="button" class="btn btn-outline" id="reset-form">
-                            <i class="fas fa-undo"></i> Reset Form
-                        </button>
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-upload"></i> Submit Resource
                         </button>
