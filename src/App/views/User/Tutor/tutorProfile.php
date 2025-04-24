@@ -11,7 +11,7 @@
             <div class="profile-sidebar">
                 <div class="avatar-container">
                     <?php if ($tutorDetails['profile_picture_url']): ?>
-                        <img class="avatar" src="/storage/uploads/profile/<?php echo e($tutorDetails['profile_picture_url']); ?>" alt="<?php echo e($tutorDetails['first_name'] . ' ' . $tutorDetails['last_name']); ?>">
+                        <img class="avatar" src="<?php echo e($tutorDetails['profile_picture_url']); ?>" alt="<?php echo e($tutorDetails['first_name'] . ' ' . $tutorDetails['last_name']); ?>">
                     <?php else: ?>
                         <img class="avatar" src="/assets/images/user.jpeg" alt="<?php echo e($tutorDetails['first_name'] . ' ' . $tutorDetails['last_name']); ?>">
                     <?php endif; ?>
@@ -144,21 +144,26 @@
                     </h2>
 
                     <?php if ($tutorDetails['years_experience'] || $tutorDetails['subject_title']): ?>
-                        <div class="info-grid">
-                            <?php if ($tutorDetails['years_experience']): ?>
-                                <div class="info-item">
-                                    <div class="info-label">Years of Experience</div>
-                                    <div class="info-value"><?php echo e($tutorDetails['years_experience']); ?> years</div>
-                                </div>
-                            <?php endif; ?>
+                        <?php foreach ($tutorSubjects as $index => $tutorSubject): ?>
+                            <div class="info-grid">
+                                <?php if ($tutorSubject['years_experience']): ?>
+                                    <div class="info-item">
+                                        <div class="info-label">Years of Experience</div>
+                                        <div class="info-value"><?php echo e($tutorSubject['years_experience']); ?> years</div>
+                                    </div>
+                                <?php endif; ?>
 
-                            <?php if ($tutorDetails['subject_title']): ?>
-                                <div class="info-item">
-                                    <div class="info-label">Subject Expertise</div>
-                                    <div class="info-value"><?php echo e($tutorDetails['subject_title']); ?></div>
-                                </div>
+                                <?php if ($tutorSubject['subject_title']): ?>
+                                    <div class="info-item">
+                                        <div class="info-label">Subject Expertise</div>
+                                        <div class="info-value"><?php echo e($tutorSubject['subject_title']); ?></div>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <?php if ($index < count($tutorSubjects) - 1): ?>
+                                <hr class="education-divider" />
                             <?php endif; ?>
-                        </div>
+                        <?php endforeach; ?>
                     <?php else: ?>
                         <p class="empty-state">Teaching experience information not provided.</p>
                     <?php endif; ?>
