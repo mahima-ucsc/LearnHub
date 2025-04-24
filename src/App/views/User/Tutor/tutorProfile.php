@@ -280,8 +280,10 @@
 
 
     <!-- Review Section -->
-    <div class="course-section reviews-section">
-        <h2 class="section-title">Student Reviews</h2>
+    <div class="reviews-section">
+        <h2 class="review-title ">Student Reviews</h2>
+
+        <!-- review summary -->
         <div class="reviews-summary">
             <!-- summary of reating -->
             <div class="overall-rating">
@@ -374,7 +376,7 @@
                                 <!-- Option menu-->
                                 <div class="cart-options">
                                     <div class="menu-button">
-                                        <a href="/courses/review/edit/<?php echo e($review['review_id']); ?>">Edit</a>
+                                        <a href="/tutor/review/edit/<?php echo e($review['review_id']); ?>">Edit</a>
                                     </div>
                                     <div class="menu-button">
                                         <button onclick="showDeleteModal(<?php echo e($review['review_id']); ?>)">Delete</button>
@@ -403,7 +405,7 @@
                 </div>
                 <div class="modal-footer">
                     <button onclick="hideModal()" class="btn btn-cancel">Cancel</button>
-                    <form id='submit' method="POST" action="/delete-course-review">
+                    <form id='submit' method="POST" action="/delete-tutor-review">
                         <?php include $this->resolve("partials/_csrf.php"); ?>
                         <input type="hidden" id="delete-review_id" name="review_id" value="" />
                         <button type="submit" class="btn btn-delete">Delete</button>
@@ -420,7 +422,7 @@
         <!-- Add review -->
         <div class="add-review-section">
             <h3>Add Your Review</h3>
-            <form class="review-form" id="newReviewForm" method="POST" action="/add-course-review">
+            <form class="review-form" id="newReviewForm" method="POST" action="/add-tutor-review">
                 <div class="rating-input">
                     <div class="star-rating">
                         <input type="radio" id="star5" name="rating" value="5" required>
@@ -442,10 +444,10 @@
                         id="reviewText"
                         name="review"
                         rows="4"
-                        placeholder="Share your experience with this course..."
+                        placeholder="Share your experience..."
                         required></textarea>
                 </div>
-                <input type="hidden" name="course_id" value=<?php echo ($course['course_id']) ?> />
+                <input type="hidden" name="tutor_id" value=<?php echo ($tutor['tutor_id']) ?> />
 
                 <button type="submit" class="submit-review-btn">
                     Submit Review
@@ -512,9 +514,9 @@
 
     function getmorereview() {
         event.preventDefault();
-        const courseID = <?php echo json_encode($course['course_id']); ?>;
+        const tutorID = <?php echo json_encode($tutor['tutor_id']); ?>;
         console.log()
-        fetch(`/course/review/${courseID}/${counter}`)
+        fetch(`/tutor/review/${tutorID}/${counter}`)
             .then(response => response.json())
             .then(data => {
                 if (data.length > 0) {
@@ -546,7 +548,7 @@
                                                 <!-- Option menu-->
                                                 <div class="cart-options">
                                                     <div class="menu-button">
-                                                        <a href="/course/review/edit/${element.review_id}">Edit</a>
+                                                        <a href="/tutor/review/edit/${element.review_id}">Edit</a>
                                                     </div>
                                                     <div class="menu-button">
                                                         <button onclick="showDeleteModal(${element.review_id})">delete</button>
