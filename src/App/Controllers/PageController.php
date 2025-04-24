@@ -399,12 +399,7 @@ class PageController
             "title" => "Create Announcement"
         ]);
     }
-    public function teacher()
-    {
-        echo $this->view->render("User/Tutor/teacher_index.php", [
-            "title" => "Teacher"
-        ]);
-    }
+
     public function userManagment()
     {
         if ($_SESSION['user_role'] === "teacher") {
@@ -498,17 +493,6 @@ class PageController
             ];
         }
         echo json_encode($data);
-    }
-    public function userResourceView()
-    {
-        $resources = $this->resourceService->getResources();
-        echo $this->view->render(
-            '/User/student/resource.php',
-            [
-                'title' => "My resource",
-                'resources' => $resources
-            ]
-        );
     }
     public function profile()
     {

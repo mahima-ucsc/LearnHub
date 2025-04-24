@@ -264,16 +264,6 @@ class CoursesController
         redirectTo($_SERVER['HTTP_REFERER']);
     }
 
-    public function pinCourse()
-    {
-        $requestBody = file_get_contents('php://input');
-        $data = json_decode($requestBody, true);
-        $courses = $this->courseService->registeredCourses();
-        echo json_encode([
-            'success' => true,
-            'pinnedCourses' => $courses,
-        ]);
-    }
 
     public function readModuleResources(array $params)
     {
