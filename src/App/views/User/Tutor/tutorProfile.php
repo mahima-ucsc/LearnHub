@@ -97,7 +97,7 @@
                         <i class="fas fa-graduation-cap"></i> Educational Background
                     </h2>
 
-                    <?php if ($tutorDetails['degree'] || $tutorDetails['institution'] || $tutorDetails['field_of_study']): ?>
+                    <?php if (isset($tutorEducations)): ?>
                         <?php foreach ($tutorEducations as $index => $tutorEducation): ?>
                             <div class="info-grid">
                                 <?php if ($tutorEducation['degree']): ?>
@@ -129,7 +129,7 @@
                                 <?php endif; ?>
                             </div>
                             <?php if ($index < count($tutorEducations) - 1): ?>
-                                <hr class="education-divider" />
+                                <hr class="divider" />
                             <?php endif; ?>
                         <?php endforeach; ?>
                     <?php else: ?>
@@ -143,7 +143,7 @@
                         <i class="fas fa-chalkboard-teacher"></i> Teaching Experience
                     </h2>
 
-                    <?php if ($tutorDetails['years_experience'] || $tutorDetails['subject_title']): ?>
+                    <?php if (isset($tutorSubjects)): ?>
                         <?php foreach ($tutorSubjects as $index => $tutorSubject): ?>
                             <div class="info-grid">
                                 <?php if ($tutorSubject['years_experience']): ?>
@@ -161,7 +161,7 @@
                                 <?php endif; ?>
                             </div>
                             <?php if ($index < count($tutorSubjects) - 1): ?>
-                                <hr class="education-divider" />
+                                <hr class="divider" />
                             <?php endif; ?>
                         <?php endforeach; ?>
                     <?php else: ?>
@@ -175,18 +175,30 @@
                         <i class="fas fa-clock"></i> Availability
                     </h2>
 
-                    <?php if ($tutorDetails['day_of_week'] && $tutorDetails['start_time'] && $tutorDetails['end_time']): ?>
+                    <?php $weeks = [
+                        0 => 'Sunday',
+                        1 => 'Monday',
+                        2 => 'Tuesday',
+                        3 => 'Wednesday',
+                        4 => 'Thursday',
+                        5 => 'Friday',
+                        6 => 'Saturday'
+                    ];
+                    ?>
+                    <?php if (isset($tutorAvailablities)): ?>
                         <div class="availability-grid">
-                            <div class="day-slot">
-                                <div class="day-name"><?php echo e($tutorDetails['day_of_week']); ?></div>
-                                <div class="time-slot">
-                                    <?php echo e(date('g:i A', strtotime($tutorDetails['start_time']))); ?> -
-                                    <?php echo e(date('g:i A', strtotime($tutorDetails['end_time']))); ?>
+                            <?php foreach ($tutorAvailablities as $tutorAvailablity): ?>
+                                <div class="day-slot">
+                                    <div class="day-name"><?php echo $weeks[e($tutorAvailablity['day_of_week'])]; ?></div>
+                                    <div class="time-slot">
+                                        <?php echo e(date('g:i A', strtotime($tutorAvailablity['start_time']))); ?> -
+                                        <?php echo e(date('g:i A', strtotime($tutorAvailablity['end_time']))); ?>
+                                    </div>
+                                    <?php if ($tutorAvailablity['is_recurring']): ?>
+                                        <div class="time-slot">(Weekly)</div>
+                                    <?php endif; ?>
                                 </div>
-                                <?php if ($tutorDetails['is_recurring']): ?>
-                                    <div class="time-slot">(Weekly)</div>
-                                <?php endif; ?>
-                            </div>
+                            <?php endforeach; ?>
                         </div>
                     <?php else: ?>
                         <p class="empty-state">Availability schedule not provided.</p>

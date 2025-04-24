@@ -138,6 +138,8 @@
 }
 
 .contact-item {
+  padding-top: 12px;
+  margin-left: 12px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -506,7 +508,7 @@
   color: var(--success);
 }
 
-.education-divider {
+.divider {
   margin: 15px 0;
   border: 0;
   border-top: 1.5px solid var(--primary);
