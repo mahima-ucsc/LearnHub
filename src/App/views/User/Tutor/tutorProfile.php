@@ -193,7 +193,7 @@
         </div>
         <section class="courses-grid" id="coursesGrid">
             <?php foreach ($courses as $course): ?>
-                <a href="/courses/<?php echo $course['course_id']; ?>" class="course-card-link" onclick="showLoader()">
+                <a href="/courses/<?php echo $course['tutor_id']; ?>" class="course-card-link" onclick="showLoader()">
                     <div class="course-card">
                         <div class="course-image">
                             <img src="<?php echo '/storage/uploads/courses/thumbnails/' . $course['thumbnail_url']; ?>" alt="<?php echo e($course['title']); ?>">
@@ -428,7 +428,7 @@
                         placeholder="Share your experience..."
                         required></textarea>
                 </div>
-                <input type="hidden" name="tutor_id" value=<?php echo ($tutor['tutor_id']) ?> />
+                <input type="hidden" name="tutor_id" value=<?php echo ($tutorDetails['user_id']) ?> />
 
                 <button type="submit" class="submit-review-btn">
                     Submit Review
@@ -495,11 +495,11 @@
 
     function getmorereview() {
         event.preventDefault();
-        const courseID = <?php echo json_encode($course['course_id']); ?>;
+        const tutorId = <?php echo json_encode($tutorDetails['user_id']); ?>;
         const userId = <?php echo json_encode($_SESSION['user']); ?>;
         const userRoll = <?php echo json_encode($_SESSION['user_role']); ?>;
 
-        fetch(`/course/review/${courseID}/${counter}`)
+        fetch(`/tutor/review/${tutorId}/${counter}`)
             .then(response => response.json())
             .then(data => {
                 if (data.length > 0) {

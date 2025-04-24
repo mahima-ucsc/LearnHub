@@ -421,7 +421,7 @@ class PageController
         $avgRating = $totalReviews > 0 ? ($totalRating / $totalReviews) : 0;
         $summeryOfReviews = ['totalReviews' => $totalReviews, 'avgRating' => $avgRating, 'starCount' => $starCount];
 
-        // dd($params);
+        // dd($tutorDetails);
         echo $this->view->render('User/Tutor/tutorProfile.php', [
             "title" => "Tutor",
             "tutorDetails" => $tutorDetails,

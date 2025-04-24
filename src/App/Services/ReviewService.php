@@ -182,6 +182,54 @@ class ReviewService
 
 
     // tutor review 
+    public function creatTutorReview(array $formData)
+    {
+        $this->db->query(
+            "INSERT INTO tutor_review(review, rating, tutor_id, user_id)VALUES(:review, :rating, :tutor_id, :user_id)",
+            [
+                'review' => $formData['review'],
+                'rating' => $formData['rating'],
+                'tutor_id' => $formData['tutor_id'],
+                'user_id' => $_SESSION['user']
+            ]
+        );
+    }
+
+    public function deleteTutorReview(string $id)
+    {
+        $this->db->query(
+            "DELETE FROM tutor_review WHERE review_id = :review_id ",
+            [
+                "review_id" => $id,
+            ]
+        );
+    }
+
+    public function getTutorReviewById(string $id)
+    {
+        return $this->db->query(
+            "SELECT * FROM tutor_review WHERE review_id = :review_id",
+            [
+                "review_id" => $id,
+            ]
+        )->find();
+    }
+
+    public function updateTutorRequest(array $formData, int $id)
+    {
+        $this->db->query(
+            "UPDATE tutor_review
+            SET review = :review,rating = :rating
+            WHERE review_id = :review_id AND user_id = :user_id",
+            [
+                "review" => $formData['review'],
+                "rating" => $formData['rating'],
+                "review_id" => $id,
+                "user_id" => $_SESSION['user']
+            ]
+        );
+    }
+
     public function getTutorReview(string $tutorId, string $page)
     {
         $limit = 3;

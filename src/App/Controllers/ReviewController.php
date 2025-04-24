@@ -109,51 +109,51 @@ class ReviewController
     }
 
     // tutor review controllers
-    // public function addTutorReview()
-    // {
-    //     $this->reviewService->creatTutorReview($_POST);
-    //     redirectTo($_SERVER['HTTP_REFERER']);
-    // }
+    public function addTutorReview()
+    {
+        $this->reviewService->creatTutorReview($_POST);
+        redirectTo($_SERVER['HTTP_REFERER']);
+    }
 
-    // public function deleteTutorReview()
-    // {
-    //     if ($_POST['token'] === $_SESSION['token']) {
-    //         $this->reviewService->deleteTutorReview($_POST['review_id']);
-    //     }
-    //     redirectTo($_SERVER['HTTP_REFERER']);
-    // }
+    public function deleteTutorReview()
+    {
+        if ($_POST['token'] === $_SESSION['token']) {
+            $this->reviewService->deleteTutorReview($_POST['review_id']);
+        }
+        redirectTo($_SERVER['HTTP_REFERER']);
+    }
 
-    // public function editTutorReviewView(array $params)
-    // {
-    //     $review = $this->reviewService->getTutoreReviewById($params['review']);
+    public function editTutorReviewView(array $params)
+    {
+        $review = $this->reviewService->getTutorReviewById($params['review']);
 
-    //     if (!$review) {
-    //         redirectTo($_SERVER['HTTP_REFERER']);
-    //     }
-    //     echo $this->view->render(
-    //         "course/course-info/course-review-edit.php",
-    //         [
-    //             "title" => "Edit Course Review",
-    //             'review' => $review
-    //         ]
-    //     );
-    // }
+        if (!$review) {
+            redirectTo($_SERVER['HTTP_REFERER']);
+        }
+        echo $this->view->render(
+            "User/Tutor/tutor-review-edit.php",
+            [
+                "title" => "Edit Course Review",
+                'review' => $review
+            ]
+        );
+    }
 
-    // public function editTutorReview($params)
-    // {
-    //     $review = $this->reviewService->getTutorReviewById($params['review']);
-    //     if (!$review) {
-    //         redirectTo('/');
-    //     }
-    //     $this->reviewService->updateCourseRequest($_POST, (int)$params['review']);
-    //     redirectTo("/tutor/" . $review['tutor_id']);
-    // }
+    public function editTutorReview($params)
+    {
+        $review = $this->reviewService->getTutorReviewById($params['review']);
+        if (!$review) {
+            redirectTo('/');
+        }
+        $this->reviewService->updateTutorRequest($_POST, (int)$params['review']);
+        redirectTo($_SERVER['HTTP_REFERER']);
+    }
 
-    // public function getTutorReview($params)
-    // {
-    //     header('Content-Type: application/json');
-    //     $courseReview = $this->reviewService->getTutorReview($params['tutor_id'], $params['page']);
-    //     echo json_encode($TutorReview);
-    //     exit;
-    // }
+    public function getTutorReview($params)
+    {
+        header('Content-Type: application/json');
+        $TutorReview = $this->reviewService->getTutorReview($params['tutor_id'], $params['page']);
+        echo json_encode($TutorReview);
+        exit;
+    }
 }

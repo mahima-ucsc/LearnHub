@@ -168,10 +168,10 @@ function registerRoutes(App $app)
 
     // tutor Reviews
     $app->get('/tutor/review/{tutor_id}/{page}', [ReviewController::class, 'getTutorReview']);
-    $app->post('/add-tutor-review', [ReviewController::class, 'addCourseReview'], [AuthRequiredMiddleware::class]);
-    $app->post('/delete-tutor-review', [ReviewController::class, 'deleteCourseReview'], [AuthRequiredMiddleware::class]);
-    $app->get('/tutor/review/edit/{review}', [ReviewController::class, 'editCourseReviewView'], [AuthRequiredMiddleware::class]);
-    $app->post('/tutor/review/edit/{review}', [ReviewController::class, 'editCourseReview'], [AuthRequiredMiddleware::class]);
+    $app->post('/add-tutor-review', [ReviewController::class, 'addTutorReview'], [AuthRequiredMiddleware::class]);
+    $app->post('/delete-tutor-review', [ReviewController::class, 'deleteTutorReview'], [AuthRequiredMiddleware::class]);
+    $app->get('/tutor/review/edit/{review}', [ReviewController::class, 'editTutorReviewView'], [AuthRequiredMiddleware::class]);
+    $app->post('/tutor/review/edit/{review}', [ReviewController::class, 'editTutorReview'], [AuthRequiredMiddleware::class]);
 
     // Reviews
     $app->post('/add-review', [ReviewController::class, 'addReview'], [AuthRequiredMiddleware::class]);
