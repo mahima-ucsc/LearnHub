@@ -1030,4 +1030,15 @@ class CourseService
 
         return $subPeriods;
     }
+
+    public function getTutorcourses(string $tutorId)
+    {
+        $courses = $this->db->query(
+            "SELECT * FROM courses WHERE tutor_id = :tutor_id ORDER BY published_date DESC ",
+            [
+                'tutor_id' => $tutorId
+            ]
+        )->findAll();
+        return $courses;
+    }
 }
