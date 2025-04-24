@@ -1041,4 +1041,22 @@ class CourseService
         )->findAll();
         return $courses;
     }
+
+    public function getStudentAttendanceCountForCourse(string $studentId, string $courseId)
+    {
+        try {
+            return $this->db->query(
+                "SELECT COUNT(attendance_id)
+                FROM student_module_attendance
+                WHERE student_id = :student_id
+                AND course_id = :course_id",
+                [
+                    "student_id" => $studentId,
+                    "course_id" => $courseId
+                ]
+            )->count();
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
 }
