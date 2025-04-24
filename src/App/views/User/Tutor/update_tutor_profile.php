@@ -37,6 +37,7 @@
                 <div id="subjectEntries">
                     <?php $indexforsubject = 0 ?>
                     <?php foreach ($tutorSubjects as $tutorSubject): ?>
+                        <input type="hidden" name="subjects[<?php echo $indexforsubject ?>][subject_id]" value="<?php echo $tutorSubject['subject_id'] ?>">
                         <div class="subject-entry">
                             <div class="entry-header">
                                 <h3>Subject #<?php echo $indexforsubject + 1 ?></h3>
@@ -64,6 +65,7 @@
                                     <label>Years of Experience</label>
                                     <input type="number" name="subjects[<?php echo $indexforsubject ?>][years_experience]" value="<?php echo isset($tutorSubject['years_experience']) ? htmlspecialchars($tutorSubject['years_experience']) : ''; ?>" min="0" max="100">
                                 </div>
+                                <input type="hidden" name="subjects[<?php echo $indexforsubject ?>][is_new]" value="0">
                             </div>
                         </div>
                         <?php $indexforsubject++ ?>
@@ -82,6 +84,7 @@
                 <div id="educationEntries">
                     <?php $indexforeducation = 0 ?>
                     <?php foreach ($tutorEducations as $tutorEducation): ?>
+                        <input type="hidden" name="educations[<?php echo $indexforeducation ?>][education_id]" value="<?php echo $tutorEducation['education_id'] ?>">
                         <div class="education-entry">
                             <div class="entry-header">
                                 <h3>Education #<?php echo $indexforeducation + 1 ?> </h3>
@@ -111,6 +114,7 @@
                                     <input type="date" name="educations[<?php echo $indexforeducation  ?>][end_date]" value="<?php echo isset($tutorEducation['end_date']) ? $tutorEducation['end_date'] : '' ?>">
                                 </div>
                             </div>
+                            <input type="hidden" name="educations[<?php echo $indexforeducation ?>][is_new]" value="0">
                         </div>
                         <?php $indexforeducation++ ?>
                     <?php endforeach; ?>
@@ -128,6 +132,7 @@
                 <div id="availabilityEntries">
                     <?php $indexfortimeslote = 0 ?>
                     <?php foreach ($tutorAvailablities as $tutorAvailablity): ?>
+                        <input type="hidden" name="availability[<?php echo $indexfortimeslote ?>][availability_id]" value="<?php echo $tutorAvailablity['availability_id'] ?>">
                         <div class="availability-row">
                             <div class="availability-day">
                                 <select name="availability[<?php echo $indexfortimeslote ?>][day_of_week]">
@@ -150,6 +155,7 @@
                                 <input type="checkbox" id="recurring<?php echo $indexfortimeslote ?>" name="availability[<?php echo $indexfortimeslote ?>][is_recurring]" checked>
                                 <label for="recurring<?php echo $indexfortimeslote ?>">Recurring</label>
                             </div>
+                            <input type="hidden" name="availability[<?php echo $indexfortimeslote ?>][is_new]" value="0">
                             <button type="button" class="btn-remove">Remove</button>
                         </div>
                         <?php $indexfortimeslote++ ?>
@@ -194,6 +200,7 @@
                         <label>Years of Experience</label>
                         <input type="number" name="subjects[${count}][years_experience]" min="0" max="50">
                     </div>
+                    <input type="hidden" name="subjects[${count}][is_new]" value="1">
                 </div>
             `;
 
@@ -239,6 +246,7 @@
                         <input type="date" name="educations[${count}][end_date]">
                     </div>
                 </div>
+                <input type="hidden" name="educations[${count}][is_new]" value="1">
             `;
 
         entries.appendChild(newEntry);
@@ -274,6 +282,7 @@
                     <input type="checkbox" id="recurring${count}" name="availability[${count}][is_recurring]" checked>
                     <label for="recurring${count}">Recurring</label>
                 </div>
+                <input type="hidden" name="availability[${count}][is_new]" value="1">
                 <button type="button" class="btn-remove">Remove</button>
             `;
 

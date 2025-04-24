@@ -467,12 +467,12 @@ class UserService
 
     public function updateTutorProfile($formData)
     {
-        dd($formData);
+        // dd($formData);
         $tutorId = $_SESSION['user'];
         $this->db->beginTransaction();
 
         try {
-            // insert basic info
+            // update basic info
             $this->db->query(
                 "UPDATE TutorProfiles 
                 SET title = :title, bio = :bio 
@@ -487,21 +487,13 @@ class UserService
             // insert subjects
             if (isset($formData['subjects']) && is_array($formData['subjects'])) {
                 foreach ($formData['subjects'] as $subject) {
-                    // Check if the subject already exists for this tutor
-                    $existing = $this->db->query(
-                        "SELECT COUNT(*) FROM TutorSubjects WHERE tutor_id = :tutor_id AND subject_id = :subject_id",
-                        [
-                            'tutor_id' => $tutorId,
-                            'subject_id' => $subject['subject_id'],
-                        ]
-                    )->count();
 
-                    if ($existing > 0) {
+                    if ((string)$subject['is_new'] === '0') {
                         // Update years_experience if subject exists
                         $this->db->query(
                             "UPDATE TutorSubjects 
                             SET years_experience = :years_experience
-                            WHERE tutor_id = :tutor_id AND subject_id = :subject_id;",
+                            WHERE tutor_id = :tutor_id AND subject_id = :subject_id",
                             [
                                 'tutor_id' => $tutorId,
                                 'subject_id' => $subject['subject_id'],
@@ -526,44 +518,69 @@ class UserService
             // insert education details
             if (isset($formData['educations']) && is_array($formData['educations'])) {
                 foreach ($formData['educations'] as $education) {
-
-                    $existing = $this->db->query(
-                        "SELECT COUNT(*) FROM TutorSubjects WHERE tutor_id = :tutor_id AND subject_id = :subject_id",
-                        [
-                            'tutor_id' => $tutorId,
-                            'subject_id' => $subject['subject_id'],
-                        ]
-                    )->count();
-
-                    $this->db->query(
-                        "INSERT  TutorEducation (tutor_id, degree, institution, field_of_study, start_date, end_date)
+                    if ($education['is_new'] === '0') {
+                        // update education if exists
+                        $this->db->query(
+                            "UPDATE TutorEducation 
+                            SET degree = :degree, institution = :institution, field_of_study = :field_of_study, start_date = :start_date, end_date = :end_date
+                            WHERE tutor_id = :tutor_id AND education_id = :education_id",
+                            [
+                                'tutor_id' => $tutorId,
+                                'degree' => $education['degree'],
+                                'institution' => $education['institution'],
+                                'field_of_study' => $education['field_of_study'],
+                                'start_date' => $education['start_date'],
+                                'end_date' => $education['end_date'],
+                                'education_id' => $education['education_id'],
+                            ]
+                        );
+                    } else {
+                        $this->db->query(
+                            "INSERT INTO TutorEducation (tutor_id, degree, institution, field_of_study, start_date, end_date)
                         VALUES (:tutor_id, :degree, :institution, :field_of_study, :start_date, :end_date);",
-                        [
-                            'tutor_id' => $tutorId,
-                            'degree' => $education['degree'],
-                            'institution' => $education['institution'],
-                            'field_of_study' => $education['field_of_study'],
-                            'start_date' => $education['start_date'],
-                            'end_date' => $education['end_date'],
-                        ]
-                    );
+                            [
+                                'tutor_id' => $tutorId,
+                                'degree' => $education['degree'],
+                                'institution' => $education['institution'],
+                                'field_of_study' => $education['field_of_study'],
+                                'start_date' => $education['start_date'],
+                                'end_date' => $education['end_date'],
+                            ]
+                        );
+                    }
                 }
             }
 
             // insert available time slots
             if (isset($formData['availability']) && is_array($formData['availability'])) {
                 foreach ($formData['availability'] as $timeSlot) {
-                    $this->db->query(
-                        "INSERT INTO TutorAvailability (tutor_id, day_of_week, start_time, end_time, is_recurring)
-                        VALUES (:tutor_id, :day_of_week, :start_time, :end_time, :is_recurring);",
-                        [
-                            'tutor_id' => $tutorId,
-                            'day_of_week' => $timeSlot['day_of_week'],
-                            'start_time' => $timeSlot['start_time'],
-                            'end_time' => $timeSlot['end_time'],
-                            'is_recurring' => $timeSlot['is_recurring'] === 'on' ? 1 : 0,
-                        ]
-                    );
+                    if ($timeSlot['is_new'] === '0') {
+                        $this->db->query(
+                            "UPDATE TutorAvailability
+                            SET day_of_week = :day_of_week, start_time = :start_time, end_time = :end_time, is_recurring = :is_recurring
+                            WHERE tutor_id = :tutor_id AND availability_id = :availability_id;",
+                            [
+                                'tutor_id' => $tutorId,
+                                'day_of_week' => $timeSlot['day_of_week'],
+                                'start_time' => $timeSlot['start_time'],
+                                'end_time' => $timeSlot['end_time'],
+                                'is_recurring' => $timeSlot['is_recurring'] === 'on' ? 1 : 0,
+                                'availability_id' => $timeSlot['availability_id'],
+                            ]
+                        );
+                    } else {
+                        $this->db->query(
+                            "INSERT INTO TutorAvailability (tutor_id, day_of_week, start_time, end_time, is_recurring)
+                            VALUES (:tutor_id, :day_of_week, :start_time, :end_time, :is_recurring);",
+                            [
+                                'tutor_id' => $tutorId,
+                                'day_of_week' => $timeSlot['day_of_week'],
+                                'start_time' => $timeSlot['start_time'],
+                                'end_time' => $timeSlot['end_time'],
+                                'is_recurring' => $timeSlot['is_recurring'] === 'on' ? 1 : 0,
+                            ]
+                        );
+                    }
                 }
             }
 
