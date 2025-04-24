@@ -214,7 +214,7 @@
     }
 
     .filter-button {
-        background-color: var(--gray-100);
+        background-color: #FFC400;
         border: 1px solid var(--gray-300);
         padding: 8px 16px;
         border-radius: var(--radius-full);
@@ -226,7 +226,7 @@
     }
 
     .filter-button:hover {
-        background-color: var(--gray-200);
+        background-color: var(--gray-100);
         color: var(--text-primary);
     }
 
@@ -332,9 +332,19 @@
         gap: 6px;
     }
 
-    .badge.course {
-        background-color: #E0F2FE;
-        color: #0369A1;
+    .badge.approved {
+        background-color: rgba(0, 255, 21, 0.23);
+        color: rgb(1, 156, 14);
+    }
+
+    .badge.pending {
+        background-color: rgba(255, 196, 0, 0.23);
+        color: #FFC400;
+    }
+
+    .badge.rejected {
+        background-color: rgba(255, 0, 0, 0.28);
+        color: rgb(255, 0, 0);
     }
 
     .badge.requirement {
@@ -355,27 +365,6 @@
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
-    }
-
-    .status {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        font-weight: 500;
-        font-size: 13px;
-    }
-
-    .status.pending {
-        color: var(--warning);
-    }
-
-    .status.pending .status-dot {
-        width: 8px;
-        height: 8px;
-        background-color: var(--warning);
-        border-radius: var(--radius-full);
-        display: inline-block;
-        animation: pulse 2s infinite;
     }
 
     @keyframes pulse {
@@ -805,14 +794,6 @@
                 <h1>Pending Posts</h1>
                 <div class="post-header-subtitle">Review and moderate user-submitted content</div>
             </div>
-            <div class="post-header-actions">
-                <div class="search-bar">
-                    <button>
-                        <i class="fas fa-search"></i>
-                    </button>
-                    <input type="text" placeholder="Search posts...">
-                </div>
-            </div>
         </div>
 
         <div class="post-stats">
@@ -821,41 +802,36 @@
                     <i class="fas fa-clipboard-list"></i>
                 </div>
                 <h3>Pending Posts</h3>
-                <div class="value">15</div>
+                <div class="value"><?= isset($requestCount['pending']) ? $requestCount['pending'] : '-'; ?></div>
             </div>
             <div class="post-stat-card">
                 <div class="post-stat-icon icon-success">
                     <i class="fas fa-check-circle"></i>
                 </div>
                 <h3>Approved</h3>
-                <div class="value">189</div>
+                <div class="value"><?= isset($requestCount['approved']) ? $requestCount['approved'] : '-'; ?></div>
             </div>
             <div class="post-stat-card">
                 <div class="post-stat-icon icon-warning">
                     <i class="fas fa-times-circle"></i>
                 </div>
                 <h3>Rejected</h3>
-                <div class="value">15</div>
+                <div class="value"><?= isset($requestCount['rejected']) ? $requestCount['rejected'] : '-'; ?></div>
             </div>
-        </div>
-
-        <div class="content-header">
-            <h2 class="content-title">Posts awaiting review</h2>
         </div>
 
         <div class="filter-bar">
-            <div class="filter-options">
-                <button class="filter-button active">All Posts</button>
-                <button class="filter-button">Courses</button>
-                <button class="filter-button">Requirements</button>
-                <button class="filter-button">Reviews</button>
-            </div>
-            <select class="sort-dropdown">
-                <option>Newest First</option>
-                <option>Oldest First</option>
-                <option>Author Name (A-Z)</option>
-                <option>Author Name (Z-A)</option>
-            </select>
+            <form method="GET">
+                <div class="filter">
+                    <select class="sort-dropdown">
+                        <option>Newest First</option>
+                        <option>Oldest First</option>
+                        <option>Author Name (A-Z)</option>
+                        <option>Author Name (Z-A)</option>
+                    </select>
+                    <button type="submit" class="filter-button">Apply Filter</button>
+                </div>
+            </form>
         </div>
 
         <div class="posts-container">
@@ -864,7 +840,7 @@
                     <tr>
                         <th>Author</th>
                         <th>Post</th>
-                        <th>Type</th>
+                        <th>Status</th>
                         <th>Date</th>
                         <th>Actions</th>
                     </tr>
@@ -872,7 +848,7 @@
                 <tbody>
                     <?php if (empty($posts)): ?>
                         <tr>
-                            <td colspan="8">No pending posts</td>
+                            <td colspan="8">No posts found</td>
                         </tr>
                     <?php endif; ?>
                     <?php foreach ($posts as $post): ?>
@@ -882,7 +858,6 @@
                                     <img src="/assets/images/user_placeholder.jpg" alt="Author">
                                     <div class="author-info">
                                         <div class="author-name"><?php echo e($post['author']); ?></div>
-                                        <div class="author-type"><?php echo e($post['user_role']); ?></div>
                                     </div>
                                 </div>
                             </td>
@@ -891,7 +866,7 @@
                                 <div class="post-excerpt"><?php echo e($post['description']); ?></div>
                             </td>
                             <td>
-                                <div class="badge course"><?php echo e($post['subject']); ?></div>
+                                <div class="badge <?php echo e($post['status']); ?>"><?php echo e($post['status']); ?></div>
                             </td>
                             <td>
                                 <div class="date-badge">
@@ -980,7 +955,6 @@
             const postType = row.querySelector('.badge').textContent;
             const dateDay = row.querySelector('.date-day').textContent;
             const dateMonth = row.querySelector('.date-month').textContent;
-            const userRole = row.querySelector('.author-type').textContent;
 
             // Update post preview modal content with real data
             modalTitle.textContent = postTitle;
@@ -1002,7 +976,6 @@
 
             modalContent.innerHTML = `
             <p>${postExcerpt}</p>
-            <p><strong>Author Role:</strong> ${userRole}</p>
             <p>This is a preview of the post submitted by ${authorName}.</p>
         `;
 
@@ -1132,17 +1105,6 @@
                     console.error('Error:', error);
                     showToast('Error', 'There was a problem rejecting the post. Please try again.', 'error');
                 });
-        });
-    });
-
-    // Filter and Sort Functionality
-    const filterButtons = document.querySelectorAll('.filter-button');
-
-    filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            // TODO: Here you would add filtering logic
         });
     });
 </script>

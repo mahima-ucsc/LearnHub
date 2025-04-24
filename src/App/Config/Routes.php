@@ -40,14 +40,16 @@ function registerRoutes(App $app)
     $app->get('/profile', [PageController::class, 'profile'], [AuthRequiredMiddleware::class]);
     $app->get('/dashboard', [PageController::class, 'dashboard'], [AuthRequiredMiddleware::class]);
     $app->get('/settings', [PageController::class, 'settings'], [AuthRequiredMiddleware::class]);
-    $app->get('/alert', [AlertController::class, 'alert']);
     $app->get('/help-and-support', [PageController::class, 'helpAndSupport']);
-    $app->get('/tech', [PageController::class, 'teacher']);
+    $app->get('/announcements/create', [PageController::class, 'createAnnouncements']);
+    $app->get('/help-and-support', [PageController::class, 'helpAndSupport']);
 
     $app->get('/user-managment', [PageController::class, 'userManagment']);
     $app->get('/course-managment', [PageController::class, 'courseManagment']);
     $app->get('/post-managment', [PageController::class, 'postManagment']);
     $app->get('/advertisement-managment', [PageController::class, 'adManagment']);
+
+
 
     // Admin Resource managment
     $app->get('/resource-managment', [PageController::class, 'resourceManagment']);
@@ -74,12 +76,20 @@ function registerRoutes(App $app)
     $app->get('/login', [AuthController::class, 'loginView'], [GuestOnlyMiddleware::class]);
     $app->post('/login', [AuthController::class, 'login'],  [GuestOnlyMiddleware::class]);
     $app->get('/logout', [AuthController::class, 'logout'], [AuthRequiredMiddleware::class]);
-    $app->get('/billing-and-payment', [PageController::class, 'billingAndPayment'], [AuthRequiredMiddleware::class]);
     $app->get('/mycourses', [PageController::class, 'myCourses'], [AuthRequiredMiddleware::class]);
     $app->get('/create-ad', [PageController::class, 'createAd'], [TeacherOnlyMiddleware::class]);
     $app->post('/update-profile', [UserController::class, 'updateProfile'], [AuthRequiredMiddleware::class]);
     $app->post('/update-password', [UserController::class, 'updatePassword'], [AuthRequiredMiddleware::class]);
     $app->post('/update-profile-picture', [UserController::class, 'updateProfilePicture'], [AuthRequiredMiddleware::class]);
+
+    //Billing and payments
+    $app->get('/billing-and-payment', [PageController::class, 'billingAndPayment'], [AuthRequiredMiddleware::class]);
+    $app->get('/wallet', [PageController::class, 'walletView'], [AuthRequiredMiddleware::class]);
+    $app->post('/request-withdrawal', [PageController::class, 'requestWithdrawal'], [AuthRequiredMiddleware::class]);
+    $app->get('/withdrawal-managment', [PageController::class, 'withdrawalManagment']);
+    $app->post('/withdrawal/complete/{withdrawal_id}', [PageController::class, 'completeWithdrawal']);
+    $app->post('/withdrawal/cancel/{withdrawal_id}', [PageController::class, 'cancelWithdrawal']);
+
 
     // Admin operations
     $app->post('/approve-post', [PostController::class, 'approveCourseRequest']);
@@ -93,9 +103,6 @@ function registerRoutes(App $app)
     $app->get('/tutor/{tutor-id}/create_profile', [AuthController::class, 'createTutorProfileView'], [TeacherOnlyMiddleware::class]);
     $app->post('/api/tutor/profile_create', [AuthController::class, 'createTutorProfile'], [TeacherOnlyMiddleware::class]);
 
-    // Student
-    $app->get('/my-resource', [PageController::class, 'userResourceView']);
-
     // Courses
     $app->get('/courses', [CoursesController::class, 'course']);
     $app->get('/course/edit/{course_id}', [CoursesController::class, 'courseEditView']);
@@ -103,8 +110,6 @@ function registerRoutes(App $app)
     $app->delete('/manage-course/delete/{course}', [CoursesController::class, 'deleteCourse'], [TeacherOnlyMiddleware::class]);
     $app->get('/courses/my-courses/{course_id}/participant/stats/{participant_id}', [CoursesController::class, 'courseParticipantStat'], [TeacherOnlyMiddleware::class]);
     $app->get('/courses/mycourses', [CoursesController::class, 'userCourses'], [AuthRequiredMiddleware::class]);
-    $app->get('/courses/test', [CoursesController::class, 'myCoursesTest']);
-    $app->post('/courses/pin-course', [CoursesController::class, 'pinCourse']);
 
 
     $app->delete('/course/{course_id}/module/{module_id}', [CoursesController::class, 'deleteCourseModule']);
@@ -112,8 +117,11 @@ function registerRoutes(App $app)
     // courseInfo
     $app->get('/courses/{course_id}', [CoursesController::class, 'courseInfo']);
     $app->get('/courses/{course_id}/participants', [CoursesController::class, 'courseParticipant']);
-    $app->delete('/courses/{course_id}/participants/remove/{user_id}', [CoursesController::class, 'RemoveCourseParticipant'], [TeacherOnlyMiddleware::class]);
-    $app->post('/courses/{course_id}/participants/add', [CoursesController::class, 'AddParticipant'], [TeacherOnlyMiddleware::class]);
+
+    // TODO: Check if applicable the implement or remove
+    // $app->delete('/courses/{course_id}/participants/remove/{user_id}', [CoursesController::class, 'RemoveCourseParticipant'], [TeacherOnlyMiddleware::class]);
+    // $app->post('/courses/{course_id}/participants/add', [CoursesController::class, 'AddParticipant'], [TeacherOnlyMiddleware::class]);
+
     $app->get('/course/{course_id}/module/{module_id}/resource/{resource_id}', [CoursesController::class, 'readModuleResources'], [TeacherOnlyMiddleware::class]);
 
     // New course Routes
@@ -122,10 +130,11 @@ function registerRoutes(App $app)
     $app->get('/course/{course_id}/module/create', [CoursesController::class, 'createModuleView']);
     $app->post('/course/{course_id}/module/create', [CoursesController::class, 'createModule']);
 
-
     $app->post('/mark-attendance', [CoursesController::class, 'markAttendance']);
 
     $app->get('/course/create/add-module', [CoursesController::class, 'addModuleView']);
+
+    // TODO: Remove if not necessary
     $app->get('/course/create/success', [CoursesController::class, 'successMessage']);
 
     // Course Requests
@@ -191,7 +200,6 @@ function registerRoutes(App $app)
     $app->get('/assignment/{assignment_id}/resource/{resource_id}', [AssignmentController::class, 'getResource']);
 
 
-    $app->get('/courses/{courseId}/assignment/{assignment_id}/test', [AssignmentController::class, 'getData']);
     $app->get('/courses/{courseId}/assignment/{assignment_id}/review', [AssignmentController::class, 'review']);
     $app->get('/submission/{submission_id}/attachment/{attachment_id}', [AssignmentController::class, 'getSubmissionFile']);
     $app->post('/submission/{submission_id}/attachment/{attachment_id}/remove', [AssignmentController::class, 'removeSubmissionFile']);

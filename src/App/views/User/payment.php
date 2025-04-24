@@ -1,7 +1,5 @@
 <?php include $this->resolve('partials/_header.php'); ?>
-
 <link rel="stylesheet" href="/assets/styles/User/payment.css">
-
 
 <!-- Include sidebar for users except students -->
 <?php if (!empty($_SESSION['user']) && ($_SESSION['user_role'] == 'admin' || $_SESSION['user_role'] = 'teacher')): ?>
@@ -26,17 +24,17 @@
     </div>
 
     <div class="card">
-        <form method="GET">
+        <form method="GET" action="/billing-and-payment">
             <div class="filters">
-                <input type="text" class="filter-input" id="search" name="s" placeholder="Search transactions..." value="<?= $_GET['s'] ? e($_GET['s']) : '' ?>">
+                <input type="text" class="filter-input" id="search" name="s" placeholder="Search transactions..." value="<?= isset($_GET['s']) && $_GET['s'] ? e($_GET['s']) : '' ?>">
                 <select class="filter-input" id="status-filter" name="status">
                     <option value="all">All Statuses</option>
-                    <option value="2" <?= $_GET['status'] == 2 ? 'selected' : '' ?>>Successful</option>
-                    <option value="0" <?= $_GET['status'] == 0 ? 'selected' : '' ?>>Pending</option>
-                    <option value="-2" <?= $_GET['status'] == -2 ? 'selected' : '' ?>>Failed</option>
-                    <option value="-1" <?= $_GET['status'] == -1 ? 'selected' : '' ?>>Canceled</option>
+                    <option value="2" <?= isset($_GET['status']) && $_GET['status'] == 2 ? 'selected' : '' ?>>Successful</option>
+                    <option value="0" <?= isset($_GET['status']) && $_GET['status'] == 0 ? 'selected' : '' ?>>Pending</option>
+                    <option value="-2" <?= isset($_GET['status']) && $_GET['status'] == -2 ? 'selected' : '' ?>>Failed</option>
+                    <option value="-1" <?= isset($_GET['status']) && $_GET['status'] == -1 ? 'selected' : '' ?>>Canceled</option>
                 </select>
-                <input type="date" class="filter-input" id="date-filter" name="date" value="<?= $_GET['date'] ? e($_GET['date']) : '' ?>">
+                <input type="date" class="filter-input" id="date-filter" name="date" value="<?= isset($_GET['date']) && $_GET['date'] ? e($_GET['date']) : '' ?>">
                 <button type="submit" class="payment-filter-btn">Apply Filter</button>
             </div>
             <a href="/billing-and-payment" class="clear-filter">Clear Filters</a>
