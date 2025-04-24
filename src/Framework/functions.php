@@ -89,3 +89,15 @@ function generatePagination(int $totalItems, int $currentPage = 1, int $itemsPer
         'hasNextPage' => $currentPage < $lastPage,
     ];
 }
+function generateRadomString(int $length)
+{
+    $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    $randomString = '';
+
+    for ($i = 0; $i < $length; $i++) {
+        $index = rand(0, 62);
+        $randomString .= $characters[$index];
+    }
+
+    return $randomString;
+}
