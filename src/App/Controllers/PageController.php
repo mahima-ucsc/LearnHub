@@ -426,8 +426,16 @@ class PageController
     }
     public function adManagment()
     {
-        $advertisements = $this->advertisementService->getAdvertisements();
-        echo $this->view->render("User/Admin/admin_ad_managment.php", [
+
+        if (!empty($_SESSION['user']) && $_SESSION['user_role'] == "admin") {
+            $advertisements = $this->advertisementService->getAdvertisements();
+            $path = "User/Admin/admin_ad_managment.php";
+        } elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == "teacher") {
+            $advertisements = $this->advertisementService->getTeacherAdvertisements((string)$_SESSION['user']);
+            $path = "User/Tutor/teacher_ad_managment.php";
+        }
+
+        echo $this->view->render($path, [
             "title" => "Ad Managment",
             "advertisements" => $advertisements
         ]);
