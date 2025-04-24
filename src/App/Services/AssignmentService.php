@@ -401,4 +401,43 @@ class AssignmentService
             );
         }
     }
+
+    public function getStudentAssignmentSubmissionsByCourse(string $userId, string $courseId)
+    {
+        // TODO: REPLACE WITH THIS
+        /*
+        $this->db->query(
+            "SELECT
+            an.*,
+            a.title
+            FROM assignment_submission an
+            JOIN assignments a ON an.assignment_id = a.assignment_id
+            WHERE an.student_id = :student_id
+            AND an.course_id = :course_id
+            AND a.tutor_id = :tutor_id",
+            [
+                "student_id" => $userId,
+                "course_id" => $courseId,
+                "tutor_id" => $_SESSION['user']
+            ]
+                */
+        try {
+            return $this->db->query(
+                "SELECT
+                an.*,
+                a.title,
+                a.deadline
+                FROM assignment_submission an
+                JOIN assignments a ON an.assignment_id = a.assignment_id
+                WHERE an.student_id = :student_id
+                AND an.course_id = :course_id",
+                [
+                    "student_id" => $userId,
+                    "course_id" => $courseId,
+                ]
+            )->findAll();
+        } catch (Exception $e) {
+            return $e;
+        }
+    }
 }

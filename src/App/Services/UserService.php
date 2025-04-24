@@ -26,7 +26,6 @@ class UserService
             WHERE user_id = :userId",
             ['userId' => $_SESSION['user']]
         )->find();
-        // dd($userDetails);
         if ($userDetails['profile_picture_url'] !== null) {
             $userDetails['profile_picture_url'] =
                 Paths::UPLOAD_FOLDER_RELATIVE_TO_PUBLIC . "/" .

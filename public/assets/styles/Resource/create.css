@@ -355,6 +355,11 @@ input:checked + .slider:before {
   display: block;
 }
 
+.createResource-error {
+  color: red;
+  padding: 2px 4px;
+  font-size: 14px;
+}
 /* Form validation */
 .invalid-feedback {
   display: none;
@@ -374,7 +379,7 @@ input:checked + .slider:before {
 /* Form actions */
 .form-actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   margin-top: 40px;
   /* border-top: 1px solid var(--gray); */
   padding-top: 30px;

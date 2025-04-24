@@ -108,7 +108,6 @@ function registerRoutes(App $app)
     $app->get('/course/edit/{course_id}', [CoursesController::class, 'courseEditView']);
     $app->put('/course/edit/{course_id}', [CoursesController::class, 'editCourse']);
     $app->delete('/manage-course/delete/{course}', [CoursesController::class, 'deleteCourse'], [TeacherOnlyMiddleware::class]);
-    $app->get('/courses/my-courses/{course_id}/participant/stats/{participant_id}', [CoursesController::class, 'courseParticipantStat'], [TeacherOnlyMiddleware::class]);
     $app->get('/courses/mycourses', [CoursesController::class, 'userCourses'], [AuthRequiredMiddleware::class]);
 
 
@@ -117,9 +116,9 @@ function registerRoutes(App $app)
     // courseInfo
     $app->get('/courses/{course_id}', [CoursesController::class, 'courseInfo']);
     $app->get('/courses/{course_id}/participants', [CoursesController::class, 'courseParticipant']);
+    $app->get('/courses/{course_id}/participants/{participant_id}', [CoursesController::class, 'courseParticipantStat'], [TeacherOnlyMiddleware::class]);
 
     // TODO: Check if applicable the implement or remove
-    // $app->delete('/courses/{course_id}/participants/remove/{user_id}', [CoursesController::class, 'RemoveCourseParticipant'], [TeacherOnlyMiddleware::class]);
     // $app->post('/courses/{course_id}/participants/add', [CoursesController::class, 'AddParticipant'], [TeacherOnlyMiddleware::class]);
 
     $app->get('/course/{course_id}/module/{module_id}/resource/{resource_id}', [CoursesController::class, 'readModuleResources'], [TeacherOnlyMiddleware::class]);
@@ -154,7 +153,7 @@ function registerRoutes(App $app)
     // Resources
     $app->get('/resource', [ResourceController::class, 'resource']);
     $app->get('/resource/create', [ResourceController::class, 'createView']);
-    $app->post('/resource/create', [ResourceController::class, 'create']);
+    $app->post('/resource/create', [ResourceController::class, 'createResource']);
     $app->get('/resource/my-resources', [ResourceController::class, 'myResources'], [AuthRequiredMiddleware::class]);
     $app->delete('/resource/delete/{resource_id}', [ResourceController::class, 'deleteResource'], [AuthRequiredMiddleware::class]);
     $app->get('/resource/edit/{resource_id}', [ResourceController::class, 'editView'], [AuthRequiredMiddleware::class]);
