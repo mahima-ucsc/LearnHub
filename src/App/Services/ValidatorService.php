@@ -126,34 +126,6 @@ class ValidatorService
         $this->validator->validate($formData, $rules);
     }
 
-    // public function validateResource(array $formData)
-    // {
-    //     $this->validator->validate($formData, [
-    //         "title" => ["required"],
-    //         "description" => ["required"],
-    //         "type" => ["required"],
-    //         "category" => ["required"],
-    //         "price" => ["required", "min:0.99"],
-    //         "resource_url" => ["url"],
-    //     ]);
-    // }
-
-    // public function validateResource(array $formData)
-    // {
-    //     $rules = [
-    //         "title" => ["required"],
-    //         "description" => ["required"],
-    //         "type" => ["required"],
-    //         "category" => ["required"],
-    //     ];
-
-    //     // Conditionally validate price if the resource is not free
-    //     if (empty($formData['is_free']) || $formData['is_free'] == "0") {
-    //         $rules["price"] = ["required", "numeric", "min:0.99"];
-    //     }
-
-    //     $this->validator->validate($formData, $rules);
-    // }
 
     public function validateImg(?array $file)
     {
