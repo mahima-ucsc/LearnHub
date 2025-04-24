@@ -146,7 +146,7 @@ class ReviewController
             redirectTo('/');
         }
         $this->reviewService->updateTutorRequest($_POST, (int)$params['review']);
-        redirectTo($_SERVER['HTTP_REFERER']);
+        redirectTo("/tutor/" . $review['tutor_id']);
     }
 
     public function getTutorReview($params)

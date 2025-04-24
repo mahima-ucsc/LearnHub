@@ -357,7 +357,7 @@
                                 <!-- Option menu-->
                                 <div class="cart-options">
                                     <div class="menu-button">
-                                        <a href="/tutor/review/edit/<?php echo e($review['review_id']); ?>">Edit</a>
+                                        <a href="/tutor/reviews/edit/<?php echo e($review['review_id']); ?>">Edit</a>
                                     </div>
                                     <div class="menu-button">
                                         <button onclick="showDeleteModal(<?php echo e($review['review_id']); ?>)">Delete</button>
