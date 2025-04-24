@@ -6,11 +6,12 @@ namespace App\Controllers;
 
 use Framework\TemplateEngine;
 use App\Services\ResourceService;
+use App\Services\ValidatorService;
 
 
 class ResourceController
 {
-    public function __construct(private TemplateEngine $view, private ResourceService $resourceService) {}
+    public function __construct(private TemplateEngine $view, private ResourceService $resourceService,  private ValidatorService $validatorService) {}
 
     public function resource()
     {
@@ -28,10 +29,19 @@ class ResourceController
         ]);
     }
 
-    public function create()
+
+
+    public function createResource()
     {
-        // dd($_POST);
+
+        // Validate the form data
+        $this->validatorService->validateResource($_POST);
+
+        // Process the resource creation
         $this->resourceService->create($_POST, $_FILES);
+
+        // Redirect to the success page
+        redirectTo('/resource/my-resources');
     }
     public function myResources()
     {

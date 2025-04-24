@@ -73,6 +73,59 @@ document.addEventListener("DOMContentLoaded", function () {
     fileInput.dispatchEvent(event);
   }
 
+  // // Form validation and submission
+  // document
+  //   .getElementById("resource-form")
+  //   .addEventListener("submit", function (e) {
+  //     e.preventDefault();
+
+  //     // Validate form fields
+  //     let isValid = true;
+
+  //     const title = document.getElementById("resource-title");
+  //     const description = document.getElementById("resource-description");
+  //     const type = document.getElementById("resource-type");
+  //     const category = document.getElementById("resource-category");
+
+  //     if (!title.value.trim()) {
+  //       title.classList.add("is-invalid");
+  //       isValid = false;
+  //     } else {
+  //       title.classList.remove("is-invalid");
+  //     }
+
+  //     if (!description.value.trim()) {
+  //       description.classList.add("is-invalid");
+  //       isValid = false;
+  //     } else {
+  //       description.classList.remove("is-invalid");
+  //     }
+
+  //     if (!type.value) {
+  //       type.classList.add("is-invalid");
+  //       isValid = false;
+  //     } else {
+  //       type.classList.remove("is-invalid");
+  //     }
+
+  //     if (!category.value) {
+  //       category.classList.add("is-invalid");
+  //       isValid = false;
+  //     } else {
+  //       category.classList.remove("is-invalid");
+  //     }
+
+  //     // Check if pricing is valid when not free
+  //     if (!document.getElementById("free-toggle").checked) {
+  //       const price = document.getElementById("resource-price");
+  //       if (!price.value || parseFloat(price.value) < 0.99) {
+  //         price.classList.add("is-invalid");
+  //         isValid = false;
+  //       } else {
+  //         price.classList.remove("is-invalid");
+  //       }
+  //     }
+
   // Form validation and submission
   document
     .getElementById("resource-form")
@@ -86,45 +139,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const description = document.getElementById("resource-description");
       const type = document.getElementById("resource-type");
       const category = document.getElementById("resource-category");
-
-      if (!title.value.trim()) {
-        title.classList.add("is-invalid");
-        isValid = false;
-      } else {
-        title.classList.remove("is-invalid");
-      }
-
-      if (!description.value.trim()) {
-        description.classList.add("is-invalid");
-        isValid = false;
-      } else {
-        description.classList.remove("is-invalid");
-      }
-
-      if (!type.value) {
-        type.classList.add("is-invalid");
-        isValid = false;
-      } else {
-        type.classList.remove("is-invalid");
-      }
-
-      if (!category.value) {
-        category.classList.add("is-invalid");
-        isValid = false;
-      } else {
-        category.classList.remove("is-invalid");
-      }
-
-      // Check if pricing is valid when not free
-      if (!document.getElementById("free-toggle").checked) {
-        const price = document.getElementById("resource-price");
-        if (!price.value || parseFloat(price.value) < 0.99) {
-          price.classList.add("is-invalid");
-          isValid = false;
-        } else {
-          price.classList.remove("is-invalid");
-        }
-      }
 
       // Check if at least one resource option is provided
       const fileInput = document.getElementById("resource-file");
@@ -151,30 +165,14 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-  // Reset form button
-  document.getElementById("reset-form").addEventListener("click", function () {
-    document.getElementById("resource-form").reset();
-    resetFormState();
-  });
+  //     if (isValid) {
+  //       // Here you would typically submit the form data to your server
+  //       this.submit();
+  //       // alert('Resource submitted successfully! In a real implementation, this would be sent to the server.');
 
-  function resetFormState() {
-    // Clear tags
-    document.querySelector(".tags-input-container").innerHTML =
-      '<input type="text" id="tags-input" class="tags-input" placeholder="Add relevant tags...">';
-    document
-      .getElementById("tags-input")
-      .addEventListener("keydown", tagsInput.onkeydown);
-
-    // Reset file upload display
-    const uploadText = document.querySelector(".file-upload-text");
-    const uploadSubtext = document.querySelector(".file-upload-subtext");
-    uploadText.textContent = "Drag & drop your file or click to browse";
-    uploadSubtext.textContent = "Max file size: 50MB";
-    document.querySelector(".file-upload").style.borderColor = "var(--gray)";
-
-    // Clear any validation errors
-    document.querySelectorAll(".form-control").forEach((element) => {
-      element.classList.remove("is-invalid");
-    });
-  }
+  //       // Reset form after submission
+  //       this.reset();
+  //       resetFormState();
+  //     }
+  //   });
 });
