@@ -394,7 +394,6 @@ class PageController
     }
     public function profile()
     {
-        dd("user profile");
         $userDetails = $this->userService->getUserProfile();
         $userReview = $this->reviewService->getUserReview();
         [$courses, $courseCount] = $this->courseService->searchCourse(3, 0);
@@ -421,7 +420,6 @@ class PageController
         $avgRating = $totalReviews > 0 ? ($totalRating / $totalReviews) : 0;
         $summeryOfReviews = ['totalReviews' => $totalReviews, 'avgRating' => $avgRating, 'starCount' => $starCount];
 
-        // dd($tutorDetails);
         echo $this->view->render('User/Tutor/tutorProfile.php', [
             "title" => "Tutor",
             "tutorDetails" => $tutorDetails,
