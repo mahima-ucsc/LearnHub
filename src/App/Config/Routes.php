@@ -19,6 +19,7 @@ use App\Controllers\{
     PaymentController,
     ResourceController,
     PostController,
+    ReportController,
     ReviewController,
     UserController
 };
@@ -217,6 +218,9 @@ function registerRoutes(App $app)
 
     $app->get('/test', [PageController::class, 'test']);
     $app->get('/test/help', [PageController::class, 'helpAndSupportReview']);
+
+    // Reports
+    $app->get('/reports/teacher', [ReportController::class, 'getTeacherReport']);
 
     // Catch-all route for 404 page
     $app->get('/{any:.*}', [PageController::class, 'notFound']);
