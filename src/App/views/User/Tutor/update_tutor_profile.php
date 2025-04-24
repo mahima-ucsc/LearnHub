@@ -1,326 +1,135 @@
-<head>
-    <title>Create Tutor Profile</title>
-    <style>
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+<link rel="stylesheet" href="/assets/styles/Tutor/update_tutor_profile.css">
 
-        .form-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+<div class="container">
+    <div class="form-header">
+        <h1>Create Your Tutor Profile</h1>
+        <p>Complete the form below to set up your profile information for students</p>
+    </div>
 
-        .form-header h1 {
-            margin: 0;
-            color: #2d3748;
-            font-size: 28px;
-        }
+    <form id="tutorProfileForm" action="/api/tutor/profile_update" method="POST">
+        <input type="hidden" id="tutorId" name="tutor_id" value="<?php echo $_SESSION['user'] ?>">
 
-        .form-header p {
-            color: #718096;
-            font-size: 16px;
-        }
+        <!-- Basic Information -->
+        <div class="form-card">
+            <div class="form-section">
+                <h2>Basic Information</h2>
 
-        .form-card {
-            background: white;
-            border-radius: 8px;
-            padding: 30px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            margin-bottom: 20px;
-        }
+                <div class="form-group">
+                    <label for="title">Professional Title</label>
+                    <input type="text" id="title" name="title" placeholder="e.g. Mathematics & Computer Science Tutor" value="<?php echo isset($tutorBasic['title']) ? htmlspecialchars($tutorBasic['title']) : ''; ?>">
+                    <p class="hint-text">A short description of your specialty</p>
+                </div>
 
-        .form-section {
-            margin-bottom: 30px;
-        }
-
-        .form-section h2 {
-            margin-top: 0;
-            color: #2d3748;
-            font-size: 20px;
-            border-bottom: 1px solid #edf2f7;
-            padding-bottom: 10px;
-        }
-
-        .form-row {
-            display: flex;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
-
-        .form-group {
-            flex: 1;
-            min-width: 250px;
-            margin-right: 20px;
-            margin-bottom: 15px;
-        }
-
-        .form-group:last-child {
-            margin-right: 0;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-            color: #4a5568;
-        }
-
-        input,
-        select,
-        textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #e2e8f0;
-            border-radius: 4px;
-            font-size: 16px;
-            color: #2d3748;
-            box-sizing: border-box;
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .checkbox-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            background-color: #edf2f7;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .checkbox-item input {
-            width: auto;
-            margin-right: 5px;
-        }
-
-        .hint-text {
-            font-size: 14px;
-            color: #718096;
-            margin-top: 5px;
-        }
-
-        .availability-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-            gap: 10px;
-        }
-
-        .availability-day {
-            width: 100px;
-        }
-
-        .availability-time {
-            flex: 1;
-        }
-
-        .btn-add {
-            background-color: #e2e8f0;
-            border: none;
-            border-radius: 4px;
-            padding: 8px 12px;
-            cursor: pointer;
-            color: #4a5568;
-            font-size: 14px;
-            margin-top: 5px;
-        }
-
-        .btn-remove {
-            background-color: #fed7d7;
-            border: none;
-            border-radius: 4px;
-            padding: 5px 10px;
-            cursor: pointer;
-            color: #e53e3e;
-            font-size: 14px;
-        }
-
-        .btn-submit {
-            background-color: #4299e1;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 12px 24px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            display: block;
-            margin: 30px auto 0;
-            width: 200px;
-        }
-
-        .btn-submit:hover {
-            background-color: #3182ce;
-        }
-
-        .education-entry,
-        .subject-entry {
-            background-color: #f7fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 4px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-
-        .entry-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        @media (max-width: 768px) {
-            .form-row {
-                flex-direction: column;
-            }
-
-            .form-group {
-                margin-right: 0;
-            }
-        }
-    </style>
-</head>
-
-<body>
-    <?php
-    // dd($tutorInfo);
-    ?>
-    <div class="container">
-        <div class="form-header">
-            <h1>Create Your Tutor Profile</h1>
-            <p>Complete the form below to set up your profile information for students</p>
+                <div class="form-group">
+                    <label for="bio">Bio</label>
+                    <textarea id="bio" name="bio" rows="5" placeholder="Introduce yourself, your experience, and your teaching approach"><?php echo isset($tutorBasic['bio']) ? htmlspecialchars($tutorBasic['bio']) : ''; ?></textarea>
+                    <p class="hint-text">This will be displayed on your profile page</p>
+                </div>
+            </div>
         </div>
 
-        <form id="tutorProfileForm" action="/api/tutor/profile_update" method="POST">
-            <input type="hidden" id="tutorId" name="tutor_id" value="<?php echo $_SESSION['user'] ?>">
+        <!-- Subjects & Experience -->
+        <div class="form-card">
+            <div class="form-section">
+                <h2>Subjects & Experience</h2>
 
-            <!-- Basic Information -->
-            <div class="form-card">
-                <div class="form-section">
-                    <h2>Basic Information</h2>
-
-                    <div class="form-group">
-                        <label for="title">Professional Title</label>
-                        <input type="text" id="title" name="title" placeholder="e.g. Mathematics & Computer Science Tutor" value="<?php echo isset($tutorBasic['title']) ? htmlspecialchars($tutorBasic['title']) : ''; ?>">
-                        <p class="hint-text">A short description of your specialty</p>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="bio">Bio</label>
-                        <textarea id="bio" name="bio" rows="5" placeholder="Introduce yourself, your experience, and your teaching approach"><?php echo isset($tutorBasic['bio']) ? htmlspecialchars($tutorBasic['bio']) : ''; ?></textarea>
-                        <p class="hint-text">This will be displayed on your profile page</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Subjects & Experience -->
-            <div class="form-card">
-                <div class="form-section">
-                    <h2>Subjects & Experience</h2>
-
-                    <div id="subjectEntries">
-                        <?php $indexforsubject = 0 ?>
-                        <?php foreach ($tutorSubjects as $tutorSubject): ?>
-                            <div class="subject-entry">
-                                <div class="entry-header">
-                                    <h3>Subject #<?php echo $indexforsubject + 1 ?></h3>
-                                    <button type="button" class="btn-remove">Remove</button>
+                <div id="subjectEntries">
+                    <?php $indexforsubject = 0 ?>
+                    <?php foreach ($tutorSubjects as $tutorSubject): ?>
+                        <div class="subject-entry">
+                            <div class="entry-header">
+                                <h3>Subject #<?php echo $indexforsubject + 1 ?></h3>
+                                <button type="button" class="btn-remove">Remove</button>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Subject</label>
+                                    <select name="subjects[<?php echo $indexforsubject ?>][<?php echo $tutorSubject['subject_id'] ?>]">
+                                        <?php
+                                        foreach ($subjects as $subject) {
+                                            if ($subject['subject_id'] == $tutorSubject['subject_id']) {
+                                                echo "<option value='" . $subject['subject_id'] . "' selected>" . htmlspecialchars($subject['subject_title']) . "</option>";
+                                            }
+                                        }
+                                        ?>
+                                        <?php
+                                        foreach ($subjects as $subject) {
+                                            echo "<option value='" . $subject['subject_id'] . "'>" . $subject['subject_title'] . "</option>";
+                                        }
+                                        ?>
+                                    </select>
                                 </div>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label>Subject</label>
-                                        <select name="subjects[<?php echo $indexforsubject ?>][<?php echo $tutorSubject['subject_id'] ?>]">
-                                            <?php
-                                            foreach ($subjects as $subject) {
-                                                if ($subject['subject_id'] == $tutorSubject['subject_id']) {
-                                                    echo "<option value='" . $subject['subject_id'] . "' selected>" . htmlspecialchars($subject['subject_title']) . "</option>";
-                                                }
-                                            }
-                                            ?>
-                                            <?php
-                                            foreach ($subjects as $subject) {
-                                                echo "<option value='" . $subject['subject_id'] . "'>" . $subject['subject_title'] . "</option>";
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Years of Experience</label>
-                                        <input type="number" name="subjects[<?php echo $indexforsubject ?>][years_experience]" value="<?php echo isset($tutorSubject['years_experience']) ? htmlspecialchars($tutorSubject['years_experience']) : ''; ?>" min="0" max="100">
-                                    </div>
+                                <div class="form-group">
+                                    <label>Years of Experience</label>
+                                    <input type="number" name="subjects[<?php echo $indexforsubject ?>][years_experience]" value="<?php echo isset($tutorSubject['years_experience']) ? htmlspecialchars($tutorSubject['years_experience']) : ''; ?>" min="0" max="100">
                                 </div>
                             </div>
-                            <?php $indexforsubject++ ?>
-                        <?php endforeach; ?>
-                    </div>
-
-                    <button type="button" id="addSubject" class="btn-add">+ Add Another Subject</button>
+                        </div>
+                        <?php $indexforsubject++ ?>
+                    <?php endforeach; ?>
                 </div>
+
+                <button type="button" id="addSubject" class="btn-add">+ Add Another Subject</button>
             </div>
+        </div>
 
-            <!-- Education -->
-            <div class="form-card">
-                <div class="form-section">
-                    <h2>Education</h2>
+        <!-- Education -->
+        <div class="form-card">
+            <div class="form-section">
+                <h2>Education</h2>
 
-                    <div id="educationEntries">
+                <div id="educationEntries">
+                    <?php $indexforeducation = 0 ?>
+                    <?php foreach ($tutorEducations as $tutorEducation): ?>
                         <div class="education-entry">
                             <div class="entry-header">
-                                <h3>Education #1</h3>
+                                <h3>Education #<?php echo $indexforeducation + 1 ?> </h3>
                                 <button type="button" class="btn-remove">Remove</button>
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Degree</label>
-                                    <input type="text" name="educations[0][degree]" placeholder="e.g. Ph.D., M.S., B.S.">
+                                    <input type="text" name="educations[<?php echo $indexforeducation ?>][degree]" placeholder="e.g. Ph.D., M.S., B.S." value="<?php echo isset($tutorEducation['degree']) ? $tutorEducation['degree'] : '' ?>">
                                 </div>
                                 <div class="form-group">
                                     <label>Field of Study</label>
-                                    <input type="text" name="educations[0][field_of_study]" placeholder="e.g. Applied Mathematics">
+                                    <input type="text" name="educations[<?php echo $indexforeducation ?>][field_of_study]" placeholder="e.g. Applied Mathematics" value="<?php echo isset($tutorEducation['field_of_study']) ? $tutorEducation['field_of_study'] : '' ?>">
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class=" form-group">
                                 <label>Institution</label>
-                                <input type="text" name="educations[0][institution]" placeholder="e.g. Massachusetts Institute of Technology">
+                                <input type="text" name="educations[<?php echo $indexforeducation ?>][institution]" placeholder="e.g. Massachusetts Institute of Technology" value="<?php echo isset($tutorEducation['institution']) ? $tutorEducation['institution'] : '' ?>">
                             </div>
-                            <div class="form-row">
+                            <div class=" form-row">
                                 <div class="form-group">
                                     <label>Start Date</label>
-                                    <input type="date" name="educations[0][start_date]">
+                                    <input type="date" name="educations[<?php echo $indexforeducation ?>][start_date]" value="<?php echo isset($tutorEducation['start_date']) ? $tutorEducation['start_date'] : '' ?>">
                                 </div>
-                                <div class="form-group">
+                                <div class=" form-group">
                                     <label>End Date</label>
-                                    <input type="date" name="educations[0][end_date]">
+                                    <input type="date" name="educations[<?php echo $indexforeducation  ?>][end_date]" value="<?php echo isset($tutorEducation['end_date']) ? $tutorEducation['end_date'] : '' ?>">
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <button type="button" id="addEducation" class="btn-add">+ Add Another Education</button>
+                        <?php $indexforeducation++ ?>
+                    <?php endforeach; ?>
                 </div>
+
+                <button type=" button" id="addEducation" class="btn-add">+ Add Another Education</button>
             </div>
+        </div>
 
-            <!-- Availability -->
-            <div class="form-card">
-                <div class="form-section">
-                    <h2>Availability</h2>
+        <!-- Availability -->
+        <div class="form-card">
+            <div class="form-section">
+                <h2>Availability</h2>
 
-                    <div id="availabilityEntries">
+                <div id="availabilityEntries">
+                    <?php $indexfortimeslote = 0 ?>
+                    <?php foreach ($tutorAvailablities as $tutorAvailablity): ?>
                         <div class="availability-row">
                             <div class="availability-day">
-                                <select name="availability[0][day_of_week]">
+                                <select name="availability[<?php echo $indexfortimeslote ?>][day_of_week]">
                                     <option value="0">Sunday</option>
                                     <option value="1">Monday</option>
                                     <option value="2">Tuesday</option>
@@ -331,36 +140,38 @@
                                 </select>
                             </div>
                             <div class="availability-time">
-                                <input type="time" name="availability[0][start_time]" value="15:00">
+                                <input type="time" name="availability[<?php echo $indexfortimeslote ?>][start_time]" value="<?php echo isset($tutorAvailablity['start_time']) ? $tutorAvailablity['start_time'] : '' ?>">
                             </div>
                             <div class="availability-time">
-                                <input type="time" name="availability[0][end_time]" value="20:00">
+                                <input type="time" name="availability[<?php echo $indexfortimeslote ?>][end_time]" value="<?php echo isset($tutorAvailablity['end_time']) ? $tutorAvailablity['end_time'] : '' ?>">
                             </div>
                             <div>
-                                <input type="checkbox" id="recurring0" name="availability[0][is_recurring]" checked>
-                                <label for="recurring0">Recurring</label>
+                                <input type="checkbox" id="recurring<?php echo $indexfortimeslote ?>" name="availability[<?php echo $indexfortimeslote ?>][is_recurring]" checked>
+                                <label for="recurring<?php echo $indexfortimeslote ?>">Recurring</label>
                             </div>
                             <button type="button" class="btn-remove">Remove</button>
                         </div>
-                    </div>
-
-                    <button type="button" id="addAvailability" class="btn-add">+ Add Another Time Slot</button>
+                        <?php $indexfortimeslote++ ?>
+                    <?php endforeach; ?>
                 </div>
+
+                <button type="button" id="addAvailability" class="btn-add">+ Add Another Time Slot</button>
             </div>
+        </div>
 
-            <button type="submit" class="btn-submit">Save Profile</button>
-        </form>
-    </div>
+        <button type="submit" class="btn-submit">Save Profile</button>
+    </form>
+</div>
 
-    <script>
-        // Add subject entry
-        document.getElementById('addSubject').addEventListener('click', function() {
-            const entries = document.getElementById('subjectEntries');
-            const count = <?php echo $indexforsubject ?>;
-            const newEntry = document.createElement('div');
+<script>
+    // Add subject entry
+    document.getElementById('addSubject').addEventListener('click', function() {
+        const entries = document.getElementById('subjectEntries');
+        const count = entries.children.length;
+        const newEntry = document.createElement('div');
 
-            newEntry.className = 'subject-entry';
-            newEntry.innerHTML = `
+        newEntry.className = 'subject-entry';
+        newEntry.innerHTML = `
                 <div class="entry-header">
                     <h3>Subject #${count + 1}</h3>
                     <button type="button" class="btn-remove">Remove</button>
@@ -385,18 +196,20 @@
                 </div>
             `;
 
-            entries.appendChild(newEntry);
-            setupRemoveButtons();
-        });
+        entries.appendChild(newEntry);
+        setupRemoveButtons();
+    });
 
-        // Add education entry
-        document.getElementById('addEducation').addEventListener('click', function() {
-            const entries = document.getElementById('educationEntries');
-            const count = entries.children.length;
+    // Add education entry
+    document.getElementById('addEducation').addEventListener('click', function(e) {
+        e.preventDefault();
+        const entries = document.getElementById('educationEntries');
+        const count = entries.children.length;
+        console.log(count);
 
-            const newEntry = document.createElement('div');
-            newEntry.className = 'education-entry';
-            newEntry.innerHTML = `
+        const newEntry = document.createElement('div');
+        newEntry.className = 'education-entry';
+        newEntry.innerHTML = `
                 <div class="entry-header">
                     <h3>Education #${count + 1}</h3>
                     <button type="button" class="btn-remove">Remove</button>
@@ -427,18 +240,18 @@
                 </div>
             `;
 
-            entries.appendChild(newEntry);
-            setupRemoveButtons();
-        });
+        entries.appendChild(newEntry);
+        setupRemoveButtons();
+    });
 
-        // Add availability entry
-        document.getElementById('addAvailability').addEventListener('click', function() {
-            const entries = document.getElementById('availabilityEntries');
-            const count = entries.children.length;
+    // Add availability entry
+    document.getElementById('addAvailability').addEventListener('click', function() {
+        const entries = document.getElementById('availabilityEntries');
+        const count = entries.children.length;
 
-            const newEntry = document.createElement('div');
-            newEntry.className = 'availability-row';
-            newEntry.innerHTML = `
+        const newEntry = document.createElement('div');
+        newEntry.className = 'availability-row';
+        newEntry.innerHTML = `
                 <div class="availability-day">
                     <select name="availability[${count}][day_of_week]">
                         <option value="0">Sunday</option>
@@ -463,20 +276,19 @@
                 <button type="button" class="btn-remove">Remove</button>
             `;
 
-            entries.appendChild(newEntry);
-            setupRemoveButtons();
-        });
-
-        // Setup remove buttons
-        function setupRemoveButtons() {
-            document.querySelectorAll('.btn-remove').forEach(button => {
-                button.addEventListener('click', function() {
-                    this.closest('.subject-entry, .education-entry, .availability-row').remove();
-                });
-            });
-        }
-
-        // Initial setup
+        entries.appendChild(newEntry);
         setupRemoveButtons();
-    </script>
-</body>
+    });
+
+    // Setup remove buttons
+    function setupRemoveButtons() {
+        document.querySelectorAll('.btn-remove').forEach(button => {
+            button.addEventListener('click', function() {
+                this.closest('.subject-entry, .education-entry, .availability-row').remove();
+            });
+        });
+    }
+
+    // Initial setup
+    setupRemoveButtons();
+</script>

@@ -116,8 +116,8 @@ class AuthController
         $tutorBasic = $this->userService->getTutorbasic($params['tutor-id']);
         $tutorSubjects = $this->userService->getTutorSubjects($params['tutor-id']);
         $tutorEducations = $this->userService->getTutorEducations($params['tutor-id']);
-        $tutorAvailablity = $this->userService->getTutorAvailability($params['tutor-id']);
-        // dd($tutorSubjects);
+        $tutorAvailablities = $this->userService->getTutorAvailability($params['tutor-id']);
+        // dd($tutorAvailablities);
         echo $this->view->render(
             "User/Tutor/update_tutor_profile.php",
             [
@@ -126,7 +126,7 @@ class AuthController
                 'tutorBasic' => $tutorBasic,
                 'tutorSubjects' => $tutorSubjects,
                 'tutorEducations' => $tutorEducations,
-                'tutorAvailablity' => $tutorAvailablity,
+                'tutorAvailablities' => $tutorAvailablities,
             ]
         );
     }

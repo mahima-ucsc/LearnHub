@@ -467,7 +467,7 @@ class UserService
 
     public function updateTutorProfile($formData)
     {
-        // dd($formData);
+        dd($formData);
         $tutorId = $_SESSION['user'];
         $this->db->beginTransaction();
 
