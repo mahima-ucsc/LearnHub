@@ -428,6 +428,11 @@ class PageController
         echo $this->view->render('User/Tutor/tutorProfile.php', [
             "title" => "Tutor",
             "tutorDetails" => $tutorDetails,
+            'subjects' => $subjects,
+            'tutorBasic' => $tutorBasic,
+            'tutorSubjects' => $tutorSubjects,
+            'tutorEducations' => $tutorEducations,
+            'tutorAvailablities' => $tutorAvailablities,
             "userReview" => $userReview,
             'summeryOfReviews' => $summeryOfReviews,
             "courses" => $courses,
