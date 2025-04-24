@@ -6,12 +6,14 @@ namespace App\Controllers;
 
 use Framework\TemplateEngine;
 use App\Services\ResourceService;
+use App\Services\ValidatorService;
+
 use Error;
 use Exception;
 
 class ResourceController
 {
-    public function __construct(private TemplateEngine $view, private ResourceService $resourceService) {}
+    public function __construct(private TemplateEngine $view, private ResourceService $resourceService,  private ValidatorService $validatorService) {}
 
     public function resource()
     {
@@ -43,15 +45,7 @@ class ResourceController
             'resourceCount' => $resourceCount
         ]);
     }
-    // public function resource()
-    // {
-    //     $resouces = $this->resourceService->getResources();
-    //     // dd($resouces);
-    //     echo $this->view->render('Resource/resource.php', [
-    //         'title' => 'Resource',
-    //         'resources' => $resouces
-    //     ]);
-    // }
+
     public function createView()
     {
         echo $this->view->render('Resource/create.php', [
@@ -59,10 +53,19 @@ class ResourceController
         ]);
     }
 
-    public function create()
+
+
+    public function createResource()
     {
+
+        // Validate the form data
+        $this->validatorService->validateResource($_POST);
+
+        // Process the resource creation
         $this->resourceService->create($_POST, $_FILES);
-        redirectTo('/resource');
+
+        // Redirect to the success page
+        redirectTo('/resource/my-resources');
     }
     public function myResources()
     {

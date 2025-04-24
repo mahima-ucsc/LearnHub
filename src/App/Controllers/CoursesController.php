@@ -194,12 +194,29 @@ class CoursesController
         redirectTo($_SERVER['HTTP_REFERER']);
     }
 
-    public function courseParticipantStat()
+    public function courseParticipantStat(array $params)
     {
+        $studentId = (string)$params['participant_id'];
+        $courseId = (string)$params['course_id'];
+
+        $courseAssignments = $this->assignmentService->getAssignmentByCourse($courseId);
+        $totalAssignments = count($courseAssignments);
+        if ($totalAssignments > 0) {
+            $studentSubmissions = $this->assignmentService->getStudentAssignmentSubmissionsByCourse($studentId, $courseId);
+        }
+
+        $totalModules = count($this->courseService->getCourseModuleList($courseId));
+        $attendance = $this->courseService->getStudentAttendanceCountForCourse($studentId, $courseId);
+        $user = $this->userService->getUserDetailsById($studentId);
         echo $this->view->render(
             "course/user_course_stats.php",
             [
-                'title' => "Stats"
+                'title' => "Stats",
+                "studentSubmissions" => $studentSubmissions ?? [],
+                "user" => $user,
+                "totalAssignments" => $totalAssignments,
+                "totalModules" => $totalModules ?? 0,
+                "attendance" => $attendance ?? 0
             ]
         );
     }
@@ -256,16 +273,6 @@ class CoursesController
         redirectTo($_SERVER['HTTP_REFERER']);
     }
 
-    public function pinCourse()
-    {
-        $requestBody = file_get_contents('php://input');
-        $data = json_decode($requestBody, true);
-        $courses = $this->courseService->registeredCourses();
-        echo json_encode([
-            'success' => true,
-            'pinnedCourses' => $courses,
-        ]);
-    }
 
     public function readModuleResources(array $params)
     {
@@ -386,7 +393,7 @@ class CoursesController
     public function getTeacherCourses()
     {
         $teacherId =  $_SESSION['user'];
-        return $this->courseService->getTeacherCourses($teacherId);
+        return $this->courseService->getTeacherCourses((int)$teacherId);
     }
 
     public function createModuleView(array $params)

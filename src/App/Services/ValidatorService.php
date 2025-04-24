@@ -102,6 +102,31 @@ class ValidatorService
         $this->validator->validate($formData, $rules);
     }
 
+    public function validateResource(array $formData)
+    {
+        $rules = [
+            "title" => ["required"],
+            "description" => ["required"],
+            "type" => ["required"],
+            "category" => ["required"],
+
+
+        ];
+        // Validate the URL only if it is provided
+        if (!empty($formData['resource_url'])) {
+            $rules["resource_url"] = ["url"];
+        }
+
+
+        // Conditionally validate price if the resource is not free
+        if (empty($formData['is_free']) || $formData['is_free'] == "0") {
+            $rules["price"] = ["required", "min:0.99"];
+        }
+
+        $this->validator->validate($formData, $rules);
+    }
+
+
     public function validateImg(?array $file)
     {
         if (!$file || $file['error'] !== UPLOAD_ERR_OK) {

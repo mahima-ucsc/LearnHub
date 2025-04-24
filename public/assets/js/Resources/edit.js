@@ -2,10 +2,21 @@ document.addEventListener("DOMContentLoaded", function () {
   // Toggle Free/Paid Resource
   const freeToggle = document.getElementById("free-toggle");
   const priceField = document.querySelector(".price-field");
+  const priceInput = document.getElementById("resource-price");
 
+  // Set initial visibility of the price field
+  if (freeToggle.checked) {
+    priceField.classList.remove("active");
+    priceInput.value = ""; // Clear the price if free is selected
+  } else {
+    priceField.classList.add("active");
+  }
+
+  // Toggle visibility when the checkbox is changed
   freeToggle.addEventListener("change", function () {
     if (this.checked) {
       priceField.classList.remove("active");
+      priceInput.value = ""; // Clear the price when toggled to free
     } else {
       priceField.classList.add("active");
     }
@@ -82,6 +93,50 @@ document.addEventListener("DOMContentLoaded", function () {
       // Validate form fields
       let isValid = true;
 
+      const title = document.getElementById("resource-title");
+      const description = document.getElementById("resource-description");
+      const type = document.getElementById("resource-type");
+      const category = document.getElementById("resource-category");
+
+      if (!title.value.trim()) {
+        title.classList.add("is-invalid");
+        isValid = false;
+      } else {
+        title.classList.remove("is-invalid");
+      }
+
+      if (!description.value.trim()) {
+        description.classList.add("is-invalid");
+        isValid = false;
+      } else {
+        description.classList.remove("is-invalid");
+      }
+
+      if (!type.value) {
+        type.classList.add("is-invalid");
+        isValid = false;
+      } else {
+        type.classList.remove("is-invalid");
+      }
+
+      if (!category.value) {
+        category.classList.add("is-invalid");
+        isValid = false;
+      } else {
+        category.classList.remove("is-invalid");
+      }
+
+      // Check if pricing is valid when not free
+      if (!document.getElementById("free-toggle").checked) {
+        const price = document.getElementById("resource-price");
+        if (!price.value || parseFloat(price.value) < 0.99) {
+          price.classList.add("is-invalid");
+          isValid = false;
+        } else {
+          price.classList.remove("is-invalid");
+        }
+      }
+
       // Check if at least one resource option is provided
       const fileInput = document.getElementById("resource-file");
       const urlInput = document.getElementById("resource-url");
@@ -106,4 +161,31 @@ document.addEventListener("DOMContentLoaded", function () {
         resetFormState();
       }
     });
+
+  // Reset form button
+  document.getElementById("reset-form").addEventListener("click", function () {
+    document.getElementById("resource-form").reset();
+    resetFormState();
+  });
+
+  function resetFormState() {
+    // Clear tags
+    document.querySelector(".tags-input-container").innerHTML =
+      '<input type="text" id="tags-input" class="tags-input" placeholder="Add relevant tags...">';
+    document
+      .getElementById("tags-input")
+      .addEventListener("keydown", tagsInput.onkeydown);
+
+    // Reset file upload display
+    const uploadText = document.querySelector(".file-upload-text");
+    const uploadSubtext = document.querySelector(".file-upload-subtext");
+    uploadText.textContent = "Drag & drop your file or click to browse";
+    uploadSubtext.textContent = "Max file size: 50MB";
+    document.querySelector(".file-upload").style.borderColor = "var(--gray)";
+
+    // Clear any validation errors
+    document.querySelectorAll(".form-control").forEach((element) => {
+      element.classList.remove("is-invalid");
+    });
+  }
 });

@@ -167,7 +167,7 @@ class PageController
 
 
         if (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'teacher') {
-            $revenue = $this->paymentService->getTeacherCourseIncome($_SESSION['user'])[0]['revenue'];
+            $revenue = $this->paymentService->getTeacherCourseIncome($_SESSION['user'])['revenue'];
 
             $courses = $this->courseService->getTeacherCourses((int)$_SESSION['user']);
             $courseCount = count($courses);
@@ -196,6 +196,55 @@ class PageController
             ]);
         }
     }
+
+    public function walletView()
+    {
+        $page = (int) ($_GET['p'] ?? 1);
+        $itemsPerPage = 6;
+        $offset = ($page - 1) * $itemsPerPage;
+
+        $searchParams = [
+            's' => $_GET['s'] ?? '',
+            'status' => $_GET['status'] ?? 'all',
+            'date' => $_GET['date'] ?? 'all',
+        ];
+
+        [$withdrawalHistory, $count] = $this->paymentService->getWithdrawalHistory(
+            $itemsPerPage,
+            $offset
+        );
+
+        $pagination = generatePagination($count, $page, $itemsPerPage, $searchParams);
+
+        $totalRevenue = $this->paymentService->getTeacherCourseIncome((int)$_SESSION['user'])['revenue'];
+
+        $withdrawedAmount = $this->paymentService->getWithdrawedAmount((int)$_SESSION['user'])['total_amount'];
+
+        $balance = $totalRevenue - $withdrawedAmount;
+
+
+
+        echo $this->view->render('User/Tutor/wallet.php', [
+            'title' => "Wallet",
+            'withdrawalHistory' => $withdrawalHistory,
+            'pagination' => $pagination,
+            'totalRevenue' => $totalRevenue,
+            'withdrawedAmount' => $withdrawedAmount,
+            "balance" => $balance
+        ]);
+    }
+
+    public function requestWithdrawal()
+    {
+        try {
+            $formData = $_POST;
+            $formData['bank_details'] = nl2br($formData['bank_details']);
+            $this->paymentService->requestWithdrawal($_POST);
+        } catch (Exception $e) {
+            error_log("Failed to request withdrawal: " . $e->getMessage());
+            redirectTo("/server-error");
+        }
+    }
     public function courseManagment()
     {
         $page = (int) ($_GET['p'] ?? 1);
@@ -214,7 +263,7 @@ class PageController
             );
 
             $revenue = $this->paymentService->getTeacherCourseIncome($_SESSION['user']);
-            $revenue = $revenue[0]['revenue'];
+            $revenue = $revenue['revenue'];
             $pagination = generatePagination($courseCount, $page, $itemsPerPage, $searchParams);
         } else {
             $courseCount = $this->courseService->getNoOfCourses();
@@ -367,30 +416,90 @@ class PageController
     }
     public function postManagment()
     {
-        $courseRequests = $this->courseRequestService->getPendingCourseRequests();
+        $courseRequests = $this->courseRequestService->getAllCourseRequests();
+        $requestCount = $this->courseRequestService->getCount();
         echo $this->view->render("User/Admin/admin_post_managment.php", [
             "title" => "Post Managment",
-            "posts" => $courseRequests
+            "posts" => $courseRequests,
+            "requestCount" => $requestCount
         ]);
     }
     public function adManagment()
     {
-        $advertisements = $this->advertisementService->getAdvertisements();
-        echo $this->view->render("User/Admin/admin_ad_managment.php", [
+
+        if (!empty($_SESSION['user']) && $_SESSION['user_role'] == "admin") {
+            $advertisements = $this->advertisementService->getAdvertisements();
+            $path = "User/Admin/admin_ad_managment.php";
+        } elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == "teacher") {
+            $advertisements = $this->advertisementService->getTeacherAdvertisements((string)$_SESSION['user']);
+            $path = "User/Tutor/teacher_ad_managment.php";
+        }
+
+        echo $this->view->render($path, [
             "title" => "Ad Managment",
             "advertisements" => $advertisements
         ]);
     }
-    public function userResourceView()
+    public function withdrawalManagment()
     {
-        $resources = $this->resourceService->getResources();
-        echo $this->view->render(
-            '/User/student/resource.php',
-            [
-                'title' => "My resource",
-                'resources' => $resources
-            ]
+        $page = (int) ($_GET['p'] ?? 1);
+        $itemsPerPage = 6;
+        $offset = ($page - 1) * $itemsPerPage;
+
+        $searchParams = [
+            's' => $_GET['s'] ?? '',
+            'status' => $_GET['status'] ?? 'all',
+            'date' => $_GET['date'] ?? 'all',
+        ];
+
+        [$withdrawalHistory, $count] = $this->paymentService->getWithdrawalHistory(
+            $itemsPerPage,
+            $offset
         );
+        $pagination = generatePagination($count, $page, $itemsPerPage, $searchParams);
+        echo $this->view->render("User/Admin/admin_withdrawal_managment.php", [
+            "title" => "Ad Managment",
+            "withdrawalHistory" => $withdrawalHistory,
+            "pagination" => $pagination
+        ]);
+    }
+
+    public function completeWithdrawal(array $params)
+    {
+        try {
+            $this->paymentService->completeWithdraw((string)$params['withdrawal_id'], (string)$_POST['user']);
+
+            $data = [
+                "success" => true,
+                "message" => "Successfully complete the withdraw"
+            ];
+        } catch (Exception $e) {
+            error_log("Error completing withdraw: " . $e->getMessage());
+            $data = [
+                "success" => false,
+                "message" => $e->getMessage()
+            ];
+        }
+        echo json_encode($data);
+    }
+
+    public function cancelWithdrawal(array $params)
+    {
+        try {
+            $this->paymentService->cancelWithdrawal((string)$params['withdrawal_id'], (string)$_POST['user']);
+
+            $data = [
+                "success" => true,
+                "message" => "Successfully cancel the withdraw"
+            ];
+        } catch (Exception $e) {
+            error_log("Error canceling withdraw: " . $e->getMessage());
+            $data = [
+                "success" => false,
+                "message" => $e->getMessage()
+            ];
+        }
+        echo json_encode($data);
     }
     public function profile()
     {

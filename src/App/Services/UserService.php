@@ -26,7 +26,6 @@ class UserService
             WHERE user_id = :userId",
             ['userId' => $_SESSION['user']]
         )->find();
-        // dd($userDetails);
         if ($userDetails['profile_picture_url'] !== null) {
             $userDetails['profile_picture_url'] =
                 Paths::UPLOAD_FOLDER_RELATIVE_TO_PUBLIC . "/" .
@@ -313,8 +312,7 @@ class UserService
     public function sendVerificationCode(string $email)
     {
         $mail = new PHPMailer(true); // Passing `true` enables exceptions
-        $verificationCode = random_int(100000, 999999);
-
+        $verificationCode = generateRadomString(6);
         $HVcode = password_hash((string)$verificationCode, PASSWORD_BCRYPT, ["const" => 12]);
         $_SESSION['otp_hash'] = $HVcode;
 
