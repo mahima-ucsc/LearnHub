@@ -267,7 +267,7 @@
                         <!-- avatar -->
                         <img src="<?= isset($review['profile_picture_url'])
                                         ? $user['profile_picture_url'] :
-                                        "/assets/images/user_placeholder.jpg" ?>"" alt=" <?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
+                                        "/assets/images/user_placeholder.jpg" ?>" alt=" <?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
                         <!-- since when-->
                         <div class="review-meta">
                             <span class="review-name"><?php echo htmlspecialchars($review['name']); ?></span>
@@ -462,12 +462,14 @@
     });
 
     // Show more reviews
-    let counter = 0;
+    let counter = 1;
 
     function getmorereview() {
         event.preventDefault();
         const courseID = <?php echo json_encode($course['course_id']); ?>;
-        console.log()
+        const userId = <?php echo json_encode($_SESSION['user']); ?>;
+        const userRoll = <?php echo json_encode($_SESSION['user_role']); ?>;
+
         fetch(`/course/review/${courseID}/${counter}`)
             .then(response => response.json())
             .then(data => {
@@ -478,7 +480,7 @@
                                 <div class="review-item">
                                     <div class="review-header">
                                         <!-- avatar -->
-                                        <img src="${element.profile_picture_url}" alt="${element.name}" class="review-avatar">
+                                        <img src="${element.profile_picture_url ? element.profile_picture_url : "/assets/images/user_placeholder.jpg"}" alt="${element.name}" class="review-avatar">
                                         <!-- since when-->
                                         <div class="review-meta">
                                             <span class="review-name">${element.name}</span>
@@ -489,8 +491,7 @@
                                             ${generateStarRating(element.rating)} 
                                         </div>
                                         <!-- edit and delete menue -->
-                                        <?php
-                                        if ($review['user_id'] === $_SESSION['user'] || $_SESSION['user_role'] === "admin") : ?>
+                                        ${(element.user_id === userId || userRoll === "admin") ? `
                                             <div class="cart-menu">
                                                 <div class="cart-btn" onclick="toggleCartMenu(this)">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -500,19 +501,18 @@
                                                 <!-- Option menu-->
                                                 <div class="cart-options">
                                                     <div class="menu-button">
-                                                        <a href="/course/review/edit/${element.review_id}">Edit</a>
+                                                        <a href="/courses/review/edit/${element.review_id}">Edit</a>
                                                     </div>
                                                     <div class="menu-button">
-                                                        <button onclick="showDeleteModal(${element.review_id})">delete</button>
+                                                        <button onclick="showDeleteModal(${element.review_id})">Delete</button>
                                                     </div>
-
                                                 </div>
                                             </div>
-                                        <?php endif; ?>
+                                        ` : ''}
                                     </div>
                                     <!-- user review text -->
                                     <div class="review-body">
-                                        <p><?php echo $element['rating'] ?></p>  
+                                        <p>${element.review}</p>  
                                     </div>
                                 </div>
                             `);

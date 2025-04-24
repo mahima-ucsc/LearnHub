@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\{AssignmentService, ValidatorService, CourseService, UserService, FileService, SubjectService};
+use App\Services\{AssignmentService, ValidatorService, CourseService, UserService, FileService, SubjectService, ReviewService};
 use App\Config\Paths;
 use Exception;
 use Framework\Exceptions\ValidationException;
@@ -22,6 +22,7 @@ class CoursesController
         private FileService $fileService,
         private AssignmentService $assignmentService,
         private SubjectService $subjectService,
+        private ReviewService $reviewService,
     ) {}
 
 
@@ -129,18 +130,9 @@ class CoursesController
 
         // get course reviews
         $userReview = [];
-        $userReview = $this->courseService->getReviewForcourse($params['course_id']);
+        $userReview = $this->reviewService->getCourseReview($params['course_id'], '0');
         //calculate summery of reviews
-        $summeryOfReviews = [];
-        $totalReviews = count($userReview);
-        $starCount = [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0];
-        $totalRating = 0;
-        foreach ($userReview as $review) {
-            $totalRating += $review['rating'];
-            $starCount[$review['rating']]++;
-        }
-        $avgRating = $totalReviews > 0 ? ($totalRating / $totalReviews) : 0;
-        $summeryOfReviews = ['totalReviews' => $totalReviews, 'avgRating' => $avgRating, 'starCount' => $starCount];
+        $summeryOfReviews = $this->reviewService->getSummeryOfReview($params['course_id']);
 
         // get tutor profile
         $user = $this->userService->getUserDetailsById((string)$course['tutor_id']);

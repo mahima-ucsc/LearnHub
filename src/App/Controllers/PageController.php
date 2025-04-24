@@ -393,13 +393,12 @@ class PageController
         ]);
     }
 
-    public function createAnnouncements()
+    public function teacher()
     {
-        echo $this->view->render("User/Tutor/create_announcement.php", [
-            "title" => "Create Announcement"
+        echo $this->view->render("User/Tutor/teacher_index.php", [
+            "title" => "Teacher"
         ]);
     }
-
     public function userManagment()
     {
         if ($_SESSION['user_role'] === "teacher") {
@@ -496,13 +495,11 @@ class PageController
     }
     public function profile()
     {
+        dd("user profile");
         $userDetails = $this->userService->getUserProfile();
         $userReview = $this->reviewService->getUserReview();
-        [$courses, $courseCount] = $this->courseService->searchCourse(
-            3,
-            0
-        );
-        echo $this->view->render('Tutor/profile.php', [
+        [$courses, $courseCount] = $this->courseService->searchCourse(3, 0);
+        echo $this->view->render('User/profile.php', [
             "title" => "Profile",
             "userDetails" => $userDetails,
             "userReview" => $userReview,
@@ -510,14 +507,28 @@ class PageController
         ]);
     }
 
-    public function tutorProfile()
+    public function tutorProfile($params)
     {
-        $userReview = $this->reviewService->getUserReview();
-        $userDetails = $this->userService->getUserProfile();
-        echo $this->view->render('Tutor/profile.php', [
+        $userReview = $this->reviewService->getTutorReview($params['tutor-id'], '0');
+        $tutorDetails = $this->userService->getTutorProfile($params['tutor-id']);
+        $courses = $this->courseService->getTutorcourses($params['tutor-id']);
+        $totalReviews = count($userReview);
+        $starCount = [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0];
+        $totalRating = 0;
+        foreach ($userReview as $review) {
+            $totalRating += $review['rating'];
+            $starCount[$review['rating']]++;
+        }
+        $avgRating = $totalReviews > 0 ? ($totalRating / $totalReviews) : 0;
+        $summeryOfReviews = ['totalReviews' => $totalReviews, 'avgRating' => $avgRating, 'starCount' => $starCount];
+
+        // dd($tutorDetails);
+        echo $this->view->render('User/Tutor/tutorProfile.php', [
             "title" => "Tutor",
-            "userDetails" => $userDetails,
-            "userReview" => $userReview
+            "tutorDetails" => $tutorDetails,
+            "userReview" => $userReview,
+            'summeryOfReviews' => $summeryOfReviews,
+            "courses" => $courses,
         ]);
     }
     public function test()
