@@ -277,38 +277,6 @@
 <div class="withdrawal-container">
     <h1 class="dashboard-title">Withdrawal Management</h1>
 
-    <!-- Stats Cards -->
-    <div class="stats-container">
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fas fa-money-bill-wave"></i>
-            </div>
-            <div class="stat-value" id="totalWithdrawals"><?php echo e($totalWithdrawals); ?></div>
-            <div class="stat-label">Total Withdrawals</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fas fa-dollar-sign"></i>
-            </div>
-            <div class="stat-value" id="totalAmountWithdrawn">Rs. <?php echo e($totalAmount); ?></div>
-            <div class="stat-label">Total Amount</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fas fa-clock"></i>
-            </div>
-            <div class="stat-value" id="pendingWithdrawals"><?php echo e($pendingCount); ?></div>
-            <div class="stat-label">Pending Withdrawals</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fas fa-check-circle"></i>
-            </div>
-            <div class="stat-value" id="completedWithdrawals"><?php echo e($completedCount); ?></div>
-            <div class="stat-label">Completed Withdrawals</div>
-        </div>
-    </div>
-
     <!-- Withdrawals Table -->
     <div class="table-container">
         <div class="table-header">
