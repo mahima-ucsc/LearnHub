@@ -98,7 +98,7 @@
                     </h2>
 
                     <?php if ($tutorDetails['degree'] || $tutorDetails['institution'] || $tutorDetails['field_of_study']): ?>
-                        <?php foreach ($tutorEducations as $tutorEducation): ?>
+                        <?php foreach ($tutorEducations as $index => $tutorEducation): ?>
                             <div class="info-grid">
                                 <?php if ($tutorEducation['degree']): ?>
                                     <div class="info-item">
@@ -128,6 +128,9 @@
                                     </div>
                                 <?php endif; ?>
                             </div>
+                            <?php if ($index < count($tutorEducations) - 1): ?>
+                                <hr class="education-divider" />
+                            <?php endif; ?>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <p class="empty-state">Educational background information not provided.</p>
