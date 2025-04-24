@@ -47,6 +47,9 @@
   padding: 0 20px;
 }
 
+.section-title {
+  color: var(--primary);
+}
 .profile-grid {
   display: grid;
   grid-template-columns: 1fr 2fr;
