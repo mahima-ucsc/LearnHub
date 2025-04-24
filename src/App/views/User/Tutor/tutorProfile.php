@@ -286,6 +286,9 @@
                 </a>
             <?php endforeach; ?>
         </section>
+        <div class="more-course">
+            <button class="btn" onclick="window.location.href='/courses?s=<?php echo e($tutorDetails['first_name'] . '+' . $tutorDetails['last_name']); ?>'">more courses</button>
+        </div>
     </div>
 
     <!-- reviews from students -->

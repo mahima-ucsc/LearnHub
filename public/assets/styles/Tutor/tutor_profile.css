@@ -307,6 +307,27 @@
   font-size: 20px;
 }
 
+.more-course {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.more-course .btn {
+  color: #393d3d;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  margin: 0 5px;
+  font-size: 0.9rem;
+}
+
+.more-course .btn:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
 /* Course Card Styles */
 .courses-grid {
   padding: 25px;
