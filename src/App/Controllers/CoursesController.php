@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\{AssignmentService, ValidatorService, CourseService, UserService, FileService, SubjectService};
+use App\Services\{AssignmentService, ValidatorService, CourseService, UserService, FileService, SubjectService, ReviewService};
 use App\Config\Paths;
 use Exception;
 use Framework\Exceptions\ValidationException;
@@ -22,6 +22,7 @@ class CoursesController
         private FileService $fileService,
         private AssignmentService $assignmentService,
         private SubjectService $subjectService,
+        private ReviewService $reviewService,
     ) {}
 
 
@@ -129,23 +130,12 @@ class CoursesController
 
         // get course reviews
         $userReview = [];
-        $userReview = $this->courseService->getReviewForcourse($params['course_id']);
-
+        $userReview = $this->reviewService->getCourseReview($params['course_id'], '0');
         //calculate summery of reviews
-        $summeryOfReviews = [];
-        $totalReviews = count($userReview);
-        $starCount = [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0];
-        $totalRating = 0;
-        foreach ($userReview as $review) {
-            $totalRating += $review['rating'];
-            $starCount[$review['rating']]++;
-        }
-        $avgRating = $totalReviews > 0 ? ($totalRating / $totalReviews) : 0;
-        $summeryOfReviews = ['totalReviews' => $totalReviews, 'avgRating' => $avgRating, 'starCount' => $starCount];
+        $summeryOfReviews = $this->reviewService->getSummeryOfReview($params['course_id']);
 
         // get tutor profile
-        $user = $this->userService->getUserProfile($course['tutor_id']);
-
+        $user = $this->userService->getUserDetailsById((string)$course['tutor_id']);
         echo $this->view->render(
             'course/course-info/course-info.php',
             [
@@ -177,15 +167,6 @@ class CoursesController
      * 
      * @deprecated This function is deprecated due to the new flow that allows creating courses without modules.
      */
-    public function saveCourseData()
-    {
-        $thumbnail = $_FILES['thumbnail'] ?? null;
-        $this->validatorService->validateImg($thumbnail);
-        $this->fileService->upload("courses", $thumbnail); // Save image temporary
-
-        $_SESSION['courseData'] = $_POST;
-        redirectTo('/course/create/add-module');
-    }
 
     public function addModuleView()
     {
@@ -213,25 +194,33 @@ class CoursesController
         redirectTo($_SERVER['HTTP_REFERER']);
     }
 
-    public function courseParticipantStat()
+    public function courseParticipantStat(array $params)
     {
+        $studentId = (string)$params['participant_id'];
+        $courseId = (string)$params['course_id'];
+
+        $courseAssignments = $this->assignmentService->getAssignmentByCourse($courseId);
+        $totalAssignments = count($courseAssignments);
+        if ($totalAssignments > 0) {
+            $studentSubmissions = $this->assignmentService->getStudentAssignmentSubmissionsByCourse($studentId, $courseId);
+        }
+
+        $totalModules = count($this->courseService->getCourseModuleList($courseId));
+        $attendance = $this->courseService->getStudentAttendanceCountForCourse($studentId, $courseId);
+        $user = $this->userService->getUserDetailsById($studentId);
         echo $this->view->render(
             "course/user_course_stats.php",
             [
-                'title' => "Stats"
+                'title' => "Stats",
+                "studentSubmissions" => $studentSubmissions ?? [],
+                "user" => $user,
+                "totalAssignments" => $totalAssignments,
+                "totalModules" => $totalModules ?? 0,
+                "attendance" => $attendance ?? 0
             ]
         );
     }
 
-    public function userCourses()
-    {
-        echo $this->view->render(
-            "User/user_courses.php",
-            [
-                'title' => "ICT 2024 A/L"
-            ]
-        );
-    }
 
     public function successMessage()
     {
@@ -284,16 +273,6 @@ class CoursesController
         redirectTo($_SERVER['HTTP_REFERER']);
     }
 
-    public function pinCourse()
-    {
-        $requestBody = file_get_contents('php://input');
-        $data = json_decode($requestBody, true);
-        $courses = $this->courseService->registeredCourses();
-        echo json_encode([
-            'success' => true,
-            'pinnedCourses' => $courses,
-        ]);
-    }
 
     public function readModuleResources(array $params)
     {
@@ -337,43 +316,7 @@ class CoursesController
             $this->validatorService->validateImg($courseThumbnail);
             $thumbnailFileName = $this->fileService->uploadFile(Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS, $courseThumbnail);
 
-            // Process module attachments
-            $moduleAttachments = [];
-            if (isset($_FILES['modules']['name'][0]['attachments'])) {
-                foreach ($_FILES['modules']['name'][0]['attachments'] as $index => $filename) {
-                    if (!empty($filename)) {
-                        $moduleAttachments[] = [
-                            'name' => $_FILES['modules']['name'][0]['attachments'][$index],
-                            'type' => $_FILES['modules']['type'][0]['attachments'][$index],
-                            'tmp_name' => $_FILES['modules']['tmp_name'][0]['attachments'][$index],
-                            'error' => $_FILES['modules']['error'][0]['attachments'][$index],
-                            'size' => $_FILES['modules']['size'][0]['attachments'][$index]
-                        ];
-                    }
-                }
-            }
 
-            // Prepare modules data
-            $modulesData = [];
-            if (isset($_POST['modules']) && is_array($_POST['modules'])) {
-                foreach ($_POST['modules'] as $index => $module) {
-                    $moduleData = [
-                        'title' => $module['title'],
-                        'description' => $module['description'],
-                        'price' => floatval($module['price']),
-                        'start_date' => $module['moduleStartTime'],
-                        'end_date' => $module['moduleEndTime'],
-                        'has_free_trial' => isset($module['hasFreeTrial']) && $module['hasFreeTrial'] === 'on',
-                        'free_trial_start_date' => $module['freeTrialStartDate'] ?? null,
-                        'free_trial_end_date' => $module['freeTrialEndDate'] ?? null,
-                        'duration_minutes' => (isset($module['hours']) ? intval($module['hours']) * 60 : 0) +
-                            (isset($module['minutes']) ? intval($module['minutes']) : 0),
-                        'attachments' => $moduleAttachments
-                    ];
-
-                    $modulesData[] = $moduleData;
-                }
-            }
 
 
             // Prepare course data
@@ -390,15 +333,14 @@ class CoursesController
                 'price' => isset($_POST['fullCoursePrice']) ? floatval($_POST['fullCoursePrice']) : null,
                 'location' => $_POST['location'],
                 'thumbnail_url' => $thumbnailFileName,
-                'modules' => $modulesData
             ];
 
             // Create the course with modules
-            $courseId = $this->courseService->createCourseWithModules($courseData, $_FILES);
+            $courseId = $this->courseService->createCourse($courseData, $_FILES);
 
             // Redirect to my courses page
             if ($courseId) {
-                echo json_encode("Success");
+                redirectTo($_SERVER['HTTP_REFERER'] . "?m=success");
             } else {
                 // Handle error
                 echo json_encode("Error");
@@ -451,59 +393,49 @@ class CoursesController
     public function getTeacherCourses()
     {
         $teacherId =  $_SESSION['user'];
-        return $this->courseService->getTeacherCourses($teacherId);
+        return $this->courseService->getTeacherCourses((int)$teacherId);
     }
 
     public function createModuleView(array $params)
     {
         $courseId = $params['course_id'];
+        $course = $this->courseService->getCourseById((string)$courseId);
+        if ($course['billing_type'] == "recurring") {
+            $courseSubPeriods = $this->courseService->getRecurringCourseSubPeriods((string)$courseId);
+        }
         echo $this->view->render('/course/create_module.php', [
-            "title" => "Create Module"
+            "title" => "Create Module",
+            "course" => $course,
+            "courseSubPeriods" => $courseSubPeriods ?? []
         ]);
     }
     public function createModule(array $params)
     {
+
         $courseId = $params['course_id'];
         $course = $this->courseService->getCourseById($courseId);
         $type = $course['billing_type'];
         // Process module attachments
         $moduleAttachments = [];
-        if (isset($_FILES['modules']['name'][0]['attachments'])) {
-            foreach ($_FILES['modules']['name'][0]['attachments'] as $index => $filename) {
+        if (isset($_FILES['moduleAttachments']['name'])) {
+            foreach ($_FILES['moduleAttachments']['name'] as $index => $filename) {
                 if (!empty($filename)) {
                     $moduleAttachments[] = [
-                        'name' => $_FILES['modules']['name'][0]['attachments'][$index],
-                        'type' => $_FILES['modules']['type'][0]['attachments'][$index],
-                        'tmp_name' => $_FILES['modules']['tmp_name'][0]['attachments'][$index],
-                        'error' => $_FILES['modules']['error'][0]['attachments'][$index],
-                        'size' => $_FILES['modules']['size'][0]['attachments'][$index]
+                        'name' => $_FILES['moduleAttachments']['name'][$index],
+                        'type' => $_FILES['moduleAttachments']['type'][$index],
+                        'tmp_name' => $_FILES['moduleAttachments']['tmp_name'][$index],
+                        'error' => $_FILES['moduleAttachments']['error'][$index],
+                        'size' => $_FILES['moduleAttachments']['size'][$index]
                     ];
                 }
             }
         }
         // Prepare modules data
-        $modulesData = [];
-        if (isset($_POST['modules']) && is_array($_POST['modules'])) {
-            foreach ($_POST['modules'] as $index => $module) {
-                $moduleData = [
-                    'title' => $module['title'],
-                    'description' => $module['description'],
-                    'price' => floatval($module['price']),
-                    'start_date' => $module['moduleStartTime'],
-                    'end_date' => $module['moduleEndTime'],
-                    'has_free_trial' => isset($module['hasFreeTrial']) && $module['hasFreeTrial'] === 'on',
-                    'free_trial_start_date' => $module['freeTrialStartDate'] ?? null,
-                    'free_trial_end_date' => $module['freeTrialEndDate'] ?? null,
-                    'duration_minutes' => (isset($module['hours']) ? intval($module['hours']) * 60 : 0) +
-                        (isset($module['minutes']) ? intval($module['minutes']) : 0),
-                    'attachments' => $moduleAttachments
-                ];
+        $moduleData = $_POST;
+        $moduleData['attachments'] = $moduleAttachments;
 
-                $modulesData[] = $moduleData;
-            }
-        }
-        $this->courseService->createModule($courseId, $type, $modulesData, 1);
-        echo json_encode($modulesData);
+        $this->courseService->createModule($courseId, $type, $moduleData);
+        redirectTo($_SERVER['HTTP_REFERER'] . "?m=success");
     }
 
     public function deleteCourseModule(array $params)
@@ -533,5 +465,32 @@ class CoursesController
         header('Content-Type: application/json');
         echo json_encode($result);
         exit;
+    }
+
+    public function userCourses()
+    {
+        $page = (int) ($_GET['p'] ?? 1);
+        $itemsPerPage = 9;
+        $offset = ($page - 1) * $itemsPerPage;
+
+        // Get search parameters
+        $searchParams = [
+            's' => $_GET['s'] ?? '',
+        ];
+
+        [$courses, $courseCount] = $this->courseService->getUserCourses(
+            $itemsPerPage,
+            $offset
+        );
+
+        $pagination = generatePagination($courseCount, $page, $itemsPerPage, $searchParams);
+
+
+        echo $this->view->render('User/user_courses.php', [
+            "title" => "Search Course",
+            "courses" => $courses,
+            "courseCount" => $courseCount,
+            'pagination' => $pagination
+        ]);
     }
 }

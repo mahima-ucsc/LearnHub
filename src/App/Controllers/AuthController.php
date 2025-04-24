@@ -6,7 +6,7 @@ namespace App\Controllers;
 
 use Framework\TemplateEngine;
 use Framework\Exceptions\ValidationException;
-use App\Services\{ValidatorService, UserService};
+use App\Services\{ValidatorService, UserService, SubjectService};
 
 class AuthController
 {
@@ -14,6 +14,7 @@ class AuthController
         private TemplateEngine $view,
         private ValidatorService $validatorService,
         private UserService $userService,
+        private SubjectService $SubjectService,
     ) {}
 
     public function registerView()
@@ -56,7 +57,15 @@ class AuthController
     {
         if (password_verify($_POST['verificationCode'], $_SESSION['otp_hash'])) {
             $this->userService->create($_SESSION['tempUser']);
-            redirectTo('/');
+            if ($_SESSION['user_role'] == "student") {
+                redirectTo('/interest');
+            }
+            if ($_SESSION['user_role'] == "teacher") {
+                $tutorId = $_SESSION['user'];
+                redirectTo("/tutor/{$tutorId}/create_profile");
+            } else {
+                redirectTo("/");
+            }
         } else {
             throw new ValidationException(['verificationCode' => ['Invalid verification code']]);
         }
@@ -87,5 +96,23 @@ class AuthController
     {
         $this->userService->logout();
         redirectTo('/login');
+    }
+
+    public function createTutorProfileView()
+    {
+        $subjects = $this->SubjectService->getSubjects();
+        echo $this->view->render(
+            "User/Tutor/create_tutor_profile.php",
+            [
+                "title" => "creat your profile",
+                'subjects' => $subjects,
+            ]
+        );
+    }
+
+    public function createTutorProfile()
+    {
+        $this->userService->createTutorProfile($_POST);
+        redirectTo("/dashboard");
     }
 }

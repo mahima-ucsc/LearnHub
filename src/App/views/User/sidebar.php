@@ -365,6 +365,10 @@
                 <span class="menu-icon"><i class="fas fa-chart-line"></i></span>
                 Revenue Reports
             </a>
+            <a href="/wallet" class="menu-item">
+                <span class="menu-icon"><i class="fa-solid fa-wallet"></i></span>
+                Wallet
+            </a>
         </div>
 
         <div class="sidebar-section">
@@ -381,17 +385,14 @@
                 <span class="menu-icon"><i class="fas fa-cog"></i></span>
                 General Settings
             </a>
-            <a href="#" class="menu-item">
-                <span class="menu-icon"><i class="fas fa-lock"></i></span>
-                Security
-            </a>
         </div>
     </div>
 </aside>
+
+
 <!-- Add user popup -->
 <section>
 
-    <!-- Popup Overlay -->
     <div class="popup-overlay" id="addUserPopup">
         <div class="popup-container">
             <div class="popup-header">

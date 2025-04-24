@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS users (
     is_verified BOOLEAN NOT NULL DEFAULT FALSE
 );
 
+
 -- Table for grades
 CREATE TABLE IF NOT EXISTS grades (
     grade_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -46,6 +47,18 @@ CREATE TABLE IF NOT EXISTS subjects (
     subject_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
     subject_title VARCHAR(255) NOT NULL,
     PRIMARY KEY(subject_id)
+);
+
+
+-- Table to store user interest subject which will be useed for course suggessions
+CREATE TABLE IF NOT EXISTS user_interest(
+    interest_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+    user_id BIGINT(20) UNSIGNED NOT NULL,
+    subject_id BIGINT(20) UNSIGNED NOT NULL,
+
+    PRIMARY KEY(interest_id),
+    FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY(subject_id) REFERENCES subjects(subject_id) ON DELETE CASCADE
 );
 
 -- Each user (student or teacher) can have multiple subjects
@@ -239,6 +252,7 @@ CREATE TABLE IF NOT EXISTS tutor_review(
     rating TINYINT UNSIGNED CHECK (rating BETWEEN 0 AND 5),
     tutor_id BIGINT(20) UNSIGNED NOT NULL,
     user_id BIGINT(20) UNSIGNED NOT NULL,
+    date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(review_id),
     FOREIGN KEY(tutor_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
@@ -250,6 +264,7 @@ CREATE TABLE IF NOT EXISTS course_review(
     rating TINYINT UNSIGNED CHECK (rating BETWEEN 0 AND 5),
     course_id BIGINT(20) UNSIGNED NOT NULL,
     user_id BIGINT(20) UNSIGNED NOT NULL,
+    date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(review_id),
     FOREIGN KEY(course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
     FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
@@ -373,6 +388,8 @@ CREATE TABLE IF NOT EXISTS shared_resources (
     price DECIMAL(10,2) DEFAULT 0,
     resource_url TEXT,
     user_id BIGINT(20) UNSIGNED NOT NULL,
+    created_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
     
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     PRIMARY KEY(resource_id)
@@ -481,3 +498,98 @@ CREATE TABLE IF NOT EXISTS announcements_read (
     FOREIGN KEY (announcement_id) REFERENCES announcements(announcement_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
+
+-- Table for teacher withdraw
+CREATE TABLE IF NOT EXISTS teacher_withdrawal(
+    withdrawal_id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+    teacher_id BIGINT(20) UNSIGNED NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    status ENUM('pending', 'completed', 'canceled') DEFAULT 'pending',
+    date_requested DATE NOT NULL DEFAULT CURRENT_DATE,
+    bank_details TEXT,
+
+    FOREIGN KEY (teacher_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+-- tutor profile details
+CREATE TABLE IF NOT EXISTS TutorProfiles(
+    tutor_profile_id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    tutor_id BIGINT(20) UNSIGNED NOT NULL,
+    title VARCHAR(255),
+    bio TEXT,
+    FOREIGN KEY (tutor_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+-- Table to store subjects taught by tutors
+CREATE TABLE IF NOT EXISTS TutorSubjects (
+    tutor_id BIGINT(20) UNSIGNED NOT NULL,
+    subject_id BIGINT(20) UNSIGNED NOT NULL,
+    years_experience INTEGER,
+    PRIMARY KEY (tutor_id, subject_id),
+    FOREIGN KEY (tutor_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (subject_id) REFERENCES subjects(subject_id) ON DELETE CASCADE
+);
+
+-- Table to store education details of tutors
+CREATE TABLE IF NOT EXISTS TutorEducation (
+    education_id  BIGINT(20) UNSIGNED AUTO_INCREMENT  PRIMARY KEY,
+    tutor_id BIGINT(20) UNSIGNED NOT NULL,
+    degree VARCHAR(255) NOT NULL,
+    institution VARCHAR(255) NOT NULL,
+    field_of_study VARCHAR(255),
+    start_date DATE,
+    end_date DATE,
+    FOREIGN KEY (tutor_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+-- Availability schedule
+CREATE TABLE TutorAvailability (
+    availability_id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+    tutor_id BIGINT(20) UNSIGNED NOT NULL,
+    day_of_week INTEGER NOT NULL, -- 0=Sunday, 1=Monday, etc.
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    is_recurring BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (tutor_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+-- View to get the full profile of tutors
+CREATE OR REPLACE VIEW view_tutor_full_profile AS
+SELECT 
+    u.user_id,
+    u.first_name,
+    u.last_name,
+    u.email,
+    u.phone_no,
+    u.date_of_birth,
+    u.description,
+    u.joined_date,
+    u.profile_picture_url,
+    u.location,
+    u.user_role,
+
+    tp.title AS profile_title,
+    tp.bio AS profile_bio,
+    
+    s.subject_title,
+    ts.years_experience,
+    
+    te.degree,
+    te.institution,
+    te.field_of_study,
+    te.start_date AS education_start,
+    te.end_date AS education_end,
+    
+    ta.day_of_week,
+    ta.start_time,
+    ta.end_time,
+    ta.is_recurring
+
+FROM users u
+
+LEFT JOIN TutorProfiles tp ON u.user_id = tp.tutor_id
+LEFT JOIN TutorSubjects ts ON u.user_id = ts.tutor_id
+LEFT JOIN subjects s ON ts.subject_id = s.subject_id
+LEFT JOIN TutorEducation te ON u.user_id = te.tutor_id
+LEFT JOIN TutorAvailability ta ON u.user_id = ta.tutor_id
+
+WHERE u.user_role = 'teacher';

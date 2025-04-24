@@ -218,77 +218,94 @@
             <div class="stat-icon">
                 <i class="fas fa-book"></i>
             </div>
-            <div class="stat-value" id="totalCourses"><?php echo e($courseCount); ?></div>
-            <div class="stat-label">Total Courses</div>
+            <div class="stat-value" id="totalCourses"><?php echo e($resourceCount); ?></div>
+            <div class="stat-label">Total Resources</div>
         </div>
         <div class="stat-card">
             <div class="stat-icon">
                 <i class="fas fa-dollar-sign"></i>
             </div>
-            <div class="stat-value" id="totalRevenue">Rs. 15,000</div>
+            <div class="stat-value" id="totalRevenue">Rs. <?php echo e($revenue); ?></div>
             <div class="stat-label">Total Revenue</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fas fa-star"></i>
-            </div>
-            <div class="stat-value" id="averageRating">4.0</div>
-            <div class="stat-label">Average Rating</div>
         </div>
     </div>
 
     <!-- Courses Table -->
     <div class="table-container">
         <div class="table-header">
-            <h2 class="table-title">Your Courses</h2>
             <div class="search-container">
                 <form>
 
                     <i class="fas fa-search"></i>
                     <input type="text" placeholder="Search courses..." class="search-input" id="searchInput" name="s" value="<?php echo ($_GET['s']); ?>">
+                    <input type="hidden" name="p" value="1">
+
                 </form>
             </div>
+            <form>
+                <input type="hidden" name="p" value="1">
+                <input type="hidden" name="s" value="<?= $_GET['s'] ?>">
+                <select name="status">
+                    <option value="all">All</option>
+                    <option value="pending" <?= $_GET['status'] == 'pending' ? 'selected' : '' ?>>Pending</option>
+                    <option value="approved" <?= $_GET['status'] == 'approved' ? 'selected' : '' ?>>Approved</option>
+                    <option value="rejected" <?= $_GET['status'] == 'rejected' ? 'selected' : '' ?>>Rejected</option>
+                </select>
+                <button type="submit" class="">
+                    Apply Filter
+                </button>
+            </form>
+            <a href="/resource-managment">Clear Filters</a>
         </div>
         <div class="table-responsive">
             <table>
                 <thead>
                     <tr>
                         <th>Title</th>
-                        <th>Students</th>
-                        <th>Lessons</th>
-                        <th>Rating</th>
+                        <th>Author</th>
                         <th>Price</th>
-                        <th>Revenue</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="courseTableBody">
                     <!-- Courses will be added dynamically -->
-                    <?php if (empty($courses)): ?>
+                    <?php if (empty($resources)): ?>
                         <tr>
-                            <td colspan="8">No courses can be found</td>
+                            <td colspan="8">No Resource can be found</td>
                         </tr>
                     <?php else: ?>
-                        <?php foreach ($courses as $course): ?>
+                        <?php foreach ($resources as $resource): ?>
                             <tr>
-                                <td><?php echo e($course['title']); ?></td>
-                                <td>150</td>
-                                <td>8</td>
-                                <td>4.2</td>
-                                <td><?php echo e($course['price']) ?></td>
-                                <td>15000</td>
-                                <td><span class="course-status status-${course.status}">Active</span></td>
-                                <td>
-                                    <button class="action-btn btn-edit" onclick="window.location.href='/course/edit/<?php echo e($course['course_id']) ?>'">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="action-btn btn-delete" onclick="event.stopPropagation(); showModal('/manage-course/delete/<?php echo e($course['course_id']) ?>')">
+                                <td><?php echo e($resource['title']); ?></td>
+                                <td><?php echo e($resource['username']) ?></td>
+                                <td><?= $resource['is_free'] === 1 ? "Free" : e($resource['price']); ?></td>
+                                <td><span class="course-status status-${course.status}"><?php echo e($resource['status']) ?></span></td>
+                                <td style="display: flex; flex-wrap: nowrap;">
+                                    <?php if (($resource['status'] == 'pending') || ($resource['status'] == 'rejected')): ?>
+                                        <form method="POST" action="/resource-managment/approve/<?= e($resource['resource_id']); ?>" onsubmit="showLoader()">
+                                            <button type="submit" class="action-btn btn-edit">
+                                                <i class="fa-solid fa-circle-check"></i>
+                                                Approve
+                                            </button>
+                                            <input type="hidden" name="approve" value="1" />
+                                        </form>
+                                    <?php else: ?>
+                                        <form method="POST" action="/resource-managment/reject/<?= e($resource['resource_id']); ?>" onsubmit="showLoader()">
+                                            <button type="submit" class="action-btn btn-delete">
+                                                <i class="fas fa-trash"></i>
+                                                Reject
+                                            </button>
+                                        </form>
+                                    <?php endif; ?>
+                                    <button class="action-btn btn-delete" onclick="event.stopPropagation(); showModal('/resource-managment/delete/<?= e($resource['resource_id']); ?>')">
                                         <i class="fas fa-trash"></i>
+                                        Delete
                                     </button>
                                     <button class="action-btn btn-view"
                                         onclick="window.location.href='/courses/<?php echo e($course['course_id']) ?>)'">
                                         <i class="fa-solid fa-eye"></i>
+                                        view
                                     </button>
 
                                 </td>
@@ -298,7 +315,10 @@
                 </tbody>
             </table>
         </div>
+        <?php include $this->resolve('components/pagination.php'); ?>
+
     </div>
+
     <?php include $this->resolve('components/delete_modal.php'); ?>
 
 </div>

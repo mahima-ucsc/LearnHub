@@ -1692,7 +1692,6 @@
             </div>
             <a href="#" class="btn btn-outline">View Profile</a>
         </div>
-        <!-- Add more tutor cards if needed -->
     </div>
 </section>
 <section class="container resource-hub-section">
@@ -1735,79 +1734,6 @@
         </div>
     </div>
 
-    <div class="featured-resources">
-        <h3 class="subsection-title">Recent Resources</h3>
-        <div class="resources-grid">
-            <!-- Resource Card 1 -->
-            <div class="resource-card">
-                <div class="resource-type">
-                    <i class="fas fa-file-pdf"></i>
-                    <span>PDF</span>
-                </div>
-                <div class="resource-content">
-                    <h4>Complete JavaScript Cheat Sheet</h4>
-                    <p class="resource-description">A comprehensive reference guide covering all JavaScript fundamentals and advanced concepts.</p>
-                    <div class="resource-meta">
-                        <div class="resource-author">
-                            <img src="/assets/images/user_placeholder.jpg" alt="User">
-                            <span>Alex Johnson</span>
-                        </div>
-                        <div class="resource-stats">
-                            <span><i class="fas fa-download"></i> 2.4k</span>
-                            <span><i class="fas fa-star"></i> 4.8</span>
-                        </div>
-                    </div>
-                </div>
-                <a href="#" class="resource-link">Download <i class="fas fa-arrow-right"></i></a>
-            </div>
-
-            <!-- Resource Card 2 -->
-            <div class="resource-card">
-                <div class="resource-type">
-                    <i class="fas fa-video"></i>
-                    <span>Video</span>
-                </div>
-                <div class="resource-content">
-                    <h4>React Hooks Deep Dive Tutorial</h4>
-                    <p class="resource-description">Master React Hooks with this in-depth tutorial showing practical use cases and best practices.</p>
-                    <div class="resource-meta">
-                        <div class="resource-author">
-                            <img src="/assets/images/user_placeholder.jpg" alt="User">
-                            <span>Maria Garcia</span>
-                        </div>
-                        <div class="resource-stats">
-                            <span><i class="fas fa-eye"></i> 3.1k</span>
-                            <span><i class="fas fa-star"></i> 4.9</span>
-                        </div>
-                    </div>
-                </div>
-                <a href="#" class="resource-link">Watch <i class="fas fa-arrow-right"></i></a>
-            </div>
-
-            <!-- Resource Card 3 -->
-            <div class="resource-card">
-                <div class="resource-type">
-                    <i class="fas fa-link"></i>
-                    <span>Tool</span>
-                </div>
-                <div class="resource-content">
-                    <h4>UI/UX Design Resources Bundle</h4>
-                    <p class="resource-description">Collection of premium design assets, templates, and tools for modern UI/UX designers.</p>
-                    <div class="resource-meta">
-                        <div class="resource-author">
-                            <img src="/assets/images/user_placeholder.jpg" alt="User">
-                            <span>David Kim</span>
-                        </div>
-                        <div class="resource-stats">
-                            <span><i class="fas fa-download"></i> 1.8k</span>
-                            <span><i class="fas fa-star"></i> 4.7</span>
-                        </div>
-                    </div>
-                </div>
-                <a href="#" class="resource-link">Access <i class="fas fa-arrow-right"></i></a>
-            </div>
-        </div>
-    </div>
 </section>
 
 <section class="container course-request-section">
@@ -2009,29 +1935,7 @@
             slideshowInterval = setInterval(() => moveToSlide(currentIndex + 1), 5000);
         });
 
-        // Update countdown timers
-        function updateCountdowns() {
-            const countdowns = document.querySelectorAll('.countdown-timer');
-            countdowns.forEach(countdown => {
-                const expiresDate = new Date(countdown.dataset.expires);
-                const now = new Date();
-                const diff = expiresDate - now;
 
-                if (diff > 0) {
-                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-                    countdown.querySelector('.days').textContent = days;
-                    countdown.querySelector('.hours').textContent = hours.toString().padStart(2, '0');
-                    countdown.querySelector('.minutes').textContent = minutes.toString().padStart(2, '0');
-                }
-            });
-        }
-
-        // Update countdown timers initially and then every minute
-        updateCountdowns();
-        setInterval(updateCountdowns, 60000);
     });
 </script>
 <?php include $this->resolve("partials/_footer.php"); ?>

@@ -104,7 +104,7 @@ class CourseRequestService
                 break;
         }
 
-        $whereClause = !empty($whereConditions) ? "WHERE " . implode(" AND ", $whereConditions) : "";
+        $whereClause = !empty($whereConditions) ? "AND " . implode(" AND ", $whereConditions) : "";
         $query = "SELECT 
         cr.title,
         cr.request_id, 
@@ -125,14 +125,17 @@ class CourseRequestService
         JOIN users u ON cr.user_id = u.user_id
         JOIN grades g ON g.grade_id = cr.grade_id
         LEFT JOIN course_request_comments c ON cr.request_id = c.request_id
+        WHERE cr.status = 'approved'
         {$whereClause}
-        AND cr.status = 'approved'
-        GROUP BY cr.title, cr.request_id, cr.description, cr.status, s.subject_title, 
-        cr.created_date, cr.updated_date, u.first_name, u.last_name  
+        GROUP BY 
+        cr.request_id, cr.title, cr.description, cr.status, cr.location,
+        s.subject_title, s.subject_id, g.grade_name, g.grade_id,
+        cr.created_date, cr.updated_date, u.user_id, u.first_name, u.last_name
         {$orderClause}
         LIMIT {$length} OFFSET {$offset};";
 
         $requests = $this->db->query($query, $params)->findAll();
+
         $requestCount = $this->db->query(
             "SELECT 
         COUNT(*)
@@ -141,8 +144,8 @@ class CourseRequestService
         JOIN users u ON cr.user_id = u.user_id
         JOIN grades g ON g.grade_id = cr.grade_id
         LEFT JOIN course_request_comments c ON cr.request_id = c.request_id
-        {$whereClause}
-        AND cr.status = 'approved';",
+        WHERE cr.status = 'approved'
+        {$whereClause};",
             $params
         )->count();
 
@@ -170,6 +173,67 @@ class CourseRequestService
                 users u ON cr.user_id = u.user_id
             WHERE 
                 cr.status = 'pending'
+            GROUP BY 
+                cr.title, cr.request_id, cr.description, cr.status, s.subject_title, 
+                cr.created_date, cr.updated_date, u.first_name, u.last_name;    
+            ";
+
+        $requests = $this->db->query($query)->findAll();
+
+        return $requests;
+    }
+
+    public function getRejectedCourseRequests()
+    {
+        $query =
+            "SELECT 
+                cr.title,
+                cr.request_id, 
+                cr.description,
+                cr.status, 
+                s.subject_title AS subject, 
+                cr.created_date, 
+                cr.updated_date, 
+                u.user_id as author_id,
+                u.user_role,
+                CONCAT(u.first_name, ' ', u.last_name) AS author
+            FROM 
+                course_requests cr
+            LEFT JOIN 
+                subjects s ON cr.subject_id = s.subject_id
+            JOIN 
+                users u ON cr.user_id = u.user_id
+            WHERE 
+                cr.status = 'reject'
+            GROUP BY 
+                cr.title, cr.request_id, cr.description, cr.status, s.subject_title, 
+                cr.created_date, cr.updated_date, u.first_name, u.last_name;    
+            ";
+
+        $requests = $this->db->query($query)->findAll();
+
+        return $requests;
+    }
+    public function getAllCourseRequests()
+    {
+        $query =
+            "SELECT 
+                cr.title,
+                cr.request_id, 
+                cr.description,
+                cr.status, 
+                s.subject_title AS subject, 
+                cr.created_date, 
+                cr.updated_date, 
+                u.user_id as author_id,
+                u.user_role,
+                CONCAT(u.first_name, ' ', u.last_name) AS author
+            FROM 
+                course_requests cr
+            LEFT JOIN 
+                subjects s ON cr.subject_id = s.subject_id
+            JOIN 
+                users u ON cr.user_id = u.user_id
             GROUP BY 
                 cr.title, cr.request_id, cr.description, cr.status, s.subject_title, 
                 cr.created_date, cr.updated_date, u.first_name, u.last_name;    
@@ -408,5 +472,32 @@ class CourseRequestService
             error_log("Failed to fetch recent course requests: " . $e->getMessage());
             redirectTo('/server-error');
         }
+    }
+
+    public function getCount()
+    {
+        $pending = $this->db->query(
+            "SELECT COUNT(*) 
+            FROM course_requests
+            WHERE status = 'pending'"
+        )->count();
+
+        $approved = $this->db->query(
+            "SELECT COUNT(*) 
+            FROM course_requests
+            WHERE status = 'approved'"
+        )->count();
+
+        $rejected = $this->db->query(
+            "SELECT COUNT(*) 
+            FROM course_requests
+            WHERE status = 'pending'"
+        )->count();
+
+        $count['pending'] = $pending;
+        $count['approved'] = $approved;
+        $count['rejected'] = $rejected;
+
+        return $count;
     }
 }

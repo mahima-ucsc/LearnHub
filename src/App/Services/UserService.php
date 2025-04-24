@@ -38,6 +38,23 @@ class UserService
         return $userDetails;
     }
 
+    public function getTutorProfile(string $tutorId)
+    {
+        $tutorDetails = $this->db->query(
+            "SELECT * FROM view_tutor_full_profile WHERE user_id = :tutor_id;",
+            ['tutor_id' => $tutorId]
+        )->find();
+        if ($tutorDetails['profile_picture_url'] !== null) {
+            $tutorDetails['profile_picture_url'] =
+                Paths::UPLOAD_FOLDER_RELATIVE_TO_PUBLIC . "/" .
+                Paths::RELATIVE_USER_PROFILE_PICTURE_UPLOADS .
+                '/' . $tutorDetails['profile_picture_url'];
+        }
+
+        unset($tutorDetails['password']);
+        return $tutorDetails;
+    }
+
     public function getUserDetailsById(string $id)
     {
         $userDetails = $this->db->query(
@@ -45,6 +62,12 @@ class UserService
             WHERE user_id = :userId",
             ['userId' => $id]
         )->find();
+        if ($userDetails['profile_picture_url'] !== null) {
+            $userDetails['profile_picture_url'] =
+                Paths::UPLOAD_FOLDER_RELATIVE_TO_PUBLIC . "/" .
+                Paths::RELATIVE_USER_PROFILE_PICTURE_UPLOADS .
+                '/' . $userDetails['profile_picture_url'];
+        }
 
         unset($userDetails['password']);
 
@@ -293,7 +316,6 @@ class UserService
 
         $HVcode = password_hash((string)$verificationCode, PASSWORD_BCRYPT, ["const" => 12]);
         $_SESSION['otp_hash'] = $HVcode;
-        // dd([$verificationCode, $HVcode, $email]);
 
         try {
             // server settings
@@ -364,6 +386,105 @@ class UserService
             return true;
         } catch (Exception $e) {
             throw new ValidationException(['email' => "Message could not be sent. Mailer Error: {$mail->ErrorInfo}"]);
+        }
+    }
+
+    public function createTutorProfile($formData)
+    {
+        // dd($formData);
+        $tutorId = $_SESSION['user'];
+        $this->db->beginTransaction();
+
+        try {
+            // insert basic info
+            $this->db->query(
+                "INSERT INTO TutorProfiles (tutor_id, title, bio)
+                VALUES (:tutor_id, :title, :bio);",
+                [
+                    'tutor_id' => $tutorId,
+                    'title' => !empty($formData['title']) ? $formData['title'] : null,
+                    'bio' => !empty($formData['bio']) ? $formData['bio'] : null,
+                ]
+            );
+
+            // insert subjects
+            if (isset($formData['subjects']) && is_array($formData['subjects'])) {
+                foreach ($formData['subjects'] as $subject) {
+                    $this->db->query(
+                        "INSERT INTO TutorSubjects (tutor_id, subject_id, years_experience)
+                    VALUES (:tutor_id, :subject_id, :years_experience);",
+                        [
+                            'tutor_id' => $tutorId,
+                            'subject_id' => $subject['subject_id'],
+                            'years_experience' => $subject['years_experience'],
+                        ]
+                    );
+                }
+            }
+
+            // insert education details
+            if (isset($formData['educations']) && is_array($formData['educations'])) {
+                foreach ($formData['educations'] as $education) {
+                    $this->db->query(
+                        "INSERT INTO TutorEducation (tutor_id, degree, institution, field_of_study, start_date, end_date)
+                        VALUES (:tutor_id, :degree, :institution, :field_of_study, :start_date, :end_date);",
+                        [
+                            'tutor_id' => $tutorId,
+                            'degree' => $education['degree'],
+                            'institution' => $education['institution'],
+                            'field_of_study' => $education['field_of_study'],
+                            'start_date' => $education['start_date'],
+                            'end_date' => $education['end_date'],
+                        ]
+                    );
+                }
+            }
+
+            // insert available time slots
+            if (isset($formData['availability']) && is_array($formData['availability'])) {
+                foreach ($formData['availability'] as $timeSlot) {
+                    $this->db->query(
+                        "INSERT INTO TutorAvailability (tutor_id, day_of_week, start_time, end_time, is_recurring)
+                        VALUES (:tutor_id, :day_of_week, :start_time, :end_time, :is_recurring);",
+                        [
+                            'tutor_id' => $tutorId,
+                            'day_of_week' => $timeSlot['day_of_week'],
+                            'start_time' => $timeSlot['start_time'],
+                            'end_time' => $timeSlot['end_time'],
+                            'is_recurring' => $timeSlot['is_recurring'] === 'on' ? 1 : 0,
+                        ]
+                    );
+                }
+            }
+
+            $this->db->commit();
+        } catch (Exception $e) {
+            $this->db->rollback();
+            error_log("Failed to create tutor profile: " . $e->getMessage());
+        }
+    }
+
+    public function saveUserInterest(array $interest)
+    {
+        try {
+            $userId = $_SESSION['user'];
+            foreach ($interest as $i) {
+                $this->db->query(
+                    "INSERT INTO user_interest(
+                    user_id,
+                    subject_id
+                    ) VALUES(
+                    :user_id,
+                    :subject_id
+                    )",
+                    [
+                        "user_id" => $userId,
+                        "subject_id" => $i
+                    ]
+                );
+            }
+        } catch (Exception $e) {
+            throw $e;
         }
     }
 }

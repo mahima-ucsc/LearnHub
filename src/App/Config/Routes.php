@@ -19,6 +19,7 @@ use App\Controllers\{
     PaymentController,
     ResourceController,
     PostController,
+    ReportController,
     ReviewController,
     UserController
 };
@@ -39,16 +40,22 @@ function registerRoutes(App $app)
     $app->get('/profile', [PageController::class, 'profile'], [AuthRequiredMiddleware::class]);
     $app->get('/dashboard', [PageController::class, 'dashboard'], [AuthRequiredMiddleware::class]);
     $app->get('/settings', [PageController::class, 'settings'], [AuthRequiredMiddleware::class]);
-    $app->get('/tutor', [PageController::class, 'tutorProfile'], [AuthRequiredMiddleware::class]);
-    $app->get('/alert', [AlertController::class, 'alert']);
     $app->get('/help-and-support', [PageController::class, 'helpAndSupport']);
     $app->get('/announcements/create', [PageController::class, 'createAnnouncements']);
-    $app->get('/tech', [PageController::class, 'teacher']);
+    $app->get('/help-and-support', [PageController::class, 'helpAndSupport']);
 
     $app->get('/user-managment', [PageController::class, 'userManagment']);
     $app->get('/course-managment', [PageController::class, 'courseManagment']);
     $app->get('/post-managment', [PageController::class, 'postManagment']);
     $app->get('/advertisement-managment', [PageController::class, 'adManagment']);
+
+
+
+    // Admin Resource managment
+    $app->get('/resource-managment', [PageController::class, 'resourceManagment']);
+    $app->post('/resource-managment/approve/{resource_id}', [ResourceController::class, 'approveResource']);
+    $app->post('/resource-managment/reject/{resource_id}', [ResourceController::class, 'rejectResource']);
+    $app->delete('/resource-managment/delete/{resource_id}', [ResourceController::class, 'deleteResourceAdmin']);
 
     // Contact
     $app->get('/contact', [ContactController::class, 'contact']);
@@ -63,19 +70,26 @@ function registerRoutes(App $app)
     $app->get('/register/verification', [AuthController::class, 'verificationView'], [GuestOnlyMiddleware::class]);
     $app->post('/verify-otp', [AuthController::class, 'verifyuser'], [GuestOnlyMiddleware::class]);
     $app->post('/resend-otp', [AuthController::class, 'resendOtp'], [GuestOnlyMiddleware::class]);
-    $app->get('/interest', [PageController::class, 'interest'], [AuthRequiredMiddleware::class]);
-    $app->get('/interest/skip', [PageController::class, 'interestSkip'], [AuthRequiredMiddleware::class]);
-    $app->get('/interest/continue', [PageController::class, 'interestContinue'], [AuthRequiredMiddleware::class]);
+    $app->get('/interest', [PageController::class, 'interestView'], [AuthRequiredMiddleware::class]);
+    $app->post('/interest', [PageController::class, 'interest'], [AuthRequiredMiddleware::class]);
 
     $app->get('/login', [AuthController::class, 'loginView'], [GuestOnlyMiddleware::class]);
     $app->post('/login', [AuthController::class, 'login'],  [GuestOnlyMiddleware::class]);
     $app->get('/logout', [AuthController::class, 'logout'], [AuthRequiredMiddleware::class]);
-    $app->get('/billing-and-payment', [PageController::class, 'billingAndPayment'], [AuthRequiredMiddleware::class]);
     $app->get('/mycourses', [PageController::class, 'myCourses'], [AuthRequiredMiddleware::class]);
     $app->get('/create-ad', [PageController::class, 'createAd'], [TeacherOnlyMiddleware::class]);
     $app->post('/update-profile', [UserController::class, 'updateProfile'], [AuthRequiredMiddleware::class]);
     $app->post('/update-password', [UserController::class, 'updatePassword'], [AuthRequiredMiddleware::class]);
     $app->post('/update-profile-picture', [UserController::class, 'updateProfilePicture'], [AuthRequiredMiddleware::class]);
+
+    //Billing and payments
+    $app->get('/billing-and-payment', [PageController::class, 'billingAndPayment'], [AuthRequiredMiddleware::class]);
+    $app->get('/wallet', [PageController::class, 'walletView'], [AuthRequiredMiddleware::class]);
+    $app->post('/request-withdrawal', [PageController::class, 'requestWithdrawal'], [AuthRequiredMiddleware::class]);
+    $app->get('/withdrawal-managment', [PageController::class, 'withdrawalManagment']);
+    $app->post('/withdrawal/complete/{withdrawal_id}', [PageController::class, 'completeWithdrawal']);
+    $app->post('/withdrawal/cancel/{withdrawal_id}', [PageController::class, 'cancelWithdrawal']);
+
 
     // Admin operations
     $app->post('/approve-post', [PostController::class, 'approveCourseRequest']);
@@ -84,30 +98,29 @@ function registerRoutes(App $app)
     $app->post('/admin/adduser', [UserController::class, 'addUser'], [AdminOnlyMiddleware::class]); // Add new user
     $app->delete('/user/delete/{user_id}', [UserController::class, 'deleteUser'], [AuthRequiredMiddleware::class]); // Delete user
 
-    // Student
-    $app->get('/my-resource', [PageController::class, 'userResourceView']);
+    // tutor
+    $app->get('/tutor/{tutor-id}', [PageController::class, 'tutorProfile'], [AuthRequiredMiddleware::class]);
+    $app->get('/tutor/{tutor-id}/create_profile', [AuthController::class, 'createTutorProfileView'], [TeacherOnlyMiddleware::class]);
+    $app->post('/api/tutor/profile_create', [AuthController::class, 'createTutorProfile'], [TeacherOnlyMiddleware::class]);
 
     // Courses
     $app->get('/courses', [CoursesController::class, 'course']);
     $app->get('/course/edit/{course_id}', [CoursesController::class, 'courseEditView']);
     $app->put('/course/edit/{course_id}', [CoursesController::class, 'editCourse']);
     $app->delete('/manage-course/delete/{course}', [CoursesController::class, 'deleteCourse'], [TeacherOnlyMiddleware::class]);
-    $app->get('/courses/my-courses/{course_id}', [CoursesController::class, 'courseInfo'], [AuthRequiredMiddleware::class]);
-    $app->get('/courses/my-courses/{course_id}/participant', [CoursesController::class, 'courseParticipant'], [TeacherOnlyMiddleware::class]);
-    $app->get('/courses/my-courses/{course_id}/participant/stats/{participant_id}', [CoursesController::class, 'courseParticipantStat'], [TeacherOnlyMiddleware::class]);
-    $app->get('/course/create/old', [CoursesController::class, 'createCourseView']);
-    $app->post('/save-course-data', [CoursesController::class, 'saveCourseData'], [TeacherOnlyMiddleware::class]);
-    $app->get('/courses/my-courses', [CoursesController::class, 'myCourses'], [AuthRequiredMiddleware::class]);
-    $app->get('/courses/test', [CoursesController::class, 'myCoursesTest']);
-    $app->post('/courses/pin-course', [CoursesController::class, 'pinCourse']);
+    $app->get('/courses/mycourses', [CoursesController::class, 'userCourses'], [AuthRequiredMiddleware::class]);
 
 
     $app->delete('/course/{course_id}/module/{module_id}', [CoursesController::class, 'deleteCourseModule']);
 
+    // courseInfo
     $app->get('/courses/{course_id}', [CoursesController::class, 'courseInfo']);
     $app->get('/courses/{course_id}/participants', [CoursesController::class, 'courseParticipant']);
-    $app->delete('/courses/{course_id}/participants/remove/{user_id}', [CoursesController::class, 'RemoveCourseParticipant'], [TeacherOnlyMiddleware::class]);
-    $app->post('/courses/{course_id}/participants/add', [CoursesController::class, 'AddParticipant'], [TeacherOnlyMiddleware::class]);
+    $app->get('/courses/{course_id}/participants/{participant_id}', [CoursesController::class, 'courseParticipantStat'], [TeacherOnlyMiddleware::class]);
+
+    // TODO: Check if applicable the implement or remove
+    // $app->post('/courses/{course_id}/participants/add', [CoursesController::class, 'AddParticipant'], [TeacherOnlyMiddleware::class]);
+
     $app->get('/course/{course_id}/module/{module_id}/resource/{resource_id}', [CoursesController::class, 'readModuleResources'], [TeacherOnlyMiddleware::class]);
 
     // New course Routes
@@ -116,13 +129,11 @@ function registerRoutes(App $app)
     $app->get('/course/{course_id}/module/create', [CoursesController::class, 'createModuleView']);
     $app->post('/course/{course_id}/module/create', [CoursesController::class, 'createModule']);
 
-
     $app->post('/mark-attendance', [CoursesController::class, 'markAttendance']);
 
-    // TODO: Remove or implement this route
-    // $app->get('/courses/my/registered', [CoursesController::class, 'regCourses'], [AuthRequiredMiddleware::class]);
-    $app->get('/courses/user', [CoursesController::class, 'userCourses'], [StudentOnlyMiddleware::class]);
     $app->get('/course/create/add-module', [CoursesController::class, 'addModuleView']);
+
+    // TODO: Remove if not necessary
     $app->get('/course/create/success', [CoursesController::class, 'successMessage']);
 
     // Course Requests
@@ -164,6 +175,13 @@ function registerRoutes(App $app)
     $app->get('/courses/review/edit/{review}', [ReviewController::class, 'editCourseReviewView'], [AuthRequiredMiddleware::class]);
     $app->post('/course/review/edit/{review}', [ReviewController::class, 'editCourseReview'], [AuthRequiredMiddleware::class]);
 
+    // tutor Reviews
+    $app->get('/tutor/review/{tutor_id}/{page}', [ReviewController::class, 'getTutorReview']);
+    $app->post('/add-tutor-review', [ReviewController::class, 'addTutorReview'], [AuthRequiredMiddleware::class]);
+    $app->post('/delete-tutor-review', [ReviewController::class, 'deleteTutorReview'], [AuthRequiredMiddleware::class]);
+    $app->get('/tutor/reviews/edit/{review}', [ReviewController::class, 'editTutorReviewView'], [AuthRequiredMiddleware::class]);
+    $app->post('/tutor/review/edit/{review}', [ReviewController::class, 'editTutorReview'], [AuthRequiredMiddleware::class]);
+
     // Reviews
     $app->post('/add-review', [ReviewController::class, 'addReview'], [AuthRequiredMiddleware::class]);
     $app->get('/review/edit/{review}', [ReviewController::class, 'editView'], [AuthRequiredMiddleware::class]);
@@ -181,7 +199,6 @@ function registerRoutes(App $app)
     $app->get('/assignment/{assignment_id}/resource/{resource_id}', [AssignmentController::class, 'getResource']);
 
 
-    $app->get('/courses/{courseId}/assignment/{assignment_id}/test', [AssignmentController::class, 'getData']);
     $app->get('/courses/{courseId}/assignment/{assignment_id}/review', [AssignmentController::class, 'review']);
     $app->get('/submission/{submission_id}/attachment/{attachment_id}', [AssignmentController::class, 'getSubmissionFile']);
     $app->post('/submission/{submission_id}/attachment/{attachment_id}/remove', [AssignmentController::class, 'removeSubmissionFile']);
@@ -193,10 +210,6 @@ function registerRoutes(App $app)
     $app->post('/approve-advertisement', [AdvertisementController::class, 'approve']);
     $app->post('/reject-advertisement', [AdvertisementController::class, 'reject']);
 
-    $app->get('/test', [PageController::class, 'test']);
-    $app->post('/test', [PageController::class, 'testPost']);
-    $app->get('/post', [PageController::class, 'post']);
-    $app->get('/test/help', [PageController::class, 'helpAndSupportReview']);
 
     // Notifications
     $app->get('/api/notifications', [NotificationController::class, 'getUserNotifications'], [NotificationMiddleware::class]);
@@ -212,6 +225,13 @@ function registerRoutes(App $app)
 
     $app->get('/unauthorized-access', [PageController::class, 'unauthorizedAccess']);
     $app->get('/server-error', [PageController::class, 'internalServerError']);
+
+
+    $app->get('/test', [PageController::class, 'test']);
+    $app->get('/test/help', [PageController::class, 'helpAndSupportReview']);
+
+    // Reports
+    $app->get('/reports/teacher', [ReportController::class, 'getTeacherReport']);
 
     // Catch-all route for 404 page
     $app->get('/{any:.*}', [PageController::class, 'notFound']);

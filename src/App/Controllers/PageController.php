@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\{CourseRequestService, UserService, CourseService, AdvertisementService, PaymentService, ResourceService, ReviewService};
+use App\Services\{CourseRequestService, UserService, CourseService, AdvertisementService, PaymentService, ResourceService, ReviewService, SubjectService};
 use APP\Config\Paths;
-
+use Exception;
 
 class PageController
 {
@@ -19,7 +19,8 @@ class PageController
         private AdvertisementService $advertisementService,
         private PaymentService $paymentService,
         private ResourceService $resourceService,
-        private ReviewService $reviewService
+        private ReviewService $reviewService,
+        private SubjectService $subjectService
     ) {}
 
     public function home()
@@ -147,38 +148,123 @@ class PageController
 
     public function billingAndPayment()
     {
+        $page = (int) ($_GET['p'] ?? 1);
+        $itemsPerPage = 9;
+        $offset = ($page - 1) * $itemsPerPage;
+
+        $searchParams = [
+            's' => $_GET['s'] ?? '',
+            'status' => $_GET['status'] ?? 'all',
+            'date' => $_GET['date'] ?? 'all',
+        ];
+
+        [$paymentDetails, $count] = $this->paymentService->getPaymentHistory(
+            $itemsPerPage,
+            $offset
+        );
+
+        $pagination = generatePagination($count, $page, $itemsPerPage, $searchParams);
+
+
         if (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'teacher') {
-            $revenue = $this->paymentService->getTeacherCourseIncome($_SESSION['user'])[0]['revenue'];
+            $revenue = $this->paymentService->getTeacherCourseIncome($_SESSION['user'])['revenue'];
 
             $courses = $this->courseService->getTeacherCourses((int)$_SESSION['user']);
             $courseCount = count($courses);
-            $paymentDetails = $this->paymentService->getTeacherCoursesPaymentHistory((string)$_SESSION['user']);
+            // $paymentDetails = $this->paymentService->getTeacherCoursesPaymentHistory((string)$_SESSION['user']);
 
             echo $this->view->render('User/payment.php', [
                 'title' => "Billing & Payment",
                 "revenue" => $revenue,
                 "courseCount" => $courseCount,
-                "paymentDetails" => $paymentDetails
+                "paymentDetails" => $paymentDetails,
+                'pagination' => $pagination
             ]);
         } elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'student') {
-            $paymentDetails = $this->paymentService->getUserPaymentHistory($_SESSION['user']);
+            // $paymentDetails = $this->paymentService->getStudentPaymentHistory($_SESSION['user']);
             echo $this->view->render('User/payment.php', [
                 'title' => "Billing & Payment",
-                "paymentDetails" => $paymentDetails
+                "paymentDetails" => $paymentDetails,
+                'pagination' => $pagination
+            ]);
+        } elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'admin') {
+            // $paymentDetails = $this->paymentService->getPaymentHistory();
+            echo $this->view->render('User/payment.php', [
+                'title' => "Billing & Payment",
+                "paymentDetails" => $paymentDetails,
+                'pagination' => $pagination
             ]);
         }
+    }
 
-        echo $this->view->render('User/payment.php', [
-            'title' => "Billing & Payment"
+    public function walletView()
+    {
+        $page = (int) ($_GET['p'] ?? 1);
+        $itemsPerPage = 6;
+        $offset = ($page - 1) * $itemsPerPage;
+
+        $searchParams = [
+            's' => $_GET['s'] ?? '',
+            'status' => $_GET['status'] ?? 'all',
+            'date' => $_GET['date'] ?? 'all',
+        ];
+
+        [$withdrawalHistory, $count] = $this->paymentService->getWithdrawalHistory(
+            $itemsPerPage,
+            $offset
+        );
+
+        $pagination = generatePagination($count, $page, $itemsPerPage, $searchParams);
+
+        $totalRevenue = $this->paymentService->getTeacherCourseIncome((int)$_SESSION['user'])['revenue'];
+
+        $withdrawedAmount = $this->paymentService->getWithdrawedAmount((int)$_SESSION['user'])['total_amount'];
+
+        $balance = $totalRevenue - $withdrawedAmount;
+
+
+
+        echo $this->view->render('User/Tutor/wallet.php', [
+            'title' => "Wallet",
+            'withdrawalHistory' => $withdrawalHistory,
+            'pagination' => $pagination,
+            'totalRevenue' => $totalRevenue,
+            'withdrawedAmount' => $withdrawedAmount,
+            "balance" => $balance
         ]);
+    }
+
+    public function requestWithdrawal()
+    {
+        try {
+            $formData = $_POST;
+            $formData['bank_details'] = nl2br($formData['bank_details']);
+            $this->paymentService->requestWithdrawal($_POST);
+        } catch (Exception $e) {
+            error_log("Failed to request withdrawal: " . $e->getMessage());
+            redirectTo("/server-error");
+        }
     }
     public function courseManagment()
     {
+        $page = (int) ($_GET['p'] ?? 1);
+        $itemsPerPage = 9;
+        $offset = ($page - 1) * $itemsPerPage;
+        $searchParams = [
+            's' => $_GET['s'] ?? ''
+        ];
         if ($_SESSION['user_role'] === 'teacher') {
-            $courses = $this->courseService->getTeacherCourses($_SESSION['user']);
-            $courseCount = count($courses);
+            // $courses = $this->courseService->getTeacherCourses($_SESSION['user']);
+            // $courseCount = count($courses);
+
+            [$courses, $courseCount] = $this->courseService->searchCourse(
+                $itemsPerPage,
+                $offset
+            );
+
             $revenue = $this->paymentService->getTeacherCourseIncome($_SESSION['user']);
-            $revenue = $revenue[0]['revenue'];
+            $revenue = $revenue['revenue'];
+            $pagination = generatePagination($courseCount, $page, $itemsPerPage, $searchParams);
         } else {
             $courseCount = $this->courseService->getNoOfCourses();
             $courses = $this->courseService->getCourseList();
@@ -189,7 +275,42 @@ class PageController
             'title' => "Course Managment",
             'courseCount' => $courseCount,
             "courses" => $courses,
-            'revenue' => $revenue
+            'revenue' => $revenue,
+            'pagination' => $pagination
+        ]);
+    }
+
+    public function resourceManagment()
+    {
+        // $resources = $this->resourceService->getResources();
+        // $resourceCount = count($resources);
+
+        $page = (int) ($_GET['p'] ?? 1);
+        $itemsPerPage = 6;
+        $offset = ($page - 1) * $itemsPerPage;
+
+        // Get search parameters
+        $searchParams = [
+            's' => $_GET['s'] ?? '',
+            'status' => $_GET['status'] ?? 'all',
+        ];
+
+        [$resources, $resourceCount] = $this->resourceService->searchResource(
+            $itemsPerPage,
+            $offset
+        );
+
+        $pagination = generatePagination($resourceCount, $page, $itemsPerPage, $searchParams);
+
+
+
+
+
+        echo $this->view->render("User/Admin/admin_resource_managment.php", [
+            "title" => "Admin Resource managment",
+            "resources" => $resources,
+            "resourceCount" => $resourceCount,
+            "pagination" => $pagination
         ]);
     }
     public function unauthorizedAccess()
@@ -221,33 +342,38 @@ class PageController
         );
     }
 
-    public function interest()
+    public function interestView()
     {
+        $subjects = $this->subjectService->getSubjects();
         echo $this->view->render(
             'interest_selection.php',
             [
-                'title' => "Pick Your Interest"
+                'title' => "Select Your Interests",
+                'subjects' => $subjects
             ]
         );
     }
-    public function interestSkip()
+
+    public function interest()
     {
-        echo $this->view->render(
-            'index.php',
-            [
-                'title' => "Pick Your Interest"
-            ]
-        );
+        try {
+            $json = file_get_contents('php://input');
+            $data = json_decode($json, true);
+            $this->userService->saveUserInterest($data['interests']);
+            $data = [
+                "success" => false,
+                "message" => "Success"
+            ];
+        } catch (Exception $e) {
+            $data = [
+                "success" => false,
+                "message" => $e->getMessage()
+            ];
+        }
+
+        echo json_encode($data);
     }
-    public function interestContinue()
-    {
-        echo $this->view->render(
-            'index.php',
-            [
-                'title' => "Pick Your Interest"
-            ]
-        );
-    }
+
     public function createAd()
     {
         echo $this->view->render(
@@ -267,12 +393,6 @@ class PageController
         ]);
     }
 
-    public function createAnnouncements()
-    {
-        echo $this->view->render("User/Tutor/create_announcement.php", [
-            "title" => "Create Announcement"
-        ]);
-    }
     public function teacher()
     {
         echo $this->view->render("User/Tutor/teacher_index.php", [
@@ -296,40 +416,98 @@ class PageController
     }
     public function postManagment()
     {
-        $courseRequests = $this->courseRequestService->getPendingCourseRequests();
+        $courseRequests = $this->courseRequestService->getAllCourseRequests();
+        $requestCount = $this->courseRequestService->getCount();
         echo $this->view->render("User/Admin/admin_post_managment.php", [
             "title" => "Post Managment",
-            "posts" => $courseRequests
+            "posts" => $courseRequests,
+            "requestCount" => $requestCount
         ]);
     }
     public function adManagment()
     {
-        $advertisements = $this->advertisementService->getAdvertisements();
-        echo $this->view->render("User/Admin/admin_ad_managment.php", [
+
+        if (!empty($_SESSION['user']) && $_SESSION['user_role'] == "admin") {
+            $advertisements = $this->advertisementService->getAdvertisements();
+            $path = "User/Admin/admin_ad_managment.php";
+        } elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == "teacher") {
+            $advertisements = $this->advertisementService->getTeacherAdvertisements((string)$_SESSION['user']);
+            $path = "User/Tutor/teacher_ad_managment.php";
+        }
+
+        echo $this->view->render($path, [
             "title" => "Ad Managment",
             "advertisements" => $advertisements
         ]);
     }
-    public function userResourceView()
+    public function withdrawalManagment()
     {
-        $resources = $this->resourceService->getResources();
-        echo $this->view->render(
-            '/User/student/resource.php',
-            [
-                'title' => "My resource",
-                'resources' => $resources
-            ]
+        $page = (int) ($_GET['p'] ?? 1);
+        $itemsPerPage = 6;
+        $offset = ($page - 1) * $itemsPerPage;
+
+        $searchParams = [
+            's' => $_GET['s'] ?? '',
+            'status' => $_GET['status'] ?? 'all',
+            'date' => $_GET['date'] ?? 'all',
+        ];
+
+        [$withdrawalHistory, $count] = $this->paymentService->getWithdrawalHistory(
+            $itemsPerPage,
+            $offset
         );
+        $pagination = generatePagination($count, $page, $itemsPerPage, $searchParams);
+        echo $this->view->render("User/Admin/admin_withdrawal_managment.php", [
+            "title" => "Ad Managment",
+            "withdrawalHistory" => $withdrawalHistory,
+            "pagination" => $pagination
+        ]);
+    }
+
+    public function completeWithdrawal(array $params)
+    {
+        try {
+            $this->paymentService->completeWithdraw((string)$params['withdrawal_id'], (string)$_POST['user']);
+
+            $data = [
+                "success" => true,
+                "message" => "Successfully complete the withdraw"
+            ];
+        } catch (Exception $e) {
+            error_log("Error completing withdraw: " . $e->getMessage());
+            $data = [
+                "success" => false,
+                "message" => $e->getMessage()
+            ];
+        }
+        echo json_encode($data);
+    }
+
+    public function cancelWithdrawal(array $params)
+    {
+        try {
+            $this->paymentService->cancelWithdrawal((string)$params['withdrawal_id'], (string)$_POST['user']);
+
+            $data = [
+                "success" => true,
+                "message" => "Successfully cancel the withdraw"
+            ];
+        } catch (Exception $e) {
+            error_log("Error canceling withdraw: " . $e->getMessage());
+            $data = [
+                "success" => false,
+                "message" => $e->getMessage()
+            ];
+        }
+        echo json_encode($data);
     }
     public function profile()
     {
+        dd("user profile");
         $userDetails = $this->userService->getUserProfile();
         $userReview = $this->reviewService->getUserReview();
-        [$courses, $courseCount] = $this->courseService->searchCourse(
-            3,
-            0
-        );
-        echo $this->view->render('Tutor/profile.php', [
+        [$courses, $courseCount] = $this->courseService->searchCourse(3, 0);
+        echo $this->view->render('User/profile.php', [
             "title" => "Profile",
             "userDetails" => $userDetails,
             "userReview" => $userReview,
@@ -337,20 +515,34 @@ class PageController
         ]);
     }
 
-    public function tutorProfile()
+    public function tutorProfile($params)
     {
-        $userReview = $this->reviewService->getUserReview();
-        $userDetails = $this->userService->getUserProfile();
-        echo $this->view->render('Tutor/profile.php', [
+        $userReview = $this->reviewService->getTutorReview($params['tutor-id'], '0');
+        $tutorDetails = $this->userService->getTutorProfile($params['tutor-id']);
+        $courses = $this->courseService->getTutorcourses($params['tutor-id']);
+        $totalReviews = count($userReview);
+        $starCount = [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0];
+        $totalRating = 0;
+        foreach ($userReview as $review) {
+            $totalRating += $review['rating'];
+            $starCount[$review['rating']]++;
+        }
+        $avgRating = $totalReviews > 0 ? ($totalRating / $totalReviews) : 0;
+        $summeryOfReviews = ['totalReviews' => $totalReviews, 'avgRating' => $avgRating, 'starCount' => $starCount];
+
+        // dd($tutorDetails);
+        echo $this->view->render('User/Tutor/tutorProfile.php', [
             "title" => "Tutor",
-            "userDetails" => $userDetails,
-            "userReview" => $userReview
+            "tutorDetails" => $tutorDetails,
+            "userReview" => $userReview,
+            'summeryOfReviews' => $summeryOfReviews,
+            "courses" => $courses,
         ]);
     }
     public function test()
     {
 
-        echo $this->view->render("test.php", [
+        echo $this->view->render("User/user_courses.php", [
             "title" => "Post Managment"
         ]);
     }

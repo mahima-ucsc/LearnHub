@@ -26,7 +26,6 @@ body {
   line-height: 1.6;
   background-color: #f9f9fb;
   color: var(--text-color);
-  padding: 20px;
   min-height: 100vh;
 }
 

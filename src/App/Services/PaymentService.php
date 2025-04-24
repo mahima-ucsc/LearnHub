@@ -394,7 +394,23 @@ class PaymentService
                 [
                     'id' => $id
                 ]
-            )->findAll();
+            )->find();
+        } catch (Exception $e) {
+            error_log("Fail to fetch the teacher course income: " . $e->getMessage());
+            redirectTo('/server-error');
+        }
+    }
+    public function getWithdrawedAmount(int $id)
+    {
+        try {
+            return $this->db->query(
+                "SELECT SUM(amount) AS total_amount
+                FROM teacher_withdrawal
+                WHERE teacher_id = :id",
+                [
+                    'id' => $id
+                ]
+            )->find();
         } catch (Exception $e) {
             error_log("Fail to fetch the teacher course income: " . $e->getMessage());
             redirectTo('/server-error');
@@ -436,7 +452,7 @@ class PaymentService
         }
     }
 
-    public function getUserPaymentHistory(int $id)
+    public function getStudentPaymentHistory(int $id)
     {
         try {
             return $this->db->query(
@@ -452,8 +468,254 @@ class PaymentService
                 ]
             )->findAll();
         } catch (Exception $e) {
-            error_log("Failed to fetch teacher payment hisoty: " . $e->getMessage());
+            error_log("Failed to fetch student payment hisoty: " . $e->getMessage());
             redirectTo('/server-error');
+        }
+    }
+    public function getPaymentHistory(int $length = 9, int $offset = 0)
+    {
+        try {
+            $searchTerm = trim($_GET['s'] ?? '');
+            $status = $_GET['status'] ?? 'all';
+            $date = (isset($_GET['date']) && $_GET['date'] !== '') ? $_GET['date'] : 'all';
+
+            $whereConditions = [];
+            $params = [];
+
+            // Search condition
+            if (!empty($searchTerm)) {
+                $whereConditions[] = "(c.title LIKE :search OR p.payment_id LIKE :search)";
+                $params['search'] = "%{$searchTerm}%";
+            }
+
+            // Status condition
+            if ($status !== 'all') {
+                $whereConditions[] = "p.payment_status = :status";
+                $params['status'] = $status;
+            }
+
+            // Date condition
+            if ($date !== 'all') {
+                $whereConditions[] = "DATE(p.created_date) = :date";
+                $params['date'] = $date;
+            }
+
+            $whereClause = !empty($whereConditions) ? "AND " . implode(" AND ", $whereConditions) : "";
+            if (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'teacher') {
+                $params['id'] = $_SESSION['user'];
+
+                $paymentDetails = $this->db->query(
+                    "SELECT 
+                    p.*,
+                    c.title
+                    FROM payments p
+                    JOIN course_payments cp ON cp.payment_id = p.payment_id
+                    JOIN courses c ON c.course_id = cp.course_id
+                    WHERE c.tutor_id = :id
+                    {$whereClause}
+                    LIMIT {$length} OFFSET {$offset}",
+                    $params
+                )->findAll();
+
+                $count = $this->db->query(
+                    "SELECT 
+                    COUNT(p.payment_id)
+                    FROM payments p
+                    JOIN course_payments cp ON cp.payment_id = p.payment_id
+                    JOIN courses c ON c.course_id = cp.course_id
+                    WHERE c.tutor_id = :id
+                    {$whereClause}",
+                    $params
+                )->count();
+            } elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'student') {
+                $params['id'] = $_SESSION['user'];
+                $paymentDetails = $this->db->query(
+                    "SELECT 
+                    p.*,
+                    c.title
+                    FROM payments p
+                    JOIN course_payments cp ON cp.payment_id = p.payment_id
+                    JOIN courses c ON c.course_id = cp.course_id
+                    WHERE cp.user_id = :id
+                    {$whereClause}
+                    LIMIT {$length} OFFSET {$offset}",
+                    $params
+                )->findAll();
+                $count = $this->db->query(
+                    "SELECT 
+                    COUNT(p.payment_id)
+                    FROM payments p
+                    JOIN course_payments cp ON cp.payment_id = p.payment_id
+                    JOIN courses c ON c.course_id = cp.course_id
+                    WHERE cp.user_id = :id
+                    {$whereClause}",
+                    $params
+                )->count();
+            } elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'admin') {
+
+                $paymentDetails = $this->db->query(
+                    "SELECT 
+                    p.*,
+                    c.title
+                    FROM payments p
+                    JOIN course_payments cp ON cp.payment_id = p.payment_id
+                    JOIN courses c ON c.course_id = cp.course_id
+                    WHERE 1 = 1
+                    {$whereClause}
+                    LIMIT {$length} OFFSET {$offset}",
+                    $params
+                )->findAll();
+                $count = $this->db->query(
+                    "SELECT 
+                    COUNT(p.payment_id)
+                    FROM payments p
+                    JOIN course_payments cp ON cp.payment_id = p.payment_id
+                    JOIN courses c ON c.course_id = cp.course_id
+                    {$whereClause}",
+                    $params
+                )->count();
+            }
+
+            return [$paymentDetails, $count];
+        } catch (Exception $e) {
+            error_log("Failed to fetch payment hisoty: " . $e->getMessage());
+            redirectTo('/server-error');
+        }
+    }
+    public function getWithdrawalHistory(int $length = 9, int $offset = 0)
+    {
+        try {
+            $searchTerm = trim($_GET['s'] ?? '');
+            $status = $_GET['status'] ?? 'all';
+            $date = (isset($_GET['date']) && $_GET['date'] !== '') ? $_GET['date'] : 'all';
+
+            $whereConditions = [];
+            $params = [];
+
+            // Search condition
+            if (!empty($searchTerm)) {
+                $whereConditions[] = "u.first_name LIKE :term OR u.last_name LIKE :term OR CONCAT(u.first_name, ' ', u.last_name) LIKE :term";
+                $params['search'] = "%{$searchTerm}%";
+            }
+
+            // Status condition
+            if ($status !== 'all') {
+                $whereConditions[] = "tw.status = :status";
+                $params['status'] = $status;
+            }
+
+            // Date condition
+            if ($date !== 'all') {
+                $whereConditions[] = "DATE(tw.date_requested) = :date";
+                $params['date'] = $date;
+            }
+
+            $whereClause = !empty($whereConditions) ? "AND " . implode(" AND ", $whereConditions) : "";
+            if (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'teacher') {
+                $detailsQuery = "
+                SELECT 
+                tw.*,
+                CONCAT(u.first_name, ' ', u.last_name) AS username
+                FROM teacher_withdrawal tw
+                JOIN users u ON u.user_id = tw.teacher_id
+                WHERE tw.teacher_id = :user_id
+                {$whereClause}
+                LIMIT {$length} OFFSET {$offset}";
+
+                $countQuery = "
+                SELECT 
+                COUNT(tw.withdrawal_id)
+                FROM teacher_withdrawal tw
+                JOIN users u ON u.user_id = tw.teacher_id
+                WHERE tw.teacher_id = :user_id
+                {$whereClause}";
+
+                $params['user_id'] = $_SESSION['user'];
+            } elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'admin') {
+                $detailsQuery = "
+                SELECT 
+                tw.*,
+                CONCAT(u.first_name, ' ', u.last_name) AS username
+                FROM teacher_withdrawal tw
+                JOIN users u ON u.user_id = tw.teacher_id
+                WHERE 1 = 1
+                {$whereClause}
+                LIMIT {$length} OFFSET {$offset}";
+
+                $countQuery = "
+                SELECT 
+                COUNT(tw.withdrawal_id)
+                FROM teacher_withdrawal tw
+                JOIN users u ON u.user_id = tw.teacher_id
+                WHERE 1 = 1
+                {$whereClause}";
+            }
+            $withdrawalHistory = $this->db->query($detailsQuery, $params)->findAll();
+            $count = $this->db->query($countQuery, $params)->count();
+
+            return [$withdrawalHistory, $count];
+        } catch (Exception $e) {
+            error_log("Failed to fetch payment hisoty: " . $e->getMessage());
+            redirectTo('/server-error');
+        }
+    }
+
+    public function requestWithdrawal(array $formData)
+    {
+        try {
+            $this->db->query(
+                "INSERT INTO teacher_withdrawal
+                (teacher_id,
+                amount,
+                bank_details)
+                VALUES(
+                :id,
+                :amount,
+                :bank_details
+                )",
+                [
+                    "amount" => $formData['amount'],
+                    'bank_details' => $formData['bank_details'],
+                    "id" => $_SESSION['user']
+                ]
+            );
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+
+    public function completeWithdraw(string $id, string $userId)
+    {
+        try {
+            $this->db->query(
+                "UPDATE teacher_withdrawal
+                SET status = 'completed'
+                WHERE withdrawal_id = :id
+                AND teacher_id = :user_id",
+                [
+                    "id" => $id,
+                    "user_id" => $userId
+                ]
+            );
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+    public function cancelWithdrawal(string $id, string $userId)
+    {
+        try {
+            $this->db->query(
+                "UPDATE teacher_withdrawal
+                SET status = 'canceled'
+                WHERE withdrawal_id = :id
+                AND teacher_id = :user_id",
+                [
+                    "id" => $id,
+                    "user_id" => $userId
+                ]
+            );
+        } catch (Exception $e) {
+            throw $e;
         }
     }
 }

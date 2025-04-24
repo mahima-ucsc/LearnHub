@@ -2,7 +2,35 @@
 <?php include $this->resolve("course/sidebar/sidebar.php"); ?>
 
 <link rel="stylesheet" href="/assets/styles/Course/course-info.css">
+<style>
+    .add-module-btn {
+        padding: 12px 24px;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: var(--transition);
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: transparent;
+        border: 2px solid var(--gray);
+        color: var(--gray-dark);
+        border: 1px solid;
+        border-radius: 15px;
+    }
 
+    .add-module-btn i {
+        margin-right: 8px;
+    }
+
+    .add-module-btn:hover {
+        border-color: var(--primary);
+        color: var(--primary-dark);
+        transform: translateY(-3px);
+    }
+</style>
 <section class="course-info-container">
     <div class="course-page-wrapper">
         <div class="main-content">
@@ -25,7 +53,9 @@
                 </div>
             </div>
             <div class="teacher-section">
-                <img src="/assets/images/user.jpeg" alt="John Doe" class="teacher-avatar">
+                <img src="<?= isset($user['profile_picture_url'])
+                                ? $user['profile_picture_url'] :
+                                "/assets/images/user_placeholder.jpg" ?>" alt="User Avatar" class="teacher-avatar">
                 <div class="teacher-info">
                     <h3> <?php echo e($user['first_name']); ?> <?php echo e($user['last_name']); ?></h3>
                     <p><?php echo e($user['description']); ?></p>
@@ -39,6 +69,10 @@
                 </p>
             </div>
 
+            <button type="button" id="addModuleBtn" class="add-module-btn"
+                onclick="window.location.href='/course/<?= $course['course_id'] ?>/module/create'">
+                <i class="fas fa-plus"></i> Add New Module
+            </button>
             <?php if ($course['billing_type'] === 'onetime' && $course['is_paid']): ?>
                 <div class="course-section">
                     <h2 class="section-title">Course Modules</h2>
@@ -231,7 +265,9 @@
                 <div class="review-item">
                     <div class="review-header">
                         <!-- avatar -->
-                        <img src="<?php echo htmlspecialchars($review['profile_picture_url']); ?>" alt="<?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
+                        <img src="<?= isset($review['profile_picture_url'])
+                                        ? $user['profile_picture_url'] :
+                                        "/assets/images/user_placeholder.jpg" ?>" alt=" <?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
                         <!-- since when-->
                         <div class="review-meta">
                             <span class="review-name"><?php echo htmlspecialchars($review['name']); ?></span>
@@ -426,12 +462,14 @@
     });
 
     // Show more reviews
-    let counter = 0;
+    let counter = 1;
 
     function getmorereview() {
         event.preventDefault();
         const courseID = <?php echo json_encode($course['course_id']); ?>;
-        console.log()
+        const userId = <?php echo json_encode($_SESSION['user']); ?>;
+        const userRoll = <?php echo json_encode($_SESSION['user_role']); ?>;
+
         fetch(`/course/review/${courseID}/${counter}`)
             .then(response => response.json())
             .then(data => {
@@ -442,7 +480,7 @@
                                 <div class="review-item">
                                     <div class="review-header">
                                         <!-- avatar -->
-                                        <img src="${element.profile_picture_url}" alt="${element.name}" class="review-avatar">
+                                        <img src="${element.profile_picture_url ? element.profile_picture_url : "/assets/images/user_placeholder.jpg"}" alt="${element.name}" class="review-avatar">
                                         <!-- since when-->
                                         <div class="review-meta">
                                             <span class="review-name">${element.name}</span>
@@ -453,8 +491,7 @@
                                             ${generateStarRating(element.rating)} 
                                         </div>
                                         <!-- edit and delete menue -->
-                                        <?php
-                                        if ($review['user_id'] === $_SESSION['user'] || $_SESSION['user_role'] === "admin") : ?>
+                                        ${(element.user_id === userId || userRoll === "admin") ? `
                                             <div class="cart-menu">
                                                 <div class="cart-btn" onclick="toggleCartMenu(this)">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -464,19 +501,18 @@
                                                 <!-- Option menu-->
                                                 <div class="cart-options">
                                                     <div class="menu-button">
-                                                        <a href="/course/review/edit/${element.review_id}">Edit</a>
+                                                        <a href="/courses/review/edit/${element.review_id}">Edit</a>
                                                     </div>
                                                     <div class="menu-button">
-                                                        <button onclick="showDeleteModal(${element.review_id})">delete</button>
+                                                        <button onclick="showDeleteModal(${element.review_id})">Delete</button>
                                                     </div>
-
                                                 </div>
                                             </div>
-                                        <?php endif; ?>
+                                        ` : ''}
                                     </div>
                                     <!-- user review text -->
                                     <div class="review-body">
-                                        <p><?php echo $element['rating'] ?></p>  
+                                        <p>${element.review}</p>  
                                     </div>
                                 </div>
                             `);
