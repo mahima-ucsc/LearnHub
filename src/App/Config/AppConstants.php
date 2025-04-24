@@ -18,6 +18,13 @@ class AppConstants
     // Log Folder
     public const LOG_FOLDER = __DIR__ . '/../../../logs/';
 
+    // Advertisement Package Prices
+    public const ADVERTISEMENT_PACKAGES = [
+        'basic' => 400,
+        'standard' => 800,
+        'gold' => 1500
+    ];
+
     // PayHere
     public const PAYHERE_MERCHANT_ID = '';
     public const PAYHERE_MERCHANT_SECRET = '';
