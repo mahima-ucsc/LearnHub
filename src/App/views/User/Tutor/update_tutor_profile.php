@@ -230,9 +230,9 @@
                 <div class="form-section">
                     <h2>Subjects & Experience</h2>
 
-                    <?php $indexforsubject = 0 ?>
-                    <?php foreach ($tutorSubjects as $tutorSubject): ?>
-                        <div id="subjectEntries">
+                    <div id="subjectEntries">
+                        <?php $indexforsubject = 0 ?>
+                        <?php foreach ($tutorSubjects as $tutorSubject): ?>
                             <div class="subject-entry">
                                 <div class="entry-header">
                                     <h3>Subject #<?php echo $indexforsubject + 1 ?></h3>
@@ -258,13 +258,13 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Years of Experience</label>
-                                        <input type="number" name="subjects[<?php echo $indexforsubject ?>][years_experience]" min="0" max="100">
+                                        <input type="number" name="subjects[<?php echo $indexforsubject ?>][years_experience]" value="<?php echo isset($tutorSubject['years_experience']) ? htmlspecialchars($tutorSubject['years_experience']) : ''; ?>" min="0" max="100">
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <?php $indexforsubject++ ?>
-                    <?php endforeach; ?>
+                            <?php $indexforsubject++ ?>
+                        <?php endforeach; ?>
+                    </div>
 
                     <button type="button" id="addSubject" class="btn-add">+ Add Another Subject</button>
                 </div>
@@ -356,9 +356,9 @@
         // Add subject entry
         document.getElementById('addSubject').addEventListener('click', function() {
             const entries = document.getElementById('subjectEntries');
-            const count = entries.children.length;
-
+            const count = <?php echo $indexforsubject ?>;
             const newEntry = document.createElement('div');
+
             newEntry.className = 'subject-entry';
             newEntry.innerHTML = `
                 <div class="entry-header">
