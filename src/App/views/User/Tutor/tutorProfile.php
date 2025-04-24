@@ -268,13 +268,18 @@
                                 <?php endif; ?>
                             </div>
                             <div class="course-details">
-                                <div class="course-detail">
-                                    <i class="fas fa-clock"></i>
-                                    <span>3H</span>
-                                </div>
-                                <div class="course-detail">
-                                    <span>Grade 13</span>
-                                </div>
+                                <?php if (isset($course['durationInHour'])): ?>
+                                    <div class="course-detail">
+                                        <i class="fas fa-clock"></i>
+                                        <span><?php echo $course['durationInHour'] ?></span>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if (isset($course['grade_name'])): ?>
+                                    <div class="course-detail">
+                                        <span>Grade <?php echo $course['grade_name'] ?></span>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
