@@ -12,48 +12,18 @@ class ReportService
 {
     public  function __construct(private Database $db) {}
 
-    public function generateReportForTeacher(string $startDate, string $endDate)
-    {
-        // Fetch teacher's courses and payment data
-        // For demonstration, using static data. Replace with actual data fetching logic.
-        $teacherName = "John Doe";
-        $courses = [
-            [
-                'name' => 'Math',
-                'students' => 15,
-                'payments' => 1200.00
-            ],
-            [
-                'name' => 'Science',
-                'students' => 12,
-                'payments' => 1350.00
-            ],
-            [
-                'name' => 'Computer Programming',
-                'students' => 20,
-                'payments' => 2500.00
-            ],
-            [
-                'name' => 'English Literature',
-                'students' => 18,
-                'payments' => 1100.00
-            ],
-            [
-                'name' => 'History',
-                'students' => 10,
-                'payments' => 950.00
-            ],
-            [
-                'name' => 'Art & Design',
-                'students' => 8,
-                'payments' => 1800.00
-            ]
-        ];
+    public function generateReportForTeacher(string $startDate, string $endDate, string $tutorId)
 
-        $totalPayments = 0;
-        foreach ($courses as $course) {
-            $totalPayments += $course['payments'];
-        }
+    {
+        $reportData = $this->createTeacherReportData($tutorId, $startDate, $endDate);
+        $teacherName = $reportData['teacher_name'];
+        $startDate = $reportData['start_date'];
+        $endDate = $reportData['end_date'];
+        $onetime_courses = $reportData['onetime_courses'];
+        $recurring_courses = $reportData['recurring_courses'];
+        $onetime_total = $reportData['onetime_total'];
+        $recurring_total = $reportData['recurring_total'];
+        $grand_total = $reportData['grand_total'];
 
         // Create new PDF document
         $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -89,9 +59,8 @@ class ReportService
         // Set font styles
         $pdf->SetFont('helvetica', '', 12);
 
-        // CSS styling for the report
-        $style = '
-        <style>
+        // CSS styling for the report (only inside <style> tag)
+        $style = '<style>
             body {
                 font-family: helvetica, sans-serif;
             }
@@ -101,6 +70,12 @@ class ReportService
                 text-align: center;
                 margin-bottom: 15px;
                 padding-bottom: 10px;
+            }
+            h2 {
+                color: #444;
+                font-size: 16pt;
+                margin-top: 20px;
+                margin-bottom: 10px;
             }
             .teacher-info .label {
                 font-weight: bold;
@@ -168,6 +143,15 @@ class ReportService
             .colspan-2 {
                 column-span: 2;
             }
+            .grand-total-table {
+                margin-top: 40px;
+                border-top: 3px solid #ffc400;
+                padding-top: 10px;
+            }
+            .spacer {
+                height: 50px;
+                clear: both;
+            }
         </style>';
 
         // Build HTML content for the teacher report
@@ -177,6 +161,9 @@ class ReportService
                     <div><span class=\"label\">Teacher Name:</span> {$teacherName}</div>
                     <div class=\"period\"><span class=\"label\">Period:</span> {$startDate} to {$endDate}</div>
                   </div>";
+
+        // One-time courses table
+        $html .= "<h2>One-time Courses</h2>";
         $html .= "<table cellpadding=\"6\">
             <thead>
             <tr>
@@ -186,18 +173,53 @@ class ReportService
             </tr>
             </thead>
             <tbody>";
-        foreach ($courses as $course) {
+        foreach ($onetime_courses as $course) {
             $html .= "<tr>
-            <td>{$course['name']}</td>
+            <td>{$course['title']}</td>
             <td class=\"center\">{$course['students']}</td>
-            <td class=\"amount\">Rs." . number_format($course['payments'], 2) . "</td>
+            <td class=\"amount\">Rs." . number_format((float)$course['payments'], 2) . "</td>
               </tr>";
         }
         $html .= "<tr class=\"total-row\">
             <td colspan=\"2\" class=\"text-right\"><strong>Total Payments:</strong></td>
-            <td class=\"amount\"><strong>Rs." . number_format($totalPayments, 2) . "</strong></td>
+            <td class=\"amount\"><strong>Rs." . number_format($onetime_total, 2) . "</strong></td>
               </tr>";
         $html .= "</tbody></table>";
+
+        // Recurring courses table
+        $html .= "<h2>Recurring Courses</h2>";
+        $html .= "<table cellpadding=\"6\">
+            <thead>
+            <tr>
+                <th>Course</th>
+                <th>Number of Students</th>
+                <th>Payments Received</th>
+            </tr>
+            </thead>
+            <tbody>";
+        foreach ($recurring_courses as $course) {
+            $html .= "<tr>
+            <td>{$course['title']}</td>
+            <td class=\"center\">{$course['students']}</td>
+            <td class=\"amount\">Rs." . number_format((float)$course['payments'], 2) . "</td>
+              </tr>";
+        }
+        $html .= "<tr class=\"total-row\">
+            <td colspan=\"2\" class=\"text-right\"><strong>Total Payments:</strong></td>
+            <td class=\"amount\"><strong>Rs." . number_format($recurring_total, 2) . "</strong></td>
+              </tr>";
+        $html .= "</tbody></table>";
+
+        // Add spacer
+        $html .= "<div class=\"spacer\"></div>";
+
+        // Grand total row
+        $html .= "<table cellpadding=\"6\" class=\"grand-total-table\">
+            <tr class=\"total-row\">
+                <td colspan=\"2\" class=\"text-right\"><strong>Grand Total:</strong></td>
+                <td class=\"amount\"><strong>Rs." . number_format($grand_total, 2) . "</strong></td>
+            </tr>
+        </table>";
 
         // Add timestamp and additional footer information
         $currentDate = date('F j, Y, g:i a');
@@ -255,6 +277,7 @@ class ReportService
 
         return $result->findAll();
     }
+
     private function getNumberOfStudentsEnrolledForOneTimeCourses(string $tutorId, string $startDate, string $endDate)
     {
         $result = $this->db->query(
@@ -289,8 +312,6 @@ class ReportService
 
     private function getNumberOfStudentsEnrolledForRecurringCourses(string $tutorId, string $startDate, string $endDate)
     {
-
-
         $result = $this->db->query(
             "SELECT c.course_id, c.title, COUNT(DISTINCT cp.user_id) as enrolled_students
                 FROM courses c
@@ -322,7 +343,7 @@ class ReportService
         return $result->findAll();
     }
 
-    public function createTeacherReportData(string $tutorId, string $startDate, string $endDate)
+    private function createTeacherReportData(string $tutorId, string $startDate, string $endDate)
     {
         $teacherName = (string) $this->db->query(
             "SELECT CONCAT(first_name, ' ', last_name) AS teacher_name FROM users WHERE user_id = :tutorId",
@@ -378,15 +399,29 @@ class ReportService
         $onetimeCourseStats = array_values($onetimeCourseStats);
         $recurringCourseStats = array_values($recurringCourseStats);
 
+        // Calculate totals
+        $onetimeTotal = 0;
+        foreach ($onetimeCourseStats as $course) {
+            $onetimeTotal += (float)$course['payments'];
+        }
+
+        $recurringTotal = 0;
+        foreach ($recurringCourseStats as $course) {
+            $recurringTotal += (float)$course['payments'];
+        }
+
+        // Calculate grand total
+        $grandTotal = $onetimeTotal + $recurringTotal;
         $reportData = [
             'teacher_name' => $teacherName,
             'start_date' => $startDate,
             'end_date' => $endDate,
             'onetime_courses' => $onetimeCourseStats,
             'recurring_courses' => $recurringCourseStats,
-
+            'onetime_total' => $onetimeTotal,
+            'recurring_total' => $recurringTotal,
+            'grand_total' => $grandTotal,
         ];
-        dd($reportData);
         return $reportData;
     }
 }
