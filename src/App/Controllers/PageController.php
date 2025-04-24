@@ -407,6 +407,11 @@ class PageController
 
     public function tutorProfile($params)
     {
+        $subjects = $this->subjectService->getSubjects();
+        $tutorBasic = $this->userService->getTutorbasic($params['tutor-id']);
+        $tutorSubjects = $this->userService->getTutorSubjects($params['tutor-id']);
+        $tutorEducations = $this->userService->getTutorEducations($params['tutor-id']);
+        $tutorAvailablities = $this->userService->getTutorAvailability($params['tutor-id']);
         $userReview = $this->reviewService->getTutorReview($params['tutor-id'], '0');
         $tutorDetails = $this->userService->getTutorProfile($params['tutor-id']);
         $courses = $this->courseService->getTutorcourses($params['tutor-id']);

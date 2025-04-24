@@ -44,7 +44,7 @@ class UserService
         $tutorDetails = $this->db->query(
             "SELECT * FROM view_tutor_full_profile WHERE user_id = :tutor_id;",
             ['tutor_id' => $tutorId]
-        )->find();
+        )->findAll();
         if ($tutorDetails['profile_picture_url'] !== null) {
             $tutorDetails['profile_picture_url'] =
                 Paths::UPLOAD_FOLDER_RELATIVE_TO_PUBLIC . "/" .
