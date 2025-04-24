@@ -52,11 +52,6 @@ class AssignmentController
             'submission' => $submission
         ]);
     }
-    public function getData(array $params)
-    {
-        $assignment = $this->assignmentService->getAssignment($params['assignment_id']);
-        echo json_encode($assignment);
-    }
 
     public function getResource(array $params)
     {
