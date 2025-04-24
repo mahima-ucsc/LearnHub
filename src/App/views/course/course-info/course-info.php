@@ -8,7 +8,27 @@
             <div class="course-header">
                 <h1 class="course-info-title"><?php echo e($course['title']); ?></h1>
                 <div class="course-meta">
-                    <div class="course-rating">★★★★★ 4.8 (256 reviews)</div>
+                    <div class="course-rating">
+                        <div class="rating-stars">
+                            <?php
+                            if (($summeryOfReviews['avgRating'] - floor($summeryOfReviews['avgRating'])) > 0.4) {
+                                $flag = true;
+                            }
+                            for ($i = 1; $i <= 5; $i++) {
+
+                                if ($i <= $summeryOfReviews['avgRating']) {
+                                    echo '<span class="star active">★</span>';
+                                } else if ($flag) {
+                                    echo '<span class="star half-active">★</span>';
+                                    $flag = false;
+                                } else {
+                                    echo '<span class="star">★</span>';
+                                }
+                            }
+                            ?>
+                        </div>
+                        <?php echo ' ' . number_format($summeryOfReviews['avgRating'], 1) ?> (<?php echo  $summeryOfReviews['totalReviews'] ?> reviews)
+                    </div>
                     <div class="course-info">
                         <span>Participants: <?php echo e($participantCount); ?></span> |
                         <span>Grade: <?php echo e($course['grade_id']); ?></span> |
@@ -23,15 +43,25 @@
                     <?php endif; ?>
                 </div>
             </div>
-            <div class="teacher-section">
-                <img src="<?= isset($user['profile_picture_url'])
-                                ? $user['profile_picture_url'] :
-                                "/assets/images/user_placeholder.jpg" ?>" alt="User Avatar" class="teacher-avatar">
+            <div class="teacher-section" id="teacherSection">
+                <img id="teacher-avatar" src="<?= isset($user['profile_picture_url'])
+                                                    ? $user['profile_picture_url'] :
+                                                    "/assets/images/user_placeholder.jpg" ?>" alt="User Avatar" class="teacher-avatar" style="cursor:pointer;">
                 <div class="teacher-info">
                     <h3> <?php echo e($user['first_name']); ?> <?php echo e($user['last_name']); ?></h3>
                     <p><?php echo e($user['description']); ?></p>
                 </div>
             </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const teacher_avatar = document.getElementById('teacher-avatar');
+                    if (teacher_avatar) {
+                        teacher_avatar.addEventListener('click', function() {
+                            window.location.href = '/tutor/<?= e($user['user_id']) ?>';
+                        });
+                    }
+                });
+            </script>
 
             <div class="course-section">
                 <h2 class="section-title">Course Description</h2>
