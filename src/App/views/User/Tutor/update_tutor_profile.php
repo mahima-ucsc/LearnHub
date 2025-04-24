@@ -1,3 +1,4 @@
+<?php include $this->resolve("partials/_header.php"); ?>
 <link rel="stylesheet" href="/assets/styles/Tutor/update_tutor_profile.css">
 
 <div class="container">
@@ -292,3 +293,5 @@
     // Initial setup
     setupRemoveButtons();
 </script>
+
+<?php include $this->resolve("partials/_footer.php"); ?>
