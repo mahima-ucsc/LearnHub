@@ -465,6 +465,118 @@ class UserService
         }
     }
 
+    public function updateTutorProfile($formData)
+    {
+        // dd($formData);
+        $tutorId = $_SESSION['user'];
+        $this->db->beginTransaction();
+
+        try {
+            // insert basic info
+            $this->db->query(
+                "UPDATE TutorProfiles 
+                SET title = :title, bio = :bio 
+                WHERE tutor_id = :tutor_id;",
+                [
+                    'tutor_id' => $tutorId,
+                    'title' => !empty($formData['title']) ? $formData['title'] : null,
+                    'bio' => !empty($formData['bio']) ? $formData['bio'] : null,
+                ]
+            );
+
+            // insert subjects
+            if (isset($formData['subjects']) && is_array($formData['subjects'])) {
+                foreach ($formData['subjects'] as $subject) {
+                    // Check if the subject already exists for this tutor
+                    $existing = $this->db->query(
+                        "SELECT COUNT(*) FROM TutorSubjects WHERE tutor_id = :tutor_id AND subject_id = :subject_id",
+                        [
+                            'tutor_id' => $tutorId,
+                            'subject_id' => $subject['subject_id'],
+                        ]
+                    )->count();
+
+                    if ($existing > 0) {
+                        // Update years_experience if subject exists
+                        $this->db->query(
+                            "UPDATE TutorSubjects 
+                            SET years_experience = :years_experience
+                            WHERE tutor_id = :tutor_id AND subject_id = :subject_id;",
+                            [
+                                'tutor_id' => $tutorId,
+                                'subject_id' => $subject['subject_id'],
+                                'years_experience' => $subject['years_experience'],
+                            ]
+                        );
+                    } else {
+                        // Insert new subject if it doesn't exist
+                        $this->db->query(
+                            "INSERT INTO TutorSubjects (tutor_id, subject_id, years_experience)
+                            VALUES (:tutor_id, :subject_id, :years_experience);",
+                            [
+                                'tutor_id' => $tutorId,
+                                'subject_id' => $subject['subject_id'],
+                                'years_experience' => $subject['years_experience'],
+                            ]
+                        );
+                    }
+                }
+            }
+
+            // insert education details
+            if (isset($formData['educations']) && is_array($formData['educations'])) {
+                foreach ($formData['educations'] as $education) {
+
+                    $existing = $this->db->query(
+                        "SELECT COUNT(*) FROM TutorSubjects WHERE tutor_id = :tutor_id AND subject_id = :subject_id",
+                        [
+                            'tutor_id' => $tutorId,
+                            'subject_id' => $subject['subject_id'],
+                        ]
+                    )->count();
+
+                    $this->db->query(
+                        "INSERT  TutorEducation (tutor_id, degree, institution, field_of_study, start_date, end_date)
+                        VALUES (:tutor_id, :degree, :institution, :field_of_study, :start_date, :end_date);",
+                        [
+                            'tutor_id' => $tutorId,
+                            'degree' => $education['degree'],
+                            'institution' => $education['institution'],
+                            'field_of_study' => $education['field_of_study'],
+                            'start_date' => $education['start_date'],
+                            'end_date' => $education['end_date'],
+                        ]
+                    );
+                }
+            }
+
+            // insert available time slots
+            if (isset($formData['availability']) && is_array($formData['availability'])) {
+                foreach ($formData['availability'] as $timeSlot) {
+                    $this->db->query(
+                        "INSERT INTO TutorAvailability (tutor_id, day_of_week, start_time, end_time, is_recurring)
+                        VALUES (:tutor_id, :day_of_week, :start_time, :end_time, :is_recurring);",
+                        [
+                            'tutor_id' => $tutorId,
+                            'day_of_week' => $timeSlot['day_of_week'],
+                            'start_time' => $timeSlot['start_time'],
+                            'end_time' => $timeSlot['end_time'],
+                            'is_recurring' => $timeSlot['is_recurring'] === 'on' ? 1 : 0,
+                        ]
+                    );
+                }
+            }
+
+            $this->db->commit();
+        } catch (Exception $e) {
+            $this->db->rollback();
+            error_log("Failed to create tutor profile: " . $e->getMessage());
+        }
+    }
+
+
+
+
     public function saveUserInterest(array $interest)
     {
         try {
@@ -487,5 +599,50 @@ class UserService
         } catch (Exception $e) {
             throw $e;
         }
+    }
+
+    // get tutor profile data
+    public function getTutorbasic(string $tutorId)
+    {
+        return $this->db->query(
+            "SELECT * FROM TutorProfiles
+            WHERE tutor_id = :tutor_id",
+            [
+                'tutor_id' => $tutorId,
+            ]
+        )->find();
+    }
+
+    public function getTutorSubjects(string $tutorId)
+    {
+        return $this->db->query(
+            "SELECT * FROM TutorSubjects 
+            WHERE tutor_id = :tutor_id",
+            [
+                'tutor_id' => $tutorId,
+            ]
+        )->findAll();
+    }
+
+    public function getTutorEducations(string $tutorId)
+    {
+        return $this->db->query(
+            "SELECT * FROM TutorEducation 
+            WHERE tutor_id = :tutor_id",
+            [
+                'tutor_id' => $tutorId,
+            ]
+        )->findAll();
+    }
+
+    public function getTutorAvailability(string $tutorId)
+    {
+        return $this->db->query(
+            "SELECT * FROM TutorAvailability 
+            WHERE tutor_id = :tutor_id",
+            [
+                'tutor_id' => $tutorId,
+            ]
+        )->findAll();
     }
 }
