@@ -197,15 +197,42 @@ class UserService
         );
     }
 
-    public function getUsers()
+    public function getUsers(int $limit = 10, int $offset = 0)
     {
         $searchTerm = $_GET['s'] ?? '';
+        $role = $_GET['role'] ?? '';
+
+        $params['term'] = "%{$searchTerm}%";
+
+        if ($role != 'all') {
+            $filterRole = "AND user_role = :role";
+            $params['role'] = $role;
+        }
+        $query = "SELECT * FROM users 
+            WHERE first_name LIKE :term 
+            OR last_name LIKE :term
+            OR CONCAT(first_name, ' ', last_name) LIKE :term
+            {$filterRole}
+            LIMIT {$limit} OFFSET {$offset}";
+        // dd($query);
+        dd($params);
         $userData = $this->db->query(
-            "SELECT * FROM users WHERE first_name LIKE :term OR last_name LIKE :term",
-            [
-                "term" => "%{$searchTerm}%"
-            ]
+            "SELECT * FROM users 
+            WHERE first_name LIKE :term 
+            OR last_name LIKE :term
+            OR CONCAT(first_name, ' ', last_name) LIKE :term
+            {$filterRole}
+            LIMIT {$limit} OFFSET {$offset}",
+            $params
         )->findAll();
+        $count = $this->db->query(
+            "SELECT COUNT(user_id) FROM users 
+            WHERE first_name LIKE :term 
+            OR last_name LIKE :term
+            OR CONCAT(first_name, ' ', last_name) LIKE :term
+            {$filterRole}",
+            $params
+        )->count();
 
         // Remove user  password from the array
         foreach ($userData as &$user) {
@@ -213,7 +240,7 @@ class UserService
         }
         unset($user);
 
-        return $userData;
+        return [$userData, $count];
     }
 
     public function getUserCount()

@@ -802,32 +802,24 @@
                     <i class="fas fa-clipboard-list"></i>
                 </div>
                 <h3>Pending Posts</h3>
-                <div class="value"><?= isset($requestCount['pending']) ? $requestCount['pending'] : '-'; ?></div>
+                <div class="value"><?= isset($totalCount['pending']) ? $totalCount['pending'] : '-'; ?></div>
             </div>
             <div class="post-stat-card">
                 <div class="post-stat-icon icon-success">
                     <i class="fas fa-check-circle"></i>
                 </div>
                 <h3>Approved</h3>
-                <div class="value"><?= isset($requestCount['approved']) ? $requestCount['approved'] : '-'; ?></div>
-            </div>
-            <div class="post-stat-card">
-                <div class="post-stat-icon icon-warning">
-                    <i class="fas fa-times-circle"></i>
-                </div>
-                <h3>Rejected</h3>
-                <div class="value"><?= isset($requestCount['rejected']) ? $requestCount['rejected'] : '-'; ?></div>
+                <div class="value"><?= isset($totalCount['approved']) ? $totalCount['approved'] : '-'; ?></div>
             </div>
         </div>
 
         <div class="filter-bar">
             <form method="GET">
                 <div class="filter">
-                    <select class="sort-dropdown">
-                        <option>Newest First</option>
-                        <option>Oldest First</option>
-                        <option>Author Name (A-Z)</option>
-                        <option>Author Name (Z-A)</option>
+                    <select class="sort-dropdown" name="status">
+                        <option value="all">All Requests</option>
+                        <option value="pending" <?= $_GET['status'] == 'pending' ? 'selected' : ''; ?>>Pending</option>
+                        <option value="approved" <?= $_GET['status'] == 'approved' ? 'selected' : ''; ?>>Approved</option>
                     </select>
                     <button type="submit" class="filter-button">Apply Filter</button>
                 </div>
@@ -893,17 +885,8 @@
             </table>
         </div>
 
-        <div class="pagination">
-            <div class="page-item">
-                <i class="fas fa-chevron-left"></i>
-            </div>
-            <div class="page-item active">1</div>
-            <div class="page-item">2</div>
-            <div class="page-item">3</div>
-            <div class="page-item">
-                <i class="fas fa-chevron-right"></i>
-            </div>
-        </div>
+        <?php include $this->resolve('components/pagination.php'); ?>
+
     </div>
 </div>
 
@@ -1042,7 +1025,10 @@
 
                         if (row) {
                             row.classList.add('row-fade-out');
-                            setTimeout(() => row.remove(), 500);
+                            setTimeout(() => {
+                                row.remove();
+                                location.reload();
+                            }, 500);
                         }
                     } else {
                         showToast('Error', data.message || 'Failed to approve post.', 'error');
