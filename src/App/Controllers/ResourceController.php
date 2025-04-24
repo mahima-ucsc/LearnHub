@@ -45,15 +45,7 @@ class ResourceController
             'resourceCount' => $resourceCount
         ]);
     }
-    // public function resource()
-    // {
-    //     $resouces = $this->resourceService->getResources();
-    //     // dd($resouces);
-    //     echo $this->view->render('Resource/resource.php', [
-    //         'title' => 'Resource',
-    //         'resources' => $resouces
-    //     ]);
-    // }
+
     public function createView()
     {
         echo $this->view->render('Resource/create.php', [
