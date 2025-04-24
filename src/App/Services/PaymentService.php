@@ -49,6 +49,16 @@ class PaymentService
         return $this->db->find()['price'];
     }
 
+    public function getAdvertisementAmount(string $advertisementId)
+    {
+        $package = $this->db->query("SELECT package FROM advertisement WHERE advertisement_id = :advertisementId", [
+            'advertisementId' => $advertisementId
+        ])->find()['package'];
+
+        $packageAmounts = AppConstants::ADVERTISEMENT_PACKAGES;
+        return $packageAmounts[$package] ?? 0;
+    }
+
     public function createOnetimeCourseOrderId(string $courseId)
     {
         return 'cid_' . $courseId . '_' . time() . '_' . $_SESSION['user'];
@@ -379,6 +389,27 @@ class PaymentService
 
         return [
             "course_title" => $course['title'],
+        ];
+    }
+
+    public function getViewDetailsForAdvertisementCheckout(string $advertisementId)
+    {
+        $ad = $this->db->query(
+            "SELECT * FROM advertisement WHERE advertisement_id = :advertisement_id",
+            [
+                "advertisement_id" => $advertisementId
+            ]
+        )->find();
+        $course_title = $this->db->query(
+            "SELECT title FROM courses WHERE course_id = :course_id",
+            [
+                "course_id" => $ad['course_id']
+            ]
+        )->find()['title'];
+
+        return [
+            "package" => $ad['package'],
+            "course_title" => $course_title,
         ];
     }
 

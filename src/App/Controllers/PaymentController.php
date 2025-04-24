@@ -47,6 +47,19 @@ class PaymentController
         ]);
     }
 
+    public function advertisementPaymentView(array $params)
+    {
+        $amount = $this->paymentService->getAdvertisementAmount($params["advertisement_id"]);
+        $checkoutData = $this->paymentService->getViewDetailsForAdvertisementCheckout($params["advertisement_id"]);
+
+        echo $this->view->render('payment/advertisement-payment.php', [
+            "title" => "Advertisement Payment",
+            "amount" => $amount,
+            "courseTitle" => $checkoutData["course_title"],
+            "package" => $checkoutData["package"],
+        ]);
+    }
+
     public function courseSubperiodPayment(array $params)
     {
 
@@ -107,6 +120,7 @@ class PaymentController
             "hash" => $this->paymentService->createPaymentHash($orderId, (float)$amount, $currency)
         ]);
     }
+
 
     public function handlePaymentNotification()
     {

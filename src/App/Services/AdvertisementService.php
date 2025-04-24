@@ -44,6 +44,7 @@ class AdvertisementService
                 );
             }
             $this->db->commit();
+            redirectTo('/payment/advertisement/' . $advertisementId);
         } catch (Exception $e) {
             $filePath = Paths::STORAGE_UPLOADS . '/advertisement/thumbnail/' . $thumbnail_url;
             if (file_exists($filePath)) {
