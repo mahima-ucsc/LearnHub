@@ -789,7 +789,7 @@ class PaymentService
         }
     }
 
-    public function getTotalRevenue()
+    public function getTotalTransactions()
     {
         return $this->db->query(
             "SELECT SUM(amount) AS revenue
@@ -804,5 +804,40 @@ class PaymentService
             FROM teacher_withdrawal
             WHERE status = 'completed'"
         )->find();
+    }
+
+    public function getTotalAdRevenue()
+    {
+        try {
+            return $this->db->query(
+                " SELECT SUM(p.amount) as total
+            FROM payments p
+            JOIN advertisement_payments ap ON p.payment_id = ap.payment_id
+            WHERE p.payment_status = 2"
+            )->find();
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+    public function getTotalRevenue()
+    {
+        try {
+            $adRevenue = $this->db->query(
+                " SELECT SUM(p.amount) as total
+            FROM payments p
+            JOIN advertisement_payments ap ON p.payment_id = ap.payment_id
+            WHERE p.payment_status = 2"
+            )->find();
+
+            $withdrawalRevenue = $this->db->query(
+                "SELECT SUM(amount * 0.1) AS total
+                FROM teacher_withdrawal
+                WHERE status = 'completed'"
+            )->find();
+
+            return [$adRevenue['total'], $withdrawalRevenue['total']];
+        } catch (Exception $e) {
+            throw $e;
+        }
     }
 }
