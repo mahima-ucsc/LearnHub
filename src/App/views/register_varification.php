@@ -1,7 +1,7 @@
 <style>
     body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         display: flex;
         justify-content: center;
         align-items: center;
@@ -11,16 +11,23 @@
 
     .container {
         background-color: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
         text-align: center;
-        width: 300px;
+        width: 340px;
+        transition: transform 0.3s ease;
+    }
+
+    .container:hover {
+        transform: translateY(-5px);
     }
 
     h2 {
-        margin-bottom: 20px;
-        color: #6c757d;
+        margin-bottom: 25px;
+        color: #333;
+        font-weight: 600;
+        letter-spacing: 0.5px;
     }
 
     form {
@@ -29,41 +36,60 @@
     }
 
     input[type="text"] {
-        padding: 10px;
-        margin-bottom: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
+        padding: 15px;
+        margin-bottom: 16px;
+        border: 2px solid #e1e1e1;
+        border-radius: 8px;
         font-size: 16px;
+        transition: border-color 0.3s;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    input[type="text"]:focus {
+        outline: none;
+        border-color: #ffc400;
+        box-shadow: 0 0 0 3px rgba(255, 196, 0, 0.25);
     }
 
     button {
-        padding: 10px;
+        padding: 12px;
         border: none;
-        border-radius: 4px;
+        border-radius: 8px;
         font-size: 16px;
+        font-weight: 600;
         cursor: pointer;
+        transition: all 0.2s ease;
+        margin-bottom: 10px;
     }
 
     #submitBtn {
         background-color: #ffc400;
-        color: rgb(0, 0, 0);
+        color: #333;
+        box-shadow: 0 4px 6px rgba(255, 196, 0, 0.2);
     }
 
     #submitBtn:hover {
-        background-color: rgba(255, 196, 0, 0.83);
+        background-color: #ffcf33;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(255, 196, 0, 0.3);
     }
 
     #resendBtn {
-        background-color: #007bff;
+        background-color: #3a86ff;
         color: #fff;
+        box-shadow: 0 4px 6px rgba(58, 134, 255, 0.2);
     }
 
     #resendBtn:disabled {
-        background-color: #6c757d;
+        background-color: #a9b4c2;
+        box-shadow: none;
+        cursor: not-allowed;
     }
 
     #resendBtn:hover:enabled {
-        background-color: #0056b3;
+        background-color: #2876ff;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(58, 134, 255, 0.3);
     }
 
     .error-message {
@@ -73,15 +99,21 @@
         transform: translateX(-50%);
         background-color: #ff5252;
         color: white;
-        padding: 12px 20px;
-        border-radius: 4px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        padding: 14px 22px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(255, 82, 82, 0.25);
         z-index: 1000;
         text-align: center;
         font-size: 16px;
         max-width: 80%;
-        animation: fadeIn 0.3s ease-out;
+        animation: fadeIn 0.4s ease-out;
         transition: opacity 0.5s;
+    }
+
+    .text {
+        margin-top: 15px;
+        color: #666;
+        font-size: 14px;
     }
 
     @keyframes fadeIn {
@@ -115,6 +147,9 @@
         <form method="POST" action="/resend-otp">
             <button type="submit" id="resendBtn" disabled>Resend Code (30s)</button>
         </form>
+        <p class="text">
+            This verification code will expire in 5 minutes.
+        </p>
     </div>
 
     <script>
