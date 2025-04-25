@@ -116,10 +116,10 @@ class ReviewController
         redirectTo($_SERVER['HTTP_REFERER']);
     }
 
-    public function deleteTutorReview()
+    public function deleteTutorReview($params)
     {
         if ($_POST['token'] === $_SESSION['token']) {
-            $this->reviewService->deleteTutorReview($_POST['review_id']);
+            $this->reviewService->deleteTutorReview($params['review']);
         }
         redirectTo($_SERVER['HTTP_REFERER']);
     }

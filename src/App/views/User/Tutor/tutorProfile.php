@@ -1,4 +1,5 @@
 <?php include $this->resolve("partials/_header.php"); ?>
+<?php include $this->resolve("components/delete_modal.php"); ?>
 
 <link rel="stylesheet" href="/assets/styles/Tutor/tutor_profile.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -303,6 +304,7 @@
                 <div class="rating-number"><?php echo number_format($summeryOfReviews['avgRating'], 1) ?> / 5</div>
                 <div class="rating-stars">
                     <?php
+                    $flag = false;
                     if (($summeryOfReviews['avgRating'] - floor($summeryOfReviews['avgRating'])) > 0.4) {
                         $flag = true;
                     }
@@ -354,7 +356,7 @@
                                 <?php
                                 $datetime = new DateTime($review['date']);
                                 $date = $datetime->format('Y-m-d');
-                                $days = calcDateDiff($date);
+                                $days = calDateDiff($date);
                                 if ($days['years'] > 0) {
                                     echo ($days['years']) . " years ago";
                                 } else if ($days['months'] > 0) {
@@ -392,7 +394,7 @@
                                         <a href="/tutor/reviews/edit/<?php echo e($review['review_id']); ?>">Edit</a>
                                     </div>
                                     <div class="menu-button">
-                                        <button onclick="showDeleteModal(<?php echo e($review['review_id']); ?>)">Delete</button>
+                                        <button onclick="showModal('/delete-tutor-review/<?php echo e($review['review_id']); ?>')">Delete</button>
                                     </div>
 
                                 </div>
@@ -405,26 +407,6 @@
                     </div>
                 </div>
             <?php endforeach; ?>
-        </div>
-
-        <!-- delete comformation allert -->
-        <div id="deleteModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title">Confirm Delete</h3>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to delete this item? This action cannot be undone.
-                </div>
-                <div class="modal-footer">
-                    <button onclick="hideModal()" class="btn btn-cancel">Cancel</button>
-                    <form id='submit' method="POST" action="/delete-tutor-review">
-                        <?php include $this->resolve("partials/_csrf.php"); ?>
-                        <input type="hidden" id="delete-review_id" name="review_id" value="" />
-                        <button type="submit" class="btn btn-delete">Delete</button>
-                    </form>
-                </div>
-            </div>
         </div>
 
         <!-- pagination -->
@@ -483,44 +465,6 @@
             }
         }
     }
-
-    //Delete confirmation
-    const deleteModal = document.getElementById('deleteModal');
-
-    function showDeleteModal(reviewId) {
-        event.preventDefault(); // Prevent the form from submitting immediately
-        deleteModal.style.display = 'block'; // show comform allert
-        console.log(reviewId);
-        document.getElementById('delete-review_id').value = reviewId; // set the review id to the hidden input
-        document.body.style.overflow = 'hidden'; // Prevent scrolling of background content
-    }
-
-    function hideModal() {
-        deleteModal.style.display = 'none';
-
-        // Restore scrolling
-        document.body.style.overflow = 'auto';
-    }
-
-    function confirmDelete() {
-        // Add your delete logic here
-        console.log('Item deleted!');
-        hideModal();
-    }
-
-    // Close modal when clicking outside
-    window.onclick = function(event) {
-        if (event.target === deleteModal) {
-            hideModal();
-        }
-    }
-
-    // Close modal on escape key press
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape' && deleteModal.style.display === 'block') {
-            hideModal();
-        }
-    });
 
     // Show more reviews
     let counter = 1;
@@ -623,19 +567,3 @@
         return stars;
     }
 </script>
-
-<?php
-function calcDateDiff($startDate)
-{
-    $start = new DateTime($startDate);
-    $end = new DateTime();
-
-    $diff = $start->diff($end);
-
-    return [
-        'years' => $diff->y,
-        'months' => $diff->m,
-        'days' => $diff->d
-    ];
-}
-?>
