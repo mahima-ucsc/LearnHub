@@ -148,7 +148,7 @@ class AnnouncementService
     public function getcourseTitle($course_id)
     {
         return $this->db->query(
-            "SELECT title FROM courses WHERE course_id = :course_id ",
+            "SELECT title,tutor_id FROM courses WHERE course_id = :course_id ",
             ['course_id' => $course_id]
         )->find();
     }

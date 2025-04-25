@@ -172,6 +172,7 @@ header {
 
 /* Dropdown toggle button */
 .filter-dropdown .dropdown-toggle {
+  margin-left: 2rem;
   padding: 10px 20px;
   background-color: var(--btn-active-color);
   border: none;
