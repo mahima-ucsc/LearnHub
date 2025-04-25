@@ -413,6 +413,19 @@ CREATE TABLE IF NOT EXISTS advertisement (
     PRIMARY KEY(advertisement_id)
 );
 
+-- Table for advertisement payments
+CREATE TABLE IF NOT EXISTS advertisement_payments (
+    ad_payment_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    advertisement_id BIGINT(20) UNSIGNED NOT NULL,
+    payment_id BIGINT(20) UNSIGNED NOT NULL,
+    user_id BIGINT(20) UNSIGNED NOT NULL,
+    payment_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (advertisement_id) REFERENCES advertisement(advertisement_id) ON DELETE CASCADE,
+    FOREIGN KEY (payment_id) REFERENCES payments(payment_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
 -- Enable Event Scheduler
 SET GLOBAL event_scheduler = ON;
 
