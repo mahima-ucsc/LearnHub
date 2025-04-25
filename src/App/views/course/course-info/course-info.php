@@ -38,7 +38,7 @@
                             </span>
                         <?php endif; ?>
                     </div>
-                    <?php if ($course['billing_type'] === 'onetime' && !$course['is_paid']): ?>
+                    <?php if ($course['billing_type'] === 'onetime' && !$course['is_paid'] && !($course['tutor_id'] === $_SESSION['user'])): ?>
                         <a href="<?= "/payment/courses/" . $course['course_id'] ?>" class="enroll-button">Enroll Now</a>
                     <?php endif; ?>
                 </div>
@@ -85,7 +85,7 @@
 
             <?php if ($_SESSION['user_role'] === 'teacher'): ?>
                 <button type="button" class="add-module-btn"
-                    onclick="window.location.href='/courses/<?= $course['course_id'] ?>/announcements'">
+                    onclick="window.location.href='/courses/<?= $course['course_id'] ?>/announcements/create'">
                     <i class="fas fa-plus"></i> Add Announcements
                 </button>
             <?php endif; ?>
