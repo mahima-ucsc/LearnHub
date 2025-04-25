@@ -54,6 +54,7 @@ class PaymentController
 
         echo $this->view->render('payment/advertisement-payment.php', [
             "title" => "Advertisement Payment",
+            "advertisementId" => $params["advertisement_id"],
             "amount" => $amount,
             "courseTitle" => $checkoutData["course_title"],
             "package" => $checkoutData["package"],
@@ -121,6 +122,34 @@ class PaymentController
         ]);
     }
 
+    public function advertisementPayment(array $params)
+    {
+        $orderId = $this->paymentService->createAdvertisementOrderId($params["advertisement_id"]);
+        $amount = $this->paymentService->getAdvertisementAmount($params["advertisement_id"]);
+        $currency = "LKR";
+
+        $this->paymentService->createAdvertisementPaymentEntry($orderId, $params["advertisement_id"], (string) $_SESSION["user"], (float)$amount);
+
+        echo $this->view->render('payment/advertisement-payment-autosubmit.php', [
+            "title" => "Advertisement Payment",
+            "first_name" => $_POST["first_name"],
+            "last_name" => $_POST["last_name"],
+            "email" => $_POST["email"],
+            "phone" => $_POST["phone"],
+            "address" => $_POST["address"],
+            "city" => $_POST["city"],
+            "merchant_id" => AppConstants::PAYHERE_MERCHANT_ID,
+            "return_url" => AppConstants::AD_PAYMENT_RETURN_URL,
+            "cancel_url" => AppConstants::AD_PAYMENT_CANCEL_URL,
+            "notify_url" => AppConstants::AD_PAYMENT_NOTIFY_URL,
+            "country" => "Sri Lanka",
+            "items" => $orderId,
+            "order_id" => $orderId,
+            "currency" => $currency,
+            "amount" => $amount,
+            "hash" => $this->paymentService->createPaymentHash($orderId, (float)$amount, $currency)
+        ]);
+    }
 
     public function handlePaymentNotification()
     {

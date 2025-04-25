@@ -69,6 +69,12 @@ class PaymentService
         return 'cid_' . $courseId . '_spid_' . $subperiodId . '_' . time() . '_' . $_SESSION['user'];
     }
 
+
+    public function createAdvertisementOrderId(string $advertisementId)
+    {
+        return 'ad_' . $advertisementId . '_' . time() . '_' . $_SESSION['user'];
+    }
+
     public function createCoursePaymentEntry(string $orderId, string $courseId, ?string $subperiodId, string $userId, float $amount)
     {
 
@@ -92,6 +98,39 @@ class PaymentService
                 [
                     'courseId' => $courseId,
                     'subperiodId' => $subperiodId, // null if one-time course
+                    'userId' => $userId,
+                    'paymentId' => $paymentId
+                ]
+            );
+
+            $this->db->commit();
+        } catch (\Exception $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
+    }
+
+    public function createAdvertisementPaymentEntry(string $orderId, string $advertisementId, string $userId, float $amount)
+    {
+        try {
+            $this->db->beginTransaction();
+
+            $this->db->query("INSERT INTO payments (order_id, amount, payment_status) VALUES (:orderId, :amount, :payment_status)", [
+                'orderId' => $orderId,
+                'amount' => $amount,
+                'payment_status' => AppConstants::PAYMENT_STATUS_PENDING
+            ]);
+
+            $this->db->query("SELECT payment_id FROM payments WHERE order_id = :orderId", [
+                'orderId' => $orderId
+            ]);
+            $paymentId = $this->db->find()['payment_id'];
+
+            $this->db->query(
+                "INSERT INTO advertisement_payments (advertisement_id, user_id, payment_id) 
+            VALUES (:advertisementId, :userId, :paymentId)",
+                [
+                    'advertisementId' => $advertisementId,
                     'userId' => $userId,
                     'paymentId' => $paymentId
                 ]

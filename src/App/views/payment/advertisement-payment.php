@@ -22,7 +22,7 @@
         </div>
     </div>
 
-    <form class="payment-form" id="coursePaymentForm" method="POST" action=<?= "" ?>>
+    <form class="payment-form" id="coursePaymentForm" method="POST" action=<?= "/payment/advertisement/" . e($advertisementId) ?>>
         <h2>Personal Information</h2>
 
         <div class="form-grid">
