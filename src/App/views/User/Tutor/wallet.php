@@ -287,7 +287,7 @@
 
     <div class="card">
         <h2>Withdrawal History</h2>
-        <form method="GET" action="/wallet">
+        <form method="GET" action="/withdraw">
             <div class="filters">
                 <select class="filter-input" id="status-filter" name="status">
                     <option value="all">All Statuses</option>
