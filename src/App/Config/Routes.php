@@ -127,14 +127,14 @@ function registerRoutes(App $app)
     $app->get('/course/{course_id}/module/{module_id}/resource/{resource_id}', [CoursesController::class, 'readModuleResources'], [TeacherOnlyMiddleware::class]);
 
     // New course Routes
-    $app->get('/course/create', [CoursesController::class, 'createView']);
-    $app->post('/course/create', [CoursesController::class, 'create']);
-    $app->get('/course/{course_id}/module/create', [CoursesController::class, 'createModuleView']);
-    $app->post('/course/{course_id}/module/create', [CoursesController::class, 'createModule']);
+    $app->get('/course/create', [CoursesController::class, 'createView'], [TeacherOnlyMiddleware::class]);
+    $app->post('/course/create', [CoursesController::class, 'create'], [TeacherOnlyMiddleware::class]);
+    $app->get('/course/{course_id}/module/create', [CoursesController::class, 'createModuleView'], [TeacherOnlyMiddleware::class]);
+    $app->post('/course/{course_id}/module/create', [CoursesController::class, 'createModule'], [TeacherOnlyMiddleware::class]);
 
-    $app->post('/mark-attendance', [CoursesController::class, 'markAttendance']);
+    $app->post('/mark-attendance', [CoursesController::class, 'markAttendance'], [StudentOnlyMiddleware::class]);
 
-    $app->get('/course/create/add-module', [CoursesController::class, 'addModuleView']);
+    $app->get('/course/create/add-module', [CoursesController::class, 'addModuleView'], [TeacherOnlyMiddleware::class]);
 
     // TODO: Remove if not necessary
     $app->get('/course/create/success', [CoursesController::class, 'successMessage']);

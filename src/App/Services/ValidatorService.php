@@ -177,6 +177,30 @@ class ValidatorService
         // }
     }
 
+    public function validateCourseWithImage(array $formData, ?array $image)
+    {
+        $errors = [];
+
+        try {
+            $this->validateCourseData($formData);
+        } catch (ValidationException $e) {
+            $errors = $e->errors;
+        }
+
+        // Try to validate image
+        try {
+            $this->validateImg($image);
+        } catch (ValidationException $e) {
+            // Merge with any existing errors
+            $errors = array_merge($errors, $e->errors);
+        }
+
+        // If we collected any errors, throw a combined validation exception
+        if (!empty($errors)) {
+            throw new ValidationException($errors);
+        }
+    }
+
     public function validateCourseData(array $formData)
     {
         $rules = [
@@ -194,6 +218,28 @@ class ValidatorService
         if (isset($formData['courseType'])) {
             if ($formData['courseType'] === 'onetime') {
                 $rules['fullCoursePrice'] = ['required'];
+            }
+        }
+
+        $this->validator->validate($formData, $rules);
+    }
+
+    public function validateModuleData(array $formData)
+    {
+        $rules = [
+            "moduleTitle" => ['required'],
+            "moduleDescription" => ['required'],
+            "accessPeriod" => ['required']
+        ];
+
+        if (!empty($formData['moduleAccessPeriod']) && $formData['moduleAccessPeriod'] == 'on') {
+            $rules['moduleAccessPeriodStartDate'] = ['required'];
+            $rules['moduleAccessPeriodEndDate'] = ['required', 'dateCompare:moduleAccessPeriodStartDate'];
+            $rules['price'] = ['required'];
+
+            if (!empty($formData['moduleFreeTrial']) && $formData['moduleFreeTrial'] == "on") {
+                $rules['moduleFreeTrialStartDate'] = ['required'];
+                $rules['moduleFreeTrialEndDate'] = ['required', 'dateCompare:moduleFreeTrialStartDate'];
             }
         }
 

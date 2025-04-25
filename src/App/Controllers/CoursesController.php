@@ -310,12 +310,11 @@ class CoursesController
 
     public function create()
     {
-        $this->validatorService->validateCourseData($_POST);
 
+        $this->validatorService->validateCourseWithImage($_POST, $_FILES['courseThumbnail']);
 
         // Upload course thumbnail
-        $courseThumbnail = $_FILES['courseThumbnail'] ?? null;
-        $this->validatorService->validateImg($courseThumbnail);
+        $courseThumbnail = $_FILES['courseThumbnail'];
         $thumbnailFileName = $this->fileService->uploadFile(Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS, $courseThumbnail);
         // Prepare course data
 
@@ -324,7 +323,7 @@ class CoursesController
             'description' => $_POST['courseDescription'],
             'subject_id' => intval($_POST['subject']),
             'grade_id' => intval($_POST['grade']),
-            'tutor_id' => 1,
+            'tutor_id' => $_SESSION['user'],
             'start_time' => $_POST['courseStartTime'],
             'end_time' => $_POST['courseEndTime'],
             'day' => $_POST['courseday'],
@@ -396,9 +395,12 @@ class CoursesController
     public function createModule(array $params)
     {
 
+        $this->validatorService->validateModuleData($_POST);
+
         $courseId = $params['course_id'];
         $course = $this->courseService->getCourseById($courseId);
         $type = $course['billing_type'];
+
         // Process module attachments
         $moduleAttachments = [];
         if (isset($_FILES['moduleAttachments']['name'])) {
@@ -418,8 +420,21 @@ class CoursesController
         $moduleData = $_POST;
         $moduleData['attachments'] = $moduleAttachments;
 
-        $this->courseService->createModule($courseId, $type, $moduleData);
-        redirectTo($_SERVER['HTTP_REFERER'] . "?m=success");
+        $moduleId = $this->courseService->createModule($courseId, $type, $moduleData);
+        if ($moduleId) {
+            $this->modleSuccessMessage($moduleId, $courseId);
+        }
+    }
+    public function modleSuccessMessage(string $moduleId, string $courseId)
+    {
+        echo $this->view->render(
+            "course/module_success.php",
+            [
+                'title' => "Course Create Successfully",
+                'moduleId' => $moduleId,
+                "courseId" => $courseId
+            ]
+        );
     }
 
     public function deleteCourseModule(array $params)
