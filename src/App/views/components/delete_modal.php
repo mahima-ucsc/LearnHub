@@ -152,7 +152,7 @@
             <h3 class="modal-title">Confirm Delete</h3>
         </div>
         <div class="modal-body">
-            Are you sure you want to delete this course? This action cannot be undone.
+            Are you sure you want to delete this? This action cannot be undone.
         </div>
         <div class="modal-footer">
             <button onclick="hideModal()" class="btn btn-cancel">Cancel</button>
