@@ -16,34 +16,62 @@ class ResourceController
 {
     public function __construct(private TemplateEngine $view, private ResourceService $resourceService,  private ValidatorService $validatorService) {}
 
-    public function resource()
-    {
+    // public function resource()
+    // {
 
+    //     $page = (int) ($_GET['p'] ?? 1);
+    //     $itemsPerPage = 6;
+    //     $offset = ($page - 1) * $itemsPerPage;
+
+    //     // Get search parameters
+    //     $searchParams = [
+    //         's' => $_GET['s'] ?? '',
+    //         'subject' => $_GET['subject'] ?? 'all',
+    //         'type' => $_GET['type'] ?? 'all',
+    //         'category' => $_GET['category'] ?? 'all',
+    //         'price' => $_GET['price'] ?? 'all',
+    //         'sort' => $_GET['sort'] ?? '',
+    //     ];
+
+    //     [$resouces, $resourceCount] = $this->resourceService->searchResource(
+    //         $itemsPerPage,
+    //         $offset
+    //     );
+
+    //     $pagination = generatePagination($resourceCount, $page, $itemsPerPage, $searchParams);
+
+    //     echo $this->view->render('Resource/resource.php', [
+    //         'title' => 'Resource',
+    //         'resources' => $resouces,
+    //         'pagination' => $pagination,
+    //         'resourceCount' => $resourceCount
+    //     ]);
+    // }
+    public function listResources()
+    {
         $page = (int) ($_GET['p'] ?? 1);
         $itemsPerPage = 6;
         $offset = ($page - 1) * $itemsPerPage;
 
-        // Get search parameters
-        $searchParams = [
+        $filters = [
             's' => $_GET['s'] ?? '',
-            'subject' => $_GET['subject'] ?? 'all',
             'type' => $_GET['type'] ?? 'all',
+            'category' => $_GET['category'] ?? 'all',
             'price' => $_GET['price'] ?? 'all',
-            'sort' => $_GET['sort'] ?? '',
+
         ];
 
-        [$resouces, $resourceCount] = $this->resourceService->searchResource(
-            $itemsPerPage,
-            $offset
-        );
+        $resources = $this->resourceService->getFilteredResources($filters);
+        $resourceCount = count($resources);
 
-        $pagination = generatePagination($resourceCount, $page, $itemsPerPage, $searchParams);
+        $pagination = generatePagination($resourceCount, $page, $itemsPerPage, $filters);
+
 
         echo $this->view->render('Resource/resource.php', [
             'title' => 'Resource',
-            'resources' => $resouces,
+            'resources' => $resources,
+            'resourceCount' => $resourceCount,
             'pagination' => $pagination,
-            'resourceCount' => $resourceCount
         ]);
     }
 

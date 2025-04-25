@@ -42,23 +42,7 @@ class ResourceService
         );
     }
 
-    private function uploadFile(array $file, string $dir): string
-    {
-        $storageDir = Paths::STORAGE_UPLOADS . "/" . $dir;
-        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $fileName = uniqid("", true) . "." . $extension;
-        $storagePath = $storageDir . "/" . $fileName;
 
-        if (!is_dir($storageDir)) {
-            mkdir($storageDir, 0777, true);
-        }
-
-        if (!move_uploaded_file($file['tmp_name'], $storagePath)) {
-            throw new Exception("Failed to upload file.");
-        }
-
-        return $fileName;
-    }
 
     public function getResources()
     {
@@ -137,75 +121,31 @@ class ResourceService
         return $this->db->rowCount() > 0;
     }
 
-    public function searchResource(int $limit, int $offset)
+    public function getFilteredResources(array $filters): array
     {
-        $searchTerm = $_GET['s'] ?? '';
-        $subject = $_GET['subject'] ?? 'all';
-        $type = $_GET['type'] ?? 'all';
-        $price = $_GET['price'] ?? 'all';
-        $sort = $_GET['sort'] ?? '';
-
-        $status = 'approved';
-        if ($_SESSION['user_role'] == 'admin') {
-            $status = $_GET['status'] ?? 'all';
-        }
-
-        $whereConditions = [];
+        $query = "SELECT sr.*, CONCAT(u.first_name, ' ', u.last_name) as username FROM shared_resources sr
+            JOIN users u ON u.user_id = sr.user_id WHERE 1=1";
         $params = [];
 
-        if ($status !== 'all') {
-            $whereConditions[] = "sr.status = :status";
-            $params["status"] = $status;
-        }
-        if (!empty($searchTerm)) {
-            $whereConditions[] = "(sr.title LIKE :term OR sr.description LIKE :term OR u.first_name LIKE :term OR u.last_name LIKE :term OR CONCAT(u.first_name , ' ', u.last_name) LIKE :term)";
-            $params['term'] = "%{$searchTerm}%";
+        if ($filters['type'] !== 'all') {
+            $query .= " AND resource_type = :type";
+            $params['type'] = $filters['type'];
         }
 
-        if ($subject !== 'all') {
-            $whereConditions[] = "sr.subject_id = :subject";
-            $params["subject"] = $subject;
+        if ($filters['category'] !== 'all') {
+            $query .= " AND category = :category";
+            $params['category'] = $filters['category'];
         }
 
-        if ($price !== 'all') {
-            $whereConditions[] = "sr.price = :price";
-            $params["price"] = $price;
+        if ($filters['price'] !== 'all') {
+            $query .= " AND is_free = :price";
+            $params['price'] = $filters['price'];
         }
 
-        $whereClause = !empty($whereConditions) ? "WHERE " . implode(" AND ", $whereConditions) : "";
-        $orderClause = "";
+        $query .= " AND title LIKE :searchTerm";
+        $params['searchTerm'] = "%{$filters['s']}%";
 
-        switch ($sort) {
-            case 'newest':
-                $orderClause = "ORDER BY sr.created_date DESC";
-                break;
-            case 'oldest':
-                $orderClause = "ORDER BY sr.created_date ASC";
-                break;
-            case 'price_low':
-                $orderClause = "ORDER BY sr.price ASC";
-                break;
-            case 'price_high':
-                $orderClause = "ORDER BY sr.price DESC";
-                break;
-        }
-
-        $resources = $this->db->query(
-            "SELECT sr.*, CONCAT(u.first_name, ' ', u.last_name) as username FROM shared_resources sr
-            JOIN users u ON u.user_id = sr.user_id
-            {$whereClause}
-            {$orderClause}
-            LIMIT {$limit} OFFSET {$offset}",
-            $params
-        )->findAll();
-        $resourceCount = $this->db->query(
-            "SELECT COUNT(*) FROM shared_resources sr
-            JOIN users u ON u.user_id = sr.user_id
-            {$whereClause}",
-            $params
-        )->count();
-
-        return [$resources, $resourceCount];
+        return $this->db->query($query, $params)->findAll();
     }
 
     public function approveResource(string $id)

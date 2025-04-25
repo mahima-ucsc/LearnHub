@@ -109,7 +109,7 @@
 
                     <!-- Pricing Section -->
                     <div class="form-section">
-                        <h3><i class="fas fa-tag"></i> Pricing</h3>
+                        <h3><i class="fas fa-tag"></i> Pricing </h3>
 
                         <div class="toggle-container">
                             <span class="toggle-label">This is a free resource</span>
@@ -126,6 +126,9 @@
 
                         <div class="form-group price-field <?= isset($oldFormData['is_free']) && $oldFormData['is_free'] == '1' ? '' : 'active' ?>">
                             <label for="resource-price">Price (Rs.) *</label>
+                            <div class="paid-description">
+                                <label>If this is a paid resource, please include your contact details (e.g., phone number, email) in the description so interested users can reach you.</label>
+                            </div>
                             <input
                                 type="number"
                                 id="resource-price"

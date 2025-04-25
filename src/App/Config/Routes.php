@@ -155,7 +155,7 @@ function registerRoutes(App $app)
     $app->get('/courserequest-managment', [PostController::class, 'managmentView']);
 
     // Resources
-    $app->get('/resource', [ResourceController::class, 'resource']);
+    $app->get('/resource', [ResourceController::class, 'listResources']);
     $app->get('/resource/create', [ResourceController::class, 'createView']);
     $app->post('/resource/create', [ResourceController::class, 'createResource']);
     $app->get('/resource/my-resources', [ResourceController::class, 'myResources'], [AuthRequiredMiddleware::class]);

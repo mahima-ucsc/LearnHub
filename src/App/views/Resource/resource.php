@@ -34,52 +34,43 @@
                     <span class="filter-label">Type:</span>
                     <select class="filter-select" name="type">
                         <option value="all">All Types</option>
-                        <option value="pdf">PDF</option>
-                        <option value="video">Video</option>
-                        <option value="code">Code</option>
-                        <option value="template">Template</option>
-                        <option value="tutorial">Tutorial</option>
-                        <option value="tool">Tool</option>
+                        <option value="PDF" <?= isset($_GET['type']) && $_GET['type'] === 'PDF' ? 'selected' : '' ?>>PDF</option>
+                        <option value="Video" <?= isset($_GET['type']) && $_GET['type'] === 'Video' ? 'selected' : '' ?>>Video</option>
+                        <option value="Code" <?= isset($_GET['type']) && $_GET['type'] === 'Code' ? 'selected' : '' ?>>Code</option>
+                        <option value="Template" <?= isset($_GET['type']) && $_GET['type'] === 'Template' ? 'selected' : '' ?>>Template</option>
+                        <option value="Ebook" <?= isset($_GET['type']) && $_GET['type'] === 'Ebook' ? 'selected' : '' ?>>Ebook</option>
+                        <option value="Tool" <?= isset($_GET['type']) && $_GET['type'] === 'Tool' ? 'selected' : '' ?>>Tool</option>
                     </select>
                 </div>
                 <div class="filter-group">
-                    <span class="filter-label">Subject:</span>
-                    <select class="filter-select" name="subject">
+                    <span class="filter-label">Category:</span>
+                    <select class="filter-select" name="category">
                         <option value="all">All Categories</option>
-                        <option value="1">Programming</option>
-                        <option value="2">Design</option>
-                        <option value="3">Marketing</option>
-                        <option value="4">Data Science</option>
-                        <option value="5">Business</option>
+                        <option value="Programming" <?= isset($_GET['category']) && $_GET['category'] === 'Programming' ? 'selected' : '' ?>>Programming</option>
+                        <option value="Design" <?= isset($_GET['category']) && $_GET['category'] === 'Design' ? 'selected' : '' ?>>Design</option>
+                        <option value="Marketing" <?= isset($_GET['category']) && $_GET['category'] === 'Marketing' ? 'selected' : '' ?>>Marketing</option>
+                        <option value="Data Science" <?= isset($_GET['category']) && $_GET['category'] === 'Data Science' ? 'selected' : '' ?>>Data Science</option>
+                        <option value="Business" <?= isset($_GET['category']) && $_GET['category'] === 'Business' ? 'selected' : '' ?>>Business</option>
+                        <option value="Academic" <?= isset($_GET['category']) && $_GET['category'] === 'Academic' ? 'selected' : '' ?>>Academic</option>
+
                     </select>
                 </div>
                 <div class="filter-group">
                     <span class="filter-label">Price:</span>
                     <select class="filter-select" name="price">
                         <option value="all">All Prices</option>
-                        <option value="1">Free</option>
-                        <option value="0">Paid</option>
+                        <option value="1" <?= isset($_GET['price']) && $_GET['price'] === '1' ? 'selected' : '' ?>>Free</option>
+                        <option value="0" <?= isset($_GET['price']) && $_GET['price'] === '0' ? 'selected' : '' ?>>Paid</option>
                     </select>
                 </div>
-                <div class="filter-group">
-                    <span class="filter-label">Sort By:</span>
-                    <select class="filter-select" name="sort">
-                        <option value="newest">Newest First</option>
-                        <option value="oldest">Oldest First</option>
-                        <option value="price_low">Price Low to High</option>
-                        <option value="price_high">Price High to Low</option>
-                    </select>
-                </div>
+
                 <div class="filter-group">
                     <button type="submit" class="apply-filter-btn">Apply Filters</button>
+                    <a href="/resource" class="clear-btn" onclick="showLoader()">Clear All Filters</a>
                 </div>
             </div>
         </form>
     </section>
-    <div class="clear-section">
-        <a href="/resource" class="clear-btn" onclick="showLoader()">Clear All Filters</a>
-
-    </div>
 
     <!-- Resource Actions -->
     <section class="resource-actions">
@@ -101,7 +92,9 @@
                     <i class="fas fa-file-pdf"></i>
                     <span><?php echo e($resource['resource_type']); ?></span>
                 </div>
-                <div class="resource-badge">Trending</div>
+                <div class="resource-badge">
+                    <span><?php echo e($resource['category']); ?></span>
+                </div>
                 <div class="resource-content">
                     <h4><?php echo e($resource['title']); ?></h4>
                     <p class="resource-description"><?php echo e($resource['description']); ?></p>
@@ -109,10 +102,6 @@
                         <div class="resource-author">
                             <img src="/assets/images/user.jpeg" alt="User Avatar" alt="Alex Johnson">
                             <span><?php echo e($resource['username']); ?></span>
-                        </div>
-                        <div class="resource-stats">
-                            <span><i class="fas fa-download"></i> 2.4k</span>
-                            <span><i class="fas fa-star"></i> 4.8</span>
                         </div>
                     </div>
                 </div>
