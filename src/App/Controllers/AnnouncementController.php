@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\{AnnouncementService};
+use App\Services\{AnnouncementService, CourseService};
 
 class AnnouncementController
 {
     public function __construct(
         private TemplateEngine $view,
-        private AnnouncementService $AnnouncementService
+        private AnnouncementService $AnnouncementService,
+        private CourseService $CourseService,
     ) {}
 
     public function announcementsFormView($params)
@@ -36,19 +37,26 @@ class AnnouncementController
     {
         $courseId = $params['course_id'];
         $student_id = $_SESSION['user'];
+        $isparticipants = $this->AnnouncementService->getCourseisParticipants($courseId, $student_id);
         $announcements = $this->AnnouncementService->getAnnouncements($courseId, $student_id);
         $courseTitle = $this->AnnouncementService->getcourseTitle($courseId);
-        // $announcements = $this->AnnouncementService->getOneAnnouncements('1');
-        // dd($courseTitle);
-        echo $this->view->render(
-            "course/course-info/announcements.php",
-            [
-                'title' => 'Announcements',
-                'announcements' => $announcements,
-                'course_title' => $courseTitle['title'],
-                'course_id' => $courseId,
-            ]
-        );
+        // dd($isparticipants);
+
+        if ($isparticipants) {
+            // $announcements = $this->AnnouncementService->getOneAnnouncements('1');
+            // dd($courseTitle);
+            echo $this->view->render(
+                "course/course-info/announcements.php",
+                [
+                    'title' => 'Announcements',
+                    'announcements' => $announcements,
+                    'course_title' => $courseTitle['title'],
+                    'course_id' => $courseId,
+                ]
+            );
+        } else {
+            redirectTo('/dashboard');
+        }
     }
 
     public function markAsButtonToggle()
