@@ -37,7 +37,6 @@ function registerRoutes(App $app)
 {
     $app->get('/', [PageController::class, 'home']);
     $app->get('/about', [PageController::class, 'about']);
-    // $app->get('/profile', [PageController::class, 'profile'], [AuthRequiredMiddleware::class]);
     $app->get('/dashboard', [PageController::class, 'dashboard'], [AuthRequiredMiddleware::class]);
     $app->get('/settings', [PageController::class, 'settings'], [AuthRequiredMiddleware::class]);
     $app->get('/help-and-support', [PageController::class, 'helpAndSupport']);
