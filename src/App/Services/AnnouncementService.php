@@ -20,7 +20,7 @@ class AnnouncementService
         if ($fileData && !empty($fileData['attachments']['name'][0])) {
             try {
                 // Handle file uploads
-                $uploadDir = __DIR__ . '/../../../public/assets/uploads/announcement/';
+                $uploadDir = Paths::STORAGE_UPLOADS  . '/announcement/';
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0777, true);
                 }
