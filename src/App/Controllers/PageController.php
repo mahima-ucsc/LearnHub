@@ -503,7 +503,6 @@ class PageController
     }
     public function profile()
     {
-        dd("user profile");
         $userDetails = $this->userService->getUserProfile();
         $userReview = $this->reviewService->getUserReview();
         [$courses, $courseCount] = $this->courseService->searchCourse(3, 0);
@@ -517,6 +516,11 @@ class PageController
 
     public function tutorProfile($params)
     {
+        $subjects = $this->subjectService->getSubjects();
+        $tutorBasic = $this->userService->getTutorbasic($params['tutor-id']);
+        $tutorSubjects = $this->userService->getTutorSubjects($params['tutor-id']);
+        $tutorEducations = $this->userService->getTutorEducations($params['tutor-id']);
+        $tutorAvailablities = $this->userService->getTutorAvailability($params['tutor-id']);
         $userReview = $this->reviewService->getTutorReview($params['tutor-id'], '0');
         $tutorDetails = $this->userService->getTutorProfile($params['tutor-id']);
         $courses = $this->courseService->getTutorcourses($params['tutor-id']);
@@ -530,10 +534,15 @@ class PageController
         $avgRating = $totalReviews > 0 ? ($totalRating / $totalReviews) : 0;
         $summeryOfReviews = ['totalReviews' => $totalReviews, 'avgRating' => $avgRating, 'starCount' => $starCount];
 
-        // dd($tutorDetails);
+        // dd($courses);
         echo $this->view->render('User/Tutor/tutorProfile.php', [
             "title" => "Tutor",
             "tutorDetails" => $tutorDetails,
+            'subjects' => $subjects,
+            'tutorBasic' => $tutorBasic,
+            'tutorSubjects' => $tutorSubjects,
+            'tutorEducations' => $tutorEducations,
+            'tutorAvailablities' => $tutorAvailablities,
             "userReview" => $userReview,
             'summeryOfReviews' => $summeryOfReviews,
             "courses" => $courses,

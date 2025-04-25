@@ -110,9 +110,38 @@ class AuthController
         );
     }
 
+    public function updateTutorProfileView($params)
+    {
+        $subjects = $this->SubjectService->getSubjects();
+        $tutorBasic = $this->userService->getTutorbasic($params['tutor-id']);
+        $tutorSubjects = $this->userService->getTutorSubjects($params['tutor-id']);
+        $tutorEducations = $this->userService->getTutorEducations($params['tutor-id']);
+        $tutorAvailablities = $this->userService->getTutorAvailability($params['tutor-id']);
+        // dd($tutorAvailablities);
+        echo $this->view->render(
+            "User/Tutor/update_tutor_profile.php",
+            [
+                "title" => "creat your profile",
+                'subjects' => $subjects,
+                'tutorBasic' => $tutorBasic,
+                'tutorSubjects' => $tutorSubjects,
+                'tutorEducations' => $tutorEducations,
+                'tutorAvailablities' => $tutorAvailablities,
+            ]
+        );
+    }
+
+
     public function createTutorProfile()
     {
         $this->userService->createTutorProfile($_POST);
         redirectTo("/dashboard");
+    }
+
+    public function updateTutorProfile()
+    {
+        $this->userService->updateTutorProfile($_POST);
+        // dd($_POST);
+        redirectTo("/tutor/{$_SESSION['user']}");
     }
 }
