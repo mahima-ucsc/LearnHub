@@ -150,12 +150,16 @@
                                 ?>
                             </div>
                             <div class="announcement-actions">
-                                <button
-                                    class="read_btn"
-                                    announcement_id="<?php echo ($announcement['announcement_id']); ?>"
-                                    is_read="<?php echo $announcement['is_read'] == 1 ? "true" : "false" ?>">
-                                    <?php echo  $announcement['is_read'] == 1 ? "Mark As Unread" : "Mark As Read" ?>
-                                </button>
+                                <?php if ($announcement['tutor_id'] === $_SESSION['user']): ?>
+                                    <button class="delete-btn">Delete</button>
+                                <?php else: ?>
+                                    <button
+                                        class="read_btn"
+                                        announcement_id="<?php echo ($announcement['announcement_id']); ?>"
+                                        is_read="<?php echo $announcement['is_read'] == 1 ? "true" : "false" ?>">
+                                        <?php echo  $announcement['is_read'] == 1 ? "Mark As Unread" : "Mark As Read" ?>
+                                    </button>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>

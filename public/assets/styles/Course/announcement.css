@@ -527,3 +527,8 @@ header {
     font-size: 13px;
   }
 }
+
+.announcement-actions .delete-btn {
+  color: var(--danger-color);
+  text-decoration: none;
+}
