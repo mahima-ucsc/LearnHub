@@ -28,6 +28,7 @@ class AnnouncementController
 
     public function createAnnouncements($params)
     {
+
         $_POST['course_id'] = $params['course_id'];
         $this->AnnouncementService->createAnnouncements($_POST, $_FILES);
         redirectTo("/courses/{$params['course_id']}/announcements");
@@ -36,19 +37,25 @@ class AnnouncementController
     public function announcementsListView($params)
     {
         $courseId = $params['course_id'];
-        $student_id = $_SESSION['user'];
-        $isparticipants = $this->AnnouncementService->getCourseisParticipants($courseId, $student_id);
-        $announcements = $this->AnnouncementService->getAnnouncements($courseId, $student_id);
-        $courseTitle = $this->AnnouncementService->getcourseTitle($courseId);
+        $user_id = $_SESSION['user'];
+        $isparticipants = $this->AnnouncementService->getCourseisParticipants($courseId, $user_id);
+        $courseData = $this->AnnouncementService->getcourseTitle($courseId);
 
-        if ($isparticipants) {
+        if ($user_id === $courseData['tutor_id'] || $_SESSION['user_role'] === 'admin') {
+            $announcements = $this->AnnouncementService->getAllAnnouncements($courseId);
+        } else {
+            $announcements = $this->AnnouncementService->getAnnouncements($courseId, $user_id);
+        }
+
+        if ($isparticipants || $_SESSION['user_role'] === 'admin') {
             echo $this->view->render(
                 "course/course-info/announcements.php",
                 [
                     'title' => 'Announcements',
                     'announcements' => $announcements,
-                    'course_title' => $courseTitle['title'],
+                    'course_title' => $courseData['title'],
                     'course_id' => $courseId,
+                    'tutor_id' => $courseData['tutor_id']
                 ]
             );
         } else {
@@ -134,5 +141,11 @@ class AnnouncementController
             http_response_code(400);
             echo "No file name specified.";
         }
+    }
+
+    public function deleteAnnouncement($params)
+    {
+        $this->AnnouncementService->deleteAnnouncementById($params['announcement_id']);
+        redirectTo($_SERVER['HTTP_REFERER']);
     }
 }
