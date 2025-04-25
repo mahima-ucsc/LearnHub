@@ -270,7 +270,7 @@
                     <div class="review-header">
                         <!-- avatar -->
                         <img src="<?= isset($review['profile_picture_url'])
-                                        ? $user['profile_picture_url'] :
+                                        ? $review['profile_picture_url'] :
                                         "/assets/images/user_placeholder.jpg" ?>" alt=" <?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
                         <!-- since when-->
                         <div class="review-meta">
