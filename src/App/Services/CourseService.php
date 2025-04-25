@@ -301,7 +301,7 @@ class CourseService
 
         // Add search term condition (searching in name and course title)
         if (!empty($searchTerm)) {
-            $whereConditions[] = "(u.first_name LIKE :term OR u.last_name LIKE :term OR c.title LIKE :term)";
+            $whereConditions[] = "(u.first_name LIKE :term OR u.last_name LIKE :term OR c.title LIKE :term OR CONCAT(u.first_name, ' ', u.last_name) LIKE :term)";
             $params["term"] = "%{$searchTerm}%";
         }
 
