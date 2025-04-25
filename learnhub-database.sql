@@ -387,6 +387,7 @@ CREATE TABLE IF NOT EXISTS shared_resources (
     is_free TINYINT(1) NOT NULL DEFAULT 1,
     price DECIMAL(10,2) DEFAULT 0,
     resource_url TEXT,
+    resource_path VARCHAR(255) DEFAULT NULL,
     user_id BIGINT(20) UNSIGNED NOT NULL,
     created_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
