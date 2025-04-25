@@ -1,5 +1,7 @@
 <?php include $this->resolve("partials/_header.php"); ?>
 <?php include $this->resolve("course/sidebar/sidebar.php"); ?>
+<?php include $this->resolve("components/delete_modal.php"); ?>
+
 
 <link rel="stylesheet" href="/assets/styles/Course/announcement.css">
 
@@ -153,7 +155,7 @@
                             </div>
                             <div class="announcement-actions">
                                 <?php if ($announcement['tutor_id'] === $_SESSION['user']): ?>
-                                    <button class="delete-btn">Delete</button>
+                                    <button class="delete-btn" onclick="showModal('/announcements/delete/<?php echo e($announcement['announcement_id']) ?>')">Delete</button>
                                 <?php else: ?>
                                     <button
                                         class="read_btn"

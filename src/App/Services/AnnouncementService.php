@@ -201,4 +201,14 @@ class AnnouncementService
             ]
         )->find();
     }
+
+    public function deleteAnnouncementById($announcementId)
+    {
+        $this->db->query(
+            "DELETE FROM announcements WHERE announcement_id = :announcement_id",
+            [
+                'announcement_id' => $announcementId,
+            ]
+        );
+    }
 }

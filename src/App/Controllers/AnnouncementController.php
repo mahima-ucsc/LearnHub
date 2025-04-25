@@ -140,4 +140,10 @@ class AnnouncementController
             echo "No file name specified.";
         }
     }
+
+    public function deleteAnnouncement($params)
+    {
+        $this->AnnouncementService->deleteAnnouncementById($params['announcement_id']);
+        redirectTo($_SERVER['HTTP_REFERER']);
+    }
 }
