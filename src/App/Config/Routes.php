@@ -184,7 +184,7 @@ function registerRoutes(App $app)
     // tutor Reviews
     $app->get('/tutor/review/{tutor_id}/{page}', [ReviewController::class, 'getTutorReview']);
     $app->post('/add-tutor-review', [ReviewController::class, 'addTutorReview'], [AuthRequiredMiddleware::class]);
-    $app->post('/delete-tutor-review', [ReviewController::class, 'deleteTutorReview'], [AuthRequiredMiddleware::class]);
+    $app->delete('/delete-tutor-review/{review}', [ReviewController::class, 'deleteTutorReview'], [AuthRequiredMiddleware::class]);
     $app->get('/tutor/reviews/edit/{review}', [ReviewController::class, 'editTutorReviewView'], [AuthRequiredMiddleware::class]);
     $app->post('/tutor/review/edit/{review}', [ReviewController::class, 'editTutorReview'], [AuthRequiredMiddleware::class]);
 

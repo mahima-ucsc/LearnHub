@@ -150,7 +150,6 @@ class AuthController
     public function updateTutorProfile()
     {
         $this->userService->updateTutorProfile($_POST);
-        // dd($_POST);
-        redirectTo("/tutor/{$_SESSION['user']}");
+        redirectTo($_SERVER['HTTP_REFERER']);
     }
 }
