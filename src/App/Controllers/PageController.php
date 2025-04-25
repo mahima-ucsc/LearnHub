@@ -188,11 +188,14 @@ class PageController
                 'pagination' => $pagination
             ]);
         } elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'admin') {
-            // $paymentDetails = $this->paymentService->getPaymentHistory();
+            $totalRevenue = $this->paymentService->getTotalRevenue()['revenue'];
+            $totalWithdrawal = $this->paymentService->getTotalWithdrawal()['revenue'];
             echo $this->view->render('User/payment.php', [
                 'title' => "Billing & Payment",
                 "paymentDetails" => $paymentDetails,
-                'pagination' => $pagination
+                'pagination' => $pagination,
+                "revenue" => $totalRevenue,
+                'totalWithdrawal' => $totalWithdrawal
             ]);
         }
     }
@@ -248,32 +251,33 @@ class PageController
     public function courseManagment()
     {
         $page = (int) ($_GET['p'] ?? 1);
-        $itemsPerPage = 9;
+        $itemsPerPage = 10;
         $offset = ($page - 1) * $itemsPerPage;
         $searchParams = [
             's' => $_GET['s'] ?? ''
         ];
         if ($_SESSION['user_role'] === 'teacher') {
-            // $courses = $this->courseService->getTeacherCourses($_SESSION['user']);
-            // $courseCount = count($courses);
+            $courses = $this->courseService->getTeacherCourses($_SESSION['user'], $itemsPerPage, $offset);
+            $courseCount = count($courses);
+            $totalCourses = $this->courseService->getTeacherCourseCount($_SESSION['user']);
 
-            [$courses, $courseCount] = $this->courseService->searchCourse(
-                $itemsPerPage,
-                $offset
-            );
 
             $revenue = $this->paymentService->getTeacherCourseIncome($_SESSION['user']);
             $revenue = $revenue['revenue'];
             $pagination = generatePagination($courseCount, $page, $itemsPerPage, $searchParams);
         } else {
-            $courseCount = $this->courseService->getNoOfCourses();
-            $courses = $this->courseService->getCourseList();
+            [$courses, $courseCount] = $this->courseService->searchCourse(
+                $itemsPerPage,
+                $offset
+            );
+            $totalCourses = $this->courseService->getNoOfCourses();
             $revenue = $this->paymentService->getTotalCourseIncome();
             $revenue = $revenue[0]['revenue'];
+            $pagination = generatePagination($courseCount, $page, $itemsPerPage, $searchParams);
         }
         echo $this->view->render('User/course_managment.php', [
             'title' => "Course Managment",
-            'courseCount' => $courseCount,
+            'totalCourses' => $totalCourses,
             "courses" => $courses,
             'revenue' => $revenue,
             'pagination' => $pagination
@@ -401,27 +405,45 @@ class PageController
     }
     public function userManagment()
     {
-        if ($_SESSION['user_role'] === "teacher") {
-            $path = "User/Tutor/user_managment.php";
-        } else {
-            $path = "User/Admin/admin_user_managment.php";
-            $users = $this->userService->getUsers();
-            $userCount = $this->userService->getUserCount();
-        }
-        echo $this->view->render($path, [
+        $page = (int) ($_GET['p'] ?? 1);
+        $itemsPerPage = 10;
+        $offset = ($page - 1) * $itemsPerPage;
+
+        $searchParams = [
+            's' => $_GET['s'] ?? '',
+            'role' => $_GET['role'] ?? ''
+        ];
+
+        [$users, $userCount] = $this->userService->getUsers($itemsPerPage, $offset);
+        $totalUsers = $this->userService->getUserCount();
+
+        $pagination = generatePagination($userCount, $page, $itemsPerPage, $searchParams);
+
+        echo $this->view->render('User/Admin/admin_user_managment.php', [
             "title" => "User Managment",
             "users" => $users,
-            "userCount" => $userCount
+            "totalUsers" => $totalUsers,
+            "pagination" => $pagination
         ]);
     }
     public function postManagment()
     {
-        $courseRequests = $this->courseRequestService->getAllCourseRequests();
-        $requestCount = $this->courseRequestService->getCount();
+        $page = (int) ($_GET['p'] ?? 1);
+        $itemsPerPage = 10;
+        $offset = ($page - 1) * $itemsPerPage;
+
+        $searchParams = [
+            'status' => $_GET['status'] ?? ''
+        ];
+
+        [$courseRequests, $requestCount] = $this->courseRequestService->getAllCourseRequests($itemsPerPage, $offset);
+        $totalCount = $this->courseRequestService->getCount();
+        $pagination = generatePagination($requestCount, $page, $itemsPerPage, $searchParams);
         echo $this->view->render("User/Admin/admin_post_managment.php", [
             "title" => "Post Managment",
             "posts" => $courseRequests,
-            "requestCount" => $requestCount
+            "totalCount" => $totalCount,
+            "pagination" => $pagination
         ]);
     }
     public function adManagment()
@@ -501,6 +523,17 @@ class PageController
         }
         echo json_encode($data);
     }
+
+    public function revenueReportView()
+    {
+
+        echo $this->view->render(
+            'User/Admin/revenue_report.php',
+            [
+                'title' => "Revenue Report"
+            ]
+        );
+    }
     public function profile()
     {
         $userDetails = $this->userService->getUserProfile();
@@ -551,7 +584,7 @@ class PageController
     public function test()
     {
 
-        echo $this->view->render("User/user_courses.php", [
+        echo $this->view->render("test.php", [
             "title" => "Post Managment"
         ]);
     }

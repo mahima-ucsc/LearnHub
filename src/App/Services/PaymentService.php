@@ -788,4 +788,21 @@ class PaymentService
             throw $e;
         }
     }
+
+    public function getTotalRevenue()
+    {
+        return $this->db->query(
+            "SELECT SUM(amount) AS revenue
+            FROM payments"
+        )->find();
+    }
+
+    public function getTotalWithdrawal()
+    {
+        return $this->db->query(
+            "SELECT SUM(amount) AS revenue
+            FROM teacher_withdrawal
+            WHERE status = 'completed'"
+        )->find();
+    }
 }

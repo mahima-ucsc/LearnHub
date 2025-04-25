@@ -18,8 +18,8 @@
             <div class="value">Rs. <?= e($revenue); ?></div>
         </div>
         <div class="summary-card">
-            <h3>Active Courses</h3>
-            <div class="value"><?= e($courseCount); ?></div>
+            <h3>Total withdrawal</h3>
+            <div class="value"><?= e($totalWithdrawal); ?></div>
         </div>
     </div>
 

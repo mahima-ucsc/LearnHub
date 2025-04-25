@@ -144,6 +144,11 @@
         color: var(--text-dark);
     }
 
+    .filter-section {
+        display: flex;
+        gap: 16px;
+    }
+
     .search-container {
         display: flex;
         align-items: center;
@@ -354,28 +359,28 @@
                 <div class="stat-icon">
                     <i class="fas fa-users"></i>
                 </div>
-                <div class="stat-value" id="totalUsers"><?php echo ((int)$userCount['students'] + (int)$userCount['teachers']) ?></div>
+                <div class="stat-value" id="totalUsers"><?php echo ((int)$totalUsers['students'] + (int)$totalUsers['teachers']) ?></div>
                 <div class="stat-label">Total Users</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">
                     <i class="fas fa-user-shield"></i>
                 </div>
-                <div class="stat-value" id="adminCount"><?php echo e($userCount['admin']); ?></div>
+                <div class="stat-value" id="adminCount"><?php echo e($totalUsers['admin']); ?></div>
                 <div class="stat-label">Admins</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">
                     <i class="fas fa-user-edit"></i>
                 </div>
-                <div class="stat-value" id="editorCount"><?php echo e($userCount['students']); ?></div>
+                <div class="stat-value" id="editorCount"><?php echo e($totalUsers['students']); ?></div>
                 <div class="stat-label">Students</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">
                     <i class="fas fa-user"></i>
                 </div>
-                <div class="stat-value" id="regularUserCount"><?php echo e($userCount['teachers']); ?></div>
+                <div class="stat-value" id="regulartotalUsers"><?php echo e($totalUsers['teachers']); ?></div>
                 <div class="stat-label">Teachers</div>
             </div>
         </div>
@@ -388,12 +393,20 @@
                     <span class="menu-icon"><i class="fas fa-user-plus"></i></span>
                     Add User
                 </button>
-                <div class="search-container">
-                    <form method="GET">
-                        <i class="fas fa-search"></i>
-                        <input type="text" name="s" placeholder="Search users..." class="search-input" id="searchInput" value="<?php echo ($_GET['s']); ?>">
-                    </form>
-                </div>
+                <form method="GET" class="filter-form">
+                    <div class="filter-section">
+                        <select name="role" class="select-user-role">
+                            <option value="all">Select user role</option>
+                            <option value="student" <?= isset($_GET['role']) && $_GET['role'] == 'student' ? 'selected' : ''; ?>>Student</option>
+                            <option value="teacher" <?= isset($_GET['role']) && $_GET['role'] == 'teacher' ? 'selected' : ''; ?>>Teacher</option>
+                            <option value="admin" <?= isset($_GET['role']) && $_GET['role'] == 'admin' ? 'selected' : ''; ?>>Admin</option>
+                        </select>
+                        <div class="search-container">
+                            <i class="fas fa-search"></i>
+                            <input type="text" name="s" placeholder="Search users..." class="search-input" id="searchInput" value="<?php echo ($_GET['s']); ?>">
+                        </div>
+                    </div>
+                </form>
             </div>
             <div class="table-responsive">
                 <table>
@@ -436,6 +449,7 @@
 
                     </tbody>
                 </table>
+                <?php include $this->resolve('components/pagination.php'); ?>
             </div>
             <div class="pagination" id="pagination">
                 <!-- Pagination will be added dynamically -->
@@ -443,4 +457,10 @@
         </div>
     </div>
 </main>
+<script>
+    const form = document.querySelector('.filter-form');
+    document.querySelector(".select-user-role").addEventListener('change', () => {
+        form.submit();
+    });
+</script>
 <?php include $this->resolve('components/delete_modal.php'); ?>

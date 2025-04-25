@@ -49,6 +49,8 @@ function registerRoutes(App $app)
     $app->get('/post-managment', [PageController::class, 'postManagment']);
     $app->get('/advertisement-managment', [PageController::class, 'adManagment']);
 
+    $app->get('/revenue-report', [PageController::class, 'revenueReportView']);
+
 
 
     // Admin Resource managment
@@ -84,7 +86,7 @@ function registerRoutes(App $app)
 
     //Billing and payments
     $app->get('/billing-and-payment', [PageController::class, 'billingAndPayment'], [AuthRequiredMiddleware::class]);
-    $app->get('/wallet', [PageController::class, 'walletView'], [AuthRequiredMiddleware::class]);
+    $app->get('/withdraw', [PageController::class, 'walletView'], [AuthRequiredMiddleware::class]);
     $app->post('/request-withdrawal', [PageController::class, 'requestWithdrawal'], [AuthRequiredMiddleware::class]);
     $app->get('/withdrawal-managment', [PageController::class, 'withdrawalManagment']);
     $app->post('/withdrawal/complete/{withdrawal_id}', [PageController::class, 'completeWithdrawal']);
