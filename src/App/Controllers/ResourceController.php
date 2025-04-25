@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Config\Paths;
 use Framework\TemplateEngine;
 use App\Services\ResourceService;
 use App\Services\ValidatorService;
@@ -157,5 +158,36 @@ class ResourceController
             error_log("Error approving resource: " . $e->getMessage());
             redirectTo('/server-error');
         }
+    }
+
+    public function downloadResource(array $params)
+    {
+        $resourceId = (int)$params['resource_id'];
+        $resource = $this->resourceService->getResourceByIdDownload($resourceId);
+
+        if (!$resource || $resource['is_free'] != 1) {
+            // Redirect back if the resource is not free or doesn't exist
+            redirectTo('/resource');
+        }
+
+        $filePath = Paths::STORAGE_UPLOADS . '/resources/' . $resource['resource_path'];
+
+        if (!file_exists($filePath)) {
+            echo "File not found.";
+            return;
+        }
+
+        // Set headers for file download
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . basename($filePath) . '"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize($filePath));
+
+        // Read the file and output it
+        readfile($filePath);
+        exit;
     }
 }

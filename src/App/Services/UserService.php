@@ -342,6 +342,7 @@ class UserService
         $verificationCode = generateRadomString(6);
         $HVcode = password_hash((string)$verificationCode, PASSWORD_BCRYPT, ["const" => 12]);
         $_SESSION['otp_hash'] = $HVcode;
+        $_SESSION['otp_expiry'] = time() + 300;
 
         try {
             // server settings
