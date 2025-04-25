@@ -94,8 +94,10 @@
                             <button class="filter-button" data-filter="event">Event</button>
                         </div>
                     </div>
-                    <button class="filter-button" data-filter="read">Read</button>
-                    <button class="filter-button" data-filter="unread">Unread</button>
+                    <?php if ($announcement['tutor_id'] === $_SESSION['user']): ?>
+                        <button class="filter-button" data-filter="read">Read</button>
+                        <button class="filter-button" data-filter="unread">Unread</button>
+                    <?php endif; ?>
                 </div>
             </div>
 
