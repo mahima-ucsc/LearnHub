@@ -48,17 +48,14 @@ class AnnouncementService
         $this->db->beginTransaction();
         try {
             $this->db->query(
-                "INSERT INTO announcements (course_id, title, content, category, visibility, specific_emails, attachments, send_email)
-                VALUES (:course_id, :title, :content, :category, :visibility, :specific_emails, :attachments, :send_email)",
+                "INSERT INTO announcements (course_id, title, content, category, attachments)
+                VALUES (:course_id, :title, :content, :category, :attachments)",
                 [
                     'course_id' => $formData['course_id'],
                     'title' => $formData['title'],
                     'content' => $formData['content'],
                     'category' => $formData['category'],
-                    'visibility' => $formData['visibility'],
-                    'specific_emails' => $formData['specific_emails'] ?? NULL,
                     'attachments' => !empty($attachments) ? json_encode($attachments) :  NULL,
-                    'send_email' => $formData['send_email'],
                 ]
             );
 
