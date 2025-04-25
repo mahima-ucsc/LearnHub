@@ -11,16 +11,23 @@ class AppConstants
     public const DB_DRIVER = 'mysql';
     public const DB_HOST = 'localhost';
     public const DB_PORT = 3306;
-    public const DB_NAME = '';
-    public const DB_USER = '';
-    public const DB_PASS = '';
+    public const DB_NAME = 'learnhubUpdated';
+    public const DB_USER = 'learnhub';
+    public const DB_PASS = 'learnhub123';
 
     // Log Folder
     public const LOG_FOLDER = __DIR__ . '/../../../logs/';
 
+    // Advertisement Package Prices
+    public const ADVERTISEMENT_PACKAGES = [
+        'basic' => 400,
+        'standard' => 800,
+        'gold' => 1500
+    ];
+
     // PayHere
-    public const PAYHERE_MERCHANT_ID = '';
-    public const PAYHERE_MERCHANT_SECRET = '';
+    public const PAYHERE_MERCHANT_ID = '1227550';
+    public const PAYHERE_MERCHANT_SECRET = 'MzYxMDEwMjU2MTE0MjA2NjA1NTgxOTc1OTQ1NjUwMzMyNjU4NDIxNg==';
     public const PAYHERE_AUTHORIZATION_API_URL = 'https://sandbox.payhere.lk/merchant/v1/oauth/token';
     public const PAYHERE_RETRIEVAL_API_URL = 'https://sandbox.payhere.lk/merchant/v1/payment/search?order_id=';
     public const PAYHERE_AUTHORIZATION_CODE = 'NE9WeHpDWmUxQ0s0SkVWT0Nrc1FsdTNUYjo0ZlVBNThqdmpITzhXM3lvRTVVcndxNFR2TnROYzc0V0M4YkxBSXI2cVlUNQ==';
@@ -47,5 +54,11 @@ class AppConstants
     public const COURSE_PAYMENT_RETURN_URL = 'http://localhost:3000';
     public const COURSE_PAYMENT_CANCEL_URL = 'http://localhost:3000';
     public const COURSE_PAYMENT_RELATIVE_NOTIFY_URL = '/payment/notify';
-    public const COURSE_PAYMENT_NOTIFY_URL = 'https://57fb-192-248-16-125.ngrok-free.appp' . self::COURSE_PAYMENT_RELATIVE_NOTIFY_URL;
+    public const COURSE_PAYMENT_NOTIFY_URL = 'https://7017-192-248-16-125.ngrok-free.appdddddd' . self::COURSE_PAYMENT_RELATIVE_NOTIFY_URL;
+
+    // PayHere Advertisement Payment URLs
+    public const AD_PAYMENT_RETURN_URL = 'http://learnhub.local';
+    public const AD_PAYMENT_CANCEL_URL = 'http://learnhub.local';
+    public const AD_PAYMENT_RELATIVE_NOTIFY_URL = '/payment/notify';
+    public const AD_PAYMENT_NOTIFY_URL = 'https://d183-2402-d000-8114-4e8a-c5f6-e156-4257-656.ngrok-free.app' . self::AD_PAYMENT_RELATIVE_NOTIFY_URL;
 }

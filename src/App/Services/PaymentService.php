@@ -49,6 +49,16 @@ class PaymentService
         return $this->db->find()['price'];
     }
 
+    public function getAdvertisementAmount(string $advertisementId)
+    {
+        $package = $this->db->query("SELECT package FROM advertisement WHERE advertisement_id = :advertisementId", [
+            'advertisementId' => $advertisementId
+        ])->find()['package'];
+
+        $packageAmounts = AppConstants::ADVERTISEMENT_PACKAGES;
+        return $packageAmounts[$package] ?? 0;
+    }
+
     public function createOnetimeCourseOrderId(string $courseId)
     {
         return 'cid_' . $courseId . '_' . time() . '_' . $_SESSION['user'];
@@ -57,6 +67,12 @@ class PaymentService
     public function createSubPeriodOrderId(string $courseId, string $subperiodId)
     {
         return 'cid_' . $courseId . '_spid_' . $subperiodId . '_' . time() . '_' . $_SESSION['user'];
+    }
+
+
+    public function createAdvertisementOrderId(string $advertisementId)
+    {
+        return 'ad_' . $advertisementId . '_' . time() . '_' . $_SESSION['user'];
     }
 
     public function createCoursePaymentEntry(string $orderId, string $courseId, ?string $subperiodId, string $userId, float $amount)
@@ -82,6 +98,39 @@ class PaymentService
                 [
                     'courseId' => $courseId,
                     'subperiodId' => $subperiodId, // null if one-time course
+                    'userId' => $userId,
+                    'paymentId' => $paymentId
+                ]
+            );
+
+            $this->db->commit();
+        } catch (\Exception $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
+    }
+
+    public function createAdvertisementPaymentEntry(string $orderId, string $advertisementId, string $userId, float $amount)
+    {
+        try {
+            $this->db->beginTransaction();
+
+            $this->db->query("INSERT INTO payments (order_id, amount, payment_status) VALUES (:orderId, :amount, :payment_status)", [
+                'orderId' => $orderId,
+                'amount' => $amount,
+                'payment_status' => AppConstants::PAYMENT_STATUS_PENDING
+            ]);
+
+            $this->db->query("SELECT payment_id FROM payments WHERE order_id = :orderId", [
+                'orderId' => $orderId
+            ]);
+            $paymentId = $this->db->find()['payment_id'];
+
+            $this->db->query(
+                "INSERT INTO advertisement_payments (advertisement_id, user_id, payment_id) 
+            VALUES (:advertisementId, :userId, :paymentId)",
+                [
+                    'advertisementId' => $advertisementId,
                     'userId' => $userId,
                     'paymentId' => $paymentId
                 ]
@@ -379,6 +428,27 @@ class PaymentService
 
         return [
             "course_title" => $course['title'],
+        ];
+    }
+
+    public function getViewDetailsForAdvertisementCheckout(string $advertisementId)
+    {
+        $ad = $this->db->query(
+            "SELECT * FROM advertisement WHERE advertisement_id = :advertisement_id",
+            [
+                "advertisement_id" => $advertisementId
+            ]
+        )->find();
+        $course_title = $this->db->query(
+            "SELECT title FROM courses WHERE course_id = :course_id",
+            [
+                "course_id" => $ad['course_id']
+            ]
+        )->find()['title'];
+
+        return [
+            "package" => $ad['package'],
+            "course_title" => $course_title,
         ];
     }
 
@@ -717,5 +787,22 @@ class PaymentService
         } catch (Exception $e) {
             throw $e;
         }
+    }
+
+    public function getTotalRevenue()
+    {
+        return $this->db->query(
+            "SELECT SUM(amount) AS revenue
+            FROM payments"
+        )->find();
+    }
+
+    public function getTotalWithdrawal()
+    {
+        return $this->db->query(
+            "SELECT SUM(amount) AS revenue
+            FROM teacher_withdrawal
+            WHERE status = 'completed'"
+        )->find();
     }
 }

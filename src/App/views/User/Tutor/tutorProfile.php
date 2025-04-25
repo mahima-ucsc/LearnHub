@@ -11,7 +11,7 @@
             <div class="profile-sidebar">
                 <div class="avatar-container">
                     <?php if ($tutorDetails['profile_picture_url']): ?>
-                        <img class="avatar" src="/storage/uploads/profile/<?php echo e($tutorDetails['profile_picture_url']); ?>" alt="<?php echo e($tutorDetails['first_name'] . ' ' . $tutorDetails['last_name']); ?>">
+                        <img class="avatar" src="<?php echo e($tutorDetails['profile_picture_url']); ?>" alt="<?php echo e($tutorDetails['first_name'] . ' ' . $tutorDetails['last_name']); ?>">
                     <?php else: ?>
                         <img class="avatar" src="/assets/images/user.jpeg" alt="<?php echo e($tutorDetails['first_name'] . ' ' . $tutorDetails['last_name']); ?>">
                     <?php endif; ?>
@@ -23,8 +23,8 @@
                     Joined <?php echo e(date('F Y', strtotime($tutorDetails['joined_date']))); ?>
                 </p>
 
-                <?php if ($tutorDetails['profile_title']): ?>
-                    <p class="bio-text"><?php echo e($tutorDetails['profile_title']); ?></p>
+                <?php if ($tutorBasic['title']): ?>
+                    <p class="bio-text"><?php echo e($tutorBasic['title']); ?></p>
                 <?php endif; ?>
 
                 <div class="section-divider"></div>
@@ -33,8 +33,8 @@
                     <i class="fas fa-user"></i> About Me
                 </h2>
                 <p class="bio-text">
-                    <?php if ($tutorDetails['profile_bio']): ?>
-                        <?php echo e($tutorDetails['profile_bio']); ?>
+                    <?php if ($tutorBasic['bio']): ?>
+                        <?php echo e($tutorBasic['bio']); ?>
                     <?php elseif ($tutorDetails['description']): ?>
                         <?php echo e($tutorDetails['description']); ?>
                     <?php else: ?>
@@ -42,19 +42,21 @@
                     <?php endif; ?>
                 </p>
 
-                <?php if ($tutorDetails['subject_title'] || $tutorDetails['field_of_study']): ?>
-                    <h2 class="section-title">
-                        <i class="fas fa-tags"></i> Specializations
-                    </h2>
-                    <div class="tag-container">
-                        <?php if ($tutorDetails['subject_title']): ?>
-                            <span class="tag"><?php echo e($tutorDetails['subject_title']); ?></span>
-                        <?php endif; ?>
-                        <?php if ($tutorDetails['field_of_study']): ?>
-                            <span class="tag"><?php echo e($tutorDetails['field_of_study']); ?></span>
-                        <?php endif; ?>
-                    </div>
-                <?php endif; ?>
+                <h2 class="section-title">
+                    <i class="fas fa-tags"></i> Specializations
+                </h2>
+                <div class="tag-container">
+                    <?php if ($tutorSubjects): ?>
+                        <?php foreach ($tutorSubjects as $tutorSubject): ?>
+                            <span class="tag"><?php echo e($tutorSubject['subject_title']); ?></span>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                    <?php if ($tutorEducations): ?>
+                        <?php foreach ($tutorEducations as $tutorEducation): ?>
+                            <span class="tag"><?php echo e($tutorEducation['field_of_study']); ?></span>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
             </div>
 
             <!-- Right content area -->
@@ -95,36 +97,41 @@
                         <i class="fas fa-graduation-cap"></i> Educational Background
                     </h2>
 
-                    <?php if ($tutorDetails['degree'] || $tutorDetails['institution'] || $tutorDetails['field_of_study']): ?>
-                        <div class="info-grid">
-                            <?php if ($tutorDetails['degree']): ?>
-                                <div class="info-item">
-                                    <div class="info-label">Degree</div>
-                                    <div class="info-value"><?php echo e($tutorDetails['degree']); ?></div>
-                                </div>
-                            <?php endif; ?>
+                    <?php if (isset($tutorEducations)): ?>
+                        <?php foreach ($tutorEducations as $index => $tutorEducation): ?>
+                            <div class="info-grid">
+                                <?php if ($tutorEducation['degree']): ?>
+                                    <div class="info-item">
+                                        <div class="info-label">Degree</div>
+                                        <div class="info-value"><?php echo e($tutorEducation['degree']); ?></div>
+                                    </div>
+                                <?php endif; ?>
 
-                            <?php if ($tutorDetails['institution']): ?>
-                                <div class="info-item">
-                                    <div class="info-label">Institution</div>
-                                    <div class="info-value"><?php echo e($tutorDetails['institution']); ?></div>
-                                </div>
-                            <?php endif; ?>
+                                <?php if ($tutorEducation['institution']): ?>
+                                    <div class="info-item">
+                                        <div class="info-label">Institution</div>
+                                        <div class="info-value"><?php echo e($tutorEducation['institution']); ?></div>
+                                    </div>
+                                <?php endif; ?>
 
-                            <?php if ($tutorDetails['field_of_study']): ?>
-                                <div class="info-item">
-                                    <div class="info-label">Field of Study</div>
-                                    <div class="info-value"><?php echo e($tutorDetails['field_of_study']); ?></div>
-                                </div>
-                            <?php endif; ?>
+                                <?php if ($tutorEducation['field_of_study']): ?>
+                                    <div class="info-item">
+                                        <div class="info-label">Field of Study</div>
+                                        <div class="info-value"><?php echo e($tutorEducation['field_of_study']); ?></div>
+                                    </div>
+                                <?php endif; ?>
 
-                            <?php if ($tutorDetails['education_start'] && $tutorDetails['education_end']): ?>
-                                <div class="info-item">
-                                    <div class="info-label">Duration</div>
-                                    <div class="info-value"><?php echo e(date('Y', strtotime($tutorDetails['education_start']))); ?> - <?php echo e(date('Y', strtotime($tutorDetails['education_end']))); ?></div>
-                                </div>
+                                <?php if ($tutorEducation['start_date'] && $tutorEducation['end_date']): ?>
+                                    <div class="info-item">
+                                        <div class="info-label">Duration</div>
+                                        <div class="info-value"><?php echo e(date('Y', strtotime($tutorEducation['start_date']))); ?> - <?php echo e(date('Y', strtotime($tutorEducation['end_date']))); ?></div>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <?php if ($index < count($tutorEducations) - 1): ?>
+                                <hr class="divider" />
                             <?php endif; ?>
-                        </div>
+                        <?php endforeach; ?>
                     <?php else: ?>
                         <p class="empty-state">Educational background information not provided.</p>
                     <?php endif; ?>
@@ -136,22 +143,27 @@
                         <i class="fas fa-chalkboard-teacher"></i> Teaching Experience
                     </h2>
 
-                    <?php if ($tutorDetails['years_experience'] || $tutorDetails['subject_title']): ?>
-                        <div class="info-grid">
-                            <?php if ($tutorDetails['years_experience']): ?>
-                                <div class="info-item">
-                                    <div class="info-label">Years of Experience</div>
-                                    <div class="info-value"><?php echo e($tutorDetails['years_experience']); ?> years</div>
-                                </div>
-                            <?php endif; ?>
+                    <?php if (isset($tutorSubjects)): ?>
+                        <?php foreach ($tutorSubjects as $index => $tutorSubject): ?>
+                            <div class="info-grid">
+                                <?php if ($tutorSubject['years_experience']): ?>
+                                    <div class="info-item">
+                                        <div class="info-label">Years of Experience</div>
+                                        <div class="info-value"><?php echo e($tutorSubject['years_experience']); ?> years</div>
+                                    </div>
+                                <?php endif; ?>
 
-                            <?php if ($tutorDetails['subject_title']): ?>
-                                <div class="info-item">
-                                    <div class="info-label">Subject Expertise</div>
-                                    <div class="info-value"><?php echo e($tutorDetails['subject_title']); ?></div>
-                                </div>
+                                <?php if ($tutorSubject['subject_title']): ?>
+                                    <div class="info-item">
+                                        <div class="info-label">Subject Expertise</div>
+                                        <div class="info-value"><?php echo e($tutorSubject['subject_title']); ?></div>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <?php if ($index < count($tutorSubjects) - 1): ?>
+                                <hr class="divider" />
                             <?php endif; ?>
-                        </div>
+                        <?php endforeach; ?>
                     <?php else: ?>
                         <p class="empty-state">Teaching experience information not provided.</p>
                     <?php endif; ?>
@@ -163,18 +175,30 @@
                         <i class="fas fa-clock"></i> Availability
                     </h2>
 
-                    <?php if ($tutorDetails['day_of_week'] && $tutorDetails['start_time'] && $tutorDetails['end_time']): ?>
+                    <?php $weeks = [
+                        0 => 'Sunday',
+                        1 => 'Monday',
+                        2 => 'Tuesday',
+                        3 => 'Wednesday',
+                        4 => 'Thursday',
+                        5 => 'Friday',
+                        6 => 'Saturday'
+                    ];
+                    ?>
+                    <?php if (isset($tutorAvailablities)): ?>
                         <div class="availability-grid">
-                            <div class="day-slot">
-                                <div class="day-name"><?php echo e($tutorDetails['day_of_week']); ?></div>
-                                <div class="time-slot">
-                                    <?php echo e(date('g:i A', strtotime($tutorDetails['start_time']))); ?> -
-                                    <?php echo e(date('g:i A', strtotime($tutorDetails['end_time']))); ?>
+                            <?php foreach ($tutorAvailablities as $tutorAvailablity): ?>
+                                <div class="day-slot">
+                                    <div class="day-name"><?php echo $weeks[e($tutorAvailablity['day_of_week'])]; ?></div>
+                                    <div class="time-slot">
+                                        <?php echo e(date('g:i A', strtotime($tutorAvailablity['start_time']))); ?> -
+                                        <?php echo e(date('g:i A', strtotime($tutorAvailablity['end_time']))); ?>
+                                    </div>
+                                    <?php if ($tutorAvailablity['is_recurring']): ?>
+                                        <div class="time-slot">(Weekly)</div>
+                                    <?php endif; ?>
                                 </div>
-                                <?php if ($tutorDetails['is_recurring']): ?>
-                                    <div class="time-slot">(Weekly)</div>
-                                <?php endif; ?>
-                            </div>
+                            <?php endforeach; ?>
                         </div>
                     <?php else: ?>
                         <p class="empty-state">Availability schedule not provided.</p>
@@ -244,19 +268,27 @@
                                 <?php endif; ?>
                             </div>
                             <div class="course-details">
-                                <div class="course-detail">
-                                    <i class="fas fa-clock"></i>
-                                    <span>3H</span>
-                                </div>
-                                <div class="course-detail">
-                                    <span>Grade 13</span>
-                                </div>
+                                <?php if (isset($course['durationInHour'])): ?>
+                                    <div class="course-detail">
+                                        <i class="fas fa-clock"></i>
+                                        <span><?php echo $course['durationInHour'] ?></span>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if (isset($course['grade_name'])): ?>
+                                    <div class="course-detail">
+                                        <span>Grade <?php echo $course['grade_name'] ?></span>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
                 </a>
             <?php endforeach; ?>
         </section>
+        <div class="more-course">
+            <button class="btn" onclick="window.location.href='/courses?s=<?php echo e($tutorDetails['first_name'] . '+' . $tutorDetails['last_name']); ?>'">more courses</button>
+        </div>
     </div>
 
     <!-- reviews from students -->

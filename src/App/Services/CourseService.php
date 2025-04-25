@@ -829,7 +829,31 @@ class CourseService
         )->findAll();
     }
 
-    public function getTeacherCourses(int $id)
+    public function getTeacherCourses(int $id, int $limit = 0, int $offset = 0)
+    {
+        try {
+            $params['id'] = $id;
+
+            if (!empty($_GET['s'])) {
+                $whereClause = "AND title LIKE :term";
+                $params['term'] = "%{$_GET['s']}%";
+            }
+            if ($limit != 0) {
+                $limitClause = "LIMIT {$limit} OFFSET {$offset}";
+            }
+            return $this->db->query(
+                "SELECT * FROM courses
+                WHERE tutor_id = :id
+                {$whereClause}
+                {$limitClause}",
+                $params
+            )->findAll();
+        } catch (Exception $e) {
+            error_log('Failed to fetch teacher courses: ' . $e->getMessage());
+            redirectTo('/server-error');
+        }
+    }
+    public function getTeacherCourseCount(int $id)
     {
         try {
             return $this->db->query(
@@ -838,7 +862,7 @@ class CourseService
                 [
                     'id' => $id
                 ]
-            )->findAll();
+            )->count();
         } catch (Exception $e) {
             error_log('Failed to fetch teacher courses: ' . $e->getMessage());
             redirectTo('/server-error');
@@ -1034,7 +1058,9 @@ class CourseService
     public function getTutorcourses(string $tutorId)
     {
         $courses = $this->db->query(
-            "SELECT * FROM courses WHERE tutor_id = :tutor_id ORDER BY published_date DESC ",
+            "SELECT c.*, g.grade_name FROM courses c
+            JOIN grades g ON c.grade_id = g.grade_id
+            WHERE c.tutor_id = :tutor_id ORDER BY published_date DESC LIMIT 3 ",
             [
                 'tutor_id' => $tutorId
             ]

@@ -387,7 +387,6 @@ CREATE TABLE IF NOT EXISTS shared_resources (
     is_free TINYINT(1) NOT NULL DEFAULT 1,
     price DECIMAL(10,2) DEFAULT 0,
     resource_url TEXT,
-    resource_path VARCHAR(255) DEFAULT NULL,
     user_id BIGINT(20) UNSIGNED NOT NULL,
     created_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
@@ -412,6 +411,19 @@ CREATE TABLE IF NOT EXISTS advertisement (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
     PRIMARY KEY(advertisement_id)
+);
+
+-- Table for advertisement payments
+CREATE TABLE IF NOT EXISTS advertisement_payments (
+    ad_payment_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    advertisement_id BIGINT(20) UNSIGNED NOT NULL,
+    payment_id BIGINT(20) UNSIGNED NOT NULL,
+    user_id BIGINT(20) UNSIGNED NOT NULL,
+    payment_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (advertisement_id) REFERENCES advertisement(advertisement_id) ON DELETE CASCADE,
+    FOREIGN KEY (payment_id) REFERENCES payments(payment_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 -- Enable Event Scheduler

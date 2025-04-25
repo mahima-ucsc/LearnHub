@@ -49,6 +49,8 @@ function registerRoutes(App $app)
     $app->get('/post-managment', [PageController::class, 'postManagment']);
     $app->get('/advertisement-managment', [PageController::class, 'adManagment']);
 
+    $app->get('/revenue-report', [PageController::class, 'revenueReportView']);
+
 
 
     // Admin Resource managment
@@ -84,7 +86,7 @@ function registerRoutes(App $app)
 
     //Billing and payments
     $app->get('/billing-and-payment', [PageController::class, 'billingAndPayment'], [AuthRequiredMiddleware::class]);
-    $app->get('/wallet', [PageController::class, 'walletView'], [AuthRequiredMiddleware::class]);
+    $app->get('/withdraw', [PageController::class, 'walletView'], [AuthRequiredMiddleware::class]);
     $app->post('/request-withdrawal', [PageController::class, 'requestWithdrawal'], [AuthRequiredMiddleware::class]);
     $app->get('/withdrawal-managment', [PageController::class, 'withdrawalManagment']);
     $app->post('/withdrawal/complete/{withdrawal_id}', [PageController::class, 'completeWithdrawal']);
@@ -102,6 +104,8 @@ function registerRoutes(App $app)
     $app->get('/tutor/{tutor-id}', [PageController::class, 'tutorProfile'], [AuthRequiredMiddleware::class]);
     $app->get('/tutor/{tutor-id}/create_profile', [AuthController::class, 'createTutorProfileView'], [TeacherOnlyMiddleware::class]);
     $app->post('/api/tutor/profile_create', [AuthController::class, 'createTutorProfile'], [TeacherOnlyMiddleware::class]);
+    $app->get('/tutor/{tutor-id}/update_profile', [AuthController::class, 'updateTutorProfileView'], [TeacherOnlyMiddleware::class]);
+    $app->post('/api/tutor/profile_update', [AuthController::class, 'updateTutorProfile'], [TeacherOnlyMiddleware::class]);
 
     // Courses
     $app->get('/courses', [CoursesController::class, 'course']);
@@ -221,8 +225,10 @@ function registerRoutes(App $app)
     // Payments
     $app->get('/payment/courses/{course_id}', [PaymentController::class, 'onetimeCoursePaymentView']);
     $app->get('/payment/courses/{course_id}/{subperiod_id}', [PaymentController::class, 'courserSubPeriodPaymentView']);
+    $app->get('/payment/advertisement/{advertisement_id}', [PaymentController::class, 'advertisementPaymentView']);
     $app->post('/payment/courses/{course_id}', [PaymentController::class, 'onetimeCoursePayment']);
     $app->post('/payment/courses/{course_id}/{subperiod_id}', [PaymentController::class, 'courseSubperiodPayment']);
+    $app->post('/payment/advertisement/{advertisement_id}', [PaymentController::class, 'advertisementPayment']);
     $app->post(AppConstants::COURSE_PAYMENT_RELATIVE_NOTIFY_URL, [PaymentController::class, 'handlePaymentNotification']);
 
     $app->get('/unauthorized-access', [PageController::class, 'unauthorizedAccess']);

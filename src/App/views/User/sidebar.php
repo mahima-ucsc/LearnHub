@@ -301,9 +301,6 @@
     <p>MENU</p>
 </button>
 <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <h3 class="sidebar-title">Admin Dashboard</h3>
-    </div>
     <div class="sidebar-menu">
         <div class="sidebar-section">
             <h4 class="section-title">Main</h4>
@@ -313,43 +310,60 @@
             </a>
         </div>
 
-        <div class="sidebar-section">
-            <h4 class="section-title">User Management</h4>
-            <a href="/user-managment" class="menu-item">
-                <span class="menu-icon"><i class="fas fa-users"></i></span>
-                All Users
-            </a>
-            <button onclick="openPopup()" class="menu-item menu-item-btn">
-                <span class="menu-icon"><i class="fas fa-user-plus"></i></span>
-                Add User
-            </button>
-        </div>
+        <?php if (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'admin'): ?>
+            <div class="sidebar-section">
+                <h4 class="section-title">User Management</h4>
+                <a href="/user-managment" class="menu-item">
+                    <span class="menu-icon"><i class="fas fa-users"></i></span>
+                    All Users
+                </a>
+                <button onclick="openPopup()" class="menu-item menu-item-btn">
+                    <span class="menu-icon"><i class="fas fa-user-plus"></i></span>
+                    Add User
+                </button>
+            </div>
+        <?php endif; ?>
 
         <div class="sidebar-section">
             <h4 class="section-title">Course Management</h4>
             <a href="/course-managment" class="menu-item">
                 <span class="menu-icon"><i class="fas fa-book"></i></span>
-                All Courses
+                <?php if (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'admin'): ?>
+                    All Courses
+                <?php elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'teacher'): ?>
+                    My Courses
+                <?php endif; ?>
             </a>
-            <a href="/course/create" class="menu-item">
-                <span class="menu-icon"><i class="fas fa-plus-circle"></i></span>
-                Add Course
-            </a>
+            <?php if (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'teacher'): ?>
+                <a href="/course/create" class="menu-item">
+                    <span class="menu-icon"><i class="fas fa-plus-circle"></i></span>
+                    Create Course
+                </a>
+            <?php endif; ?>
         </div>
-        <div class="sidebar-section">
-            <h4 class="section-title">Post Management</h4>
-            <a href="/post-managment" class="menu-item">
-                <span class="menu-icon"><i class="fa-solid fa-file"></i></i></span>
-                Pending Posts
-            </a>
-        </div>
-        <div class="sidebar-section">
-            <h4 class="section-title">Ad Management</h4>
-            <a href="/advertisement-managment" class="menu-item">
-                <span class="menu-icon"><i class="fas fa-ad"></i></i></span>
-                Pending Ad
-            </a>
-        </div>
+        <?php if (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'admin'): ?>
+            <div class="sidebar-section">
+                <h4 class="section-title">Request Management</h4>
+                <a href="/post-managment" class="menu-item">
+                    <span class="menu-icon"><i class="fa-solid fa-file"></i></i></span>
+                    Course Requests
+                </a>
+            </div>
+            <div class="sidebar-section">
+                <h4 class="section-title">Ad Management</h4>
+                <a href="/advertisement-managment" class="menu-item">
+                    <span class="menu-icon"><i class="fas fa-ad"></i></i></span>
+                    Advertisements
+                </a>
+            </div>
+            <div class="sidebar-section">
+                <h4 class="section-title">Resources</h4>
+                <a href="/resource-managment" class="menu-item">
+                    <span class="menu-icon"><i class="fa-solid fa-square-share-nodes"></i></span>
+                    Resources
+                </a>
+            </div>
+        <?php endif; ?>
 
         <div class="sidebar-section">
             <h4 class="section-title">Transactions</h4>
@@ -361,24 +375,22 @@
                 <span class="menu-icon"><i class="fas fa-file-invoice-dollar"></i></span>
                 Invoices
             </a>
-            <a href="#" class="menu-item">
+            <a href="/revenue-report" class="menu-item">
                 <span class="menu-icon"><i class="fas fa-chart-line"></i></span>
                 Revenue Reports
             </a>
-            <a href="/wallet" class="menu-item">
-                <span class="menu-icon"><i class="fa-solid fa-wallet"></i></span>
-                Wallet
-            </a>
+            <?php if (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'teacher'): ?>
+                <a href="/withdraw" class="menu-item">
+                    <span class="menu-icon"><i class="fa-solid fa-wallet"></i></span>
+                    Withdraw Funds
+                </a>
+            <?php elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'admin'): ?>
+                <a href="/withdrawal-managment" class="menu-item">
+                    <span class="menu-icon"><i class="fa-solid fa-wallet"></i></span>
+                    Withdraw Requests
+                </a>
+            <?php endif; ?>
         </div>
-
-        <div class="sidebar-section">
-            <h4 class="section-title">Support</h4>
-            <a href="#" class="menu-item">
-                <span class="menu-icon"><i class="fas fa-ticket-alt"></i></span>
-                Tickets
-            </a>
-        </div>
-
         <div class="sidebar-section">
             <h4 class="section-title">Settings</h4>
             <a href="/settings" class="menu-item">

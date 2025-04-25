@@ -218,7 +218,7 @@
             <div class="stat-icon">
                 <i class="fas fa-book"></i>
             </div>
-            <div class="stat-value" id="totalCourses"><?php echo e($courseCount); ?></div>
+            <div class="stat-value" id="totalCourses"><?php echo e($totalCourses); ?></div>
             <div class="stat-label">Total Courses</div>
         </div>
         <div class="stat-card">
@@ -233,12 +233,19 @@
     <!-- Courses Table -->
     <div class="table-container">
         <div class="table-header">
-            <h2 class="table-title">Your Courses</h2>
+            <?php if (!empty($_SESSION['user'])): ?>
+                <?php if ($_SESSION['user_role'] == 'admin'): ?>
+                    <h2 class="table-title">All Courses</h2>
+                <?php elseif ($_SESSION['user_role'] == 'teacher'): ?>
+                    <h2 class="table-title">Your Courses</h2>
+            <?php endif;
+            endif; ?>
+
             <div class="search-container">
                 <form>
 
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search courses..." class="search-input" id="searchInput" name="s" value="<?php echo ($_GET['s']); ?>">
+                    <input type="text" placeholder="Search courses..." class="search-input" id="searchInput" name="s" value="<?php echo (isset($_GET['s']) ? $_GET['s'] : ''); ?>">
                     <input type="hidden" name="p" value="1">
                 </form>
             </div>

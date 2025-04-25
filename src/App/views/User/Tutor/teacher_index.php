@@ -15,19 +15,6 @@
         --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-        background-color: var(--bg-light);
-        color: var(--text-dark);
-        line-height: 1.6;
-    }
-
     .container {
         max-width: 1400px;
         margin: 0 auto;
@@ -634,6 +621,254 @@
             margin-top: 0.5rem;
         }
     }
+
+    .quick-access-section {
+        margin-bottom: 2rem;
+    }
+
+    .quick-access-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .quick-access-card {
+        background: var(--white);
+        border-radius: 1rem;
+        padding: 1.5rem 1rem;
+        text-align: center;
+        box-shadow: var(--shadow);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: var(--text-dark);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .quick-access-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        background: var(--theme-color);
+        color: var(--white);
+    }
+
+    .quick-access-icon {
+        font-size: 2rem;
+        color: var(--theme-color);
+        margin-bottom: 1rem;
+    }
+
+    .quick-access-card:hover .quick-access-icon {
+        color: var(--white);
+    }
+
+    .quick-access-card h3 {
+        font-size: 1rem;
+        font-weight: 500;
+    }
+
+    @media (max-width: 1200px) {
+        .quick-access-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .quick-access-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .quick-access-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Ad Promo Section Styles */
+    .ad-promo-section {
+        padding: 4rem 0;
+        background: var(--bg-light);
+        margin-bottom: 2rem;
+    }
+
+    .ad-promo-container {
+        margin-top: 2rem;
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        background: var(--white);
+    }
+
+    .ad-promo-content {
+        display: grid;
+        grid-template-columns: 3fr 2fr;
+        gap: 2rem;
+        padding: 2rem;
+    }
+
+    .ad-promo-text h3 {
+        font-size: 1.5rem;
+        color: var(--text-dark);
+        margin-bottom: 1.5rem;
+    }
+
+    .ad-benefits-list {
+        list-style: none;
+        padding: 0;
+        display: grid;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .ad-benefits-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .ad-icon {
+        background-color: var(--theme-color);
+        color: var(--white);
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    .ad-benefits-list h4 {
+        margin: 0 0 0.5rem 0;
+        color: var(--text-dark);
+    }
+
+    .ad-benefits-list p {
+        margin: 0;
+        color: var(--text-light);
+        font-size: 0.95rem;
+    }
+
+    .ad-cta {
+        margin-top: 1.5rem;
+    }
+
+    .ad-promo-stats {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        background: linear-gradient(135deg, var(--theme-color) 0%, var(--theme-dark) 100%);
+        padding: 2rem;
+        border-radius: 1rem;
+        align-content: center;
+    }
+
+    .ad-stat-card {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(5px);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        text-align: center;
+        transition: transform 0.3s;
+        color: var(--white);
+    }
+
+    .ad-stat-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .ad-stat-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .ad-stat-label {
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+
+    .ad-promo-cta {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(135deg, var(--theme-color) 0%, var(--theme-dark) 100%);
+        padding: 2.5rem;
+        border-radius: 1rem;
+        color: var(--white);
+    }
+
+    .ad-promo-cta h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+    }
+
+    .cta-button-large {
+        margin-top: 2rem;
+    }
+
+    .btn-lg {
+        padding: 1.2rem 2.5rem;
+        font-size: 1.2rem;
+        border-radius: 2.5rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-lg:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Responsive styles */
+    @media (max-width: 1024px) {
+        .ad-promo-content {
+            grid-template-columns: 1fr;
+        }
+
+        .ad-promo-stats {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .ad-benefits-list {
+            grid-template-columns: 1fr;
+        }
+
+        .ad-promo-stats {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .ad-promo-section {
+            padding: 2.5rem 0;
+        }
+
+        .ad-promo-content {
+            padding: 1.5rem;
+        }
+
+        .ad-promo-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .ad-benefits-list li {
+            flex-direction: column;
+            text-align: center;
+            align-items: center;
+        }
+
+        .ad-icon {
+            margin-bottom: 0.5rem;
+        }
+    }
 </style>
 <?php include $this->resolve('User/sidebar.php'); ?>
 <section class="teacher-hero">
@@ -651,133 +886,133 @@
             <h2 class="section-title">Dashboard Overview</h2>
             <p>Track your performance and upcoming tasks</p>
         </div>
-
-        <div class="quick-stats">
-            <div class="stat-card">
-                <i class="fas fa-users fa-2x" style="color: var(--theme-color)"></i>
-                <div class="stat-value"><?= e($studentCount); ?></div>
-                <p>Active Students</p>
-            </div>
-            <div class="stat-card">
-                <i class="fas fa-graduation-cap fa-2x" style="color: var(--theme-color)"></i>
-                <div class="stat-value"><?= e($courseCount); ?></div>
-                <p>Active Courses</p>
-            </div>
-            <div class="stat-card">
-                <i class="fas fa-star fa-2x" style="color: var(--theme-color)"></i>
-                <div class="stat-value">4.8</div>
-                <p>Average Rating</p>
-            </div>
-            <div class="stat-card">
-                <i class="fas fa-dollar-sign fa-2x" style="color: var(--theme-color)"></i>
-                <div class="stat-value">45K</div>
-                <p>Total Earnings</p>
+        <div class="quick-access-section">
+            <h2 class="section-title">Quick Access</h2>
+            <div class="quick-access-grid">
+                <a href="/course/create" class="quick-access-card">
+                    <div class="quick-access-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <h3>Create Course</h3>
+                </a>
+                <a href="/course/my-courses" class="quick-access-card">
+                    <div class="quick-access-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h3>My Courses</h3>
+                </a>
+                <a href="/posts" class="quick-access-card">
+                    <div class="quick-access-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <h3>View Posts</h3>
+                </a>
+                <a href="/advertisement/create" class="quick-access-card">
+                    <div class="quick-access-icon">
+                        <i class="fas fa-ad"></i>
+                    </div>
+                    <h3>Promote Course</h3>
+                </a>
+                <a href="/withdraw" class="quick-access-card">
+                    <div class="quick-access-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <h3>Withdraw Funds</h3>
+                </a>
             </div>
         </div>
         <div class="dashboard-grid">
             <div class="chart-container">
-                <h2 class="section-title">Performance Overview</h2>
+                <h2 class="section-title">Monthly Revenue</h2>
                 <div class="chart-wrapper">
-                    <canvas id="performanceChart"></canvas>
+                    <canvas id="revenueChart"></canvas>
                 </div>
             </div>
             <div class="insights-card">
-                <h2 class="section-title">Key Insights</h2>
+                <h2 class="section-title">Revenue Insights</h2>
                 <div class="insight-item">
                     <div class="insight-icon" style="background: var(--success)">
-                        <i class="fas fa-chart-line"></i>
+                        <i class="fas fa-dollar-sign"></i>
                     </div>
                     <div class="insight-content">
-                        <h3>Course Engagement</h3>
-                        <p>85% increase in student interaction</p>
+                        <h3>Total Revenue</h3>
+                        <p>Rs. 45,000 earned this year</p>
                         <div class="insight-trend">
                             <i class="fas fa-arrow-up"></i>
-                            <span>12% vs last month</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="insight-item">
-                    <div class="insight-icon" style="background: var(--warning)">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="insight-content">
-                        <h3>New Enrollments</h3>
-                        <p>256 new students this week</p>
-                        <div class="insight-trend trend-down">
-                            <i class="fas fa-arrow-down"></i>
-                            <span>3% vs last week</span>
+                            <span>15% vs last year</span>
                         </div>
                     </div>
                 </div>
                 <div class="insight-item">
                     <div class="insight-icon" style="background: var(--theme-color)">
-                        <i class="fas fa-dollar-sign"></i>
+                        <i class="fas fa-crown"></i>
                     </div>
                     <div class="insight-content">
-                        <h3>Revenue Growth</h3>
-                        <p>$12,450 earned this month</p>
+                        <h3>Top-Performing Course</h3>
+                        <p>Advanced Web Development (Rs. 12,450)</p>
                         <div class="insight-trend">
                             <i class="fas fa-arrow-up"></i>
-                            <span>8% vs last month</span>
+                            <span>20% of total revenue</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="insight-item">
+                    <div class="insight-icon" style="background: var(--warning)">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h3>Revenue Forecast</h3>
+                        <p>Expected to reach Rs. 60,000 by EOY</p>
+                        <div class="insight-trend">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>33% projected growth</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="upcoming-tasks">
-            <h2 class="section-title">Upcoming Tasks</h2>
-            <div class="task-item">
-                <div class="task-checkbox completed"></div>
-                <div class="task-content">
-                    <h4>Record JavaScript Basics Module</h4>
-                    <span class="task-deadline">Due Tomorrow</span>
-                </div>
-            </div>
-            <div class="task-item">
-                <div class="task-checkbox"></div>
-                <div class="task-content">
-                    <h4>Review Student Projects</h4>
-                    <span class="task-deadline">Due in 3 days</span>
-                </div>
-            </div>
-            <div class="task-item">
-                <div class="task-checkbox"></div>
-                <div class="task-content">
-                    <h4>Update Course Materials</h4>
-                    <span class="task-deadline">Due in 5 days</span>
-                </div>
-            </div>
-        </div>
-        <div class="transactions-section">
-            <div class="transactions-header">
-                <h2 class="section-title">Recent Transactions</h2>
-                <a href="#" class="view-all-btn">View All</a>
-            </div>
-            <div class="transactions-list" id="transactionsList">
-                <!-- Transactions will be populated by JavaScript -->
-            </div>
-        </div>
     </div>
 </section>
-
-<section class="section">
+<section class="ad-promo-section">
     <div class="container">
         <div class="section-header">
-            <h2 class="section-title">Your Active Courses</h2>
-            <p>Manage and track your course performance</p>
+            <h2 class="section-title">Boost Your Course Visibility</h2>
+            <p>Get more students and increase your earnings</p>
         </div>
-        <div class="courses-grid">
-            <div class="course-card">
-                <div class="course-image">
-                    <i class="fas fa-code fa-3x"></i>
+
+        <div class="ad-promo-container">
+            <div class="ad-promo-content">
+                <div class="ad-promo-text">
+                    <h3>Why Advertise Your Courses?</h3>
+                    <ul class="ad-benefits-list">
+                        <li>
+                            <span class="ad-icon"><i class="fas fa-chart-line"></i></span>
+                            <div>
+                                <h4>Increase Visibility</h4>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="ad-icon"><i class="fas fa-users"></i></span>
+                            <div>
+                                <h4>Reach More Students</h4>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="ad-icon"><i class="fas fa-coins"></i></span>
+                            <div>
+                                <h4>Boost Your Revenue</h4>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
-                <div class="course-content">
-                    <h3 class="course-title">Advanced Web Development</h3>
-                    <div class="course-meta">
-                        <span><i class="fas fa-users"></i> 1,234 students</span>
-                        <span><i class="fas fa-star"></i> 4.8</span>
+                <div class="ad-promo-cta">
+                    <h2>Create Your Advertisement now</h2>
+                    <p>Start reaching more students today and grow your teaching business!</p>
+                    <div class="cta-button-large">
+                        <a href="/advertisement/create" class="btn btn-primary btn-lg">
+                            <i class="fas fa-bullhorn"></i> Get Started
+                        </a>
                     </div>
-                    <div class="course-price">$199.99</div>
                 </div>
             </div>
         </div>
@@ -808,125 +1043,52 @@
         });
     });
 
-    // Add Chart.js initialization
-    const ctx = document.getElementById('performanceChart').getContext('2d');
+    // Add Chart.js initialization for revenue bar chart
+    const ctx = document.getElementById('revenueChart').getContext('2d');
     new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
             datasets: [{
-                label: 'Student Enrolment',
-                data: [65, 78, 90, 85, 92, 88],
-                borderColor: '#2ECC71',
-                tension: 0.4,
-                fill: false
-            }, {
-                label: 'Revenue (Rs.)',
-                data: [35, 42, 48, 45, 55, 60],
-                borderColor: '#FFC400',
-                tension: 0.4,
-                fill: false
+                label: 'Monthly Revenue (Rs.)',
+                data: [3500, 4200, 4800, 5500, 6000, 7500, 8200, 7800, 8500, 9200, 8800, 9500],
+                backgroundColor: [
+                    'rgba(255, 196, 0, 0.8)', // Theme color
+                ],
+                borderColor: [
+                    'rgba(230, 176, 0, 1)', // Theme dark
+                ],
+                borderWidth: 1
             }]
         },
         options: {
             responsive: true,
             plugins: {
                 legend: {
-                    position: 'bottom'
+                    position: 'top',
+                },
+                title: {
+                    display: false,
+                    text: 'Monthly Revenue'
                 }
             },
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Revenue (Rs.)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Month'
+                    }
                 }
             }
         }
     });
-
-    // Sample transaction data
-    const transactions = [{
-            id: 1,
-            name: "John Doe",
-            course: "Advanced Web Development",
-            amount: 199.99,
-            type: "income",
-            date: "2024-02-17T10:30:00",
-            icon: "fas fa-graduation-cap"
-        },
-        {
-            id: 2,
-            name: "Platform Fee",
-            course: "Monthly Service Charge",
-            amount: -45.00,
-            type: "expense",
-            date: "2024-02-16T15:45:00",
-            icon: "fas fa-receipt"
-        },
-        {
-            id: 3,
-            name: "Sarah Smith",
-            course: "JavaScript Fundamentals",
-            amount: 149.99,
-            type: "income",
-            date: "2024-02-16T09:15:00",
-            icon: "fas fa-graduation-cap"
-        },
-        {
-            id: 4,
-            name: "Marketing Expenses",
-            course: "Facebook Ads",
-            amount: -75.00,
-            type: "expense",
-            date: "2024-02-15T14:20:00",
-            icon: "fas fa-ad"
-        }
-    ];
-
-    // Function to format date
-    function formatDate(dateString) {
-        const date = new Date(dateString);
-        const now = new Date();
-        const diffTime = Math.abs(now - date);
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-        if (diffDays === 0) {
-            return 'Today';
-        } else if (diffDays === 1) {
-            return 'Yesterday';
-        } else {
-            return date.toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric'
-            });
-        }
-    }
-
-    // Function to render transactions
-    function renderTransactions() {
-        const transactionsList = document.getElementById('transactionsList');
-        transactionsList.innerHTML = transactions.map(transaction => `
-        <div class="transaction-item">
-            <div class="transaction-icon" style="background: ${transaction.type === 'income' ? 'rgba(46, 204, 113, 0.1)' : 'rgba(231, 76, 60, 0.1)'}; color: ${transaction.type === 'income' ? 'var(--success)' : 'var(--danger)'}">
-                <i class="${transaction.icon}"></i>
-            </div>
-            <div class="transaction-details">
-                <div class="transaction-info">
-                    <div>
-                        <div class="transaction-name">${transaction.name}</div>
-                        <div class="transaction-course">${transaction.course}</div>
-                    </div>
-                    <div class="transaction-amount ${transaction.type === 'income' ? 'amount-positive' : 'amount-negative'}">
-                        ${transaction.type === 'income' ? '+' : ''}$${Math.abs(transaction.amount).toFixed(2)}
-                    </div>
-                </div>
-                <div class="transaction-date">${formatDate(transaction.date)}</div>
-            </div>
-        </div>
-    `).join('');
-    }
-
-    // Initialize transactions
-    document.addEventListener('DOMContentLoaded', renderTransactions);
 </script>
 
 <?php include $this->resolve('partials/_footer.php') ?>

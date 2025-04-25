@@ -214,8 +214,16 @@ class CourseRequestService
 
         return $requests;
     }
-    public function getAllCourseRequests()
+    public function getAllCourseRequests(int $limit, int $offset)
     {
+        $status = $_GET['status'] ?? 'all';
+        $params = [];
+        $whereClause = '';
+
+        if ($status != 'all') {
+            $whereClause = "WHERE cr.status = :status";
+            $params['status'] = $status;
+        }
         $query =
             "SELECT 
                 cr.title,
@@ -234,14 +242,27 @@ class CourseRequestService
                 subjects s ON cr.subject_id = s.subject_id
             JOIN 
                 users u ON cr.user_id = u.user_id
+            {$whereClause}
             GROUP BY 
                 cr.title, cr.request_id, cr.description, cr.status, s.subject_title, 
-                cr.created_date, cr.updated_date, u.first_name, u.last_name;    
+                cr.created_date, cr.updated_date, u.first_name, u.last_name  
+            LIMIT {$limit} OFFSET {$offset}";
+        $countQuery =
+            "SELECT 
+                COUNT(cr.request_id)
+            FROM 
+                course_requests cr
+            LEFT JOIN 
+                subjects s ON cr.subject_id = s.subject_id
+            JOIN 
+                users u ON cr.user_id = u.user_id
+            {$whereClause}
             ";
 
-        $requests = $this->db->query($query)->findAll();
+        $requests = $this->db->query($query, $params)->findAll();
+        $count = $this->db->query($countQuery, $params)->count();
 
-        return $requests;
+        return [$requests, $count];
     }
 
     public function getCourseReuqestById(string $requestId)
@@ -488,15 +509,8 @@ class CourseRequestService
             WHERE status = 'approved'"
         )->count();
 
-        $rejected = $this->db->query(
-            "SELECT COUNT(*) 
-            FROM course_requests
-            WHERE status = 'pending'"
-        )->count();
-
         $count['pending'] = $pending;
         $count['approved'] = $approved;
-        $count['rejected'] = $rejected;
 
         return $count;
     }
