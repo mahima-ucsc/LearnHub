@@ -526,43 +526,54 @@ class PageController
 
     public function revenueReportView()
     {
-        [$totalAdRevenue, $totalWithdrawalRevenue] = $this->paymentService->getTotalRevenue();
+        $startDate = $_GET['start'];
+        $endDate = $_GET['end'];
+        [$totalAdRevenue, $totalWithdrawalRevenue] = $this->paymentService->getTotalRevenue((string)$startDate, (string)$endDate);
+
         $totalAdRevenue = (float)$totalAdRevenue;
         $totalWithdrawalRevenue = (float)$totalWithdrawalRevenue;
 
-        $totalAdRevenue = round($totalAdRevenue, 2);
-        $totalWithdrawalRevenue = round($totalWithdrawalRevenue, 2);
-
         $totalRevenue = $totalAdRevenue + $totalWithdrawalRevenue;
 
-        $adRevenueRate = round(($totalAdRevenue / $totalRevenue) * 100);
-        $WithdrawalRevenueRate = round(($totalWithdrawalRevenue / $totalRevenue) * 100);
+        if ($totalAdRevenue) {
+            $totalAdRevenue = round($totalAdRevenue, 2);
+            $adRevenueRate = round(($totalAdRevenue / $totalRevenue) * 100);
+        }
+
+        if ($totalWithdrawalRevenue) {
+            $totalWithdrawalRevenue = round($totalWithdrawalRevenue, 2);
+            $WithdrawalRevenueRate = round(($totalWithdrawalRevenue / $totalRevenue) * 100);
+        }
+
+
 
         echo $this->view->render(
             'User/Admin/revenue_report.php',
             [
                 'title' => "Revenue Report",
                 'totalAdRevenue' => $totalAdRevenue ?? 0,
-                'totalWithdrawalRevenue' => $totalWithdrawalRevenue,
-                'totalRevenue' => $totalRevenue,
-                'adRevenueRate' => $adRevenueRate,
-                'WithdrawalRevenueRate' => $WithdrawalRevenueRate
+                'totalWithdrawalRevenue' => $totalWithdrawalRevenue ?? 0,
+                'totalRevenue' => $totalRevenue ?? 0,
+                'adRevenueRate' => $adRevenueRate ?? 0,
+                'WithdrawalRevenueRate' => $WithdrawalRevenueRate ?? 0
 
             ]
         );
     }
-    public function profile()
-    {
-        $userDetails = $this->userService->getUserProfile();
-        $userReview = $this->reviewService->getUserReview();
-        [$courses, $courseCount] = $this->courseService->searchCourse(3, 0);
-        echo $this->view->render('User/profile.php', [
-            "title" => "Profile",
-            "userDetails" => $userDetails,
-            "userReview" => $userReview,
-            "courses" => $courses
-        ]);
-    }
+
+
+    // public function profile()
+    // {
+    //     $userDetails = $this->userService->getUserProfile();
+    //     $userReview = $this->reviewService->getUserReview();
+    //     [$courses, $courseCount] = $this->courseService->searchCourse(3, 0);
+    //     echo $this->view->render('User/profile.php', [
+    //         // "title" => "Profile",
+    //         "userDetails" => $userDetails,
+    //         "userReview" => $userReview,
+    //         "courses" => $courses
+    //     ]);
+    // }
 
     public function tutorProfile($params)
     {

@@ -253,32 +253,30 @@
         <div class="revenue-table-container large-chart">
             <div class="chart-header">
                 <h2 class="chart-title">Revenue by Time Period</h2>
-                <div class="date-range-selector">
-                    <div class="custom-date-range">
-                        <input type="date" id="start-date" class="date-input" placeholder="Start Date">
-                        <span>to</span>
-                        <input type="date" id="end-date" class="date-input" placeholder="End Date">
-                        <button id="apply-range" class="chart-btn">Apply</button>
+                <form method="GET">
+                    <div class="date-range-selector">
+                        <div class="custom-date-range">
+                            <input type="date" id="start-date" class="date-input" placeholder="Start Date" name="start" value="<?= $_GET['start'] ? $_GET['start'] : '' ?>">
+                            <span>to</span>
+                            <input type="date" id="end-date" class="date-input" placeholder="End Date" name="end" value="<?= $_GET['end'] ? $_GET['end'] : '' ?>">
+                            <button type="submit" id="apply-range" class="chart-btn">Apply</button>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
 
             <div class="summary-metrics" id="period-metrics">
                 <div class="metric-card">
                     <div class="metric-title">Period Total</div>
-                    <div class="metric-value">Rs. </div>
+                    <div class="metric-value">Rs. <?= $totalRevenue ?></div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-title">Withdrawal Revenue</div>
-                    <div class="metric-value">Rs. </div>
+                    <div class="metric-value">Rs. <?= $totalWithdrawalRevenue ?></div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-title">Ad Revenue</div>
-                    <div class="metric-value">Rs. </div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-title">Daily Average</div>
-                    <div class="metric-value">Rs. </div>
+                    <div class="metric-value">Rs. <?= $totalAdRevenue ?></div>
                 </div>
             </div>
             <div class="chart-header">
@@ -292,18 +290,11 @@
     const withdrawalRate = document.querySelector(".rate-card").dataset.withdrawalRate;
     const adRate = document.querySelector(".rate-card").dataset.adRate;
     // Set default Chart.js colors
+
     Chart.defaults.color = '#666';
     Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
 
-    // Generate random data for demonstration
-    function generateData(count, min, max) {
-        return Array.from({
-            length: count
-        }, () => Math.floor(Math.random() * (max - min + 1) + min));
-    }
 
-    const withdrawalData = generateData(30, 300, 800);
-    const advertisementData = generateData(30, 200, 700);
 
     // Revenue Doughnut Chart
     const doughnutCtx = document.getElementById('revenueDoughnutChart').getContext('2d');
@@ -340,135 +331,6 @@
                     }
                 }
             }
-        }
-    });
-
-    // Data for revenue by date
-    const revenueData = [];
-
-    // Generate sample data for last 90 days
-    const today = new Date();
-    for (let i = 90; i >= 1; i--) {
-        const date = new Date(today);
-        date.setDate(date.getDate() - i);
-
-        const withdrawalAmount = Math.floor(Math.random() * (800 - 300 + 1) + 300);
-        const adAmount = Math.floor(Math.random() * (700 - 200 + 1) + 200);
-
-        revenueData.push({
-            date: date,
-            formattedDate: date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            }),
-            withdrawal: withdrawalAmount,
-            advertisement: adAmount,
-            total: withdrawalAmount + adAmount
-        });
-    }
-
-    // Function to update the revenue metrics based on selected date range
-    function updateRevenueTable(days = 30) {
-        const endDate = new Date();
-        const startDate = new Date();
-        startDate.setDate(endDate.getDate() - days);
-
-        // Filter data based on date range
-        const filteredData = revenueData.filter(item => {
-            return item.date >= startDate && item.date <= endDate;
-        });
-
-        // Calculate summary metrics
-        const totalWithdrawal = filteredData.reduce((sum, item) => sum + item.withdrawal, 0);
-        const totalAd = filteredData.reduce((sum, item) => sum + item.advertisement, 0);
-        const totalRevenue = totalWithdrawal + totalAd;
-        const avgDailyRevenue = Math.round(totalRevenue / filteredData.length);
-
-        // Populate summary metrics
-        const metricsContainer = document.getElementById('period-metrics');
-        metricsContainer.innerHTML = `
-            <div class="metric-card">
-                <div class="metric-title">Period Total</div>
-                <div class="metric-value">Rs. ${totalRevenue.toLocaleString()}</div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-title">Withdrawal Revenue</div>
-                <div class="metric-value">Rs. ${totalWithdrawal.toLocaleString()}</div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-title">Ad Revenue</div>
-                <div class="metric-value">Rs. ${totalAd.toLocaleString()}</div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-title">Daily Average</div>
-                <div class="metric-value">Rs. ${avgDailyRevenue.toLocaleString()}</div>
-            </div>
-        `;
-    }
-
-    // Initialize with 30 days data
-    updateRevenueTable(30);
-
-    // Handle period selection buttons
-    const periodButtons = document.querySelectorAll('.chart-btn[data-days]');
-    periodButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Remove active class from all buttons
-            periodButtons.forEach(b => b.classList.remove('active'));
-            // Add active class to clicked button
-            button.classList.add('active');
-
-            // Update metrics for selected period
-            const days = parseInt(button.dataset.days, 10);
-            updateRevenueTable(days);
-        });
-    });
-
-    // Handle custom date range
-    document.getElementById('apply-range').addEventListener('click', function() {
-        const startDateInput = document.getElementById('start-date').value;
-        const endDateInput = document.getElementById('end-date').value;
-
-        if (startDateInput && endDateInput) {
-            const startDate = new Date(startDateInput);
-            const endDate = new Date(endDateInput);
-
-            // Filter data based on custom date range
-            const filteredData = revenueData.filter(item => {
-                return item.date >= startDate && item.date <= endDate;
-            });
-
-            // Calculate summary metrics
-            const totalWithdrawal = filteredData.reduce((sum, item) => sum + item.withdrawal, 0);
-            const totalAd = filteredData.reduce((sum, item) => sum + item.advertisement, 0);
-            const totalRevenue = totalWithdrawal + totalAd;
-            const avgDailyRevenue = Math.round(totalRevenue / filteredData.length) || 0;
-
-            // Populate summary metrics
-            const metricsContainer = document.getElementById('period-metrics');
-            metricsContainer.innerHTML = `
-                <div class="metric-card">
-                    <div class="metric-title">Period Total</div>
-                    <div class="metric-value">Rs. ${totalRevenue.toLocaleString()}</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-title">Withdrawal Revenue</div>
-                    <div class="metric-value">Rs. ${totalWithdrawal.toLocaleString()}</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-title">Ad Revenue</div>
-                    <div class="metric-value">Rs. ${totalAd.toLocaleString()}</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-title">Daily Average</div>
-                    <div class="metric-value">Rs. ${avgDailyRevenue.toLocaleString()}</div>
-                </div>
-            `;
-            // Remove active class from preset buttons
-            periodButtons.forEach(b => b.classList.remove('active'));
-        } else {
-            alert('Please select both start and end dates');
         }
     });
 </script>

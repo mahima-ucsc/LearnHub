@@ -24,12 +24,6 @@
                 <?php include $this->resolve('partials/_csrf.php') ?>
 
                 <div class="form-group">
-                    <?php if (array_key_exists('password', $errors)) : ?>
-                        <div style="color: red; text-align:center">
-                            <?php echo e($errors['password'][0]); ?>
-                        </div>
-                    <?php endif; ?>
-
                     <label for="email">Email</label>
                     <div class="input-wrapper">
 
@@ -43,13 +37,13 @@
                             id="email"
                             value="<?php echo e($oldFormData['email'] ?? '') ?>"
                             placeholder="Enter your email">
-                        <?php if (array_key_exists('email', $errors)) : ?>
-                            <div>
-                                <?php echo e($errors['email'][0]); ?>
-                            </div>
-                        <?php endif; ?>
                     </div>
                 </div>
+                <?php if (array_key_exists('email', $errors)) : ?>
+                    <div style="color: red; text-align:center">
+                        <?php echo e($errors['email'][0]); ?>
+                    </div>
+                <?php endif; ?>
                 <div class="form-group">
                     <label for="password">Password</label>
                     <div class="input-wrapper">
@@ -66,35 +60,17 @@
                         </svg>
                     </div>
                 </div>
-                <div class="checkbox-wrapper">
-                    <input type="checkbox" id="remember">
-                    <label for="remember">
-                        <span class="checkbox">
-                            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                            </svg>
-                        </span>
-                        Remember me
-                    </label>
-                </div>
+                <?php if (array_key_exists('password', $errors)) : ?>
+                    <div style="color: red; text-align:center">
+                        <?php echo e($errors['password'][0]); ?>
+                    </div>
+                <?php endif; ?>
                 <button type="submit" class="login-button">Log in</button>
             </form>
             <a href="#" class="forgot-password">Forgot password?</a>
             <p class="signup">Don't have and account? <a href="/register" style="color: #FFC400;"> Sign Up </a></p>
         </div>
     </div>
-    <!-- Popup -->
-    <!-- <div class="popup" id="loginPopup">
-        <div class="popup-content">
-            <h2 class="popup-title">Select Login Type</h2>
-            <div class="popup-options">
-                <button class="popup-option" onclick="selectLoginType('student')">Login as a Student</button>
-                <button class="popup-option" onclick="selectLoginType('tutor')">Login as a Tutor</button>
-            </div>
-            <p class="signup">Don't have and account? <a href="../Signup/choose-role.html" style="color: #FFC400;"> Signup </a></p>
-        </div>
-    </div> -->
-
     <script>
         // Toggle password visibility
         const passwordInput = document.getElementById('password');

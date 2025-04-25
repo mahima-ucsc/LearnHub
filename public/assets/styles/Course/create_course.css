@@ -131,7 +131,7 @@
       color: #dc3545;
       font-size: 0.875rem;
       margin-top: 8px;
-      display: none;
+      display: block;
   }
 
   .hint-text {

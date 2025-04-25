@@ -23,55 +23,80 @@
 
             <div class="form-group">
                 <label for="courseTitle" class="form-label">Course Title*</label>
-                <input type="text" name="courseTitle" id="courseTitle" class="form-control" placeholder="e.g., Advanced Web Development with React" required>
-                <div class="error-message" id="courseTitleError">Please enter a course title</div>
+                <input type="text" name="courseTitle" id="courseTitle" class="form-control" placeholder="e.g., Advanced Web Development with React" value="<?= $oldFormData['courseTitle'] ?? ''; ?>">
+                <?php if (array_key_exists('courseTitle', $errors)) : ?>
+                    <div class="error-message" id="courseTitleError" style="display: block;">
+                        Please enter a course title
+                    </div>
+                <?php endif; ?>
             </div>
 
             <div class="form-group">
                 <label for="courseDescription" class="form-label">Course Description*</label>
-                <textarea name="courseDescription" id="courseDescription" class="form-control textarea-control" placeholder="Describe what students will learn in your course..." required></textarea>
-                <div class="error-message" id="courseDescriptionError">Please enter a course description</div>
+                <textarea name="courseDescription" id="courseDescription" class="form-control textarea-control" placeholder="Describe what students will learn in your course..."><?= $oldFormData['courseDescription'] ?? ''; ?></textarea>
+
+                <?php if (array_key_exists('courseDescription', $errors)) : ?>
+                    <div class="error-message" id="courseDescriptionError">Please enter a course description</div>
+                <?php endif; ?>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label for="courseSubject" class="form-label">Subject*</label>
-                    <select id="courseSubject" name="subject" class="form-control" required>
+                    <select id="courseSubject" name="subject" class="form-control">
                         <option value="">Select Subject</option>
                         <?php foreach ($subjects as $subject): ?>
-                            <option value="<?php echo e($subject['subject_id']); ?>"><?php echo e($subject['subject_title']); ?></option>
+                            <option value="<?php echo e($subject['subject_id']); ?>" <?= $oldFormData['subject'] == e($subject['subject_id']) ? 'selected' : ''; ?>>
+                                <?php echo e($subject['subject_title']); ?>
+                            </option>
                         <?php endforeach; ?>
-                        <option value="-1">Other</option>
                     </select>
-                    <div class="error-message" id="courseSubjectError">Please select a subject</div>
+                    <?php if (array_key_exists('subject', $errors)) : ?>
+                        <div class="error-message" id="courseSubjectError">Please select a subject</div>
+                    <?php endif; ?>
                 </div>
 
                 <div class="form-group">
                     <label for="courseGrade" class="form-label">Grade*</label>
-                    <select id="courseGrade" name="grade" class="form-control" required>
+                    <select id="courseGrade" name="grade" class="form-control">
                         <option value="">Select Grade</option>
                         <?php foreach ($grades as $grade): ?>
-                            <option value="<?php echo e($grade['grade_id']); ?>">Grade <?php echo e($grade['grade_name']); ?></option>
+                            <option value="<?php echo e($grade['grade_id']); ?>" <?= $oldFormData['grade'] == e($grade['grade_id']) ? 'selected' : ''; ?>>
+                                Grade <?php echo e($grade['grade_name']); ?>
+                            </option>
                         <?php endforeach; ?>
                         <option value="-1">Other</option>
                     </select>
-                    <div class="error-message" id="courseGradeError">Please select a grade</div>
+                    <?php if (array_key_exists('grade', $errors)) : ?>
+                        <div class="error-message" id="courseGradeError">Please select a grade</div>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
                     <label for="courseStartTime" class="form-label">Start Time*</label>
-                    <input type="time" name="courseStartTime" id="courseStartTime" class="form-control">
-                    <div class="error-message" id="courseStartTimeError">Please enter a start time</div>
+                    <input type="time" name="courseStartTime" id="courseStartTime" class="form-control" value="<?= $oldFormData['courseStartTime'] ?? ''; ?>">
+
+                    <?php if (array_key_exists('courseStartTime', $errors)) : ?>
+                        <div class="error-message">
+                            <?php echo e($errors['courseStartTime'][0]); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <div class="form-group">
                     <label for="courseEndTime" class="form-label">End Time*</label>
-                    <input type="time" name="courseEndTime" id="courseEndTime" class="form-control">
-                    <div class="error-message" id="courseEndTimeError">Please enter a end time</div>
+                    <input type="time" name="courseEndTime" id="courseEndTime" class="form-control" value="<?= $oldFormData['courseEndTime'] ?? ''; ?>">
+
+                    <?php if (array_key_exists('courseEndTime', $errors)) : ?>
+                        <div class="error-message">
+                            <?php echo e($errors['courseEndTime'][0]); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
+
                 <div class="form-group">
                     <label for="courseDay" class="form-label">Day*</label>
-                    <select id="courseDay" name="courseday" class="form-control" required>
+                    <select id="courseDay" name="courseday" class="form-control">
                         <option value="">Select Day</option>
                         <option value="Sunday">Sunday</option>
                         <option value="Monday">Monday</option>
@@ -81,19 +106,34 @@
                         <option value="Friday">Friday</option>
                         <option value="Saturday">Saturday</option>
                     </select>
-                    <div class="error-message" id="courseDayError">Please enter a day</div>
+
+                    <?php if (array_key_exists('courseday', $errors)) : ?>
+
+                        <div class="error-message" id="courseDayError">
+                            <?php echo e($errors['courseEndTime'][0]); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="form-group">
                 <label for="location" class="form-label">Location*</label>
-                <input type="text" name="location" id="location" class="form-control">
-                <div class="error-message" id="locationError">Please enter a location</div>
+                <input type="text" name="location" id="location" class="form-control" value="<?= $oldFormData['location'] ?? ''; ?>">
+                <?php if (array_key_exists('courseStartTime', $errors)) : ?>
+
+                    <div class="error-message" id="locationError">Please enter a location</div>
+                <?php endif; ?>
             </div>
             <div class="form-group">
                 <label for="courseThumbnail" class="form-label">Course Thumbnail Image*</label>
-                <input type="file" id="courseThumbnail" name="courseThumbnail" class="form-control" accept="image/*" required>
-                <p class="hint-text">Upload a high-quality image to attract students. Recommended size: 1280x720px</p>
-                <div class="error-message" id="courseThumbnailError">Please upload a course thumbnail</div>
+                <input type="file" id="courseThumbnail" name="courseThumbnail" class="form-control" accept="image/*">
+                <p class="hint-text">Upload a high-quality image to attract students.</p>
+
+                <?php if (array_key_exists('img', $errors)) : ?>
+
+                    <div class="error-message" id="courseThumbnailError">
+                        <?php echo e($errors['img'][0]); ?>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -102,32 +142,43 @@
             <h2 class="section-title">Course Type & Pricing</h2>
 
             <div class="course-type-selector">
-                <div class="course-type-option" id="fullCourseOption">
+                <div class="course-type-option <?= $oldFormData['courseType'] == 'onetime' ? 'selected' : '' ?>" id="fullCourseOption">
                     <i class="fas fa-box"></i>
                     <h3>Complete Course</h3>
                     <p>Set a price for the entire course.</p>
                 </div>
 
-                <div class="course-type-option" id="monthlyCourseOption">
+                <div class="course-type-option <?= $oldFormData['courseType'] == 'recurring' ? 'selected' : '' ?>" id="monthlyCourseOption">
                     <i class="fas fa-calendar-alt"></i>
                     <h3>Recurring Course</h3>
                     <p>Organize course content into time-based access periods, each with customizable pricing.</p>
                 </div>
             </div>
 
-            <input type="hidden" name="courseType" id="courseType" name="courseType" value="">
-            <div class="error-message" id="courseTypeError">Please select a course type</div>
+            <input type="hidden" name="courseType" id="courseType" name="courseType" value="<?= $oldFormData['courseType'] ?? ''; ?>">
+            <?php if (array_key_exists('courseType', $errors)) : ?>
+
+                <div class="error-message">
+                    <?php echo e($errors['courseType'][0]); ?>
+                </div>
+            <?php endif; ?>
 
             <!-- Full Course Pricing (shown when full course selected) -->
             <div id="fullCoursePricing" class="collapse-content">
                 <div class="form-group">
                     <label for="fullCoursePrice" class="form-label">Course Price*</label>
-                    <input type="number" id="fullCoursePrice" name="fullCoursePrice" class="form-control" placeholder="Enter price (in Rs.)" step="0.01" min="0">
-                    <div class="error-message" id="fullCoursePriceError">Please enter a valid price</div>
+                    <input type="number" id="fullCoursePrice" name="fullCoursePrice" class="form-control" placeholder="Enter price (in Rs.)" step="0.01" min="0"
+                        value="<?= $oldFormData['fullCoursePrice'] ?? ''; ?>">
+                    <?php if (array_key_exists('img', $errors)) : ?>
+
+                        <div class="error-message">
+                            <?php echo e($errors['fullCoursePrice'][0]); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
-        </div>
 
+        </div>
 
         <!-- Form Actions -->
         <div class="form-actions">
@@ -203,7 +254,7 @@
         //     let isValid = true;
 
         //     // Validate basic course info
-        //     const requiredFields = ['courseTitle', 'courseDescription', 'courseSubject', 'courseGrade', 'courseThumbnail'];
+        //     const Fields = ['courseTitle', 'courseDescription', 'courseSubject', 'courseGrade', 'courseThumbnail'];
 
         //     requiredFields.forEach(fieldId => {
         //         const field = document.getElementById(fieldId);
