@@ -1,7 +1,7 @@
 <?php include $this->resolve("partials/_header.php"); ?>
 <script src="/assets/js/payment/form-auto-submit.js"></script>
 
-<form method="POST" action="https://sandbox.payhere.lk/pay/checkout">">
+<form method="POST" action="https://sandbox.payhere.lk/pay/checkout">
     <!-- Hidden inputs -->
     <input type="hidden" name="first_name" value="<?= $first_name ?>">
     <input type="hidden" name="last_name" value="<?= $last_name ?>">
