@@ -54,5 +54,11 @@ class AppConstants
     public const COURSE_PAYMENT_RETURN_URL = 'http://localhost:3000';
     public const COURSE_PAYMENT_CANCEL_URL = 'http://localhost:3000';
     public const COURSE_PAYMENT_RELATIVE_NOTIFY_URL = '/payment/notify';
-    public const COURSE_PAYMENT_NOTIFY_URL = 'https://57fb-192-248-16-125.ngrok-free.appp' . self::COURSE_PAYMENT_RELATIVE_NOTIFY_URL;
+    public const COURSE_PAYMENT_NOTIFY_URL = 'https://7017-192-248-16-125.ngrok-free.appdddddd' . self::COURSE_PAYMENT_RELATIVE_NOTIFY_URL;
+
+    // PayHere Advertisement Payment URLs
+    public const AD_PAYMENT_RETURN_URL = 'http://learnhub.local';
+    public const AD_PAYMENT_CANCEL_URL = 'http://learnhub.local';
+    public const AD_PAYMENT_RELATIVE_NOTIFY_URL = '/payment/notify';
+    public const AD_PAYMENT_NOTIFY_URL = 'https://d183-2402-d000-8114-4e8a-c5f6-e156-4257-656.ngrok-free.app' . self::AD_PAYMENT_RELATIVE_NOTIFY_URL;
 }
