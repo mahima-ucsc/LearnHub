@@ -69,15 +69,26 @@
                     <?php echo e($course['description']); ?>
                 </p>
             </div>
+            <?php if ($_SESSION['user_role'] === 'teacher'): ?>
+                <button type="button" id="addModuleBtn" class="add-module-btn"
+                    onclick="window.location.href='/course/<?= $course['course_id'] ?>/module/create'">
+                    <i class="fas fa-plus"></i> Add New Module
+                </button>
+            <?php endif; ?>
 
-            <button type="button" id="addModuleBtn" class="add-module-btn"
-                onclick="window.location.href='/course/<?= $course['course_id'] ?>/module/create'">
-                <i class="fas fa-plus"></i> Add New Module
-            </button>
-            <button type="button" id="addModuleBtn" class="add-module-btn"
-                onclick="window.location.href='/courses/<?= $course['course_id'] ?>/announcements'">
-                <i class="fas fa-plus"></i> Announcements
-            </button>
+            <?php if ($_SESSION['user_role'] === 'teacher' || $_SESSION['user_role'] === 'student'): ?>
+                <button type="button" class="add-module-btn"
+                    onclick="window.location.href='/courses/<?= $course['course_id'] ?>/announcements'">
+                    <i class="fas fa-plus"></i> Announcements
+                </button>
+            <?php endif; ?>
+
+            <?php if ($_SESSION['user_role'] === 'teacher'): ?>
+                <button type="button" class="add-module-btn"
+                    onclick="window.location.href='/courses/<?= $course['course_id'] ?>/announcements'">
+                    <i class="fas fa-plus"></i> Add Announcements
+                </button>
+            <?php endif; ?>
             <?php if ($course['billing_type'] === 'onetime' && $course['is_paid']): ?>
                 <div class="course-section">
                     <h2 class="section-title">Course Modules</h2>
