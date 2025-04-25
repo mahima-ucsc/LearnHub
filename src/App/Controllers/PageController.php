@@ -188,13 +188,13 @@ class PageController
                 'pagination' => $pagination
             ]);
         } elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'admin') {
-            $totalRevenue = $this->paymentService->getTotalRevenue()['revenue'];
+            $totalTransactions = $this->paymentService->getTotalTransactions()['revenue'];
             $totalWithdrawal = $this->paymentService->getTotalWithdrawal()['revenue'];
             echo $this->view->render('User/payment.php', [
                 'title' => "Billing & Payment",
                 "paymentDetails" => $paymentDetails,
                 'pagination' => $pagination,
-                "revenue" => $totalRevenue,
+                "transactions" => $totalTransactions,
                 'totalWithdrawal' => $totalWithdrawal
             ]);
         }
@@ -526,11 +526,28 @@ class PageController
 
     public function revenueReportView()
     {
+        [$totalAdRevenue, $totalWithdrawalRevenue] = $this->paymentService->getTotalRevenue();
+        $totalAdRevenue = (float)$totalAdRevenue;
+        $totalWithdrawalRevenue = (float)$totalWithdrawalRevenue;
+
+        $totalAdRevenue = round($totalAdRevenue, 2);
+        $totalWithdrawalRevenue = round($totalWithdrawalRevenue, 2);
+
+        $totalRevenue = $totalAdRevenue + $totalWithdrawalRevenue;
+
+        $adRevenueRate = round(($totalAdRevenue / $totalRevenue) * 100);
+        $WithdrawalRevenueRate = round(($totalWithdrawalRevenue / $totalRevenue) * 100);
 
         echo $this->view->render(
             'User/Admin/revenue_report.php',
             [
-                'title' => "Revenue Report"
+                'title' => "Revenue Report",
+                'totalAdRevenue' => $totalAdRevenue ?? 0,
+                'totalWithdrawalRevenue' => $totalWithdrawalRevenue,
+                'totalRevenue' => $totalRevenue,
+                'adRevenueRate' => $adRevenueRate,
+                'WithdrawalRevenueRate' => $WithdrawalRevenueRate
+
             ]
         );
     }
