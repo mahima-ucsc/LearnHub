@@ -55,6 +55,13 @@ class AuthController
 
     public function verifyuser()
     {
+        $currentTime = time();
+        // check OTP has expired
+        if (!isset($_SESSION['otp_expiry']) || $currentTime > $_SESSION['otp_expiry']) {
+            throw new ValidationException(['verificationCode' => ['Verification code expired. please resend new one.']]);
+            unset($_SESSION['otp_hash'], $_SESSION['otp_expiry']);
+        }
+        // verify the pin
         if (password_verify($_POST['verificationCode'], $_SESSION['otp_hash'])) {
             $this->userService->create($_SESSION['tempUser']);
             if ($_SESSION['user_role'] == "student") {
@@ -66,7 +73,9 @@ class AuthController
             } else {
                 redirectTo("/");
             }
+            unset($_SESSION['otp_hash'], $_SESSION['otp_expiry']);
         } else {
+            // trow error for incorrect OTP
             throw new ValidationException(['verificationCode' => ['Invalid verification code']]);
         }
     }
