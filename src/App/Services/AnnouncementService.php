@@ -85,17 +85,17 @@ class AnnouncementService
     {
         // dd([$courseId, $student_id]);
         return $this->db->query(
-            "SELECT 
+            "SELECT DISTINCT
                 a.*,
                 c.title AS course_title, 
                 CONCAT(u.first_name, ' ', u.last_name) AS tutor_name,
                 ar.is_read
             FROM announcements a
-            JOIN students_courses sc ON sc.course_id = a.course_id
-            JOIN announcements_read ar ON ar.user_id = sc.student_id AND ar.announcement_id = a.announcement_id
+            JOIN course_payments cp ON cp.course_id = a.course_id
+            JOIN announcements_read ar ON ar.user_id = cp.user_id AND ar.announcement_id = a.announcement_id
             JOIN courses c ON a.course_id = c.course_id
             JOIN users u ON c.tutor_id = u.user_id
-            WHERE a.course_id = :course_id AND sc.student_id = :student_id
+            WHERE a.course_id = :course_id AND cp.user_id = :student_id
             ORDER BY a.created_at DESC",
             [
                 'course_id' => $courseId,
@@ -172,5 +172,18 @@ class AnnouncementService
                 'student_id' => $studentId,
             ]
         );
+    }
+
+    public function getCourseisParticipants($courseId, $studentId)
+    {
+        return $this->db->query(
+            "SELECT COUNT(*) > 0 AS is_enrolled
+            FROM course_payments
+            WHERE course_id = :course_id AND user_id = :student_id",
+            [
+                'course_id' => $courseId,
+                'student_id' => $studentId
+            ]
+        )->find();
     }
 }
