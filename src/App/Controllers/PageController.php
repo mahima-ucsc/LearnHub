@@ -551,18 +551,20 @@ class PageController
             ]
         );
     }
-    public function profile()
-    {
-        $userDetails = $this->userService->getUserProfile();
-        $userReview = $this->reviewService->getUserReview();
-        [$courses, $courseCount] = $this->courseService->searchCourse(3, 0);
-        echo $this->view->render('User/profile.php', [
-            "title" => "Profile",
-            "userDetails" => $userDetails,
-            "userReview" => $userReview,
-            "courses" => $courses
-        ]);
-    }
+
+
+    // public function profile()
+    // {
+    //     $userDetails = $this->userService->getUserProfile();
+    //     $userReview = $this->reviewService->getUserReview();
+    //     [$courses, $courseCount] = $this->courseService->searchCourse(3, 0);
+    //     echo $this->view->render('User/profile.php', [
+    //         // "title" => "Profile",
+    //         "userDetails" => $userDetails,
+    //         "userReview" => $userReview,
+    //         "courses" => $courses
+    //     ]);
+    // }
 
     public function tutorProfile($params)
     {
