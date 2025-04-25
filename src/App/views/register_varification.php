@@ -65,9 +65,46 @@
     #resendBtn:hover:enabled {
         background-color: #0056b3;
     }
+
+    .error-message {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #ff5252;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 4px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        text-align: center;
+        font-size: 16px;
+        max-width: 80%;
+        animation: fadeIn 0.3s ease-out;
+        transition: opacity 0.5s;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+    }
 </style>
 
 <body>
+    <!-- if varification PIN wrong -->
+    <?php if (isset($errors['verificationCode'])): ?>
+        <div class="error-message">
+            <?= htmlspecialchars($errors['verificationCode'][0]) ?>
+        </div>
+    <?php endif; ?>
+
     <div class="container">
         <h2>Enter Verification Code</h2>
         <form method="POST" action="/verify-otp">
@@ -93,6 +130,19 @@
                     resendBtn.textContent = 'Resend Code';
                 }
             }, 1000);
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const errorMsg = document.querySelector('.error-message');
+                if (errorMsg) {
+                    errorMsg.style.opacity = '0';
+                    errorMsg.style.transition = 'opacity 0.5s';
+                    setTimeout(function() {
+                        errorMsg.remove();
+                    }, 500);
+                }
+            }, 5000);
         });
     </script>
 </body>
