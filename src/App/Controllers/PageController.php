@@ -123,27 +123,31 @@ class PageController
 
             $path = "User/Admin/admin_dashboard.php";
             $userCount = $this->userService->getUserCount();
-            $courseCount = $this->courseService->getNoOfCourses();
+            $totalUsers = (int)$userCount['students'] + (int)$userCount['admin'] + (int)$userCount['teacher'];
+
+            $totalCourses = $this->courseService->getNoOfCourses();
+            $courseCountByType = $this->courseService->getCourseCountByType();
+
             $stat = [
                 "users" => $userCount,
-                "courses" => $courseCount
             ];
 
+            [$adRevenue, $withdrawalRevenue] = $this->paymentService->getTotalRevenue("", "");
+            $totalRevenue = (int)$adRevenue + (int)$withdrawalRevenue;
             echo $this->view->render($path, [
                 "title" => "Admin Dashboard",
                 'users' => $users ?? '',
                 "courses" => $courses ?? '',
                 "stat" => $stat,
+                "totalUsers" => $totalUsers ?? 0,
+                "totalCourses" => $totalCourses ?? 0,
+                "totalRevenue" => $totalRevenue ?? 0,
+                "courseCountByType" => $courseCountByType ?? []
             ]);
             exit;
         } else {
             $path = "index.php";
         }
-        $users = $this->userService->getAllUsers();
-        echo $this->view->render($path, [
-            "title" => "Dashboard",
-            'users' => $users,
-        ]);
     }
 
     public function billingAndPayment()
