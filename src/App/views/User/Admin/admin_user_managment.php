@@ -396,7 +396,7 @@
                 <form method="GET" class="filter-form">
                     <div class="filter-section">
                         <select name="role" class="select-user-role">
-                            <option value="all">Select user role</option>
+                            <option value="all">All Users</option>
                             <option value="student" <?= isset($_GET['role']) && $_GET['role'] == 'student' ? 'selected' : ''; ?>>Student</option>
                             <option value="teacher" <?= isset($_GET['role']) && $_GET['role'] == 'teacher' ? 'selected' : ''; ?>>Teacher</option>
                             <option value="admin" <?= isset($_GET['role']) && $_GET['role'] == 'admin' ? 'selected' : ''; ?>>Admin</option>

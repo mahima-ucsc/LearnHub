@@ -200,36 +200,29 @@ class UserService
     public function getUsers(int $limit = 10, int $offset = 0)
     {
         $searchTerm = $_GET['s'] ?? '';
-        $role = $_GET['role'] ?? '';
+        $role = $_GET['role'] ?? 'all';
 
         $params['term'] = "%{$searchTerm}%";
+        $filterRole = "";
 
         if ($role != 'all') {
             $filterRole = "AND user_role = :role";
             $params['role'] = $role;
         }
-        $query = "SELECT * FROM users 
-            WHERE first_name LIKE :term 
-            OR last_name LIKE :term
-            OR CONCAT(first_name, ' ', last_name) LIKE :term
-            {$filterRole}
-            LIMIT {$limit} OFFSET {$offset}";
-        // dd($query);
-        dd($params);
         $userData = $this->db->query(
             "SELECT * FROM users 
-            WHERE first_name LIKE :term 
+            WHERE (first_name LIKE :term 
             OR last_name LIKE :term
-            OR CONCAT(first_name, ' ', last_name) LIKE :term
+            OR CONCAT(first_name, ' ', last_name) LIKE :term)
             {$filterRole}
             LIMIT {$limit} OFFSET {$offset}",
             $params
         )->findAll();
         $count = $this->db->query(
             "SELECT COUNT(user_id) FROM users 
-            WHERE first_name LIKE :term 
+            WHERE (first_name LIKE :term 
             OR last_name LIKE :term
-            OR CONCAT(first_name, ' ', last_name) LIKE :term
+            OR CONCAT(first_name, ' ', last_name) LIKE :term)
             {$filterRole}",
             $params
         )->count();

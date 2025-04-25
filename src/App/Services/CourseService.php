@@ -1080,4 +1080,20 @@ class CourseService
             throw $e;
         }
     }
+
+    public function getCourseCountByType()
+    {
+        $data = $this->db->query(
+            "SELECT COUNT(course_id) AS count,
+            billing_type
+            FROM courses
+            GROUP BY billing_type"
+        )->findAll();
+
+        $count = [];
+        foreach ($data as $d) {
+            $count[$d['billing_type']] = $d['count'];
+        }
+        return $count;
+    }
 }
