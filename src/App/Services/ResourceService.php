@@ -14,14 +14,20 @@ class ResourceService
 
     public function create(array $formData, array $files)
     {
-        if (!empty($files)) {
-            // TODO: Save file
+
+        $filePath = null;
+
+        // Handle file upload
+        if (!empty($files['resource_file']['name'])) {
+            $fileService = new FileService($this->db);
+            $filePath = $fileService->uploadFile('resources', $files['resource_file']);
         }
 
+        // Insert resource data into the database
         $this->db->query(
             "INSERT INTO shared_resources
-            (title, description, category, resource_type, is_free, price, resource_url, user_id)
-            VALUES(:title, :description, :category, :resource_type, :is_free, :price, :resource_url, :user_id)",
+            (title, description, category, resource_type, is_free, price, resource_url, resource_path, user_id)
+            VALUES(:title, :description, :category, :resource_type, :is_free, :price, :resource_url, :resource_path, :user_id)",
             [
                 "title" => $formData['title'],
                 "description" => $formData['description'],
@@ -30,9 +36,28 @@ class ResourceService
                 "is_free" => $formData['is_free'] == "on" ? 1 : 0,
                 "price" => $formData['price'] ? $formData['price'] : 0,
                 "resource_url" => $formData['resource_url'],
+                "resource_path" => $filePath,
                 "user_id" => $_SESSION['user']
             ]
         );
+    }
+
+    private function uploadFile(array $file, string $dir): string
+    {
+        $storageDir = Paths::STORAGE_UPLOADS . "/" . $dir;
+        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $fileName = uniqid("", true) . "." . $extension;
+        $storagePath = $storageDir . "/" . $fileName;
+
+        if (!is_dir($storageDir)) {
+            mkdir($storageDir, 0777, true);
+        }
+
+        if (!move_uploaded_file($file['tmp_name'], $storagePath)) {
+            throw new Exception("Failed to upload file.");
+        }
+
+        return $fileName;
     }
 
     public function getResources()
@@ -70,6 +95,14 @@ class ResourceService
         ]);
 
         return $result->rowCount() > 0; // Return true if a row was deleted
+    }
+
+    public function getResourceByIdDownload(int $resourceId): ?array
+    {
+        return $this->db->query(
+            "SELECT * FROM shared_resources WHERE resource_id = :resource_id",
+            ['resource_id' => $resourceId]
+        )->find();
     }
 
     public function getResourceById(int $resourceId, int $userId): ?array
