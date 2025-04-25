@@ -100,7 +100,7 @@ function registerRoutes(App $app)
     $app->delete('/user/delete/{user_id}', [UserController::class, 'deleteUser'], [AuthRequiredMiddleware::class]); // Delete user
 
     // tutor
-    $app->get('/tutor/{tutor-id}', [PageController::class, 'tutorProfile'], [AuthRequiredMiddleware::class]);
+    $app->get('/tutor/{tutor-id}', [PageController::class, 'tutorProfile']);
     $app->get('/tutor/{tutor-id}/create_profile', [AuthController::class, 'createTutorProfileView'], [TeacherOnlyMiddleware::class]);
     $app->post('/api/tutor/profile_create', [AuthController::class, 'createTutorProfile'], [TeacherOnlyMiddleware::class]);
     $app->get('/tutor/{tutor-id}/update_profile', [AuthController::class, 'updateTutorProfileView'], [TeacherOnlyMiddleware::class]);
@@ -168,6 +168,7 @@ function registerRoutes(App $app)
     $app->get('/courses/{course_id}/announcements/create', [AnnouncementController::class, 'announcementsFormView'], [AuthRequiredMiddleware::class]);
     $app->post('/courses/{course_id}/announcements/create', [AnnouncementController::class, 'createAnnouncements'], [AuthRequiredMiddleware::class]);
     $app->get('/courses/{course_id}/announcements', [AnnouncementController::class, 'announcementsListView'], [AuthRequiredMiddleware::class]);
+    $app->delete('/announcements/delete/{announcement_id}', [AnnouncementController::class, 'deleteAnnouncement'], [AuthRequiredMiddleware::class]);
     $app->post('/announcements/mark-as-read', [AnnouncementController::class, 'markAsRead'], [AuthRequiredMiddleware::class]);
     $app->post('/announcements/mark_as', [AnnouncementController::class, 'markAsButtonToggle'], [AuthRequiredMiddleware::class]);
     $app->post('/announcements/mark-as-unread', [AnnouncementController::class, 'markAsUnread'], [AuthRequiredMiddleware::class]);
@@ -183,7 +184,7 @@ function registerRoutes(App $app)
     // tutor Reviews
     $app->get('/tutor/review/{tutor_id}/{page}', [ReviewController::class, 'getTutorReview']);
     $app->post('/add-tutor-review', [ReviewController::class, 'addTutorReview'], [AuthRequiredMiddleware::class]);
-    $app->post('/delete-tutor-review', [ReviewController::class, 'deleteTutorReview'], [AuthRequiredMiddleware::class]);
+    $app->delete('/delete-tutor-review/{review}', [ReviewController::class, 'deleteTutorReview'], [AuthRequiredMiddleware::class]);
     $app->get('/tutor/reviews/edit/{review}', [ReviewController::class, 'editTutorReviewView'], [AuthRequiredMiddleware::class]);
     $app->post('/tutor/review/edit/{review}', [ReviewController::class, 'editTutorReview'], [AuthRequiredMiddleware::class]);
 
@@ -222,12 +223,12 @@ function registerRoutes(App $app)
     $app->post('/api/notifications/mark-as-read/{notification_id}', [NotificationController::class, 'markAsRead'], [NotificationMiddleware::class]);
 
     // Payments
-    $app->get('/payment/courses/{course_id}', [PaymentController::class, 'onetimeCoursePaymentView']);
-    $app->get('/payment/courses/{course_id}/{subperiod_id}', [PaymentController::class, 'courserSubPeriodPaymentView']);
-    $app->get('/payment/advertisement/{advertisement_id}', [PaymentController::class, 'advertisementPaymentView']);
-    $app->post('/payment/courses/{course_id}', [PaymentController::class, 'onetimeCoursePayment']);
-    $app->post('/payment/courses/{course_id}/{subperiod_id}', [PaymentController::class, 'courseSubperiodPayment']);
-    $app->post('/payment/advertisement/{advertisement_id}', [PaymentController::class, 'advertisementPayment']);
+    $app->get('/payment/courses/{course_id}', [PaymentController::class, 'onetimeCoursePaymentView'], [AuthRequiredMiddleware::class]);
+    $app->get('/payment/courses/{course_id}/{subperiod_id}', [PaymentController::class, 'courserSubPeriodPaymentView'], [AuthRequiredMiddleware::class]);
+    $app->get('/payment/advertisement/{advertisement_id}', [PaymentController::class, 'advertisementPaymentView'], [AuthRequiredMiddleware::class]);
+    $app->post('/payment/courses/{course_id}', [PaymentController::class, 'onetimeCoursePayment'], [AuthRequiredMiddleware::class]);
+    $app->post('/payment/courses/{course_id}/{subperiod_id}', [PaymentController::class, 'courseSubperiodPayment'], [AuthRequiredMiddleware::class]);
+    $app->post('/payment/advertisement/{advertisement_id}', [PaymentController::class, 'advertisementPayment'], [AuthRequiredMiddleware::class]);
     $app->post(AppConstants::COURSE_PAYMENT_RELATIVE_NOTIFY_URL, [PaymentController::class, 'handlePaymentNotification']);
 
     $app->get('/unauthorized-access', [PageController::class, 'unauthorizedAccess']);

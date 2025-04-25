@@ -395,9 +395,20 @@ class PageController
     public function settings()
     {
         $userDetails = $this->userService->getUserProfile();
+        $subjects = $this->subjectService->getSubjects();
+        $tutorBasic = $this->userService->getTutorbasic((string)$userDetails['user_id']);
+        $tutorSubjects = $this->userService->getTutorSubjects((string)$userDetails['user_id']);
+        $tutorEducations = $this->userService->getTutorEducations((string)$userDetails['user_id']);
+        $tutorAvailablities = $this->userService->getTutorAvailability((string)$userDetails['user_id']);
         echo $this->view->render('User/settings.php', [
             "title" => "Settings",
-            "userDetails" => $userDetails
+            "userDetails" => $userDetails,
+            "title" => "creat your profile",
+            'subjects' => $subjects,
+            'tutorBasic' => $tutorBasic,
+            'tutorSubjects' => $tutorSubjects,
+            'tutorEducations' => $tutorEducations,
+            'tutorAvailablities' => $tutorAvailablities,
         ]);
     }
 
