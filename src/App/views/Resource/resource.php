@@ -119,7 +119,7 @@
                 <div class="resource-footer">
                     <?php if ($resource['is_free'] == 1): ?>
                         <div class="resource-price free">Free</div>
-                        <a href="#" class="resource-link">Download <i class="fas fa-arrow-right"></i></a>
+                        <a href="/resource/download/<?php echo e($resource['resource_id']); ?>" class="resource-link">Download <i class="fas fa-arrow-right"></i></a>
                     <?php else: ?>
                         <div class="resource-price">Rs.<?php echo e($resource['price']); ?></div>
                         <a href="#" class="resource-link">Preview <i class="fas fa-arrow-right"></i></a>
