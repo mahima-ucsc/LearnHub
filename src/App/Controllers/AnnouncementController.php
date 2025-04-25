@@ -38,9 +38,13 @@ class AnnouncementController
         $courseId = $params['course_id'];
         $student_id = $_SESSION['user'];
         $isparticipants = $this->AnnouncementService->getCourseisParticipants($courseId, $student_id);
-        $announcements = $this->AnnouncementService->getAnnouncements($courseId, $student_id);
         $courseTitle = $this->AnnouncementService->getcourseTitle($courseId);
 
+        if ($_SESSION['user_role'] === 'teacher') {
+            $announcements = $this->AnnouncementService->getAllAnnouncements($courseId);
+        } else {
+            $announcements = $this->AnnouncementService->getAnnouncements($courseId, $student_id);
+        }
         if ($isparticipants) {
             echo $this->view->render(
                 "course/course-info/announcements.php",
