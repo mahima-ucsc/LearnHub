@@ -819,25 +819,35 @@ class PaymentService
             throw $e;
         }
     }
-    public function getTotalRevenue()
+
+    public function getTotalRevenue(string $startDate, string $endDate)
     {
-        try {
-            $adRevenue = $this->db->query(
-                " SELECT SUM(p.amount) as total
+        $adRevenueParams = [];
+        $withdrawalParams = [];
+
+        $adRevenueQuery = "SELECT SUM(p.amount) as total
             FROM payments p
             JOIN advertisement_payments ap ON p.payment_id = ap.payment_id
-            WHERE p.payment_status = 2"
-            )->find();
+            WHERE p.payment_status = 2";
 
-            $withdrawalRevenue = $this->db->query(
-                "SELECT SUM(amount * 0.1) AS total
-                FROM teacher_withdrawal
-                WHERE status = 'completed'"
-            )->find();
+        $withdrawalQuery = "SELECT SUM(amount * 0.1) AS total
+            FROM teacher_withdrawal
+            WHERE status = 'completed'";
 
-            return [$adRevenue['total'], $withdrawalRevenue['total']];
-        } catch (Exception $e) {
-            throw $e;
+        // Add date filters if provided
+        if ($startDate && $endDate) {
+            $adRevenueQuery .= " AND p.created_date BETWEEN :start_date AND :end_date";
+            $adRevenueParams['start_date'] = $startDate;
+            $adRevenueParams['end_date'] = $endDate;
+
+            $withdrawalQuery .= " AND date_requested BETWEEN :start_date AND :end_date";
+            $withdrawalParams['start_date'] = $startDate;
+            $withdrawalParams['end_date'] = $endDate;
         }
+
+        $adRevenue = $this->db->query($adRevenueQuery, $adRevenueParams)->find();
+        $withdrawalRevenue = $this->db->query($withdrawalQuery, $withdrawalParams)->find();
+
+        return [$adRevenue['total'], $withdrawalRevenue['total']];
     }
 }

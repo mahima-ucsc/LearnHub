@@ -102,7 +102,7 @@
     rows.forEach(row => {
         row.addEventListener('click', () => {
             const userId = row.dataset.id;
-            window.location.href = `/courses/1/participants/${userId}`
+            window.location.href = `participants/${userId}`
         })
     })
     // Toggles the Add User Modal
