@@ -310,49 +310,33 @@ class CoursesController
 
     public function create()
     {
-        try {
-            // Upload course thumbnail
-            $courseThumbnail = $_FILES['courseThumbnail'] ?? null;
-            $this->validatorService->validateImg($courseThumbnail);
-            $thumbnailFileName = $this->fileService->uploadFile(Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS, $courseThumbnail);
+        $this->validatorService->validateCourseData($_POST);
 
 
+        // Upload course thumbnail
+        $courseThumbnail = $_FILES['courseThumbnail'] ?? null;
+        $this->validatorService->validateImg($courseThumbnail);
+        $thumbnailFileName = $this->fileService->uploadFile(Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS, $courseThumbnail);
+        // Prepare course data
 
+        $courseData = [
+            'title' => $_POST['courseTitle'],
+            'description' => $_POST['courseDescription'],
+            'subject_id' => intval($_POST['subject']),
+            'grade_id' => intval($_POST['grade']),
+            'tutor_id' => 1,
+            'start_time' => $_POST['courseStartTime'],
+            'end_time' => $_POST['courseEndTime'],
+            'day' => $_POST['courseday'],
+            'billing_type' => $_POST['courseType'],
+            'price' => isset($_POST['fullCoursePrice']) ? floatval($_POST['fullCoursePrice']) : null,
+            'location' => $_POST['location'],
+            'thumbnail_url' => $thumbnailFileName,
+        ];
 
-            // Prepare course data
-            $courseData = [
-                'title' => $_POST['courseTitle'],
-                'description' => $_POST['courseDescription'],
-                'subject_id' => intval($_POST['subject']),
-                'grade_id' => intval($_POST['grade']),
-                'tutor_id' => 1,
-                'start_time' => $_POST['courseStartTime'],
-                'end_time' => $_POST['courseEndTime'],
-                'day' => $_POST['courseday'],
-                'billing_type' => $_POST['courseType'],
-                'price' => isset($_POST['fullCoursePrice']) ? floatval($_POST['fullCoursePrice']) : null,
-                'location' => $_POST['location'],
-                'thumbnail_url' => $thumbnailFileName,
-            ];
-
-            // Create the course with modules
-            $courseId = $this->courseService->createCourse($courseData, $_FILES);
-
-            // Redirect to my courses page
-            if ($courseId) {
-                redirectTo($_SERVER['HTTP_REFERER'] . "?m=success");
-            } else {
-                // Handle error
-                echo json_encode("Error");
-                // redirectTo('/courses/create?error=failed');
-            }
-        } catch (ValidationException $e) {
-            // Handle validation errors
-            // redirectTo('/courses/create');
-        } catch (Exception $e) {
-            // Handle general errors
-            error_log('Course creation failed: ' . $e->getMessage());
-            $_SESSION['error'] = 'Failed to create course. Please try again.';
+        $courseId = $this->courseService->createCourse($courseData, $_FILES);
+        if ($courseId) {
+            redirectTo("/courses/" . $courseId);
         }
     }
 
