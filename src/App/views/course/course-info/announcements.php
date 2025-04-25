@@ -101,7 +101,6 @@
 
             <div class="announcement-list">
                 <?php
-                // dd($announcements);
                 foreach ($announcements as $announcement) { ?>
                     <div
                         class="announcement-item <?php echo $announcement['is_read'] == 1 ? 'read' : ''; ?>"

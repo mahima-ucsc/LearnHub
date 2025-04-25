@@ -6,7 +6,7 @@ namespace App\Controllers;
 
 use Framework\TemplateEngine;
 use App\Services\ReviewService;
-
+use Framework\Validator;
 
 class ReviewController
 {
@@ -66,12 +66,14 @@ class ReviewController
         redirectTo($_SERVER['HTTP_REFERER']);
     }
 
-    public function deleteCourseReview()
+    public function deleteCourseReview($params)
     {
         if ($_POST['token'] === $_SESSION['token']) {
-            $this->reviewService->deleteCourseReview($_POST['review_id']);
+            $this->reviewService->deleteCourseReview($params['review']);
+            redirectTo($_SERVER['HTTP_REFERER']);
+        } else {
+            throw new \Exception("Invalid token. Please try again.");
         }
-        redirectTo($_SERVER['HTTP_REFERER']);
     }
 
     public function editCourseReviewView(array $params)

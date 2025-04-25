@@ -11,9 +11,9 @@ class AppConstants
     public const DB_DRIVER = 'mysql';
     public const DB_HOST = 'localhost';
     public const DB_PORT = 3306;
-    public const DB_NAME = 'learnhubUpdated';
-    public const DB_USER = 'learnhub';
-    public const DB_PASS = 'learnhub123';
+    public const DB_NAME = 'learnhubnew';
+    public const DB_USER = 'phpmyadmin';
+    public const DB_PASS = 'phpmyadmin';
 
     // Log Folder
     public const LOG_FOLDER = __DIR__ . '/../../../logs/';
@@ -26,8 +26,8 @@ class AppConstants
     ];
 
     // PayHere
-    public const PAYHERE_MERCHANT_ID = '1227550';
-    public const PAYHERE_MERCHANT_SECRET = 'MzYxMDEwMjU2MTE0MjA2NjA1NTgxOTc1OTQ1NjUwMzMyNjU4NDIxNg==';
+    public const PAYHERE_MERCHANT_ID = '1230266';
+    public const PAYHERE_MERCHANT_SECRET = 'MjA5MjA2MTYwNTQwNjA4MjAwMzc5MTIyMjI5MzkzMjQ4ODYyNjcy';
     public const PAYHERE_AUTHORIZATION_API_URL = 'https://sandbox.payhere.lk/merchant/v1/oauth/token';
     public const PAYHERE_RETRIEVAL_API_URL = 'https://sandbox.payhere.lk/merchant/v1/payment/search?order_id=';
     public const PAYHERE_AUTHORIZATION_CODE = 'NE9WeHpDWmUxQ0s0SkVWT0Nrc1FsdTNUYjo0ZlVBNThqdmpITzhXM3lvRTVVcndxNFR2TnROYzc0V0M4YkxBSXI2cVlUNQ==';
