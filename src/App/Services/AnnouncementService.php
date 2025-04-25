@@ -204,6 +204,23 @@ class AnnouncementService
 
     public function deleteAnnouncementById($announcementId)
     {
+        $announcement = $this->db->query(
+            "SELECT attachments FROM announcements WHERE announcement_id = :announcement_id",
+            ['announcement_id' => $announcementId]
+        )->find();
+
+        if ($announcement && $announcement['attachments']) {
+            $files = json_decode($announcement['attachments'], true);
+            $uploadDir = Paths::STORAGE_UPLOADS . '/announcement/';
+
+            foreach ($files as $file) {
+                $filePath = $uploadDir . $file;
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+            }
+        }
+
         $this->db->query(
             "DELETE FROM announcements WHERE announcement_id = :announcement_id",
             [
