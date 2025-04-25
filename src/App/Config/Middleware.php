@@ -11,7 +11,8 @@ use App\Middleware\{
     FlashMiddleware,
     SessionMiddleware,
     TemplateDataMiddleware,
-    ValidationExceptionMiddleware
+    ValidationExceptionMiddleware,
+    ServerErrorMiddleware
 };
 
 function registerMiddleware(App $app)
@@ -27,5 +28,7 @@ function registerMiddleware(App $app)
     * This allows it to wrap other middleware in a try-catch block, catching any exceptions thrown by them.
     * If an error occurs, the error handling middleware can handle it in the catch block.
     */
+
     $app->addMiddleware(ValidationExceptionMiddleware::class);
+    $app->addMiddleware(ServerErrorMiddleware::class);
 }
