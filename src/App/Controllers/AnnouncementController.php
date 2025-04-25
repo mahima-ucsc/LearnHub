@@ -37,16 +37,17 @@ class AnnouncementController
     public function announcementsListView($params)
     {
         $courseId = $params['course_id'];
-        $student_id = $_SESSION['user'];
-        $isparticipants = $this->AnnouncementService->getCourseisParticipants($courseId, $student_id);
+        $user_id = $_SESSION['user'];
+        $isparticipants = $this->AnnouncementService->getCourseisParticipants($courseId, $user_id);
         $courseData = $this->AnnouncementService->getcourseTitle($courseId);
 
-        if ($_SESSION['user_role'] === 'teacher') {
+        if ($user_id === $courseData['tutor_id'] || $_SESSION['user_role'] === 'admin') {
             $announcements = $this->AnnouncementService->getAllAnnouncements($courseId);
         } else {
-            $announcements = $this->AnnouncementService->getAnnouncements($courseId, $student_id);
+            $announcements = $this->AnnouncementService->getAnnouncements($courseId, $user_id);
         }
-        if ($isparticipants) {
+
+        if ($isparticipants || $_SESSION['user_role'] === 'admin') {
             echo $this->view->render(
                 "course/course-info/announcements.php",
                 [

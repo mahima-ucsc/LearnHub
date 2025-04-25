@@ -96,7 +96,7 @@
                             <button class="filter-button" data-filter="event">Event</button>
                         </div>
                     </div>
-                    <?php if (!($tutor_id === $_SESSION['user'])): ?>
+                    <?php if (!($tutor_id === $_SESSION['user'] || $_SESSION['user_role'] === 'admin')): ?>
                         <button class="filter-button" data-filter="read">Read</button>
                         <button class="filter-button" data-filter="unread">Unread</button>
                     <?php endif; ?>
@@ -154,7 +154,7 @@
                                 ?>
                             </div>
                             <div class="announcement-actions">
-                                <?php if ($announcement['tutor_id'] === $_SESSION['user']): ?>
+                                <?php if ($announcement['tutor_id'] ===  $_SESSION['user'] || $_SESSION['user_role'] === 'admin'): ?>
                                     <button class="delete-btn" onclick="showModal('/announcements/delete/<?php echo e($announcement['announcement_id']) ?>')">Delete</button>
                                 <?php else: ?>
                                     <button

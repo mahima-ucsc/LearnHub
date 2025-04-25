@@ -223,12 +223,12 @@ function registerRoutes(App $app)
     $app->post('/api/notifications/mark-as-read/{notification_id}', [NotificationController::class, 'markAsRead'], [NotificationMiddleware::class]);
 
     // Payments
-    $app->get('/payment/courses/{course_id}', [PaymentController::class, 'onetimeCoursePaymentView']);
-    $app->get('/payment/courses/{course_id}/{subperiod_id}', [PaymentController::class, 'courserSubPeriodPaymentView']);
-    $app->get('/payment/advertisement/{advertisement_id}', [PaymentController::class, 'advertisementPaymentView']);
-    $app->post('/payment/courses/{course_id}', [PaymentController::class, 'onetimeCoursePayment']);
-    $app->post('/payment/courses/{course_id}/{subperiod_id}', [PaymentController::class, 'courseSubperiodPayment']);
-    $app->post('/payment/advertisement/{advertisement_id}', [PaymentController::class, 'advertisementPayment']);
+    $app->get('/payment/courses/{course_id}', [PaymentController::class, 'onetimeCoursePaymentView'], [AuthRequiredMiddleware::class]);
+    $app->get('/payment/courses/{course_id}/{subperiod_id}', [PaymentController::class, 'courserSubPeriodPaymentView'], [AuthRequiredMiddleware::class]);
+    $app->get('/payment/advertisement/{advertisement_id}', [PaymentController::class, 'advertisementPaymentView'], [AuthRequiredMiddleware::class]);
+    $app->post('/payment/courses/{course_id}', [PaymentController::class, 'onetimeCoursePayment'], [AuthRequiredMiddleware::class]);
+    $app->post('/payment/courses/{course_id}/{subperiod_id}', [PaymentController::class, 'courseSubperiodPayment'], [AuthRequiredMiddleware::class]);
+    $app->post('/payment/advertisement/{advertisement_id}', [PaymentController::class, 'advertisementPayment'], [AuthRequiredMiddleware::class]);
     $app->post(AppConstants::COURSE_PAYMENT_RELATIVE_NOTIFY_URL, [PaymentController::class, 'handlePaymentNotification']);
 
     $app->get('/unauthorized-access', [PageController::class, 'unauthorizedAccess']);

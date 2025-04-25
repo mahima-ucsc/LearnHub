@@ -70,21 +70,21 @@
                     <?php echo e($course['description']); ?>
                 </p>
             </div>
-            <?php if ($_SESSION['user_role'] === 'teacher' && $course['tutor_id'] === $_SESSION['user']): ?>
+            <?php if ($_SESSION['user_role'] === 'teacher' && $course['tutor_id'] === $_SESSION['user'] || $_SESSION['user_role'] === 'admin'): ?>
                 <button type="button" id="addModuleBtn" class="add-module-btn"
                     onclick="window.location.href='/course/<?= $course['course_id'] ?>/module/create'">
                     <i class="fas fa-plus"></i> Add New Module
                 </button>
             <?php endif; ?>
 
-            <?php if ($_SESSION['user_role'] === 'teacher' || $_SESSION['user_role'] === 'student'): ?>
+            <?php if ($_SESSION['user_role'] === 'teacher' || $_SESSION['user_role'] === 'student' || $_SESSION['user_role'] === 'admin'): ?>
                 <button type="button" class="add-module-btn"
                     onclick="window.location.href='/courses/<?= $course['course_id'] ?>/announcements'">
                     <i class="fas fa-plus"></i> Announcements
                 </button>
             <?php endif; ?>
 
-            <?php if ($_SESSION['user_role'] === 'teacher' && $course['tutor_id'] === $_SESSION['user']): ?>
+            <?php if ($_SESSION['user_role'] === 'teacher' && $course['tutor_id'] === $_SESSION['user'] || $_SESSION['user_role'] === 'admin'): ?>
                 <button type="button" class="add-module-btn"
                     onclick="window.location.href='/courses/<?= $course['course_id'] ?>/announcements/create'">
                     <i class="fas fa-plus"></i> Add Announcements
@@ -99,7 +99,7 @@
                         <?php endforeach; ?>
                     </div>
                 </div>
-            <?php elseif ($course['billing_type'] === 'recurring'): ?>
+            <?php elseif ($course['billing_type'] === 'recurring' || $_SESSION['user_role'] === 'admin'): ?>
                 <div class="course-section">
                     <h2 class="section-title">Current Content</h2>
                     <div class="period-list">
