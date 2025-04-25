@@ -40,11 +40,8 @@ class AnnouncementController
         $isparticipants = $this->AnnouncementService->getCourseisParticipants($courseId, $student_id);
         $announcements = $this->AnnouncementService->getAnnouncements($courseId, $student_id);
         $courseTitle = $this->AnnouncementService->getcourseTitle($courseId);
-        // dd($isparticipants);
 
         if ($isparticipants) {
-            // $announcements = $this->AnnouncementService->getOneAnnouncements('1');
-            // dd($courseTitle);
             echo $this->view->render(
                 "course/course-info/announcements.php",
                 [
