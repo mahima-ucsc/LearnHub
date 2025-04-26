@@ -40,6 +40,7 @@ function registerRoutes(App $app)
     $app->get('/dashboard', [PageController::class, 'dashboard'], [AuthRequiredMiddleware::class]);
     $app->get('/settings', [PageController::class, 'settings'], [AuthRequiredMiddleware::class]);
     $app->get('/help-and-support', [PageController::class, 'helpAndSupport']);
+    $app->post('/help-and-support', [PageController::class, 'sendHelpAndSupport']);
     $app->get('/announcements/create', [PageController::class, 'createAnnouncements']);
     $app->get('/help-and-support', [PageController::class, 'helpAndSupport']);
 
@@ -104,6 +105,9 @@ function registerRoutes(App $app)
     $app->post('/api/tutor/profile_create', [AuthController::class, 'createTutorProfile'], [TeacherOnlyMiddleware::class]);
     $app->get('/tutor/{tutor-id}/update_profile', [AuthController::class, 'updateTutorProfileView'], [TeacherOnlyMiddleware::class]);
     $app->post('/api/tutor/profile_update', [AuthController::class, 'updateTutorProfile'], [TeacherOnlyMiddleware::class]);
+    $app->delete('/tutor/delete_experience/{tutor_id}/{subject_id}', [AuthController::class, 'deleteTutorExperience'], [TeacherOnlyMiddleware::class]);
+    $app->delete('/tutor/delete_education/{education_id}', [AuthController::class, 'deleteTutorEducation'], [TeacherOnlyMiddleware::class]);
+    $app->delete('/tutor/delete_availability/{availability_id}', [AuthController::class, 'deleteTutorAvailability'], [TeacherOnlyMiddleware::class]);
 
     // Courses
     $app->get('/courses', [CoursesController::class, 'course']);

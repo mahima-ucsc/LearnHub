@@ -72,27 +72,30 @@
                     <?php echo e($course['description']); ?>
                 </p>
             </div>
-            <?php if ($_SESSION['user_role'] === 'teacher' && $course['tutor_id'] === $_SESSION['user'] || $_SESSION['user_role'] === 'admin'): ?>
-                <button type="button" id="addModuleBtn" class="add-module-btn"
-                    onclick="window.location.href='/course/<?= $course['course_id'] ?>/module/create'">
-                    <i class="fas fa-plus"></i> Add New Module
-                </button>
-            <?php endif; ?>
+            <div class="btn-container">
+                <?php if ($course['tutor_id'] == $_SESSION['user'] || $_SESSION['user_role'] == 'admin'): ?>
+                    <button type="button" id="addModuleBtn" class="add-module-btn"
+                        onclick="window.location.href='/course/<?= $course['course_id'] ?>/module/create'">
+                        <i class="fas fa-plus"></i> Add New Module
+                    </button>
+                <?php endif; ?>
 
-            <?php if ($_SESSION['user_role'] === 'teacher' || $_SESSION['user_role'] === 'student' || $_SESSION['user_role'] === 'admin'): ?>
-                <button type="button" class="add-module-btn"
-                    onclick="window.location.href='/courses/<?= $course['course_id'] ?>/announcements'">
-                    <i class="fas fa-plus"></i> Announcements
-                </button>
-            <?php endif; ?>
+                <?php if ($course['tutor_id'] == $_SESSION['user'] || $_SESSION['user_role'] == 'admin'): ?>
+                    <button type="button" class="add-module-btn"
+                        onclick="window.location.href='/courses/<?= $course['course_id'] ?>/announcements/create'">
+                        <i class="fas fa-bullhorn"></i> Publish Announcement
+                    </button>
+                <?php endif; ?>
 
-            <?php if ($_SESSION['user_role'] === 'teacher' && $course['tutor_id'] === $_SESSION['user'] || $_SESSION['user_role'] === 'admin'): ?>
-                <button type="button" class="add-module-btn"
-                    onclick="window.location.href='/courses/<?= $course['course_id'] ?>/announcements/create'">
-                    <i class="fas fa-plus"></i> Add Announcements
-                </button>
-            <?php endif; ?>
-            <?php if ($course['billing_type'] === 'onetime' && $course['is_paid']): ?>
+                <?php if ($course['tutor_id'] == $_SESSION['user'] || $_SESSION['user_role'] == 'admin' || $course['is_paid']): ?>
+                    <button type="button" class="add-module-btn"
+                        onclick="window.location.href='/courses/<?= $course['course_id'] ?>/announcements'">
+                        <i class="fas fa-list"></i> View Announcements
+                    </button>
+                <?php endif; ?>
+            </div>
+
+            <?php if ($course['billing_type'] == 'onetime' && $course['is_paid']): ?>
                 <div class="course-section">
                     <h2 class="section-title">Course Modules</h2>
                     <div class="module-list">
@@ -101,7 +104,7 @@
                         <?php endforeach; ?>
                     </div>
                 </div>
-            <?php elseif ($course['billing_type'] === 'recurring' || $_SESSION['user_role'] === 'admin'): ?>
+            <?php elseif ($course['billing_type'] == 'recurring' || $_SESSION['user_role'] == 'admin'): ?>
                 <div class="course-section">
                     <h2 class="section-title">Current Content</h2>
                     <div class="period-list">
@@ -179,34 +182,57 @@
             <?php endif; ?>
 
             <!-- Assignments -->
-            <div class="course-section">
-                <h2 class="section-title">Assignments</h2>
+            <?php if ($course['is_paid'] || ($course['tutor_id'] == $_SESSION['user'])): ?>
+                <div class="course-section">
+                    <h2 class="section-title">Assignments</h2>
 
-                <?php foreach ($assignments as $item): ?>
-                    <div class="assignment-item">
-                        <div class="assignment-header" onclick="toggleAssignment(this)">
-                            <h5><?php echo e($item['title']); ?>
-                                <span class="chevron-icon">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polyline points="6 9 12 15 18 9"></polyline>
-                                    </svg>
-                                </span>
-                            </h5>
-                        </div>
-
-                        <div class="assignment-content">
-                            <div class="assignment-details">
-                                <p onclick="window.location.href='/courses/<?php echo e($course['course_id']); ?>/assignment/<?php echo e($item['assignment_id']); ?>'" style="cursor: pointer;"><?php echo e($item['instruction']); ?></p>
-                                <div class="assignment-meta">
-                                    <span class="deadline">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <polyline points="12 6 12 12 16 14"></polyline>
+                    <?php foreach ($assignments as $item): ?>
+                        <div class="assignment-item">
+                            <div class="assignment-header" onclick="toggleAssignment(this)">
+                                <h5><?php echo e($item['title']); ?>
+                                    <span class="chevron-icon">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
                                         </svg>
-                                        <?php echo e($item['deadline']); ?>
                                     </span>
+                                </h5>
+                            </div>
+
+                            <div class="assignment-content">
+                                <div class="assignment-details">
+                                    <p onclick="window.location.href='/courses/<?php echo e($course['course_id']); ?>/assignment/<?php echo e($item['assignment_id']); ?>'" style="cursor: pointer;"><?php echo e($item['instruction']); ?></p>
+                                    <div class="assignment-meta">
+                                        <span class="deadline">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <polyline points="12 6 12 12 16 14"></polyline>
+                                            </svg>
+                                            <?php echo e($item['deadline']); ?>
+                                        </span>
+                                    </div>
+                                    <?php foreach ($assignmentsResources[$item['assignment_id']] as $resource): ?>
+                                        <ul>
+                                            <li>
+                                                <a href="/assignment/<?php echo e($item['assignment_id']) ?>/resource/<?php echo e($resource['resource_id']) ?>" class="resource-link">
+                                                    <span class="resource-icon">📄</span>
+                                                    <?php echo e($resource['resource_path']) ?>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    <?php endforeach; ?>
+                                    <form class="assignment-upload" action="/submit-assignment" method="POST" enctype="multipart/form-data">
+                                        <input type="hidden" name="module_id" value="1">
+                                        <div class="file-upload">
+                                            <input type="file" name="assignment_file" id="assignment-1" required>
+                                            <label for="assignment-1" class="file-label">
+                                                Choose File
+                                            </label>
+                                        </div>
+                                        <button type="submit" class="submit-assignment" onclick="preventDefault();">Submit Assignment</button>
+                                    </form>
                                 </div>
-                                <!-- <?php foreach ($assignmentsResources[$item['assignment_id']] as $resource): ?>
+                            </div>
+                            <!-- <?php foreach ($assignmentsResources[$item['assignment_id']] as $resource): ?>
                                     <ul>
                                         <li>
                                             <a href="/assignment/<?php echo e($item['assignment_id']) ?>/resource/<?php echo e($resource['resource_id']) ?>" class="resource-link">
@@ -216,12 +242,12 @@
                                         </li>
                                     </ul>
                                 <?php endforeach; ?> -->
-                            </div>
                         </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
+                </div>
+            <?php endforeach; ?>
         </div>
+    <?php endif; ?>
+    </div>
     </div>
     <!-- Review Section -->
     <div class="course-section reviews-section">
@@ -343,40 +369,43 @@
         </div>
 
         <!-- Add review -->
-        <div class="add-review-section">
-            <h3>Add Your Review</h3>
-            <form class="review-form" id="newReviewForm" method="POST" action="/add-course-review">
-                <div class="rating-input">
-                    <div class="star-rating">
-                        <input type="radio" id="star5" name="rating" value="5" required>
-                        <label for="star5"><i class="fas fa-star"></i></label>
-                        <input type="radio" id="star4" name="rating" value="4">
-                        <label for="star4"><i class="fas fa-star"></i></label>
-                        <input type="radio" id="star3" name="rating" value="3">
-                        <label for="star3"><i class="fas fa-star"></i></label>
-                        <input type="radio" id="star2" name="rating" value="2">
-                        <label for="star2"><i class="fas fa-star"></i></label>
-                        <input type="radio" id="star1" name="rating" value="1">
-                        <label for="star1"><i class="fas fa-star"></i></label>
+        <?php if ($course['is_paid'] || $course['tutor_id'] === $_SESSION['user']): ?>
+
+            <div class="add-review-section">
+                <h3>Add Your Review</h3>
+                <form class="review-form" id="newReviewForm" method="POST" action="/add-course-review">
+                    <div class="rating-input">
+                        <div class="star-rating">
+                            <input type="radio" id="star5" name="rating" value="5" required>
+                            <label for="star5"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="star4" name="rating" value="4">
+                            <label for="star4"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="star3" name="rating" value="3">
+                            <label for="star3"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="star2" name="rating" value="2">
+                            <label for="star2"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="star1" name="rating" value="1">
+                            <label for="star1"><i class="fas fa-star"></i></label>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="reviewText">Your Review:</label>
-                    <textarea
-                        id="reviewText"
-                        name="review"
-                        rows="4"
-                        placeholder="Share your experience with this course..."
-                        required></textarea>
-                </div>
-                <input type="hidden" name="course_id" value=<?php echo ($course['course_id']) ?> />
+                    <div class="form-group">
+                        <label for="reviewText">Your Review:</label>
+                        <textarea
+                            id="reviewText"
+                            name="review"
+                            rows="4"
+                            placeholder="Share your experience with this course..."
+                            required></textarea>
+                    </div>
+                    <input type="hidden" name="course_id" value=<?php echo ($course['course_id']) ?> />
 
-                <button type="submit" class="submit-review-btn">
-                    Submit Review
-                </button>
-            </form>
-        </div>
+                    <button type="submit" class="submit-review-btn">
+                        Submit Review
+                    </button>
+                </form>
+            </div>
+        <?php endif; ?>
     </div>
 </section>
 
