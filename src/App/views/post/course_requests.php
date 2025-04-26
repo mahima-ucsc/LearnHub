@@ -39,15 +39,6 @@
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label class="filter-label">Budget Range</label>
-                    <select class="filter-select" id="budgetFilter">
-                        <option value="">Any Budget</option>
-                        <option value="low">Under $200</option>
-                        <option value="medium">$200-$500</option>
-                        <option value="high">Over $500</option>
-                    </select>
-                </div>
-                <div class="filter-group">
                     <label class="filter-label">Sort By</label>
                     <select class="filter-select" id="sortFilter" name="sort">
                         <option value="recent">Most Recent</option>
