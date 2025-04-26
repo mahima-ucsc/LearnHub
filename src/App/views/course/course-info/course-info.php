@@ -41,7 +41,7 @@
                             </span>
                         <?php endif; ?>
                     </div>
-                    <?php if ($course['billing_type'] === 'onetime' && !$course['is_paid'] && !($course['tutor_id'] === $_SESSION['user'])): ?>
+                    <?php if (($course['billing_type'] === 'onetime') && $course['is_paid'] && !($course['tutor_id'] === $_SESSION['user'])): ?>
                         <a href="<?= "/payment/courses/" . $course['course_id'] ?>" class="enroll-button">Enroll Now</a>
                     <?php endif; ?>
                 </div>
@@ -95,7 +95,7 @@
                 <?php endif; ?>
             </div>
 
-            <?php if ($course['billing_type'] == 'onetime' && $course['is_paid']): ?>
+            <?php if (($course['billing_type'] == 'onetime' && $course['is_paid']) || (!empty($_SESSION['user']) && $_SESSION['user'] == $course['tutor_id'])): ?>
                 <div class="course-section">
                     <h2 class="section-title">Course Modules</h2>
                     <div class="module-list">
@@ -210,7 +210,7 @@
                                             <?php echo e($item['deadline']); ?>
                                         </span>
                                     </div>
-                                    <?php foreach ($assignmentsResources[$item['assignment_id']] as $resource): ?>
+                                    <!-- <?php foreach ($assignmentsResources[$item['assignment_id']] as $resource): ?>
                                         <ul>
                                             <li>
                                                 <a href="/assignment/<?php echo e($item['assignment_id']) ?>/resource/<?php echo e($resource['resource_id']) ?>" class="resource-link">
@@ -229,7 +229,7 @@
                                             </label>
                                         </div>
                                         <button type="submit" class="submit-assignment" onclick="preventDefault();">Submit Assignment</button>
-                                    </form>
+                                    </form> -->
                                 </div>
                             </div>
                             <!-- <?php foreach ($assignmentsResources[$item['assignment_id']] as $resource): ?>
