@@ -40,6 +40,7 @@ function registerRoutes(App $app)
     $app->get('/dashboard', [PageController::class, 'dashboard'], [AuthRequiredMiddleware::class]);
     $app->get('/settings', [PageController::class, 'settings'], [AuthRequiredMiddleware::class]);
     $app->get('/help-and-support', [PageController::class, 'helpAndSupport']);
+    $app->post('/help-and-support', [PageController::class, 'sendHelpAndSupport']);
     $app->get('/announcements/create', [PageController::class, 'createAnnouncements']);
     $app->get('/help-and-support', [PageController::class, 'helpAndSupport']);
 

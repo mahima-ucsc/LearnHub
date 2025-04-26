@@ -478,6 +478,60 @@ class UserService
         }
     }
 
+    public function sendHelpMail($data)
+    {
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'learnhubnet@gmail.com';
+            $mail->Password = 'fops kigv zank yhse';
+            $mail->SMTPSecure = 'tls';
+            $mail->Port = 587;
+
+            // Email configuration
+            $mail->setFrom('learnhubnet@gmail.com', 'LearnHub Community');
+            $mail->addAddress('learnhubnet@gmail.com', 'LearnHub Support');
+            $mail->addReplyTo($data['email'], $data['name']);
+
+            // Email content
+            $mail->isHTML(true);
+            $mail->Subject = 'Help And Support ' . ($data['name'] ?? 'Unknown');
+
+            // Safely access the subject key
+            $mailBody = "
+                <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;'>
+                    <div style='text-align: center; padding: 10px; background-color: #ffc400; color: white; border-radius: 4px;'>
+                        <h2>LearnHub Support Request</h2>
+                    </div>
+                    <div style='padding: 20px 10px;'>
+                        <p><strong>From:</strong> " . htmlspecialchars($data['name'] ?? 'Unknown') . "</p>
+                        <p><strong>Email:</strong> " . htmlspecialchars($data['email'] ?? 'Unknown') . "</p>
+                        <p><strong>Subject:</strong> " . htmlspecialchars($data['subject'] ?? 'Help and Support') . "</p>
+                        <hr style='border-top: 1px solid #e0e0e0;'>
+                        <h3>Message:</h3>
+                        <div style='background-color: #f5f5f5; padding: 15px; border-radius: 4px; border-left: 4px solid #ffc400;'>
+                            " . nl2br(htmlspecialchars($data['message'] ?? 'No Message')) . "
+                        </div>
+                    </div>
+                    <div style='font-size: 12px; color: #888888; text-align: center; margin-top: 20px; border-top: 1px solid #e0e0e0; padding-top: 15px;'>
+                        <p>LearnHub Support - " . date('Y-m-d H:i:s') . "</p>
+                    </div>
+                </div>
+            ";
+
+            $mail->Body = $mailBody;
+            $mail->AltBody = strip_tags($mailBody); // Plain text version
+
+            $mail->send();
+            return true;
+        } catch (Exception $e) {
+            throw new ValidationException(['email' => "Message could not be sent. Mailer Error: {$mail->ErrorInfo}"]);
+        }
+    }
+
     public function createTutorProfile($formData)
     {
         // dd($formData);

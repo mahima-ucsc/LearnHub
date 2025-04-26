@@ -75,7 +75,7 @@
             <h2>Have Questions or Suggestions?</h2>
             <p>We value your feedback! Let us know your thoughts, questions, or suggestions to improve your experience.</p>
 
-            <form class="feedback-form">
+            <form class="feedback-form" action="/help-and-support" method="POST">
                 <!-- Name Field -->
                 <div class="form-group">
                     <label for="name">Your Name</label>
