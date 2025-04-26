@@ -70,26 +70,29 @@
                     <?php echo e($course['description']); ?>
                 </p>
             </div>
-            <?php if ($course['tutor_id'] == $_SESSION['user'] || $_SESSION['user_role'] == 'admin'): ?>
-                <button type="button" id="addModuleBtn" class="add-module-btn"
-                    onclick="window.location.href='/course/<?= $course['course_id'] ?>/module/create'">
-                    <i class="fas fa-plus"></i> Add New Module
-                </button>
-            <?php endif; ?>
+            <div class="btn-container">
+                <?php if ($course['tutor_id'] == $_SESSION['user'] || $_SESSION['user_role'] == 'admin'): ?>
+                    <button type="button" id="addModuleBtn" class="add-module-btn"
+                        onclick="window.location.href='/course/<?= $course['course_id'] ?>/module/create'">
+                        <i class="fas fa-plus"></i> Add New Module
+                    </button>
+                <?php endif; ?>
 
-            <?php if ($course['tutor_id'] == $_SESSION['user'] || $_SESSION['user_role'] == 'admin' || $course['is_paid']): ?>
-                <button type="button" class="add-module-btn"
-                    onclick="window.location.href='/courses/<?= $course['course_id'] ?>/announcements'">
-                    <i class="fas fa-plus"></i> Announcements
-                </button>
-            <?php endif; ?>
+                <?php if ($course['tutor_id'] == $_SESSION['user'] || $_SESSION['user_role'] == 'admin'): ?>
+                    <button type="button" class="add-module-btn"
+                        onclick="window.location.href='/courses/<?= $course['course_id'] ?>/announcements/create'">
+                        <i class="fas fa-bullhorn"></i> Publish Announcement
+                    </button>
+                <?php endif; ?>
 
-            <?php if ($course['tutor_id'] == $_SESSION['user'] || $_SESSION['user_role'] == 'admin'): ?>
-                <button type="button" class="add-module-btn"
-                    onclick="window.location.href='/courses/<?= $course['course_id'] ?>/announcements/create'">
-                    <i class="fas fa-plus"></i> Add Announcements
-                </button>
-            <?php endif; ?>
+                <?php if ($course['tutor_id'] == $_SESSION['user'] || $_SESSION['user_role'] == 'admin' || $course['is_paid']): ?>
+                    <button type="button" class="add-module-btn"
+                        onclick="window.location.href='/courses/<?= $course['course_id'] ?>/announcements'">
+                        <i class="fas fa-list"></i> View Announcements
+                    </button>
+                <?php endif; ?>
+            </div>
+
             <?php if ($course['billing_type'] == 'onetime' && $course['is_paid']): ?>
                 <div class="course-section">
                     <h2 class="section-title">Course Modules</h2>
