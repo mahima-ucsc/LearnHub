@@ -309,7 +309,7 @@
                                             <label for="recurring<?php echo $indexfortimeslote ?>">Recurring</label>
                                         </div>
                                         <input type="hidden" name="availability[<?php echo $indexfortimeslote ?>][is_new]" value="0">
-                                        <button type="button" class="btn-remove">Remove</button>
+                                        <button type="button" class="btn-remove" onclick="showModal('/tutor/delete_availability/<?= $tutorAvailablity['availability_id'] ?>')">Remove</button>
                                     </div>
                                     <?php $indexfortimeslote++ ?>
                                 <?php endforeach; ?>

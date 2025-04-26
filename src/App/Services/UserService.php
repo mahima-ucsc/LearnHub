@@ -828,4 +828,15 @@ class UserService
         );
         return true;
     }
+
+    public function deleteTutorAvailabilityByID(string $availabilityId)
+    {
+        $this->db->query(
+            "DELETE FROM TutorAvailability WHERE availability_id = :availability_id",
+            [
+                'availability_id' => $availabilityId,
+            ]
+        );
+        return true;
+    }
 }

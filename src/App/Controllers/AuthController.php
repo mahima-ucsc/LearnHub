@@ -164,4 +164,10 @@ class AuthController
         $this->userService->deleteTutorEducationByID($params['education_id']);
         redirectTo($_SERVER['HTTP_REFERER']);
     }
+
+    public function deleteTutorAvailability($params)
+    {
+        $this->userService->deleteTutorAvailabilityByID($params['availability_id']);
+        redirectTo($_SERVER['HTTP_REFERER']);
+    }
 }
