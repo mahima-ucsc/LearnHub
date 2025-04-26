@@ -380,7 +380,7 @@ class CoursesController
         }
 
         $this->courseService->update($course, $_POST, (int)$params['course_id']);
-        redirectTo($_SERVER['HTTP_REFERER']);
+        redirectTo("/courses/{$params['course_id']}");
     }
 
     public function getTeacherCourses()

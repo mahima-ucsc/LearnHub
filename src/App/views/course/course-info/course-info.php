@@ -41,7 +41,7 @@
                             </span>
                         <?php endif; ?>
                     </div>
-                    <?php if ($course['billing_type'] === 'onetime' && !$course['is_paid'] && !($course['tutor_id'] === $_SESSION['user'])): ?>
+                    <?php if (($course['billing_type'] === 'onetime') && $course['is_paid'] && !($course['tutor_id'] === $_SESSION['user'])): ?>
                         <a href="<?= "/payment/courses/" . $course['course_id'] ?>" class="enroll-button">Enroll Now</a>
                     <?php endif; ?>
                 </div>
@@ -95,7 +95,7 @@
                 <?php endif; ?>
             </div>
 
-            <?php if ($course['billing_type'] == 'onetime' && $course['is_paid']): ?>
+            <?php if (($course['billing_type'] == 'onetime' && $course['is_paid']) || (!empty($_SESSION['user']) && $_SESSION['user'] == $course['tutor_id'])): ?>
                 <div class="course-section">
                     <h2 class="section-title">Course Modules</h2>
                     <div class="module-list">
@@ -104,7 +104,10 @@
                         <?php endforeach; ?>
                     </div>
                 </div>
-            <?php elseif ($course['billing_type'] == 'recurring' || $_SESSION['user_role'] == 'admin'): ?>
+                <?php include $this->resolve('course/course-info/assignment.php'); ?>
+            <?php
+                $showAssignment = false;
+            elseif ($course['billing_type'] == 'recurring' || $_SESSION['user_role'] == 'admin' || $course['tutor_id'] == $_SESSION['user']): ?>
                 <div class="course-section">
                     <h2 class="section-title">Current Content</h2>
                     <div class="period-list">
@@ -114,8 +117,10 @@
                                     <div class="period-title">
                                         <h4><?= formatDate($period['start_datetime'], 'Y M j') . " - " . formatDate($period['end_datetime'], 'Y M j') ?></h4>
                                     </div>
-                                    <?php if ($period['is_paid']): ?>
+                                    <?php if ($period['is_paid'] || $period['tutor_id'] == $_SESSION['user']): ?>
+
                                         <div class="period-toggle">
+                                            <?php $showAssignment = true; ?>
                                             <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <polyline points="6 9 12 15 18 9"></polyline>
                                             </svg>
@@ -127,7 +132,7 @@
 
                                 <div class="period-content">
                                     <div class="module-list">
-                                        <?php if ($period['is_paid'] || $period['is_free_access_period']): ?>
+                                        <?php if ($period['is_paid'] || $period['is_free_access_period'] || $period['tutor_id'] == $_SESSION['user']): ?>
                                             <?php foreach ($period['modules'] as $module): ?>
                                                 <?php include $this->resolve("course/course-info/course-module.php"); ?>
                                             <?php endforeach; ?>
@@ -152,19 +157,22 @@
                                         <h4><?= formatDate($period['start_datetime'], 'Y M j') . " - " . formatDate($period['end_datetime'], 'Y M j') ?></h4>
                                     </div>
                                     <?php if ($period['is_paid']): ?>
+                                        <?php $showAssignment = true; ?>
                                         <div class="period-toggle">
                                             <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <polyline points="6 9 12 15 18 9"></polyline>
                                             </svg>
                                         </div>
                                     <?php else: ?>
-                                        <a class="pay-button" href="<?= "/payment/courses/" . $course['course_id'] . "/" . $period['sub_period_id'] ?>">Pay Now</a>
+                                        <div>
+                                            <a class="pay-button" href="<?= "/payment/courses/" . $course['course_id'] . "/" . $period['sub_period_id'] ?>">Pay Now</a>
+                                        </div>
                                     <?php endif; ?>
                                 </div>
-
                                 <div class="period-content">
                                     <div class="module-list">
                                         <?php if ($period['is_paid']): ?>
+                                            <?php $showAssignment = true; ?>
                                             <?php foreach ($period['modules'] as $module): ?>
                                                 <?php include $this->resolve("course/course-info/course-module.php"); ?>
                                             <?php endforeach; ?>
@@ -176,77 +184,16 @@
                                     </div>
                                 </div>
                             </div>
-                        <?php endforeach; ?>
                     </div>
+                <?php endforeach; ?>
                 </div>
             <?php endif; ?>
 
             <!-- Assignments -->
-            <?php if ($course['is_paid'] || ($course['tutor_id'] == $_SESSION['user'])): ?>
-                <div class="course-section">
-                    <h2 class="section-title">Assignments</h2>
-
-                    <?php foreach ($assignments as $item): ?>
-                        <div class="assignment-item">
-                            <div class="assignment-header" onclick="toggleAssignment(this)">
-                                <h5><?php echo e($item['title']); ?>
-                                    <span class="chevron-icon">
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <polyline points="6 9 12 15 18 9"></polyline>
-                                        </svg>
-                                    </span>
-                                </h5>
-                            </div>
-
-                            <div class="assignment-content">
-                                <div class="assignment-details">
-                                    <p onclick="window.location.href='/courses/<?php echo e($course['course_id']); ?>/assignment/<?php echo e($item['assignment_id']); ?>'" style="cursor: pointer;"><?php echo e($item['instruction']); ?></p>
-                                    <div class="assignment-meta">
-                                        <span class="deadline">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                <circle cx="12" cy="12" r="10"></circle>
-                                                <polyline points="12 6 12 12 16 14"></polyline>
-                                            </svg>
-                                            <?php echo e($item['deadline']); ?>
-                                        </span>
-                                    </div>
-                                    <?php foreach ($assignmentsResources[$item['assignment_id']] as $resource): ?>
-                                        <ul>
-                                            <li>
-                                                <a href="/assignment/<?php echo e($item['assignment_id']) ?>/resource/<?php echo e($resource['resource_id']) ?>" class="resource-link">
-                                                    <span class="resource-icon">📄</span>
-                                                    <?php echo e($resource['resource_path']) ?>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    <?php endforeach; ?>
-                                    <form class="assignment-upload" action="/submit-assignment" method="POST" enctype="multipart/form-data">
-                                        <input type="hidden" name="module_id" value="1">
-                                        <div class="file-upload">
-                                            <input type="file" name="assignment_file" id="assignment-1" required>
-                                            <label for="assignment-1" class="file-label">
-                                                Choose File
-                                            </label>
-                                        </div>
-                                        <button type="submit" class="submit-assignment" onclick="preventDefault();">Submit Assignment</button>
-                                    </form>
-                                </div>
-                            </div>
-                            <!-- <?php foreach ($assignmentsResources[$item['assignment_id']] as $resource): ?>
-                                    <ul>
-                                        <li>
-                                            <a href="/assignment/<?php echo e($item['assignment_id']) ?>/resource/<?php echo e($resource['resource_id']) ?>" class="resource-link">
-                                                <span class="resource-icon">📄</span>
-                                                <?php echo e($resource['resource_path']) ?>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                <?php endforeach; ?> -->
-                        </div>
-                </div>
-            <?php endforeach; ?>
+            <?php if ($showAssignment): ?>
+                <?php include $this->resolve('course/course-info/assignment.php'); ?>
+            <?php endif; ?>
         </div>
-    <?php endif; ?>
     </div>
     </div>
     <!-- Review Section -->
