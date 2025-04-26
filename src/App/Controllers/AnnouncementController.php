@@ -150,4 +150,23 @@ class AnnouncementController
         $this->AnnouncementService->deleteAnnouncementById($params['announcement_id']);
         redirectTo($_SERVER['HTTP_REFERER']);
     }
+
+    public function editAnnouncementView($params)
+    {
+        $announcement = $this->AnnouncementService->getAnnouncementById($params['announcement_id']);
+        dd($announcement);
+        echo $this->view->render(
+            "User/Tutor/create_announcement.php",
+            [
+                'title' => 'Edit announcement',
+                'announcement_id' => $params['announcement_id'],
+                'announcement' => $announcement
+            ]
+        );
+    }
+
+    public function editAnnouncement()
+    {
+        dd($_POST);
+    }
 }

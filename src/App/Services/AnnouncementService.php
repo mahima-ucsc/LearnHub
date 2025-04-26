@@ -133,7 +133,7 @@ class AnnouncementService
     }
 
 
-    public function getOneAnnouncements($announcementId)
+    public function getAnnouncementById($announcementId)
     {
         return $this->db->query(
             "SELECT announcements.*, CONCAT(users.first_name, ' ', users.last_name) AS tutor_name 
