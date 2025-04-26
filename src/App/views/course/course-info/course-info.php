@@ -376,7 +376,7 @@
                 <form class="review-form" id="newReviewForm" method="POST" action="/add-course-review">
                     <div class="rating-input">
                         <div class="star-rating">
-                            <input type="radio" id="star5" name="rating" value="5" required>
+                            <input type="radio" id="star5" name="rating" value="5">
                             <label for="star5"><i class="fas fa-star"></i></label>
                             <input type="radio" id="star4" name="rating" value="4">
                             <label for="star4"><i class="fas fa-star"></i></label>
@@ -387,6 +387,14 @@
                             <input type="radio" id="star1" name="rating" value="1">
                             <label for="star1"><i class="fas fa-star"></i></label>
                         </div>
+                        <?php if ($errors): ?>
+                            <div class="rating-error-message" style="color: red;">
+                                <?php if (isset($errors['rating']) || isset($errors['review'])): ?>
+                                    Please select a rating and provide your feedback before submitting.
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
+
                     </div>
 
                     <div class="form-group">

@@ -44,6 +44,7 @@ class ReviewController
 
     public function addReview()
     {
+        $this->validatorService->validateReviewForm($_POST);
         $this->reviewService->create($_POST);
         redirectTo($_SERVER['HTTP_REFERER']);
     }
@@ -111,9 +112,9 @@ class ReviewController
         exit;
     }
 
-    // tutor review controllers
     public function addTutorReview()
     {
+        $this->validatorService->validateReviewForm($_POST);
         $this->reviewService->creatTutorReview($_POST);
         redirectTo($_SERVER['HTTP_REFERER']);
     }

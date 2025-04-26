@@ -255,7 +255,7 @@ class ValidatorService
     public function validateReviewForm(array $formData)
     {
         $rules = [
-            "rating" => ['min:1'],
+            "rating" => ['required', 'min:1'],
             "review" => ['required']
         ];
 
