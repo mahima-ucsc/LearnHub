@@ -26,8 +26,8 @@ class ResourceService
         // Insert resource data into the database
         $this->db->query(
             "INSERT INTO shared_resources
-            (title, description, category, resource_type, is_free, price, resource_url, resource_path, user_id)
-            VALUES(:title, :description, :category, :resource_type, :is_free, :price, :resource_url, :resource_path, :user_id)",
+            (title, description, category, resource_type, is_free, price, resource_path, user_id)
+            VALUES(:title, :description, :category, :resource_type, :is_free, :price, :resource_path, :user_id)",
             [
                 "title" => $formData['title'],
                 "description" => $formData['description'],
@@ -35,7 +35,6 @@ class ResourceService
                 "category" => $formData['category'],
                 "is_free" => $formData['is_free'] == "on" ? 1 : 0,
                 "price" => $formData['price'] ? $formData['price'] : 0,
-                "resource_url" => $formData['resource_url'],
                 "resource_path" => $filePath,
                 "user_id" => $_SESSION['user']
             ]
@@ -100,10 +99,18 @@ class ResourceService
         )->find();
     }
 
-    public function updateResource(int $resourceId, int $userId, array $formData): bool
+    public function updateResource(int $resourceId, int $userId, array $formData, array $files): bool
     {
+        $filePath = null;
+
+        // Handle file upload
+        if (!empty($files['resource_file']['name'])) {
+            $fileService = new FileService($this->db);
+            $filePath = $fileService->uploadFile('resources', $files['resource_file']);
+        }
+
         $query = "UPDATE shared_resources 
-              SET title = :title, description = :description, category = :category, resource_type = :resource_type, is_free = :is_free, price = :price, resource_url = :resource_url 
+              SET title = :title, description = :description, category = :category, resource_type = :resource_type, is_free = :is_free, price = :price , resource_path = :resource_path
               WHERE resource_id = :resource_id AND user_id = :user_id";
 
         $this->db->query($query, [
@@ -113,10 +120,9 @@ class ResourceService
             'resource_type' => $formData['type'],
             "is_free" => $formData['is_free'] == "on" ? 1 : 0,
             "price" => $formData['price'] ? $formData['price'] : 0,
+            "resource_path" => $filePath,
             'resource_id' => $resourceId,
             'user_id' => $userId,
-            'resource_url' => $formData['resource_url'],
-
         ]);
 
         return $this->db->rowCount() >= 0;

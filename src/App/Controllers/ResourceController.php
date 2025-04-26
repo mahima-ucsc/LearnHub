@@ -144,7 +144,7 @@ class ResourceController
         $resourceId = (int)$params['resource_id'];
         $userId = $_SESSION['user']; // Assuming user_id is stored in the session
 
-        $isUpdated = $this->resourceService->updateResource($resourceId, $userId, $_POST);
+        $isUpdated = $this->resourceService->updateResource($resourceId, $userId, $_POST, $_FILES);
 
         if ($isUpdated) {
             redirectTo('/resource/my-resources'); // Redirect to the resources page
