@@ -192,7 +192,7 @@ class ResourceController
         $resourceId = (int)$params['resource_id'];
         $resource = $this->resourceService->getResourceByIdDownload($resourceId);
 
-        if (!$resource || $resource['is_free'] != 1) {
+        if (!$resource) {
             // Redirect back if the resource is not free or doesn't exist
             redirectTo('/resource');
         }

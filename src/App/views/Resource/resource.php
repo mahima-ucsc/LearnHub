@@ -111,7 +111,7 @@
                         <a href="/resource/download/<?php echo e($resource['resource_id']); ?>" class="resource-link">Download <i class="fas fa-arrow-right"></i></a>
                     <?php else: ?>
                         <div class="resource-price">Rs.<?php echo e($resource['price']); ?></div>
-                        <a href="#" class="resource-link">Preview <i class="fas fa-arrow-right"></i></a>
+                        <a href="/resource/download/<?php echo e($resource['resource_id']); ?>" class="resource-link">Preview <i class="fas fa-arrow-right"></i></a>
                     <?php endif; ?>
                 </div>
             </div>
