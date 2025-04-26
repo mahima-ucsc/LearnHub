@@ -247,11 +247,11 @@ class CoursesController
             }
         }
 
+        $course = $this->courseService->getCourseById((string)$params['course_id']);
         if ($course['tutor_id'] == $_SESSION['user']) {
             $isTeacher = true;
         }
-
-        if (!$isParticipant || !$isTeacher) {
+        if (!$isParticipant && !$isTeacher) {
             redirectTo('/unauthorized-access');
         }
 
@@ -380,7 +380,7 @@ class CoursesController
         }
 
         $this->courseService->update($course, $_POST, (int)$params['course_id']);
-        redirectTo($_SERVER['HTTP_REFERER']);
+        redirectTo("/courses/{$params['course_id']}");
     }
 
     public function getTeacherCourses()

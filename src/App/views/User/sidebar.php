@@ -371,10 +371,6 @@
                 <span class="menu-icon"><i class="fas fa-money-bill-wave"></i></span>
                 All Transactions
             </a>
-            <a href="#" class="menu-item">
-                <span class="menu-icon"><i class="fas fa-file-invoice-dollar"></i></span>
-                Invoices
-            </a>
             <a href="/revenue-report" class="menu-item">
                 <span class="menu-icon"><i class="fas fa-chart-line"></i></span>
                 Revenue Reports

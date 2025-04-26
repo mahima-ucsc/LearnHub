@@ -183,7 +183,7 @@
                         <?php echo e($submission['grade']); ?><span class="grade-total">/ 100</span>
                     </div>
                     <div class="feedback-box">
-                        <h4>Instructor Feedback:</h4>
+                        <h4>Teacher Feedback:</h4>
                         <p><?php echo e($submission['feedback']); ?></p>
                     </div>
                 </div>
