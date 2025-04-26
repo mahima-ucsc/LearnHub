@@ -369,7 +369,7 @@
         </div>
 
         <!-- Add review -->
-        <?php if (!($course['billing_type'] === 'onetime' && !$course['is_paid'] && !($course['tutor_id'] === $_SESSION['user']))): ?>
+        <?php if ($course['is_paid'] || $course['tutor_id'] === $_SESSION['user']): ?>
 
             <div class="add-review-section">
                 <h3>Add Your Review</h3>
