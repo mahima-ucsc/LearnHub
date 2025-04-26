@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\ReviewService;
+use App\Services\{ReviewService, ValidatorService};
 
 class ReviewController
 {
     public function __construct(
         private TemplateEngine $view,
-        private ReviewService $reviewService
+        private ReviewService $reviewService,
+        private ValidatorService $validatorService,
     ) {}
 
     public function editView(array $params)
@@ -61,6 +62,7 @@ class ReviewController
     //course review
     public function addCourseReview()
     {
+        $this->validatorService->validateReviewForm($_POST);
         $this->reviewService->createCourseReview($_POST);
         redirectTo($_SERVER['HTTP_REFERER']);
     }

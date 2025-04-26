@@ -251,4 +251,14 @@ class ValidatorService
 
         $this->validator->validate($formData, $rules);
     }
+
+    public function validateReviewForm(array $formData)
+    {
+        $rules = [
+            "rating" => ['min:1'],
+            "review" => ['required']
+        ];
+
+        $this->validator->validate($formData, $rules);
+    }
 }
