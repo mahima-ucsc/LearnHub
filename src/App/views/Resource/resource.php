@@ -107,7 +107,7 @@
                 </div>
                 <div class="resource-footer">
                     <?php if ($resource['is_free'] == 1): ?>
-                        <div class="resource-price free">Free</div>
+                        <div class="resource-price free">Rs.<?php echo e($resource['price']); ?></div>
                         <a href="/resource/download/<?php echo e($resource['resource_id']); ?>" class="resource-link">Download <i class="fas fa-arrow-right"></i></a>
                     <?php else: ?>
                         <div class="resource-price">Rs.<?php echo e($resource['price']); ?></div>
@@ -267,40 +267,6 @@
                         </div>
                     </div>
                 </div>
-                
-                    <div class="preview-sample">
-                        <h4>Preview Content</h4>
-                        <div class="preview-sample-content">
-                            <p>This is a sample of the resource content. In a real implementation, this would show actual preview content based on the resource type.</p>
-                            
-                            ${type.toLowerCase().includes('code') ? 
-                                `<pre class="code-preview"><code>function example() {\n  console.log("This is a code sample");\n  return "Preview of the actual code resource";\n}</code></pre>` : 
-                                
-                                type.toLowerCase().includes('video') ? 
-                                `<div class="video-preview">
-                                    <div class="video-placeholder">
-                                        <i class="fas fa-play-circle"></i>
-                                        <span>Video Preview</span>
-                                    </div>
-                                </div>` :
-                                
-                                type.toLowerCase().includes('pdf') || type.toLowerCase().includes('ebook') ?
-                                `<div class="document-preview">
-                                    <div class="document-pages">
-                                        <div class="document-page">
-                                            <i class="fas fa-file-pdf"></i>
-                                            <span>Page 1 (Preview)</span>
-                                        </div>
-                                    </div>
-                                </div>` :
-                                
-                                `<div class="generic-preview">
-                                    <i class="fas fa-eye"></i>
-                                    <span>Preview for ${type}</span>
-                                </div>`
-                            }
-                        </div>
-                    </div>
             </div>
             
             <div class="preview-price">
@@ -309,7 +275,7 @@
         `;
 
             // Update action button
-            actionBtn.textContent = isFree ? 'Download Now' : 'Purchase';
+            actionBtn.textContent = isFree ? 'Download Now' : 'Download Preview';
             actionBtn.href = actionUrl;
 
             // Show modal

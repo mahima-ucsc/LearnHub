@@ -103,7 +103,7 @@ class ResourceService
     public function updateResource(int $resourceId, int $userId, array $formData): bool
     {
         $query = "UPDATE shared_resources 
-              SET title = :title, description = :description, category = :category, resource_type = :resource_type, price = :price, resource_url = :resource_url 
+              SET title = :title, description = :description, category = :category, resource_type = :resource_type, is_free = :is_free, price = :price, resource_url = :resource_url 
               WHERE resource_id = :resource_id AND user_id = :user_id";
 
         $this->db->query($query, [
@@ -111,7 +111,8 @@ class ResourceService
             'description' => $formData['description'],
             'category' => $formData['category'],
             'resource_type' => $formData['type'],
-            'price' => $formData['price'],
+            "is_free" => $formData['is_free'] == "on" ? 1 : 0,
+            "price" => $formData['price'] ? $formData['price'] : 0,
             'resource_id' => $resourceId,
             'user_id' => $userId,
             'resource_url' => $formData['resource_url'],
