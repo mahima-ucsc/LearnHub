@@ -517,7 +517,7 @@
                                         <div class="form-group">
                                             <label for="accessPeriod" class="form-label">Select Access Period*</label>
                                             <select name="accessPeriod" id="accessPeriod" class="form-control module-access-period">
-                                                <option value="-1">Select Access Period</option>
+                                                <option value="-1">Select Access period</option>
                                                 <?php if (!empty($courseSubPeriods)):
                                                     foreach ($courseSubPeriods as $period): ?>
 
@@ -525,10 +525,14 @@
                                                     <?php endforeach;
                                                 else: ?>
 
-                                                    <option value="-2">'You haven\'t created any access period'</option>
+                                                    <option value="-2">'You haven't created any access period'</option>
                                                 <?php endif; ?>
                                             </select>
                                         </div>
+                                        <?php if (array_key_exists('accessPeriod', $errors)) : ?>
+                                            <div class="error-message" id="courseGradeError">Please select select or create access period</div>
+                                        <?php endif; ?>
+
                                         <div class="toggle-container">
                                             <label class="toggle-switch">
                                                 <input type="checkbox" name="moduleAccessPeriod" class="module-access-period-checkbox">
@@ -543,11 +547,21 @@
                                                     <input type="date" name="moduleAccessPeriodStartDate" class="form-control module-access-period-start-date">
                                                     <div class="error-message">Please enter a valid start date</div>
                                                 </div>
+                                                <?php if (array_key_exists('moduleAccessPeriodStartDate', $errors)) : ?>
+                                                    <div class="error-message">
+                                                        <?php echo e($errors['moduleAccessPeriodStartDate'][0]); ?>
+                                                    </div>
+                                                <?php endif; ?>
                                                 <div class="form-group">
                                                     <label class="form-label">Access Period End Date*</label>
                                                     <input type="date" name="moduleAccessPeriodEndDate" class="form-control module-access-period-end-date">
                                                     <div class="error-message">Please enter a valid end date</div>
                                                 </div>
+                                                <?php if (array_key_exists('moduleAccessPeriodEndDate', $errors)) : ?>
+                                                    <div class="error-message">
+                                                        <?php echo e($errors['moduleAccessPeriodEndDate'][0]); ?>
+                                                    </div>
+                                                <?php endif; ?>
                                             </div>
                                             <div class="toggle-container">
                                                 <label class="toggle-switch">
@@ -564,11 +578,21 @@
                                                         <input type="date" name="moduleFreeTrialStartDate" class="form-control module-free-trial-start-date">
                                                         <div class="error-message">Please enter a valid start date</div>
                                                     </div>
+                                                    <?php if (array_key_exists('moduleFreeTrialStartDate', $errors)) : ?>
+                                                        <div class="error-message">
+                                                            <?php echo e($errors['moduleFreeTrialStartDate'][0]); ?>
+                                                        </div>
+                                                    <?php endif; ?>
                                                     <div class="form-group">
                                                         <label class="form-label">Free Trial End Date*</label>
                                                         <input type="date" name="moduleFreeTrialEndDate" class="form-control module-free-trial-end-date">
                                                         <div class="error-message">Please enter a valid end date</div>
                                                     </div>
+                                                    <?php if (array_key_exists('moduleFreeTrialEndDate', $errors)) : ?>
+                                                        <div class="error-message">
+                                                            <?php echo e($errors['moduleFreeTrialEndDate'][0]); ?>
+                                                        </div>
+                                                    <?php endif; ?>
                                                 </div>
                                             </div>
                                             <div class="form-row">
@@ -577,6 +601,11 @@
                                                     <input type="number" name="price" class="form-control module-price-input" placeholder="Enter price (in Rs.)" step="0.01" min="0">
                                                 </div>
                                             </div>
+                                            <?php if (array_key_exists('price', $errors)) : ?>
+                                                <div class="error-message">
+                                                    <?php echo e($errors['price'][0]); ?>
+                                                </div>
+                                            <?php endif; ?>
                                         </div>
 
 
@@ -586,13 +615,24 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Module Title*</label>
-                                    <input type="text" name="moduleTitle" class="form-control module-title-input" placeholder="e.g., Introduction to React Hooks" required>
+                                    <input type="text" name="moduleTitle" class="form-control module-title-input" placeholder="e.g., Introduction to React Hooks"
+                                        value="<?= $oldFormData['moduleTitle'] ?? ''; ?>">
                                 </div>
+                                <?php if (array_key_exists('moduleTitle', $errors)) : ?>
+                                    <div class="error-message">
+                                        <?php echo e($errors['moduleTitle'][0]); ?>
+                                    </div>
+                                <?php endif; ?>
 
                                 <div class="form-group">
                                     <label class="form-label">Module Description*</label>
                                     <textarea name="moduleDescription" class="form-control textarea-control module-description-input" placeholder="What will students learn in this module?"></textarea>
                                 </div>
+                                <?php if (array_key_exists('moduleDescription', $errors)) : ?>
+                                    <div class="error-message">
+                                        <?php echo e($errors['moduleDescription'][0]); ?>
+                                    </div>
+                                <?php endif; ?>
 
 
 

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\{AssignmentService, ValidatorService, CourseService, UserService, FileService, SubjectService, ReviewService};
+use App\Services\{AssignmentService, ValidatorService, CourseService, UserService, FileService, SubjectService, ReviewService, PaymentService};
 use App\Config\Paths;
 use Exception;
 use Framework\Exceptions\ValidationException;
@@ -23,6 +23,7 @@ class CoursesController
         private AssignmentService $assignmentService,
         private SubjectService $subjectService,
         private ReviewService $reviewService,
+        private PaymentService $paymentService
     ) {}
 
 
@@ -234,8 +235,8 @@ class CoursesController
 
     public function courseParticipant(array $params)
     {
-        // TODO: Get Payment status
         $isParticipant = false;
+        $isTeacher = false;
         if ($_SESSION['user_role'] == 'student') {
             $courses = $this->courseService->getStudentCourses((string)$_SESSION['user']);
             foreach ($courses as $course) {
@@ -244,10 +245,18 @@ class CoursesController
                     break;
                 }
             }
-            if (!$isParticipant) {
-                redirectTo('/unauthorized-access');
-            }
         }
+
+        if ($course['tutor_id'] == $_SESSION['user']) {
+            $isTeacher = true;
+        }
+
+        if (!$isParticipant || !$isTeacher) {
+            redirectTo('/unauthorized-access');
+        }
+
+        $course = $this->courseService->getCourseById((string)$params['course_id']);
+
         $students = $this->courseService->getCourseParticipants($params['course_id']);
         $studentCount = count($students);
         echo $this->view->render(
@@ -256,7 +265,8 @@ class CoursesController
                 'students' => $students,
                 'title' => "Course Participants",
                 'isParticipant' => $isParticipant,
-                'stdCount' => $studentCount
+                'stdCount' => $studentCount,
+                "isTeacher" => $isTeacher
             ]
         );
     }
@@ -310,12 +320,11 @@ class CoursesController
 
     public function create()
     {
-        $this->validatorService->validateCourseData($_POST);
 
+        $this->validatorService->validateCourseWithImage($_POST, $_FILES['courseThumbnail']);
 
         // Upload course thumbnail
-        $courseThumbnail = $_FILES['courseThumbnail'] ?? null;
-        $this->validatorService->validateImg($courseThumbnail);
+        $courseThumbnail = $_FILES['courseThumbnail'];
         $thumbnailFileName = $this->fileService->uploadFile(Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS, $courseThumbnail);
         // Prepare course data
 
@@ -324,7 +333,7 @@ class CoursesController
             'description' => $_POST['courseDescription'],
             'subject_id' => intval($_POST['subject']),
             'grade_id' => intval($_POST['grade']),
-            'tutor_id' => 1,
+            'tutor_id' => $_SESSION['user'],
             'start_time' => $_POST['courseStartTime'],
             'end_time' => $_POST['courseEndTime'],
             'day' => $_POST['courseday'],
@@ -396,9 +405,12 @@ class CoursesController
     public function createModule(array $params)
     {
 
+        $this->validatorService->validateModuleData($_POST);
+
         $courseId = $params['course_id'];
         $course = $this->courseService->getCourseById($courseId);
         $type = $course['billing_type'];
+
         // Process module attachments
         $moduleAttachments = [];
         if (isset($_FILES['moduleAttachments']['name'])) {
@@ -418,8 +430,21 @@ class CoursesController
         $moduleData = $_POST;
         $moduleData['attachments'] = $moduleAttachments;
 
-        $this->courseService->createModule($courseId, $type, $moduleData);
-        redirectTo($_SERVER['HTTP_REFERER'] . "?m=success");
+        $moduleId = $this->courseService->createModule($courseId, $type, $moduleData);
+        if ($moduleId) {
+            $this->modleSuccessMessage($moduleId, $courseId);
+        }
+    }
+    public function modleSuccessMessage(string $moduleId, string $courseId)
+    {
+        echo $this->view->render(
+            "course/module_success.php",
+            [
+                'title' => "Course Create Successfully",
+                'moduleId' => $moduleId,
+                "courseId" => $courseId
+            ]
+        );
     }
 
     public function deleteCourseModule(array $params)

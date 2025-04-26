@@ -31,7 +31,7 @@
     <!-- User Table -->
     <div class="user-table-container">
         <table class="data-table">
-            <?php if ($isParticipant): ?>
+            <?php if ($isParticipant || $isTeacher): ?>
                 <th>Student name</th>
                 <tbody id="userTableBody">
                     <?php if (!empty($students)): ?>
