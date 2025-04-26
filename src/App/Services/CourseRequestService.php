@@ -281,7 +281,7 @@ class CourseRequestService
                 subjects s ON cr.subject_id = s.subject_id
             JOIN 
                 users u ON cr.user_id = u.user_id
-            JOIN
+            LEFT JOIN
                 grades g ON g.grade_id = cr.grade_id
             WHERE 
                 request_id = :request_id  

@@ -91,16 +91,18 @@
                     </div>
                     <h4 class="request-title"><?php echo e($request['title']); ?></h4>
                     <div class="request-details">
-                        <div class="detail-item">
-                            <i class="fas fa-graduation-cap"></i>
-                            <span>Grade <?php echo e($request['grade']); ?></span>
-                        </div>
-                        <div class="detail-item">
-                            <i class="fas fa-book"></i>
-                            <span>
-                                <?php echo e($request['subject']); ?>
-                            </span>
-                        </div>
+                        <?php if (isset($request['grade']) && $request['grade'] !== ''): ?>
+                            <div class="detail-item">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>Grade <?php echo e($request['grade']); ?></span>
+                            </div>
+                        <?php endif; ?>
+                        <?php if (isset($request['subject']) && $request['subject'] !== ''): ?>
+                            <div class="detail-item">
+                                <i class="fas fa-book"></i>
+                                <span><?php echo e($request['subject']); ?></span>
+                            </div>
+                        <?php endif; ?>
                         <div class="detail-item">
                             <i class="fa-solid fa-location-dot"></i>
                             <span>
