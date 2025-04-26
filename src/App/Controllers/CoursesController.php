@@ -247,6 +247,7 @@ class CoursesController
             }
         }
 
+        $course = $this->courseService->getCourseById((string)$params['course_id']);
         if ($course['tutor_id'] == $_SESSION['user']) {
             $isTeacher = true;
         }
