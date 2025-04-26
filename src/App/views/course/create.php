@@ -12,10 +12,6 @@
         <p class="page-subtitle">Share your knowledge with the world by creating an engaging course. Choose your course format and start building your content.</p>
     </div>
 
-    <div id="successMessage" class="success-message <?= $_GET['m'] == 'success' ? 'active' : ''; ?>">
-        Your course has been created successfully! You can now add course modules from course page.
-    </div>
-
     <form id="createCourseForm" method="POST" enctype="multipart/form-data" action="/course/create">
         <!-- Basic Course Information Card -->
         <div class="card">
@@ -65,7 +61,6 @@
                                 Grade <?php echo e($grade['grade_name']); ?>
                             </option>
                         <?php endforeach; ?>
-                        <option value="-1">Other</option>
                     </select>
                     <?php if (array_key_exists('grade', $errors)) : ?>
                         <div class="error-message" id="courseGradeError">Please select a grade</div>

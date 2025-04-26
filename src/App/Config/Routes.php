@@ -121,20 +121,17 @@ function registerRoutes(App $app)
     $app->get('/courses/{course_id}/participants', [CoursesController::class, 'courseParticipant']);
     $app->get('/courses/{course_id}/participants/{participant_id}', [CoursesController::class, 'courseParticipantStat'], [TeacherOnlyMiddleware::class]);
 
-    // TODO: Check if applicable the implement or remove
-    // $app->post('/courses/{course_id}/participants/add', [CoursesController::class, 'AddParticipant'], [TeacherOnlyMiddleware::class]);
-
     $app->get('/course/{course_id}/module/{module_id}/resource/{resource_id}', [CoursesController::class, 'readModuleResources'], [TeacherOnlyMiddleware::class]);
 
     // New course Routes
-    $app->get('/course/create', [CoursesController::class, 'createView']);
-    $app->post('/course/create', [CoursesController::class, 'create']);
-    $app->get('/course/{course_id}/module/create', [CoursesController::class, 'createModuleView']);
-    $app->post('/course/{course_id}/module/create', [CoursesController::class, 'createModule']);
+    $app->get('/course/create', [CoursesController::class, 'createView'], [TeacherOnlyMiddleware::class]);
+    $app->post('/course/create', [CoursesController::class, 'create'], [TeacherOnlyMiddleware::class]);
+    $app->get('/course/{course_id}/module/create', [CoursesController::class, 'createModuleView'], [TeacherOnlyMiddleware::class]);
+    $app->post('/course/{course_id}/module/create', [CoursesController::class, 'createModule'], [TeacherOnlyMiddleware::class]);
 
-    $app->post('/mark-attendance', [CoursesController::class, 'markAttendance']);
+    $app->post('/mark-attendance', [CoursesController::class, 'markAttendance'], [StudentOnlyMiddleware::class]);
 
-    $app->get('/course/create/add-module', [CoursesController::class, 'addModuleView']);
+    $app->get('/course/create/add-module', [CoursesController::class, 'addModuleView'], [TeacherOnlyMiddleware::class]);
 
     // TODO: Remove if not necessary
     $app->get('/course/create/success', [CoursesController::class, 'successMessage']);
