@@ -14,8 +14,8 @@
 
     <div class="summary-cards">
         <div class="summary-card">
-            <h3>Total Revenue</h3>
-            <div class="value">Rs. <?= e($revenue); ?></div>
+            <h3>Total Transactions</h3>
+            <div class="value">Rs. <?= e($transactions); ?></div>
         </div>
         <div class="summary-card">
             <h3>Total withdrawal</h3>

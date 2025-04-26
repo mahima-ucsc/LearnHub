@@ -1,35 +1,103 @@
-.course-success{
+.success-container {
     display: flex;
     justify-content: center;
-    flex-direction: column;
     align-items: center;
-    margin-top: 150px;
+    min-height: 80vh;
+    padding: 2rem;
 }
 
-.course-success img{
-    width: 120px;
+.success-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding: 3rem;
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+    transition: transform 0.3s ease;
 }
 
-.success-action-btn{
-    display: flex;
-    flex-direction: row;
-    
+.success-card:hover {
+    transform: translateY(-5px);
 }
 
-.course-success h1{
-    font-size: 32px;
-    margin-top: 26px;
-    margin-bottom: 26px;
+.success-icon {
+    margin-bottom: 1.5rem;
 }
 
-.success-home-btn{
-    width: 220px;
-    background-color: #FFC400;
-    border: none;
-    margin: 10px;
-    padding: 10px 3px;
-    border-radius: 20px;
+.success-icon i {
+    font-size: 5rem;
+    color: #22c55e;
+    animation-delay: 0.5s;
+    animation-duration: 1s;
+}
+
+.success-title {
+    color: #1e293b;
     font-weight: 600;
-    cursor: pointer;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
 
+.success-message {
+    color: #64748b;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.success-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.success-btn {
+    padding: 0.85rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: none;
+}
+
+.success-btn.primary {
+    background-color: #ffc400;
+    color: white;
+}
+
+.success-btn.primary:hover {
+    background-color: #ffc400;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.success-btn.secondary {
+    background-color: #f8fafc;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+}
+
+.success-btn.secondary:hover {
+    background-color: #f1f5f9;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .success-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .success-actions {
+        flex-direction: column;
+    }
+
+    .success-btn {
+        width: 100%;
+        justify-content: center;
+    }
 }

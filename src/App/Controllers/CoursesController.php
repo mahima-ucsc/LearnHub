@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\{AssignmentService, ValidatorService, CourseService, UserService, FileService, SubjectService, ReviewService};
+use App\Services\{AssignmentService, ValidatorService, CourseService, UserService, FileService, SubjectService, ReviewService, PaymentService};
 use App\Config\Paths;
 use Exception;
 use Framework\Exceptions\ValidationException;
@@ -23,6 +23,7 @@ class CoursesController
         private AssignmentService $assignmentService,
         private SubjectService $subjectService,
         private ReviewService $reviewService,
+        private PaymentService $paymentService
     ) {}
 
 
@@ -234,8 +235,8 @@ class CoursesController
 
     public function courseParticipant(array $params)
     {
-        // TODO: Get Payment status
         $isParticipant = false;
+        $isTeacher = false;
         if ($_SESSION['user_role'] == 'student') {
             $courses = $this->courseService->getStudentCourses((string)$_SESSION['user']);
             foreach ($courses as $course) {
@@ -244,10 +245,19 @@ class CoursesController
                     break;
                 }
             }
-            if (!$isParticipant) {
-                redirectTo('/unauthorized-access');
-            }
         }
+
+        $course = $this->courseService->getCourseById((string)$params['course_id']);
+        if ($course['tutor_id'] == $_SESSION['user']) {
+            $isTeacher = true;
+        }
+
+        if (!$isParticipant || !$isTeacher) {
+            redirectTo('/unauthorized-access');
+        }
+
+        $course = $this->courseService->getCourseById((string)$params['course_id']);
+
         $students = $this->courseService->getCourseParticipants($params['course_id']);
         $studentCount = count($students);
         echo $this->view->render(
@@ -256,7 +266,8 @@ class CoursesController
                 'students' => $students,
                 'title' => "Course Participants",
                 'isParticipant' => $isParticipant,
-                'stdCount' => $studentCount
+                'stdCount' => $studentCount,
+                "isTeacher" => $isTeacher
             ]
         );
     }
@@ -310,49 +321,32 @@ class CoursesController
 
     public function create()
     {
-        try {
-            // Upload course thumbnail
-            $courseThumbnail = $_FILES['courseThumbnail'] ?? null;
-            $this->validatorService->validateImg($courseThumbnail);
-            $thumbnailFileName = $this->fileService->uploadFile(Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS, $courseThumbnail);
 
+        $this->validatorService->validateCourseWithImage($_POST, $_FILES['courseThumbnail']);
 
+        // Upload course thumbnail
+        $courseThumbnail = $_FILES['courseThumbnail'];
+        $thumbnailFileName = $this->fileService->uploadFile(Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS, $courseThumbnail);
+        // Prepare course data
 
+        $courseData = [
+            'title' => $_POST['courseTitle'],
+            'description' => $_POST['courseDescription'],
+            'subject_id' => intval($_POST['subject']),
+            'grade_id' => intval($_POST['grade']),
+            'tutor_id' => $_SESSION['user'],
+            'start_time' => $_POST['courseStartTime'],
+            'end_time' => $_POST['courseEndTime'],
+            'day' => $_POST['courseday'],
+            'billing_type' => $_POST['courseType'],
+            'price' => isset($_POST['fullCoursePrice']) ? floatval($_POST['fullCoursePrice']) : null,
+            'location' => $_POST['location'],
+            'thumbnail_url' => $thumbnailFileName,
+        ];
 
-            // Prepare course data
-            $courseData = [
-                'title' => $_POST['courseTitle'],
-                'description' => $_POST['courseDescription'],
-                'subject_id' => intval($_POST['subject']),
-                'grade_id' => intval($_POST['grade']),
-                'tutor_id' => 1,
-                'start_time' => $_POST['courseStartTime'],
-                'end_time' => $_POST['courseEndTime'],
-                'day' => $_POST['courseday'],
-                'billing_type' => $_POST['courseType'],
-                'price' => isset($_POST['fullCoursePrice']) ? floatval($_POST['fullCoursePrice']) : null,
-                'location' => $_POST['location'],
-                'thumbnail_url' => $thumbnailFileName,
-            ];
-
-            // Create the course with modules
-            $courseId = $this->courseService->createCourse($courseData, $_FILES);
-
-            // Redirect to my courses page
-            if ($courseId) {
-                redirectTo($_SERVER['HTTP_REFERER'] . "?m=success");
-            } else {
-                // Handle error
-                echo json_encode("Error");
-                // redirectTo('/courses/create?error=failed');
-            }
-        } catch (ValidationException $e) {
-            // Handle validation errors
-            // redirectTo('/courses/create');
-        } catch (Exception $e) {
-            // Handle general errors
-            error_log('Course creation failed: ' . $e->getMessage());
-            $_SESSION['error'] = 'Failed to create course. Please try again.';
+        $courseId = $this->courseService->createCourse($courseData, $_FILES);
+        if ($courseId) {
+            redirectTo("/courses/" . $courseId);
         }
     }
 
@@ -412,9 +406,12 @@ class CoursesController
     public function createModule(array $params)
     {
 
+        $this->validatorService->validateModuleData($_POST);
+
         $courseId = $params['course_id'];
         $course = $this->courseService->getCourseById($courseId);
         $type = $course['billing_type'];
+
         // Process module attachments
         $moduleAttachments = [];
         if (isset($_FILES['moduleAttachments']['name'])) {
@@ -434,8 +431,21 @@ class CoursesController
         $moduleData = $_POST;
         $moduleData['attachments'] = $moduleAttachments;
 
-        $this->courseService->createModule($courseId, $type, $moduleData);
-        redirectTo($_SERVER['HTTP_REFERER'] . "?m=success");
+        $moduleId = $this->courseService->createModule($courseId, $type, $moduleData);
+        if ($moduleId) {
+            $this->modleSuccessMessage($moduleId, $courseId);
+        }
+    }
+    public function modleSuccessMessage(string $moduleId, string $courseId)
+    {
+        echo $this->view->render(
+            "course/module_success.php",
+            [
+                'title' => "Course Create Successfully",
+                'moduleId' => $moduleId,
+                "courseId" => $courseId
+            ]
+        );
     }
 
     public function deleteCourseModule(array $params)
@@ -478,10 +488,27 @@ class CoursesController
             's' => $_GET['s'] ?? '',
         ];
 
-        [$courses, $courseCount] = $this->courseService->getUserCourses(
-            $itemsPerPage,
-            $offset
-        );
+        // if (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'teacher') {
+        //     if ($_SESSION['user_role'] === 'teacher') {
+        //         $courses = $this->courseService->getTutorcourses((string)$_SESSION['user']);
+
+        //         $courseCount = count($courses);
+        //     }
+        // }
+
+
+        if (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'teacher') {
+            if ($_SESSION['user_role'] === 'teacher') {
+                $courses = $this->courseService->getTeacherCourses($_SESSION['user'], $itemsPerPage, $offset);
+                $courseCount = count($courses);
+            }
+        } elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'student') {
+
+            [$courses, $courseCount] = $this->courseService->getUserCourses(
+                $itemsPerPage,
+                $offset
+            );
+        }
 
         $pagination = generatePagination($courseCount, $page, $itemsPerPage, $searchParams);
 

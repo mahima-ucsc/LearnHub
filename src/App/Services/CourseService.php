@@ -102,34 +102,6 @@ class CourseService
         unset($_SESSION['thumbnail']);
     }
 
-    /**
-     * @-deprecated
-     * This function is deprecated.
-     * It was used to save course data before developing the payment function.
-     */
-    // public function createCourse(array $formData)
-    // {
-    //     $tutor_id = $_SESSION['user'];
-
-    //     $this->db->query(
-    //         "INSERT INTO courses(title, description, subject_id, grade_id, tutor_id, start_time, end_time, day, price, pricing_period, location, thumbnail_url)
-    //             VALUES (:title, :description, :subject_id, :grade_id, :tutor_id, :start_time, :end_time, :day, :price, :pricing_period, :location, :thumbnail_url)",
-    //         [
-    //             "title" => $formData['title'],
-    //             "description" => $formData['description'],
-    //             "subject_id" => $formData['subject_id'],
-    //             "grade_id" => $formData['grade_id'],
-    //             "tutor_id" => $tutor_id,
-    //             "start_time" => $formData['start_time'],
-    //             "end_time" => $formData['end_time'],
-    //             "day" => $formData['day'],
-    //             "price" => $formData['price'],
-    //             "pricing_period" => $formData['pricing_period'],
-    //             "location" => $formData['location'],
-    //             "thumbnail_url" => $formData['thumbnail_filename'],
-    //         ]
-    //     );
-    // }
 
     public function getCourseById(string $id)
     {
@@ -301,7 +273,7 @@ class CourseService
 
         // Add search term condition (searching in name and course title)
         if (!empty($searchTerm)) {
-            $whereConditions[] = "(u.first_name LIKE :term OR u.last_name LIKE :term OR c.title LIKE :term)";
+            $whereConditions[] = "(u.first_name LIKE :term OR u.last_name LIKE :term OR c.title LIKE :term OR CONCAT(u.first_name, ' ', u.last_name) LIKE :term)";
             $params["term"] = "%{$searchTerm}%";
         }
 
@@ -317,26 +289,6 @@ class CourseService
             $params["subject"] = $subject;
         }
 
-        // Add price range condition
-        // if ($price !== 'all') {
-        //     switch ($price) {
-        //         case 'free':
-        //             $whereConditions[] = "c.price = 0";
-        //             break;
-        //         case 'paid':
-        //             $whereConditions[] = "c.price > 0";
-        //             break;
-        //         case 'under10':
-        //             $whereConditions[] = "c.price > 0 AND c.price <= 10";
-        //             break;
-        //         case 'under20':
-        //             $whereConditions[] = "c.price > 0 AND c.price <= 20";
-        //             break;
-        //         case 'over20':
-        //             $whereConditions[] = "c.price > 20";
-        //             break;
-        //     }
-        // }
 
         // Add course type condition
         if ($type !== 'all') {
@@ -344,11 +296,6 @@ class CourseService
             $params["type"] = $type;
         }
 
-        // Add rating condition
-        // if ($rating !== 'all') {
-        //     $whereConditions[] = "c.rating >= :rating";
-        //     $params["rating"] = $rating;
-        // }
 
         // Combine all conditions with AND
         $whereClause = !empty($whereConditions) ? "WHERE " . implode(" AND ", $whereConditions) : "";
@@ -670,11 +617,10 @@ class CourseService
     public function createModule(string $courseId, string $type, array $moduleData)
     {
         $this->db->beginTransaction();
-        try {
-            if ($type === 'recurring') {
-                if ($moduleData['moduleAccessPeriod'] == "on") {
-                    $this->db->query(
-                        "INSERT INTO recurring_course_sub_periods(
+        if ($type === 'recurring') {
+            if (!empty($moduleData['moduleAccessPeriod']) && ($moduleData['moduleAccessPeriod'] == "on")) {
+                $this->db->query(
+                    "INSERT INTO recurring_course_sub_periods(
                             course_id, 
                             start_datetime, 
                             end_datetime, 
@@ -689,24 +635,24 @@ class CourseService
                             :free_access_start_datetime,
                             :free_access_end_datetime
                         )",
-                        [
-                            "course_id" => $courseId,
-                            "start_datetime" => $moduleData['moduleAccessPeriodStartDate'],
-                            "end_datetime" => $moduleData['moduleAccessPeriodEndDate'],
-                            "price" => $moduleData['price'],
-                            "free_access_start_datetime" => isset($moduleData['has_free_trial']) && $moduleData['has_free_trial'] ?
-                                $moduleData['free_trial_start_date'] . ' 00:00:00' : null,
-                            "free_access_end_datetime" => isset($moduleData['has_free_trial']) && $moduleData['has_free_trial'] ?
-                                $moduleData['free_trial_end_date'] . ' 23:59:59' : null
-                        ]
-                    );
-                    $subPeriodId = $this->db->lastInsertId();
-                } else {
-                    $subPeriodId = $moduleData['accessPeriod'];
-                }
-                // Create module for this subscription period
-                $this->db->query(
-                    "INSERT INTO course_modules(
+                    [
+                        "course_id" => $courseId,
+                        "start_datetime" => $moduleData['moduleAccessPeriodStartDate'],
+                        "end_datetime" => $moduleData['moduleAccessPeriodEndDate'],
+                        "price" => $moduleData['price'],
+                        "free_access_start_datetime" => isset($moduleData['has_free_trial']) && $moduleData['has_free_trial'] ?
+                            $moduleData['free_trial_start_date'] . ' 00:00:00' : null,
+                        "free_access_end_datetime" => isset($moduleData['has_free_trial']) && $moduleData['has_free_trial'] ?
+                            $moduleData['free_trial_end_date'] . ' 23:59:59' : null
+                    ]
+                );
+                $subPeriodId = $this->db->lastInsertId();
+            } else {
+                $subPeriodId = $moduleData['accessPeriod'];
+            }
+            // Create module for this subscription period
+            $this->db->query(
+                "INSERT INTO course_modules(
                         course_id, 
                         sub_period_id,
                         title, 
@@ -717,19 +663,19 @@ class CourseService
                         :title, 
                         :description
                     )",
-                    [
-                        "course_id" => $courseId,
-                        "sub_period_id" => $subPeriodId,
-                        "title" => $moduleData['moduleTitle'],
-                        "description" => $moduleData['moduleDescription']
-                    ]
-                );
+                [
+                    "course_id" => $courseId,
+                    "sub_period_id" => $subPeriodId,
+                    "title" => $moduleData['moduleTitle'],
+                    "description" => $moduleData['moduleDescription']
+                ]
+            );
 
-                $moduleId = $this->db->lastInsertId();
-            } else {
-                // If it's a onetime course insert module and resources 
-                $this->db->query(
-                    "INSERT INTO course_modules(
+            $moduleId = $this->db->lastInsertId();
+        } else {
+            // If it's a onetime course insert module and resources 
+            $this->db->query(
+                "INSERT INTO course_modules(
                         course_id, 
                         title, 
                         description
@@ -738,23 +684,23 @@ class CourseService
                         :title, 
                         :description
                     )",
-                    [
-                        "course_id" => $courseId,
-                        "title" => $moduleData['moduleTitle'],
-                        "description" => $moduleData['moduleDescription']
-                    ]
-                );
+                [
+                    "course_id" => $courseId,
+                    "title" => $moduleData['moduleTitle'],
+                    "description" => $moduleData['moduleDescription']
+                ]
+            );
 
-                $moduleId = $this->db->lastInsertId();
-            }
-            // Upload and insert module resources if any
-            if (isset($moduleData['attachments']) && !empty($moduleData['attachments'])) {
-                foreach ($moduleData['attachments'] as $attachment) {
-                    if ($attachment['error'] === 0) {
-                        try {
-                            $newFileName = $this->uploadFile($attachment, 'course_module_resource');
-                            $this->db->query(
-                                "INSERT INTO course_module_resource(
+            $moduleId = $this->db->lastInsertId();
+        }
+        // Upload and insert module resources if any
+        if (isset($moduleData['attachments']) && !empty($moduleData['attachments'])) {
+            foreach ($moduleData['attachments'] as $attachment) {
+                if ($attachment['error'] === 0) {
+                    try {
+                        $newFileName = $this->uploadFile($attachment, 'course_module_resource');
+                        $this->db->query(
+                            "INSERT INTO course_module_resource(
                                     module_id, 
                                     course_id, 
                                     resource_path
@@ -763,25 +709,21 @@ class CourseService
                                     :course_id, 
                                     :resource_path
                                 )",
-                                [
-                                    "module_id" => $moduleId,
-                                    "course_id" => $courseId,
-                                    "resource_path" => $newFileName
-                                ]
-                            );
-                        } catch (ValidationException $e) {
-                            // Log the error but continue with the rest of the resources
-                            error_log('Failed to upload resource: ' . $e->getMessage());
-                        }
+                            [
+                                "module_id" => $moduleId,
+                                "course_id" => $courseId,
+                                "resource_path" => $newFileName
+                            ]
+                        );
+                    } catch (ValidationException $e) {
+                        // Log the error but continue with the rest of the resources
+                        error_log('Failed to upload resource: ' . $e->getMessage());
                     }
                 }
             }
-            $this->db->commit();
-            return $moduleId;
-        } catch (Exception $e) {
-            error_log('Failed to create course module: ' . $e->getMessage());
-            redirectTo('/server-error');
         }
+        $this->db->commit();
+        return $moduleId;
     }
 
     public function update(array $course, array $formData, int $id)
@@ -1084,5 +1026,21 @@ class CourseService
         } catch (Exception $e) {
             throw $e;
         }
+    }
+
+    public function getCourseCountByType()
+    {
+        $data = $this->db->query(
+            "SELECT COUNT(course_id) AS count,
+            billing_type
+            FROM courses
+            GROUP BY billing_type"
+        )->findAll();
+
+        $count = [];
+        foreach ($data as $d) {
+            $count[$d['billing_type']] = $d['count'];
+        }
+        return $count;
     }
 }

@@ -102,3 +102,17 @@ function generateRadomString(int $length)
 
     return $randomString;
 }
+
+function calDateDiff($startDate)
+{
+    $start = new DateTime($startDate);
+    $end = new DateTime();
+
+    $diff = $start->diff($end);
+
+    return [
+        'years' => $diff->y,
+        'months' => $diff->m,
+        'days' => $diff->d
+    ];
+}

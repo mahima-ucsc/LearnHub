@@ -256,7 +256,6 @@
                     <tr>
                         <th>Title</th>
                         <th>Price</th>
-                        <th>Revenue</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -271,7 +270,6 @@
                             <tr>
                                 <td><?php echo e($course['title']); ?></td>
                                 <td><?php echo e($course['price']) ?></td>
-                                <td>15000</td>
                                 <td>
                                     <button class="action-btn btn-edit" onclick="window.location.href='/course/edit/<?php echo e($course['course_id']) ?>'">
                                         <i class="fas fa-edit"></i>

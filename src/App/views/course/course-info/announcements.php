@@ -1,5 +1,7 @@
 <?php include $this->resolve("partials/_header.php"); ?>
 <?php include $this->resolve("course/sidebar/sidebar.php"); ?>
+<?php include $this->resolve("components/delete_modal.php"); ?>
+
 
 <link rel="stylesheet" href="/assets/styles/Course/announcement.css">
 
@@ -94,14 +96,15 @@
                             <button class="filter-button" data-filter="event">Event</button>
                         </div>
                     </div>
-                    <button class="filter-button" data-filter="read">Read</button>
-                    <button class="filter-button" data-filter="unread">Unread</button>
+                    <?php if (!($tutor_id === $_SESSION['user'] || $_SESSION['user_role'] === 'admin')): ?>
+                        <button class="filter-button" data-filter="read">Read</button>
+                        <button class="filter-button" data-filter="unread">Unread</button>
+                    <?php endif; ?>
                 </div>
             </div>
 
             <div class="announcement-list">
                 <?php
-                // dd($announcements);
                 foreach ($announcements as $announcement) { ?>
                     <div
                         class="announcement-item <?php echo $announcement['is_read'] == 1 ? 'read' : ''; ?>"
@@ -151,12 +154,16 @@
                                 ?>
                             </div>
                             <div class="announcement-actions">
-                                <button
-                                    class="read_btn"
-                                    announcement_id="<?php echo ($announcement['announcement_id']); ?>"
-                                    is_read="<?php echo $announcement['is_read'] == 1 ? "true" : "false" ?>">
-                                    <?php echo  $announcement['is_read'] == 1 ? "Mark As Unread" : "Mark As Read" ?>
-                                </button>
+                                <?php if ($announcement['tutor_id'] ===  $_SESSION['user'] || $_SESSION['user_role'] === 'admin'): ?>
+                                    <button class="delete-btn" onclick="showModal('/announcements/delete/<?php echo e($announcement['announcement_id']) ?>')">Delete</button>
+                                <?php else: ?>
+                                    <button
+                                        class="read_btn"
+                                        announcement_id="<?php echo ($announcement['announcement_id']); ?>"
+                                        is_read="<?php echo $announcement['is_read'] == 1 ? "true" : "false" ?>">
+                                        <?php echo  $announcement['is_read'] == 1 ? "Mark As Unread" : "Mark As Read" ?>
+                                    </button>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>

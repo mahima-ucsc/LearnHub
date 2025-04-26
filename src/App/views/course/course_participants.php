@@ -31,7 +31,7 @@
     <!-- User Table -->
     <div class="user-table-container">
         <table class="data-table">
-            <?php if ($isParticipant): ?>
+            <?php if ($isParticipant || $isTeacher): ?>
                 <th>Student name</th>
                 <tbody id="userTableBody">
                     <?php if (!empty($students)): ?>
@@ -102,7 +102,7 @@
     rows.forEach(row => {
         row.addEventListener('click', () => {
             const userId = row.dataset.id;
-            window.location.href = `/courses/1/participants/${userId}`
+            window.location.href = `participants/${userId}`
         })
     })
     // Toggles the Add User Modal

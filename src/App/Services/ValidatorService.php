@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Framework\Rules\{DateShouldNotBeFutureRule, RequiredRule, EmailRule, InRule, MatchRule, MinRule, PhoneNumberRule, UrlRule};
+use Framework\Rules\{DateShouldNotBeFutureRule, DateShouldNotBePastRule, RequiredRule, EmailRule, InRule, MatchRule, MinRule, PhoneNumberRule, StartDateEndDateCompareRule, StartTimeEndTimeCompareRule, UrlRule, MaxRule};
 use Framework\Validator;
 use Framework\Exceptions\ValidationException;
 
@@ -19,11 +19,15 @@ class ValidatorService
         $this->validator->add('required', new RequiredRule());
         $this->validator->add('email', new EmailRule());
         $this->validator->add('min', new MinRule());
+        $this->validator->add('max', new MaxRule());
         $this->validator->add('in', new InRule());
         $this->validator->add('url', new UrlRule());
         $this->validator->add('match', new MatchRule());
         $this->validator->add('notFutureDate', new DateShouldNotBeFutureRule());
+        $this->validator->add('notPastDate', new DateShouldNotBePastRule());
         $this->validator->add('phoneno', new PhoneNumberRule());
+        $this->validator->add('dateCompare', new StartDateEndDateCompareRule());
+        $this->validator->add('timeCompare', new StartTimeEndTimeCompareRule());
     }
 
     public function validateRegister(array $formData)
@@ -50,7 +54,7 @@ class ValidatorService
     {
         $this->validator->validate($formData, [
             "title" => ["required"],
-            "description" => ["required"],
+            "description" => ["required", "max:100"],
             "subject_id" => ["required"],
             "grade_id" => ["required"],
             "start_time" => ["required"],
@@ -65,9 +69,11 @@ class ValidatorService
     public function validateCourseRequest(array $formData)
     {
         $this->validator->validate($formData, [
-            "title" => ["required"],
+            "title" => ["required", "max:100"],
             "description" => ["required"],
             "subject" => ["required"],
+            "grade" => ["required"],
+            "location" => ["required"],
         ]);
     }
 
@@ -172,5 +178,77 @@ class ValidatorService
         //         "img" => ['Invalid file type. Only image files are allowed.']
         //     ]);
         // }
+    }
+
+    public function validateCourseWithImage(array $formData, ?array $image)
+    {
+        $errors = [];
+
+        try {
+            $this->validateCourseData($formData);
+        } catch (ValidationException $e) {
+            $errors = $e->errors;
+        }
+
+        // Try to validate image
+        try {
+            $this->validateImg($image);
+        } catch (ValidationException $e) {
+            // Merge with any existing errors
+            $errors = array_merge($errors, $e->errors);
+        }
+
+        // If we collected any errors, throw a combined validation exception
+        if (!empty($errors)) {
+            throw new ValidationException($errors);
+        }
+    }
+
+    public function validateCourseData(array $formData)
+    {
+        $rules = [
+            'courseTitle' => ['required'],
+            'courseDescription' => ['required'],
+            'subject' => ['required'],
+            'grade' => ['required'],
+            'courseStartTime' => ['required'],
+            'courseEndTime' => ['required', 'timeCompare:courseStartTime'],
+            'courseday' => ['required'],
+            'courseType' => ['required', 'in:onetime,recurring'],
+            'location' => ['required'],
+        ];
+
+        if (isset($formData['courseType'])) {
+            if ($formData['courseType'] === 'onetime') {
+                $rules['fullCoursePrice'] = ['required'];
+            }
+        }
+
+        $this->validator->validate($formData, $rules);
+    }
+
+    public function validateModuleData(array $formData)
+    {
+        $rules = [
+            "moduleTitle" => ['required'],
+            "moduleDescription" => ['required'],
+        ];
+
+        if (!empty($formData['accessPeriod']) && $formData['moduleAccessPeriod'] != 'on') {
+            $rules["accessPeriod"] = ['required'];
+        }
+
+        if (!empty($formData['moduleAccessPeriod']) && $formData['moduleAccessPeriod'] == 'on') {
+            $rules['moduleAccessPeriodStartDate'] = ['required'];
+            $rules['moduleAccessPeriodEndDate'] = ['required', 'dateCompare:moduleAccessPeriodStartDate'];
+            $rules['price'] = ['required'];
+
+            if (!empty($formData['moduleFreeTrial']) && $formData['moduleFreeTrial'] == "on") {
+                $rules['moduleFreeTrialStartDate'] = ['required'];
+                $rules['moduleFreeTrialEndDate'] = ['required', 'dateCompare:moduleFreeTrialStartDate'];
+            }
+        }
+
+        $this->validator->validate($formData, $rules);
     }
 }

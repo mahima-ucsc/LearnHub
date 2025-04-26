@@ -92,6 +92,7 @@ class AssignmentController
     public function submitAssignment(array $params)
     {
         $this->assignmentService->submitAssignment($params['courseId'], $params['assignment_id'], $_FILES);
+        redirectTo($_SERVER['HTTP_REFERER']);
     }
 
     public function getSubmissionFile(array $params)

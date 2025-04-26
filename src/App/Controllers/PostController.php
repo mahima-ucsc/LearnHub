@@ -45,33 +45,41 @@ class PostController
     }
     public function CourseRequestView()
     {
-        $searchTerm = $_GET['s'] ?? null;
+        $searchTerm = trim($_GET['s'] ?? '');
+        $subject = $_GET['subject'] ?? 'all';
+        $grade = $_GET['grade'] ?? 'all';
+        $sort = $_GET['sort'] ?? 'recent';
+
         $page = $_GET['p'] ?? 1;
         $page = (int) $page;
         $length = 6;
         $offset = ($page - 1) * $length;
 
-        $subject = $_GET['subject'] ?? 'all';
-        $grade = $_GET['grade'] ?? 'all';
-        $sort = $_GET['sort'] ?? 'recent';
+        [$courseRequests, $requestCount] =
+            $this->courseRequestService->getApprovedCourseRequests($length, $offset, $searchTerm, $subject, $grade, $sort);
 
-        [$courseRequests, $requestCount] = $this->courseRequestService->getApprovedCourseRequests($length, $offset);
         $lastPage = ceil($requestCount / $length);
         $pages = $lastPage ? range(1, $lastPage) : [];
 
         $pageLinks = array_map(
-            fn($pageNum) => http_build_query([
+            (fn($searchTerm, $subject, $grade, $sort) => fn($pageNum) => http_build_query([
                 'p' => $pageNum,
-                's' => $searchTerm,
+                's' =>  $searchTerm,
                 'subject' => $subject,
                 'grade' => $grade,
                 'sort' => $sort
-            ]),
+            ]))(
+                $searchTerm,
+                $subject,
+                $grade,
+                $sort
+            ),
             $pages
         );
 
         $subjects = $this->subjectService->getSubjects();
         $grades = $this->courseService->getGrades();
+
         echo $this->view->render('post/course_requests.php', [
             "title" => "Course Requests",
             "courseRequests" => $courseRequests,
@@ -95,6 +103,10 @@ class PostController
                 'sort' => $sort
             ]),
             "pageLinks" => $pageLinks,
+            'filter_s' => $searchTerm,
+            'filter_subject' => $subject,
+            'filter_grade' => $grade,
+            'filter_sort' => $sort
         ]);
     }
 
@@ -172,9 +184,9 @@ class PostController
 
     public function createCourseRequest()
     {
+        $this->validatorService->validateCourseRequest($_POST);
         $this->courseRequestService->create($_POST);
-        // redirectTo('/course/request');
-
+        redirectTo('/course/request');
     }
 
     public function createComment(array $params)
@@ -197,7 +209,7 @@ class PostController
 
     public function managmentView()
     {
-        $posts = $this->courseRequestService->getUserCourseRequest($_SESSION['user']);
+        $posts = $this->courseRequestService->getUserCourseRequest((int)$_SESSION['user']);
         // dd($posts);
         echo $this->view->render("/post/user_course_request.php", [
             "title" => "Post Managment",

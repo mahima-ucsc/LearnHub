@@ -20,7 +20,7 @@ class AnnouncementService
         if ($fileData && !empty($fileData['attachments']['name'][0])) {
             try {
                 // Handle file uploads
-                $uploadDir = __DIR__ . '/../../../public/assets/uploads/announcement/';
+                $uploadDir = Paths::STORAGE_UPLOADS  . '/announcement/';
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0777, true);
                 }
@@ -48,17 +48,14 @@ class AnnouncementService
         $this->db->beginTransaction();
         try {
             $this->db->query(
-                "INSERT INTO announcements (course_id, title, content, category, visibility, specific_emails, attachments, send_email)
-                VALUES (:course_id, :title, :content, :category, :visibility, :specific_emails, :attachments, :send_email)",
+                "INSERT INTO announcements (course_id, title, content, category, attachments)
+                VALUES (:course_id, :title, :content, :category, :attachments)",
                 [
                     'course_id' => $formData['course_id'],
                     'title' => $formData['title'],
                     'content' => $formData['content'],
                     'category' => $formData['category'],
-                    'visibility' => $formData['visibility'],
-                    'specific_emails' => $formData['specific_emails'] ?? NULL,
                     'attachments' => !empty($attachments) ? json_encode($attachments) :  NULL,
-                    'send_email' => $formData['send_email'],
                 ]
             );
 
@@ -85,17 +82,17 @@ class AnnouncementService
     {
         // dd([$courseId, $student_id]);
         return $this->db->query(
-            "SELECT 
+            "SELECT DISTINCT
                 a.*,
                 c.title AS course_title, 
                 CONCAT(u.first_name, ' ', u.last_name) AS tutor_name,
                 ar.is_read
             FROM announcements a
-            JOIN students_courses sc ON sc.course_id = a.course_id
-            JOIN announcements_read ar ON ar.user_id = sc.student_id AND ar.announcement_id = a.announcement_id
+            JOIN course_payments cp ON cp.course_id = a.course_id
+            JOIN announcements_read ar ON ar.user_id = cp.user_id AND ar.announcement_id = a.announcement_id
             JOIN courses c ON a.course_id = c.course_id
             JOIN users u ON c.tutor_id = u.user_id
-            WHERE a.course_id = :course_id AND sc.student_id = :student_id
+            WHERE a.course_id = :course_id AND cp.user_id = :student_id
             ORDER BY a.created_at DESC",
             [
                 'course_id' => $courseId,
@@ -104,10 +101,28 @@ class AnnouncementService
         )->findAll();
     }
 
+    public function getAllAnnouncements($courseId)
+    {
+        return $this->db->query(
+            "SELECT announcements.*, 
+            courses.title AS course_title, 
+            CONCAT(users.first_name, ' ', users.last_name) AS tutor_name,
+            courses.tutor_id
+            FROM announcements
+            INNER JOIN courses ON announcements.course_id = courses.course_id
+            INNER JOIN users ON courses.tutor_id = users.user_id
+            WHERE announcements.course_id = :courseId
+            ORDER BY announcements.created_at DESC",
+            ['courseId' => $courseId]
+        )->findAll();
+    }
+
     public function getReadAnnouncements($courseId)
     {
         return $this->db->query(
-            "SELECT announcements.*, courses.title AS course_title, CONCAT(users.first_name, ' ', users.last_name) AS tutor_name 
+            "SELECT announcements.*, 
+            courses.title AS course_title, 
+            CONCAT(users.first_name, ' ', users.last_name) AS tutor_name 
             FROM announcements
             INNER JOIN courses ON announcements.course_id = courses.course_id
             INNER JOIN users ON courses.tutor_id = users.user_id
@@ -133,7 +148,7 @@ class AnnouncementService
     public function getcourseTitle($course_id)
     {
         return $this->db->query(
-            "SELECT title FROM courses WHERE course_id = :course_id ",
+            "SELECT title,tutor_id FROM courses WHERE course_id = :course_id ",
             ['course_id' => $course_id]
         )->find();
     }
@@ -170,6 +185,46 @@ class AnnouncementService
             [
                 'announcement_id' => $announcementId,
                 'student_id' => $studentId,
+            ]
+        );
+    }
+
+    public function getCourseisParticipants($courseId, $studentId)
+    {
+        return $this->db->query(
+            "SELECT COUNT(*) > 0 AS is_enrolled
+            FROM course_payments
+            WHERE course_id = :course_id AND user_id = :student_id",
+            [
+                'course_id' => $courseId,
+                'student_id' => $studentId
+            ]
+        )->find();
+    }
+
+    public function deleteAnnouncementById($announcementId)
+    {
+        $announcement = $this->db->query(
+            "SELECT attachments FROM announcements WHERE announcement_id = :announcement_id",
+            ['announcement_id' => $announcementId]
+        )->find();
+
+        if ($announcement && $announcement['attachments']) {
+            $files = json_decode($announcement['attachments'], true);
+            $uploadDir = Paths::STORAGE_UPLOADS . '/announcement/';
+
+            foreach ($files as $file) {
+                $filePath = $uploadDir . $file;
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+            }
+        }
+
+        $this->db->query(
+            "DELETE FROM announcements WHERE announcement_id = :announcement_id",
+            [
+                'announcement_id' => $announcementId,
             ]
         );
     }

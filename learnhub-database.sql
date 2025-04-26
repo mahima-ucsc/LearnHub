@@ -285,7 +285,7 @@ CREATE TABLE IF NOT EXISTS course_requests (
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     subject_id BIGINT(20) UNSIGNED,
-    grade_id BIGINT(20) UNSIGNED NOT NULL,
+    grade_id BIGINT(20) UNSIGNED,
     status ENUM('pending', 'approved') NOT NULL DEFAULT 'pending',
     location VARCHAR(100) NOT NULL,
 

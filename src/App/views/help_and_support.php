@@ -33,8 +33,8 @@
         <div class="faq-section">
             <h3>Account Management</h3>
             <div class="faq-item">
-                <p class="faq-question" tabindex="0">How can I reset my password?</p>
-                <p class="faq-answer">Click on the "Forgot Password" link on the login page and follow the instructions to reset your password.</p>
+                <p class="faq-question" tabindex="0">How can I change my profile name?</p>
+                <p class="faq-answer">Go to your account settings or profile page, find the edit option next to your name, and update it with your preferred name.</p>
             </div>
             <div class="faq-item">
                 <p class="faq-question" tabindex="0">Can I change my account type from student to tutor?</p>
@@ -60,7 +60,7 @@
             <h3>Technical Issues</h3>
             <div class="faq-item">
                 <p class="faq-question" tabindex="0">I can’t log in to my account. What should I do?</p>
-                <p class="faq-answer">Check your email and password for errors. If the problem persists, use the "Forgot Password" option or contact support.</p>
+                <p class="faq-answer">Check your email and password for errors. If the problem persists, please contact our support team.</p>
             </div>
             <div class="faq-item">
                 <p class="faq-question" tabindex="0">The website isn’t loading properly. What can I do?</p>
@@ -75,7 +75,7 @@
             <h2>Have Questions or Suggestions?</h2>
             <p>We value your feedback! Let us know your thoughts, questions, or suggestions to improve your experience.</p>
 
-            <form class="feedback-form">
+            <form class="feedback-form" action="/help-and-support" method="POST">
                 <!-- Name Field -->
                 <div class="form-group">
                     <label for="name">Your Name</label>
@@ -104,18 +104,6 @@
             </form>
         </div>
     </section>
-
-
-    <!-- Feedback Section -->
-    <section class="feedback-section">
-        <h2>Send Us Feedback</h2>
-        <form>
-            <label for="feedback">Your Feedback:</label>
-            <textarea id="feedback" rows="4" placeholder="Write your feedback here..."></textarea>
-            <button type="submit">Submit Feedback</button>
-        </form>
-    </section>
-
 
 </section>
 

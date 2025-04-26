@@ -10,14 +10,14 @@
 }
 
 .form-header {
-  text-align: center;
+  text-align: left;
   margin-bottom: 30px;
 }
 
 .form-header h1 {
   margin: 0;
   color: #2d3748;
-  font-size: 28px;
+  font-size: 25px;
 }
 
 .form-header p {
@@ -160,7 +160,7 @@ textarea {
   cursor: pointer;
   transition: background-color 0.3s;
   display: block;
-  margin: 30px auto 0;
+  margin: 30px 0;
   width: 200px;
 }
 
@@ -205,6 +205,11 @@ textarea {
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
+}
+
+.bottom {
+  align-items: left;
+  justify-content: left;
 }
 
 @media (max-width: 768px) {

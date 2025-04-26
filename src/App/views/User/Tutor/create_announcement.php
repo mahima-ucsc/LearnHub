@@ -36,14 +36,6 @@
                 </select>
             </div>
 
-            <div class="form-group">
-                <label for="visibility"><i class="fas fa-eye"></i> Visibility</label>
-                <select id="visibility" name="visibility">
-                    <option value="all">All enrolled students</option>
-                    <option value="specific">Specific users</option>
-                </select>
-            </div>
-
             <div id="userSelection" class="form-group" style="display: none;">
                 <label><i class="fas fa-envelope"></i> Add Student Email Addresses</label>
                 <div class="email-input-container">
@@ -63,13 +55,6 @@
                     <input type="file" id="attachments" name="attachments[]" multiple>
                 </div>
                 <div id="fileInfo" class="file-info"></div>
-            </div>
-
-            <div class="form-group">
-                <div class="checkbox-container">
-                    <input type="checkbox" id="sendEmail" name="send_email" value="1">
-                    <label for="sendEmail"><i class="fas fa-envelope"></i> Send email notification to students</label>
-                </div>
             </div>
 
             <div class="form-actions">
@@ -97,7 +82,6 @@
             const titleInput = document.getElementById('title');
             const contentInput = document.getElementById('content');
             const categorySelect = document.getElementById('category');
-            const visibilitySelect = document.getElementById('visibility');
             const fileInput = document.getElementById('attachments');
             const fileInfo = document.getElementById('fileInfo');
             const previewBtn = document.getElementById('previewBtn');
@@ -112,15 +96,6 @@
             const emailList = document.getElementById('emailList');
             const addedEmails = new Set();
             const attachmentList = document.getElementById('attachmentList');
-
-            // Show/hide user selection based on visibility choice
-            visibilitySelect.addEventListener('change', function() {
-                if (this.value === 'specific') {
-                    userSelection.style.display = 'block';
-                } else {
-                    userSelection.style.display = 'none';
-                }
-            });
 
             // Email input management
             addEmailBtn.addEventListener('click', function() {
@@ -295,23 +270,6 @@
                     contentInput.focus();
                     return;
                 }
-
-                // Check if specific visibility is selected but no emails added
-                if (visibilitySelect.value === 'specific' && addedEmails.size === 0) {
-                    showAlert('Please add at least one email address for specific users.', 'danger');
-                    emailInput.focus();
-                    return;
-                }
-
-                // Add the collected emails if specific visibility is selected
-                if (visibilitySelect.value === 'specific') {
-                    const emailInputField = document.createElement('input');
-                    emailInputField.type = 'hidden';
-                    emailInputField.name = 'specific_emails';
-                    emailInputField.value = JSON.stringify(Array.from(addedEmails));
-                    form.appendChild(emailInputField);
-                }
-
                 // Submit the form
                 form.submit();
             });

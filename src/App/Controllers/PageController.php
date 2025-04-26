@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\{CourseRequestService, UserService, CourseService, AdvertisementService, PaymentService, ResourceService, ReviewService, SubjectService};
+use App\Services\{CourseRequestService, UserService, CourseService, AdvertisementService, PaymentService, ResourceService, ReviewService, SubjectService, ValidatorService};
 use APP\Config\Paths;
 use Exception;
 
@@ -20,7 +20,8 @@ class PageController
         private PaymentService $paymentService,
         private ResourceService $resourceService,
         private ReviewService $reviewService,
-        private SubjectService $subjectService
+        private SubjectService $subjectService,
+        private validatorService $validatorService,
     ) {}
 
     public function home()
@@ -70,6 +71,23 @@ class PageController
         echo $this->view->render('help_and_support.php', [
             "title" => "help-and-support"
         ]);
+    }
+
+    public function sendHelpAndSupport()
+    {
+        // dd('submitContactForm');
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            $data = [
+                'name' => trim($_POST['name']),
+                'email' => trim($_POST['email']),
+                'message' => trim($_POST['message'])
+            ];
+            //validate form data
+            $errors = $this->validatorService->validateContactForm($data);
+            $this->userService->sendHelpMail($data);
+            redirectTo('/contact/successfull');
+        }
     }
 
     public function contact()
@@ -123,27 +141,31 @@ class PageController
 
             $path = "User/Admin/admin_dashboard.php";
             $userCount = $this->userService->getUserCount();
-            $courseCount = $this->courseService->getNoOfCourses();
+            $totalUsers = (int)$userCount['students'] + (int)$userCount['admin'] + (int)$userCount['teacher'];
+
+            $totalCourses = $this->courseService->getNoOfCourses();
+            $courseCountByType = $this->courseService->getCourseCountByType();
+
             $stat = [
                 "users" => $userCount,
-                "courses" => $courseCount
             ];
 
+            [$adRevenue, $withdrawalRevenue] = $this->paymentService->getTotalRevenue("", "");
+            $totalRevenue = (int)$adRevenue + (int)$withdrawalRevenue;
             echo $this->view->render($path, [
                 "title" => "Admin Dashboard",
                 'users' => $users ?? '',
                 "courses" => $courses ?? '',
                 "stat" => $stat,
+                "totalUsers" => $totalUsers ?? 0,
+                "totalCourses" => $totalCourses ?? 0,
+                "totalRevenue" => $totalRevenue ?? 0,
+                "courseCountByType" => $courseCountByType ?? []
             ]);
             exit;
         } else {
             $path = "index.php";
         }
-        $users = $this->userService->getAllUsers();
-        echo $this->view->render($path, [
-            "title" => "Dashboard",
-            'users' => $users,
-        ]);
     }
 
     public function billingAndPayment()
@@ -188,13 +210,13 @@ class PageController
                 'pagination' => $pagination
             ]);
         } elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'admin') {
-            $totalRevenue = $this->paymentService->getTotalRevenue()['revenue'];
+            $totalTransactions = $this->paymentService->getTotalTransactions()['revenue'];
             $totalWithdrawal = $this->paymentService->getTotalWithdrawal()['revenue'];
             echo $this->view->render('User/payment.php', [
                 'title' => "Billing & Payment",
                 "paymentDetails" => $paymentDetails,
                 'pagination' => $pagination,
-                "revenue" => $totalRevenue,
+                "transactions" => $totalTransactions,
                 'totalWithdrawal' => $totalWithdrawal
             ]);
         }
@@ -370,16 +392,6 @@ class PageController
         ]);
     }
 
-    public function myCourses()
-    {
-        echo $this->view->render(
-            "User/user_courses.php",
-            [
-                'title' => "User Courses"
-            ]
-        );
-    }
-
     public function interestView()
     {
         $subjects = $this->subjectService->getSubjects();
@@ -425,9 +437,20 @@ class PageController
     public function settings()
     {
         $userDetails = $this->userService->getUserProfile();
+        $subjects = $this->subjectService->getSubjects();
+        $tutorBasic = $this->userService->getTutorbasic((string)$userDetails['user_id']);
+        $tutorSubjects = $this->userService->getTutorSubjects((string)$userDetails['user_id']);
+        $tutorEducations = $this->userService->getTutorEducations((string)$userDetails['user_id']);
+        $tutorAvailablities = $this->userService->getTutorAvailability((string)$userDetails['user_id']);
         echo $this->view->render('User/settings.php', [
             "title" => "Settings",
-            "userDetails" => $userDetails
+            "userDetails" => $userDetails,
+            "title" => "creat your profile",
+            'subjects' => $subjects,
+            'tutorBasic' => $tutorBasic,
+            'tutorSubjects' => $tutorSubjects,
+            'tutorEducations' => $tutorEducations,
+            'tutorAvailablities' => $tutorAvailablities,
         ]);
     }
 
@@ -560,26 +583,54 @@ class PageController
 
     public function revenueReportView()
     {
+        $startDate = $_GET['start'];
+        $endDate = $_GET['end'];
+        [$totalAdRevenue, $totalWithdrawalRevenue] = $this->paymentService->getTotalRevenue((string)$startDate, (string)$endDate);
+
+        $totalAdRevenue = (float)$totalAdRevenue;
+        $totalWithdrawalRevenue = (float)$totalWithdrawalRevenue;
+
+        $totalRevenue = $totalAdRevenue + $totalWithdrawalRevenue;
+
+        if ($totalAdRevenue) {
+            $totalAdRevenue = round($totalAdRevenue, 2);
+            $adRevenueRate = round(($totalAdRevenue / $totalRevenue) * 100);
+        }
+
+        if ($totalWithdrawalRevenue) {
+            $totalWithdrawalRevenue = round($totalWithdrawalRevenue, 2);
+            $WithdrawalRevenueRate = round(($totalWithdrawalRevenue / $totalRevenue) * 100);
+        }
+
+
 
         echo $this->view->render(
             'User/Admin/revenue_report.php',
             [
-                'title' => "Revenue Report"
+                'title' => "Revenue Report",
+                'totalAdRevenue' => $totalAdRevenue ?? 0,
+                'totalWithdrawalRevenue' => $totalWithdrawalRevenue ?? 0,
+                'totalRevenue' => $totalRevenue ?? 0,
+                'adRevenueRate' => $adRevenueRate ?? 0,
+                'WithdrawalRevenueRate' => $WithdrawalRevenueRate ?? 0
+
             ]
         );
     }
-    public function profile()
-    {
-        $userDetails = $this->userService->getUserProfile();
-        $userReview = $this->reviewService->getUserReview();
-        [$courses, $courseCount] = $this->courseService->searchCourse(3, 0);
-        echo $this->view->render('User/profile.php', [
-            "title" => "Profile",
-            "userDetails" => $userDetails,
-            "userReview" => $userReview,
-            "courses" => $courses
-        ]);
-    }
+
+
+    // public function profile()
+    // {
+    //     $userDetails = $this->userService->getUserProfile();
+    //     $userReview = $this->reviewService->getUserReview();
+    //     [$courses, $courseCount] = $this->courseService->searchCourse(3, 0);
+    //     echo $this->view->render('User/profile.php', [
+    //         // "title" => "Profile",
+    //         "userDetails" => $userDetails,
+    //         "userReview" => $userReview,
+    //         "courses" => $courses
+    //     ]);
+    // }
 
     public function tutorProfile($params)
     {
