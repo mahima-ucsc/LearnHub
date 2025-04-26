@@ -119,7 +119,7 @@ class CourseRequestService
         FROM course_requests cr
         LEFT JOIN subjects s ON cr.subject_id = s.subject_id
         JOIN users u ON cr.user_id = u.user_id
-        JOIN grades g ON g.grade_id = cr.grade_id
+        LEFT JOIN grades g ON g.grade_id = cr.grade_id
         LEFT JOIN course_request_comments c ON cr.request_id = c.request_id
         WHERE cr.status = 'approved'
         {$whereClause}
