@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\{AssignmentService, ValidatorService, CourseService, UserService, FileService, SubjectService, ReviewService};
+use App\Services\{AssignmentService, ValidatorService, CourseService, UserService, FileService, SubjectService, ReviewService, PaymentService};
 use App\Config\Paths;
 use Exception;
 use Framework\Exceptions\ValidationException;
@@ -23,6 +23,7 @@ class CoursesController
         private AssignmentService $assignmentService,
         private SubjectService $subjectService,
         private ReviewService $reviewService,
+        private PaymentService $paymentService
     ) {}
 
 
@@ -234,8 +235,8 @@ class CoursesController
 
     public function courseParticipant(array $params)
     {
-        // TODO: Get Payment status
         $isParticipant = false;
+        $isTeacher = false;
         if ($_SESSION['user_role'] == 'student') {
             $courses = $this->courseService->getStudentCourses((string)$_SESSION['user']);
             foreach ($courses as $course) {
@@ -244,10 +245,18 @@ class CoursesController
                     break;
                 }
             }
-            if (!$isParticipant) {
-                redirectTo('/unauthorized-access');
-            }
         }
+
+        if ($course['tutor_id'] == $_SESSION['user']) {
+            $isTeacher = true;
+        }
+
+        if (!$isParticipant || !$isTeacher) {
+            redirectTo('/unauthorized-access');
+        }
+
+        $course = $this->courseService->getCourseById((string)$params['course_id']);
+
         $students = $this->courseService->getCourseParticipants($params['course_id']);
         $studentCount = count($students);
         echo $this->view->render(
@@ -256,7 +265,8 @@ class CoursesController
                 'students' => $students,
                 'title' => "Course Participants",
                 'isParticipant' => $isParticipant,
-                'stdCount' => $studentCount
+                'stdCount' => $studentCount,
+                "isTeacher" => $isTeacher
             ]
         );
     }
