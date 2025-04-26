@@ -243,10 +243,10 @@
                                     </ul>
                                 <?php endforeach; ?> -->
                         </div>
+                    <?php endforeach; ?>
                 </div>
-            <?php endforeach; ?>
+            <?php endif; ?>
         </div>
-    <?php endif; ?>
     </div>
     </div>
     <!-- Review Section -->

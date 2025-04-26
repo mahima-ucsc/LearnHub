@@ -26,6 +26,7 @@ class AssignmentController
     public function createAssignment(array $params)
     {
         $this->assignmentService->create($_POST, $params['courseId'], $_FILES);
+        redirectTo('/courses/' . $params['courseId']);
     }
     public function review(array $param)
     {
