@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Framework\Rules\{DateShouldNotBeFutureRule, RequiredRule, EmailRule, InRule, MatchRule, MaxRule, MinRule, PhoneNumberRule, UrlRule};
+use Framework\Rules\{DateShouldNotBeFutureRule, DateShouldNotBePastRule, RequiredRule, EmailRule, InRule, MatchRule, MinRule, PhoneNumberRule, StartDateEndDateCompareRule, StartTimeEndTimeCompareRule, UrlRule, MaxRule};
 use Framework\Validator;
 use Framework\Exceptions\ValidationException;
 
@@ -24,7 +24,10 @@ class ValidatorService
         $this->validator->add('url', new UrlRule());
         $this->validator->add('match', new MatchRule());
         $this->validator->add('notFutureDate', new DateShouldNotBeFutureRule());
+        $this->validator->add('notPastDate', new DateShouldNotBePastRule());
         $this->validator->add('phoneno', new PhoneNumberRule());
+        $this->validator->add('dateCompare', new StartDateEndDateCompareRule());
+        $this->validator->add('timeCompare', new StartTimeEndTimeCompareRule());
     }
 
     public function validateRegister(array $formData)
@@ -175,5 +178,28 @@ class ValidatorService
         //         "img" => ['Invalid file type. Only image files are allowed.']
         //     ]);
         // }
+    }
+
+    public function validateCourseData(array $formData)
+    {
+        $rules = [
+            'courseTitle' => ['required'],
+            'courseDescription' => ['required'],
+            'subject' => ['required'],
+            'grade' => ['required'],
+            'courseStartTime' => ['required'],
+            'courseEndTime' => ['required', 'timeCompare:courseStartTime'],
+            'courseday' => ['required'],
+            'courseType' => ['required', 'in:onetime,recurring'],
+            'location' => ['required'],
+        ];
+
+        if (isset($formData['courseType'])) {
+            if ($formData['courseType'] === 'onetime') {
+                $rules['fullCoursePrice'] = ['required'];
+            }
+        }
+
+        $this->validator->validate($formData, $rules);
     }
 }

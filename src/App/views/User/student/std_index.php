@@ -541,27 +541,6 @@
             </section>
         </div>
         <div class="right-content">
-            <div class="calendar">
-                <div class="calendar-header">
-                    <h3>Upcoming Events</h3>
-                </div>
-                <div class="event">
-                    <div class="event-date">Feb 18, 2025</div>
-                    <h4>Live Workshop: UI Design Basics</h4>
-                    <div class="event-meta">
-                        <i class="fas fa-clock"></i>
-                        <span>2:00 PM - 4:00 PM</span>
-                    </div>
-                </div>
-                <div class="event">
-                    <div class="event-date">Feb 20, 2025</div>
-                    <h4>Group Project Deadline</h4>
-                    <div class="event-meta">
-                        <i class="fas fa-users"></i>
-                        <span>Team Collaboration</span>
-                    </div>
-                </div>
-            </div>
             <div class="student-quick-access">
                 <h3>Quick Access</h3>
 

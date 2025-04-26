@@ -200,36 +200,29 @@ class UserService
     public function getUsers(int $limit = 10, int $offset = 0)
     {
         $searchTerm = $_GET['s'] ?? '';
-        $role = $_GET['role'] ?? '';
+        $role = $_GET['role'] ?? 'all';
 
         $params['term'] = "%{$searchTerm}%";
+        $filterRole = "";
 
         if ($role != 'all') {
             $filterRole = "AND user_role = :role";
             $params['role'] = $role;
         }
-        $query = "SELECT * FROM users 
-            WHERE first_name LIKE :term 
-            OR last_name LIKE :term
-            OR CONCAT(first_name, ' ', last_name) LIKE :term
-            {$filterRole}
-            LIMIT {$limit} OFFSET {$offset}";
-        // dd($query);
-        dd($params);
         $userData = $this->db->query(
             "SELECT * FROM users 
-            WHERE first_name LIKE :term 
+            WHERE (first_name LIKE :term 
             OR last_name LIKE :term
-            OR CONCAT(first_name, ' ', last_name) LIKE :term
+            OR CONCAT(first_name, ' ', last_name) LIKE :term)
             {$filterRole}
             LIMIT {$limit} OFFSET {$offset}",
             $params
         )->findAll();
         $count = $this->db->query(
             "SELECT COUNT(user_id) FROM users 
-            WHERE first_name LIKE :term 
+            WHERE (first_name LIKE :term 
             OR last_name LIKE :term
-            OR CONCAT(first_name, ' ', last_name) LIKE :term
+            OR CONCAT(first_name, ' ', last_name) LIKE :term)
             {$filterRole}",
             $params
         )->count();
@@ -364,7 +357,76 @@ class UserService
             // email content 
             $mail->isHTML(true);
             $mail->Subject = 'email verification';
-            $mail->Body = 'the verificaiton code is : ' . $verificationCode;
+            $mail->Body = '
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        line-height: 1.6;
+                        color: #333333;
+                    }
+                    .container {
+                        max-width: 600px;
+                        margin: 0 auto;
+                        padding: 20px;
+                        border: 1px solid #e0e0e0;
+                        border-radius: 5px;
+                    }
+                    .header {
+                        text-align: center;
+                        padding: 10px;
+                        background-color: #ffc400;
+                        color: white;
+                        border-radius: 4px;
+                    }
+                    .content {
+                        padding: 20px 10px;
+                    }
+                    .verification-code {
+                        font-size: 28px;
+                        font-weight: bold;
+                        text-align: center;
+                        letter-spacing: 5px;
+                        margin: 20px 0;
+                        color: #ffc400;
+                        padding: 10px;
+                        background-color: #f5f5f5;
+                        border-radius: 4px;
+                        border-left: 4px solid #ffc400;
+                    }
+                    .footer {
+                        font-size: 12px;
+                        color: #888888;
+                        text-align: center;
+                        margin-top: 20px;
+                        border-top: 1px solid #e0e0e0;
+                        padding-top: 15px;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h2>LearnHub</h2>
+                    </div>
+                    <div class="content">
+                        <p>Hello,</p>
+                        <p>Thank you for using LearnHub. Your verification code is:</p>
+                        
+                        <div class="verification-code">' . $verificationCode . '</div>
+                        
+                        <p>This code will expire in 5 minutes for security reasons.</p>
+                        <p>If you did not request this code, please ignore this email.</p>
+                    </div>
+                    <div class="footer">
+                        <p>&copy; ' . date('Y') . ' LearnHub. All rights reserved.</p>
+                        <p>If you need help, contact <a href="mailto:learnhubnet@gmail.com" style="color: #ffc400;">learnhubnet@gmail.com</a></p>
+                    </div>
+                </div>
+            </body>
+            </html>';
 
             $mail->send();
             echo 'verfication mail sent successfully';

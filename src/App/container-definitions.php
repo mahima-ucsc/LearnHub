@@ -13,7 +13,6 @@ use App\Services\{
     ReviewService,
     SubjectService,
     FileService,
-    ContactService,
     ResourceService,
     AdvertisementService,
     NotificationService,
@@ -59,10 +58,6 @@ return [
     AssignmentService::class => function (Container $container) {
         $db = $container->get(Database::class);
         return new AssignmentService($db);
-    },
-    ContactService::class => function (Container $container) {
-        $db = $container->get(Database::class);
-        return new ContactService($db);
     },
     ResourceService::class => function (Container $container) {
         $db = $container->get(Database::class);

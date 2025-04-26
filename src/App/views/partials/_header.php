@@ -65,8 +65,8 @@
                 </svg>
                 <div class="dropdown-content">
                     <?php if (isset($_SESSION['user'])): ?>
-                        <?php if (isset($_SESSION['user_role'])): ?>
-                            <a href="<?php echo ($_SESSION['user_role'] === 'teacher') ? "/tutor/{$_SESSION['user']}" : '/profile'; ?>">
+                        <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'teacher'): ?>
+                            <a href="<?php echo ("/tutor/" . $_SESSION['user']); ?>">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                     <circle cx="12" cy="7" r="4"></circle>

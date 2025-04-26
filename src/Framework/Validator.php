@@ -31,6 +31,7 @@ class Validator
                 $ruleValidator = $this->rules[$rule];
 
                 if ($ruleValidator->validate($formData, $fieldName, $ruleParams)) {
+
                     continue;
                 }
                 $errors[$fieldName][] =  $ruleValidator->getMessage(

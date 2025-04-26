@@ -198,7 +198,7 @@ class PostController
 
     public function managmentView()
     {
-        $posts = $this->courseRequestService->getUserCourseRequest($_SESSION['user']);
+        $posts = $this->courseRequestService->getUserCourseRequest((int)$_SESSION['user']);
         // dd($posts);
         echo $this->view->render("/post/user_course_request.php", [
             "title" => "Post Managment",

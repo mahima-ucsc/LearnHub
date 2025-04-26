@@ -11,6 +11,7 @@
                     <div class="course-rating">
                         <div class="rating-stars">
                             <?php
+                            $flag = false;
                             if (($summeryOfReviews['avgRating'] - floor($summeryOfReviews['avgRating'])) > 0.4) {
                                 $flag = true;
                             }
@@ -38,7 +39,7 @@
                             </span>
                         <?php endif; ?>
                     </div>
-                    <?php if ($course['billing_type'] === 'onetime' && !$course['is_paid']): ?>
+                    <?php if ($course['billing_type'] === 'onetime' && !$course['is_paid'] && !($course['tutor_id'] === $_SESSION['user'])): ?>
                         <a href="<?= "/payment/courses/" . $course['course_id'] ?>" class="enroll-button">Enroll Now</a>
                     <?php endif; ?>
                 </div>
@@ -69,11 +70,26 @@
                     <?php echo e($course['description']); ?>
                 </p>
             </div>
+            <?php if ($_SESSION['user_role'] === 'teacher' && $course['tutor_id'] === $_SESSION['user'] || $_SESSION['user_role'] === 'admin'): ?>
+                <button type="button" id="addModuleBtn" class="add-module-btn"
+                    onclick="window.location.href='/course/<?= $course['course_id'] ?>/module/create'">
+                    <i class="fas fa-plus"></i> Add New Module
+                </button>
+            <?php endif; ?>
 
-            <button type="button" id="addModuleBtn" class="add-module-btn"
-                onclick="window.location.href='/course/<?= $course['course_id'] ?>/module/create'">
-                <i class="fas fa-plus"></i> Add New Module
-            </button>
+            <?php if ($_SESSION['user_role'] === 'teacher' || $_SESSION['user_role'] === 'student' || $_SESSION['user_role'] === 'admin'): ?>
+                <button type="button" class="add-module-btn"
+                    onclick="window.location.href='/courses/<?= $course['course_id'] ?>/announcements'">
+                    <i class="fas fa-plus"></i> Announcements
+                </button>
+            <?php endif; ?>
+
+            <?php if ($_SESSION['user_role'] === 'teacher' && $course['tutor_id'] === $_SESSION['user'] || $_SESSION['user_role'] === 'admin'): ?>
+                <button type="button" class="add-module-btn"
+                    onclick="window.location.href='/courses/<?= $course['course_id'] ?>/announcements/create'">
+                    <i class="fas fa-plus"></i> Add Announcements
+                </button>
+            <?php endif; ?>
             <?php if ($course['billing_type'] === 'onetime' && $course['is_paid']): ?>
                 <div class="course-section">
                     <h2 class="section-title">Course Modules</h2>
@@ -83,7 +99,7 @@
                         <?php endforeach; ?>
                     </div>
                 </div>
-            <?php elseif ($course['billing_type'] === 'recurring'): ?>
+            <?php elseif ($course['billing_type'] === 'recurring' || $_SESSION['user_role'] === 'admin'): ?>
                 <div class="course-section">
                     <h2 class="section-title">Current Content</h2>
                     <div class="period-list">
@@ -215,7 +231,6 @@
             </div>
         </div>
     </div>
-
     <!-- Review Section -->
     <div class="course-section reviews-section">
         <h2 class="section-title">Student Reviews</h2>
@@ -267,7 +282,7 @@
                     <div class="review-header">
                         <!-- avatar -->
                         <img src="<?= isset($review['profile_picture_url'])
-                                        ? $user['profile_picture_url'] :
+                                        ? $review['profile_picture_url'] :
                                         "/assets/images/user_placeholder.jpg" ?>" alt=" <?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
                         <!-- since when-->
                         <div class="review-meta">
@@ -276,7 +291,7 @@
                                 <?php
                                 $datetime = new DateTime($review['date']);
                                 $date = $datetime->format('Y-m-d');
-                                $days = calcDateDiff($date);
+                                $days = calDateDiff($date);
                                 if ($days['years'] > 0) {
                                     echo ($days['years']) . " years ago";
                                 } else if ($days['months'] > 0) {
@@ -314,9 +329,8 @@
                                         <a href="/courses/review/edit/<?php echo e($review['review_id']); ?>">Edit</a>
                                     </div>
                                     <div class="menu-button">
-                                        <button onclick="showDeleteModal(<?php echo e($review['review_id']); ?>)">Delete</button>
+                                        <button onclick="showModal('/course/delete-review/<?php echo e($review['review_id']); ?>')">Delete</button>
                                     </div>
-
                                 </div>
                             </div>
                         <?php endif; ?>
@@ -330,25 +344,7 @@
         </div>
 
         <!-- delete comformation allert -->
-        <div id="deleteModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title">Confirm Delete</h3>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to delete this item? This action cannot be undone.
-                </div>
-                <div class="modal-footer">
-                    <button onclick="hideModal()" class="btn btn-cancel">Cancel</button>
-                    <form id='submit' method="POST" action="/delete-course-review">
-                        <?php include $this->resolve("partials/_csrf.php"); ?>
-                        <input type="hidden" id="delete-review_id" name="review_id" value="" />
-                        <button type="submit" class="btn btn-delete">Delete</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
+        <?php include $this->resolve("components/delete_modal.php"); ?>
         <!-- pagination -->
         <div class="pagination">
             <button class="btn" onclick="getmorereview()">Show more</button>
@@ -390,25 +386,13 @@
             </form>
         </div>
     </div>
-
-
-    <script src="/assets/js/courses/course-info.js" defer></script>
-    <script src="/assets/js/components/toast.js"></script>
-
-    <!-- TODO: Move this script to course-info.js. Do not use inline functions -->
-    <script>
-        function toggleAssignment(headerElement) {
-            const assignmentItem = headerElement.closest('.assignment-item');
-            const content = assignmentItem.querySelector('.assignment-content');
-            const chevron = headerElement.querySelector('.chevron-icon');
-
-            content.classList.toggle('active');
-            chevron.classList.toggle('rotated');
-        }
-    </script>
 </section>
 
 <?php include $this->resolve("partials/_footer.php"); ?>
+
+<script src="/assets/js/courses/course-info.js" defer></script>
+<script src="/assets/js/components/toast.js"></script>
+
 <!-- for review -->
 <script>
     // Toggle the display of the cart options
@@ -423,44 +407,6 @@
             }
         }
     }
-
-    //Delete confirmation
-    const deleteModal = document.getElementById('deleteModal');
-
-    function showDeleteModal(reviewId) {
-        event.preventDefault(); // Prevent the form from submitting immediately
-        deleteModal.style.display = 'block'; // show comform allert
-        console.log(reviewId);
-        document.getElementById('delete-review_id').value = reviewId; // set the review id to the hidden input
-        document.body.style.overflow = 'hidden'; // Prevent scrolling of background content
-    }
-
-    function hideModal() {
-        deleteModal.style.display = 'none';
-
-        // Restore scrolling
-        document.body.style.overflow = 'auto';
-    }
-
-    function confirmDelete() {
-        // Add your delete logic here
-        console.log('Item deleted!');
-        hideModal();
-    }
-
-    // Close modal when clicking outside
-    window.onclick = function(event) {
-        if (event.target === deleteModal) {
-            hideModal();
-        }
-    }
-
-    // Close modal on escape key press
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape' && deleteModal.style.display === 'block') {
-            hideModal();
-        }
-    });
 
     // Show more reviews
     let counter = 1;
@@ -564,18 +510,14 @@
     }
 </script>
 
-<?php
-function calcDateDiff($startDate)
-{
-    $start = new DateTime($startDate);
-    $end = new DateTime();
+<!-- for assignment -->
+<script>
+    function toggleAssignment(headerElement) {
+        const assignmentItem = headerElement.closest('.assignment-item');
+        const content = assignmentItem.querySelector('.assignment-content');
+        const chevron = headerElement.querySelector('.chevron-icon');
 
-    $diff = $start->diff($end);
-
-    return [
-        'years' => $diff->y,
-        'months' => $diff->m,
-        'days' => $diff->d
-    ];
-}
-?>
+        content.classList.toggle('active');
+        chevron.classList.toggle('rotated');
+    }
+</script>
