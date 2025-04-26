@@ -49,7 +49,6 @@
                         <th>Course</th>
                         <th>Amount</th>
                         <th>Status</th>
-                        <th>Invoice</th>
                     </tr>
                 </thead>
                 <tbody id="transaction-table">
@@ -73,7 +72,6 @@
                                     <span class="status-badge">Unknown</span>
                                 <?php endif; ?>
                             </td>
-                            <td><a href="#" class="invoice-link"><i class="fas fa-download"></i> Download</a></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

@@ -251,8 +251,7 @@ class CoursesController
         if ($course['tutor_id'] == $_SESSION['user']) {
             $isTeacher = true;
         }
-
-        if (!$isParticipant || !$isTeacher) {
+        if (!$isParticipant && !$isTeacher) {
             redirectTo('/unauthorized-access');
         }
 
