@@ -59,4 +59,10 @@ class AdvertisementController
         header('Content-Type: application/json');
         echo json_encode($data);
     }
+
+    public function delete(array $params)
+    {
+        $this->advertisementService->deleteAd((string)$params['ad_id']);
+        redirectTo($_SERVER['HTTP_REFERER']);
+    }
 }
