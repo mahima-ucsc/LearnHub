@@ -172,9 +172,9 @@ class PostController
 
     public function createCourseRequest()
     {
+        $this->validatorService->validateCourseRequest($_POST);
         $this->courseRequestService->create($_POST);
-        // redirectTo('/course/request');
-
+        redirectTo('/course/request');
     }
 
     public function createComment(array $params)

@@ -15,23 +15,19 @@ class CourseRequestService
     public function create(array $formData)
     {
         $user_id = $_SESSION['user'];
-        try {
-            $this->db->query(
-                "INSERT INTO course_requests(title, description, subject_id, grade_id, user_id, location)
+
+        $this->db->query(
+            "INSERT INTO course_requests(title, description, subject_id, grade_id, user_id, location)
                 VALUES (:title, :description, :subject_id, :grade_id, :user_id, :location)",
-                [
-                    "title" => $formData['title'],
-                    "description" => $formData['description'],
-                    "subject_id" => $formData['subject'] ? $formData['subject'] : null,
-                    "grade_id" => $formData['grade'] ? $formData['grade'] : null,
-                    "user_id" => $user_id,
-                    "location" => $formData['location']
-                ]
-            );
-        } catch (Exception $e) {
-            error_log("Failed to insert data to course request table: " . $e->getMessage());
-            redirectTo('/server-error');
-        }
+            [
+                "title" => $formData['title'],
+                "description" => $formData['description'],
+                "subject_id" => $formData['subject'] != -1 ? $formData['subject'] : null,
+                "grade_id" => $formData['grade']  != -1 ? $formData['grade'] : null,
+                "user_id" => $user_id,
+                "location" => $formData['location']
+            ]
+        );
     }
 
     public function getCourseRequestsforView()
