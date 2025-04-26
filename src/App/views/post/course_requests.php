@@ -8,21 +8,21 @@
             <div class="search-input-group">
                 <i class="fas fa-search"></i>
                 <input type="text" name="s" class="search-input" id="searchInput" placeholder="Search by keyword..."
-                    value="<?php echo isset($_GET['s']) ? e($_GET['s']) : ''; ?>">
+                    value="<?= isset($filter_s) ? $filter_s : ''; ?>">
             </div>
             <button type="submit" class="search-button">Search</button>
         </form>
         <form method="GET">
             <!-- Hidden search term to preserve it when filtering -->
-            <input type="hidden" name="s" value="<?php echo isset($_GET['s']) ? e($_GET['s']) : ''; ?>">
+            <input type="hidden" name="s" value="<?= $filter_s ? $filter_s : ''; ?>">
             <div class="filter-options">
                 <div class="filter-group">
                     <label class="filter-label">Grade</label>
                     <select class="filter-select" name="grade">
-                        <option value="all" <?php echo (!isset($_GET['grade']) || $_GET['grade'] === 'all') ? 'selected' : ''; ?>>All Grades</option>
+                        <option value="all" <?= (!isset($filter_grade) || $filter_grade === 'all') ? 'selected' : ''; ?>>All Grades</option>
                         <?php foreach ($grades as $grade): ?>
-                            <option value="<?php echo e($grade['grade_id']); ?>" <?php echo (isset($_GET['grade']) && $_GET['grade'] === e($grade["grade_id"])) ? 'selected' : ''; ?>>
-                                <?php echo e($grade['grade_name']); ?>
+                            <option value="<?= e($grade['grade_id']); ?>" <?= (isset($filter_grade) && $filter_grade === e($grade["grade_id"])) ? 'selected' : ''; ?>>
+                                <?= e($grade['grade_name']); ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -30,10 +30,10 @@
                 <div class="filter-group">
                     <label class="filter-label">Subject</label>
                     <select class="filter-select" name="subject">
-                        <option value="all" <?php echo (!isset($_GET['subject']) || $_GET['subject'] === 'all') ? 'selected' : ''; ?>>All Subjects</option>
+                        <option value="all" <?= (!isset($filter_subject) || $filter_subject === 'all') ? 'selected' : ''; ?>>All Subjects</option>
                         <?php foreach ($subjects as $subject): ?>
-                            <option value="<?php echo e($subject['subject_id']); ?>" <?php echo (isset($_GET['subject']) && $_GET['subject'] === e($subject["subject_id"])) ? 'selected' : ''; ?>>
-                                <?php echo e($subject['subject_title']); ?>
+                            <option value="<?= e($subject['subject_id']); ?>" <?= (isset($filter_subject) && $filter_subject === e($subject["subject_id"])) ? 'selected' : ''; ?>>
+                                <?= e($subject['subject_title']); ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -41,10 +41,10 @@
                 <div class="filter-group">
                     <label class="filter-label">Sort By</label>
                     <select class="filter-select" id="sortFilter" name="sort">
-                        <option value="recent">Most Recent</option>
-                        <option value="oldest">Oldest First</option>
-                        <option value="popular">Most Popular</option>
-                        <option value="budget">Highest Budget</option>
+                        <option value="recent" <?= (!isset($filter_sort) || $filter_sort === 'recent') ? 'selected' : ''; ?>>Most Recent</option>
+                        <option value="oldest" <?= (!isset($filter_sort) || $filter_sort === 'oldest') ? 'selected' : ''; ?>>Oldest First</option>
+                        <option value="popular" <?= (!isset($filter_sort) || $filter_sort === 'popular') ? 'selected' : ''; ?>>Most Popular</option>
+                        <option value="budget" <?= (!isset($filter_sort) || $filter_sort === 'budget') ? 'selected' : ''; ?>>Highest Budget</option>
                     </select>
                 </div>
                 <div class="filter-button">
@@ -58,11 +58,9 @@
 
     <div class="request-container">
         <div class="clear-filter">
-            <?php if (isset($_GET['s']) || (isset($_GET) && count($_GET) > 0 && !isset($_GET['p']))): ?>
-                <a href="/course/request/" class="clear-btn" onclick="showLoader()">
-                    Clear Filters
-                </a>
-            <?php endif; ?>
+            <a href="/course/request/" class="clear-btn" onclick="showLoader()">
+                Clear Filters
+            </a>
 
         </div>
         <div class="create-course-request-btn">
@@ -144,7 +142,7 @@
         <div class="create-request-cta">
             <h3>Have a specific learning need?</h3>
             <p>Create a course request and get custom proposals from our expert tutors</p>
-            <a href="#" class="btn btn-primary">Create Course Request</a>
+            <a href="/course/request/create" class="btn btn-primary">Create Course Request</a>
         </div>
     </div>
 </div>

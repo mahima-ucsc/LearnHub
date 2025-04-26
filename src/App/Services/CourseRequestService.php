@@ -62,8 +62,14 @@ class CourseRequestService
         return $requests;
     }
 
-    public function getApprovedCourseRequests(int $length = 6, int $offset = 0)
-    {
+    public function getApprovedCourseRequests(
+        int $length = 6,
+        int $offset = 0,
+        string $searchTerm,
+        string $subject,
+        string $grade,
+        string $sort
+    ) {
         $searchTerm = trim($_GET['s'] ?? '');
         $subject = $_GET['subject'] ?? 'all';
         $grade = $_GET['grade'] ?? 'all';
@@ -101,7 +107,8 @@ class CourseRequestService
         }
 
         $whereClause = !empty($whereConditions) ? "AND " . implode(" AND ", $whereConditions) : "";
-        $query = "SELECT 
+
+        $allQuery = "SELECT 
         cr.title,
         cr.request_id, 
         cr.description,
@@ -127,26 +134,17 @@ class CourseRequestService
         cr.request_id, cr.title, cr.description, cr.status, cr.location,
         s.subject_title, s.subject_id, g.grade_name, g.grade_id,
         cr.created_date, cr.updated_date, u.user_id, u.first_name, u.last_name
-        {$orderClause}
-        LIMIT {$length} OFFSET {$offset};";
+        {$orderClause}";
 
-        $requests = $this->db->query($query, $params)->findAll();
+        $limitQuery = $allQuery . " LIMIT {$length} OFFSET {$offset};";
 
-        $requestCount = $this->db->query(
-            "SELECT 
-        COUNT(*)
-        FROM course_requests cr
-        LEFT JOIN subjects s ON cr.subject_id = s.subject_id
-        JOIN users u ON cr.user_id = u.user_id
-        JOIN grades g ON g.grade_id = cr.grade_id
-        LEFT JOIN course_request_comments c ON cr.request_id = c.request_id
-        WHERE cr.status = 'approved'
-        {$whereClause};",
-            $params
-        )->count();
+
+        $requests = $this->db->query($limitQuery, $params)->findAll();
+        $requestCount = $this->db->query($allQuery, $params)->rowCount();
 
         return [$requests, $requestCount];
     }
+
     public function getPendingCourseRequests()
     {
         $query =
