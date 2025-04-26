@@ -22,49 +22,70 @@
                 <div class="form-group">
                     <label for="postTitle" class="form-label">Title *</label>
                     <input type="text" id="postTitle" name="title" class="form-control"
-                        placeholder="Enter a descriptive title" required>
-                    <div class="error-message" id="postTitleError">Please enter a title</div>
+                        placeholder="Enter a descriptive title">
+                    <?php if (array_key_exists('title', $errors)): ?>
+                        <div class="error-message" id="postTitleError">
+                            <?= e($errors['title'][0]); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
                 <div class="form-group">
                     <label for="postDescription" class="form-label">Description *</label>
                     <textarea id="postDescription" name="description" class="form-control textarea-control"
-                        placeholder="Provide a detailed description of your post" required rows="6"></textarea>
-                    <div class="error-message" id="postDescriptionError">Please enter a description</div>
+                        placeholder="Provide a detailed description of your post" rows="6"></textarea>
+
+                    <?php if (array_key_exists('description', $errors)): ?>
+                        <div class="error-message" id="postDescriptionError">
+                            <?= e($errors['description'][0]); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
                 <div class="form-group">
                     <label for="subject" class="form-label">Subject *</label>
-                    <select id="subject" name="subject" class="form-control" required>
+                    <select id="subject" name="subject" class="form-control">
                         <option value="">Select a subject</option>
                         <?php foreach ($subjects as $subject): ?>
                             <option value="<?php echo e($subject['subject_id']); ?>">
                                 <?php echo e($subject['subject_title']); ?>
                             </option>
                         <?php endforeach; ?>
-                        <option value="other">Other</option>
+                        <option value="-1">Other</option>
                     </select>
-                    <div class="error-message" id="subjectError">Please select a subject</div>
+                    <?php if (array_key_exists('subject', $errors)): ?>
+                        <div class="error-message" id="subjectError">
+                            <?= e($errors['subject'][0]); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
                 <div class="form-group">
                     <label for="grade" class="form-label">Grade/Level *</label>
-                    <select id="grade" name="grade" class="form-control" required>
+                    <select id="grade" name="grade" class="form-control">
                         <option value="">Select a grade</option>
                         <?php foreach ($grades as $grade): ?>
                             <option value="<?php echo e($grade['grade_id']); ?>">
                                 <?php echo e($grade['grade_name']); ?>
                             </option>
                         <?php endforeach; ?>
-                        <option value="all">All Levels</option>
+                        <option value="-1">All Levels</option>
                     </select>
-                    <div class="error-message" id="gradeError">Please select a grade level</div>
+                    <?php if (array_key_exists('grade', $errors)): ?>
+                        <div class="error-message" id="gradeError">
+                            <?= e($errors['grade'][0]); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <div class="form-group">
                     <label for="postTitle" class="form-label">Location *</label>
                     <input type="text" id="location" name="location" class="form-control"
-                        placeholder="Enter a location" required>
-                    <div class="error-message" id="locationError">Please enter a location</div>
+                        placeholder="Enter a location">
+                    <?php if (array_key_exists('location', $errors)): ?>
+                        <div class="error-message" id="locationError">
+                            <?= e($errors['location'][0]); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
 

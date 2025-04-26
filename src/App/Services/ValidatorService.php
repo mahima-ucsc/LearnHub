@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Framework\Rules\{DateShouldNotBeFutureRule, RequiredRule, EmailRule, InRule, MatchRule, MinRule, PhoneNumberRule, UrlRule};
+use Framework\Rules\{DateShouldNotBeFutureRule, RequiredRule, EmailRule, InRule, MatchRule, MaxRule, MinRule, PhoneNumberRule, UrlRule};
 use Framework\Validator;
 use Framework\Exceptions\ValidationException;
 
@@ -19,6 +19,7 @@ class ValidatorService
         $this->validator->add('required', new RequiredRule());
         $this->validator->add('email', new EmailRule());
         $this->validator->add('min', new MinRule());
+        $this->validator->add('max', new MaxRule());
         $this->validator->add('in', new InRule());
         $this->validator->add('url', new UrlRule());
         $this->validator->add('match', new MatchRule());
@@ -50,7 +51,7 @@ class ValidatorService
     {
         $this->validator->validate($formData, [
             "title" => ["required"],
-            "description" => ["required"],
+            "description" => ["required", "max:100"],
             "subject_id" => ["required"],
             "grade_id" => ["required"],
             "start_time" => ["required"],
@@ -65,9 +66,11 @@ class ValidatorService
     public function validateCourseRequest(array $formData)
     {
         $this->validator->validate($formData, [
-            "title" => ["required"],
+            "title" => ["required", "max:100"],
             "description" => ["required"],
             "subject" => ["required"],
+            "grade" => ["required"],
+            "location" => ["required"],
         ]);
     }
 
