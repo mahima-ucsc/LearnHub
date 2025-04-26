@@ -509,7 +509,7 @@
         </div>
     </div>
 </div>
-
+<?php include $this->resolve('components/delete_modal.php') ?>
 <script src="/assets/js/components/toast.js"></script>
 
 <script>
@@ -600,11 +600,18 @@
         // Remove buttons
         document.querySelectorAll('.btn-remove').forEach(button => {
             button.addEventListener('click', function() {
-                const row = this.closest('tr');
+                const row = button.closest('tr');
                 const adId = row.dataset.adId;
-                handleRemoveAd(adId);
+                showModal(`/delete-advertisement/${adId}`);
             });
         });
+        // document.querySelectorAll('.btn-remove').forEach(button => {
+        //     button.addEventListener('click', function() {
+        //         const row = this.closest('tr');
+        //         const adId = row.dataset.adId;
+        //         handleRemoveAd(adId);
+        //     });
+        // });
 
         // Close modal button
         document.querySelector('.close-modal').addEventListener('click', () => {
