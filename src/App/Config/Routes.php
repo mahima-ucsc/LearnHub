@@ -201,6 +201,7 @@ function registerRoutes(App $app)
     $app->post('/courses/{courseId}/assignment/{assignment_id}/update', [AssignmentController::class, 'updateAssignment']);
     $app->get('/courses/{courseId}/assignment/{assignment_id}', [AssignmentController::class, 'assignmentView']);
     $app->post('/courses/{courseId}/assignment/{assignment_id}/submit', [AssignmentController::class, 'submitAssignment']);
+    $app->delete('/courses/{courseId}/assignment/{assignment_id}/delete', [AssignmentController::class, 'deleteAssignment']);
 
     $app->get('/assignment/{assignment_id}/resource/{resource_id}', [AssignmentController::class, 'getResource']);
 

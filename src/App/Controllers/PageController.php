@@ -75,7 +75,6 @@ class PageController
 
     public function sendHelpAndSupport()
     {
-        // dd('submitContactForm');
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $data = [
@@ -141,7 +140,7 @@ class PageController
 
             $path = "User/Admin/admin_dashboard.php";
             $userCount = $this->userService->getUserCount();
-            $totalUsers = (int)$userCount['students'] + (int)$userCount['admin'] + (int)$userCount['teacher'];
+            $totalUsers = (int)$userCount['students'] + (int)$userCount['admin'] + (int)$userCount['teachers'];
 
             $totalCourses = $this->courseService->getNoOfCourses();
             $courseCountByType = $this->courseService->getCourseCountByType();
