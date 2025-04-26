@@ -121,9 +121,6 @@ function registerRoutes(App $app)
     $app->get('/courses/{course_id}/participants', [CoursesController::class, 'courseParticipant']);
     $app->get('/courses/{course_id}/participants/{participant_id}', [CoursesController::class, 'courseParticipantStat'], [TeacherOnlyMiddleware::class]);
 
-    // TODO: Check if applicable the implement or remove
-    // $app->post('/courses/{course_id}/participants/add', [CoursesController::class, 'AddParticipant'], [TeacherOnlyMiddleware::class]);
-
     $app->get('/course/{course_id}/module/{module_id}/resource/{resource_id}', [CoursesController::class, 'readModuleResources'], [TeacherOnlyMiddleware::class]);
 
     // New course Routes
