@@ -10,20 +10,6 @@
         <div class="course-hero-content">
             <h1>Find Your Perfect Course</h1>
             <p>Discover thousands of courses to start learning new skills, advance your career, or pursue your passion.</p>
-            <div class="course-hero-stats">
-                <div class="stat-item">
-                    <i class="fas fa-graduation-cap"></i>
-                    <span>10,000+ Courses</span>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-chalkboard-teacher"></i>
-                    <span>1,500+ Instructors</span>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-users"></i>
-                    <span>500K+ Students</span>
-                </div>
-            </div>
         </div>
     </div>
 </section>
@@ -88,17 +74,8 @@
                     </select>
                 </div>
                 <div class="filter-group">
-                    <span class="filter-label">Rating:</span>
-                    <select class="filter-select" name="rating">
-                        <option value="all" <?php echo (!isset($_GET['rating']) || $_GET['rating'] === 'all') ? 'selected' : ''; ?>>Any Rating</option>
-                        <option value="4plus" <?php echo (isset($_GET['rating']) && $_GET['rating'] === '4plus') ? 'selected' : ''; ?>>4★ & above</option>
-                        <option value="3plus" <?php echo (isset($_GET['rating']) && $_GET['rating'] === '3plus') ? 'selected' : ''; ?>>3★ & above</option>
-                    </select>
-                </div>
-                <div class="filter-group">
                     <span class="filter-label">Sort By:</span>
                     <select class="filter-select" name="sort">
-                        <option value="popular" <?php echo (!isset($_GET['sort']) || $_GET['sort'] === 'popular') ? 'selected' : ''; ?>>Most Popular</option>
                         <option value="newest" <?php echo (isset($_GET['sort']) && $_GET['sort'] === 'newest') ? 'selected' : ''; ?>>Newest First</option>
                         <option value="oldest" <?php echo (isset($_GET['sort']) && $_GET['sort'] === 'oldest') ? 'selected' : ''; ?>>Oldest First</option>
                         <option value="price_low" <?php echo (isset($_GET['sort']) && $_GET['sort'] === 'priceAsc') ? 'selected' : ''; ?>>Price: Low to High</option>
@@ -155,11 +132,6 @@
                                     <?php echo e($course['first_name'] . ' ' . $course['last_name']); ?>
                                 </span>
                             </div>
-                            <div class="course-rating">
-                                <i class="fas fa-star"></i>
-                                <span>5</span>
-                                <span class="reviews">(10)</span>
-                            </div>
                         </div>
                     </div>
                     <div class="course-footer">
@@ -175,10 +147,6 @@
                             <?php endif; ?>
                         </div>
                         <div class="course-details">
-                            <div class="course-detail">
-                                <i class="fas fa-clock"></i>
-                                <span>3H</span>
-                            </div>
                             <div class="course-detail">
                                 <span>Grade 13</span>
                             </div>

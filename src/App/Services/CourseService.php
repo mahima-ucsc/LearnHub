@@ -102,34 +102,6 @@ class CourseService
         unset($_SESSION['thumbnail']);
     }
 
-    /**
-     * @-deprecated
-     * This function is deprecated.
-     * It was used to save course data before developing the payment function.
-     */
-    // public function createCourse(array $formData)
-    // {
-    //     $tutor_id = $_SESSION['user'];
-
-    //     $this->db->query(
-    //         "INSERT INTO courses(title, description, subject_id, grade_id, tutor_id, start_time, end_time, day, price, pricing_period, location, thumbnail_url)
-    //             VALUES (:title, :description, :subject_id, :grade_id, :tutor_id, :start_time, :end_time, :day, :price, :pricing_period, :location, :thumbnail_url)",
-    //         [
-    //             "title" => $formData['title'],
-    //             "description" => $formData['description'],
-    //             "subject_id" => $formData['subject_id'],
-    //             "grade_id" => $formData['grade_id'],
-    //             "tutor_id" => $tutor_id,
-    //             "start_time" => $formData['start_time'],
-    //             "end_time" => $formData['end_time'],
-    //             "day" => $formData['day'],
-    //             "price" => $formData['price'],
-    //             "pricing_period" => $formData['pricing_period'],
-    //             "location" => $formData['location'],
-    //             "thumbnail_url" => $formData['thumbnail_filename'],
-    //         ]
-    //     );
-    // }
 
     public function getCourseById(string $id)
     {
@@ -317,26 +289,6 @@ class CourseService
             $params["subject"] = $subject;
         }
 
-        // Add price range condition
-        // if ($price !== 'all') {
-        //     switch ($price) {
-        //         case 'free':
-        //             $whereConditions[] = "c.price = 0";
-        //             break;
-        //         case 'paid':
-        //             $whereConditions[] = "c.price > 0";
-        //             break;
-        //         case 'under10':
-        //             $whereConditions[] = "c.price > 0 AND c.price <= 10";
-        //             break;
-        //         case 'under20':
-        //             $whereConditions[] = "c.price > 0 AND c.price <= 20";
-        //             break;
-        //         case 'over20':
-        //             $whereConditions[] = "c.price > 20";
-        //             break;
-        //     }
-        // }
 
         // Add course type condition
         if ($type !== 'all') {
@@ -344,11 +296,6 @@ class CourseService
             $params["type"] = $type;
         }
 
-        // Add rating condition
-        // if ($rating !== 'all') {
-        //     $whereConditions[] = "c.rating >= :rating";
-        //     $params["rating"] = $rating;
-        // }
 
         // Combine all conditions with AND
         $whereClause = !empty($whereConditions) ? "WHERE " . implode(" AND ", $whereConditions) : "";

@@ -358,16 +358,6 @@ class PageController
         ]);
     }
 
-    public function myCourses()
-    {
-        echo $this->view->render(
-            "User/user_courses.php",
-            [
-                'title' => "User Courses"
-            ]
-        );
-    }
-
     public function interestView()
     {
         $subjects = $this->subjectService->getSubjects();

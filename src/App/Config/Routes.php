@@ -78,7 +78,6 @@ function registerRoutes(App $app)
     $app->get('/login', [AuthController::class, 'loginView'], [GuestOnlyMiddleware::class]);
     $app->post('/login', [AuthController::class, 'login'],  [GuestOnlyMiddleware::class]);
     $app->get('/logout', [AuthController::class, 'logout'], [AuthRequiredMiddleware::class]);
-    $app->get('/mycourses', [PageController::class, 'myCourses'], [AuthRequiredMiddleware::class]);
     $app->get('/create-ad', [PageController::class, 'createAd'], [TeacherOnlyMiddleware::class]);
     $app->post('/update-profile', [UserController::class, 'updateProfile'], [AuthRequiredMiddleware::class]);
     $app->post('/update-password', [UserController::class, 'updatePassword'], [AuthRequiredMiddleware::class]);
@@ -212,10 +211,11 @@ function registerRoutes(App $app)
     $app->post('/submit/review', [AssignmentController::class, 'submit']);
 
     // Advertisement
-    $app->get('/advertisement/create', [AdvertisementController::class, 'createView']);
-    $app->post('/advertisement/create', [AdvertisementController::class, 'create']);
+    $app->get('/advertisement/create', [AdvertisementController::class, 'createView'], [TeacherOnlyMiddleware::class]);
+    $app->post('/advertisement/create', [AdvertisementController::class, 'create'], [TeacherOnlyMiddleware::class]);
     $app->post('/approve-advertisement', [AdvertisementController::class, 'approve']);
     $app->post('/reject-advertisement', [AdvertisementController::class, 'reject']);
+    $app->delete('/delete-advertisement/{ad_id}', [AdvertisementController::class, 'delete']);
 
 
     // Notifications

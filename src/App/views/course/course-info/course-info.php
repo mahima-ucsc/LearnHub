@@ -1,5 +1,7 @@
 <?php include $this->resolve("partials/_header.php"); ?>
-<?php include $this->resolve("course/sidebar/sidebar.php"); ?>
+<?php if ($course['tutor_id'] == $_SESSION['user']): ?>
+    <?php include $this->resolve("course/sidebar/sidebar.php"); ?>
+<?php endif; ?>
 
 <link rel="stylesheet" href="/assets/styles/Course/course-info.css">
 <section class="course-info-container">
@@ -230,11 +232,22 @@
                                     </form>
                                 </div>
                             </div>
+                            <!-- <?php foreach ($assignmentsResources[$item['assignment_id']] as $resource): ?>
+                                    <ul>
+                                        <li>
+                                            <a href="/assignment/<?php echo e($item['assignment_id']) ?>/resource/<?php echo e($resource['resource_id']) ?>" class="resource-link">
+                                                <span class="resource-icon">📄</span>
+                                                <?php echo e($resource['resource_path']) ?>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                <?php endforeach; ?> -->
                         </div>
-                    <?php endforeach; ?>
                 </div>
-            <?php endif; ?>
+            <?php endforeach; ?>
         </div>
+    <?php endif; ?>
+    </div>
     </div>
     <!-- Review Section -->
     <div class="course-section reviews-section">

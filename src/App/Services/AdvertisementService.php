@@ -255,4 +255,15 @@ class AdvertisementService
             return false;
         }
     }
+
+    public function deleteAd(string $id)
+    {
+        $this->db->query(
+            "DELETE FROM advertisement
+            WHERE advertisement_id = :id",
+            [
+                "id" => $id
+            ]
+        );
+    }
 }
