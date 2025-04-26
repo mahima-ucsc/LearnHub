@@ -351,40 +351,43 @@
         </div>
 
         <!-- Add review -->
-        <div class="add-review-section">
-            <h3>Add Your Review</h3>
-            <form class="review-form" id="newReviewForm" method="POST" action="/add-course-review">
-                <div class="rating-input">
-                    <div class="star-rating">
-                        <input type="radio" id="star5" name="rating" value="5" required>
-                        <label for="star5"><i class="fas fa-star"></i></label>
-                        <input type="radio" id="star4" name="rating" value="4">
-                        <label for="star4"><i class="fas fa-star"></i></label>
-                        <input type="radio" id="star3" name="rating" value="3">
-                        <label for="star3"><i class="fas fa-star"></i></label>
-                        <input type="radio" id="star2" name="rating" value="2">
-                        <label for="star2"><i class="fas fa-star"></i></label>
-                        <input type="radio" id="star1" name="rating" value="1">
-                        <label for="star1"><i class="fas fa-star"></i></label>
+        <?php if (!($course['billing_type'] === 'onetime' && !$course['is_paid'] && !($course['tutor_id'] === $_SESSION['user']))): ?>
+
+            <div class="add-review-section">
+                <h3>Add Your Review</h3>
+                <form class="review-form" id="newReviewForm" method="POST" action="/add-course-review">
+                    <div class="rating-input">
+                        <div class="star-rating">
+                            <input type="radio" id="star5" name="rating" value="5" required>
+                            <label for="star5"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="star4" name="rating" value="4">
+                            <label for="star4"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="star3" name="rating" value="3">
+                            <label for="star3"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="star2" name="rating" value="2">
+                            <label for="star2"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="star1" name="rating" value="1">
+                            <label for="star1"><i class="fas fa-star"></i></label>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="reviewText">Your Review:</label>
-                    <textarea
-                        id="reviewText"
-                        name="review"
-                        rows="4"
-                        placeholder="Share your experience with this course..."
-                        required></textarea>
-                </div>
-                <input type="hidden" name="course_id" value=<?php echo ($course['course_id']) ?> />
+                    <div class="form-group">
+                        <label for="reviewText">Your Review:</label>
+                        <textarea
+                            id="reviewText"
+                            name="review"
+                            rows="4"
+                            placeholder="Share your experience with this course..."
+                            required></textarea>
+                    </div>
+                    <input type="hidden" name="course_id" value=<?php echo ($course['course_id']) ?> />
 
-                <button type="submit" class="submit-review-btn">
-                    Submit Review
-                </button>
-            </form>
-        </div>
+                    <button type="submit" class="submit-review-btn">
+                        Submit Review
+                    </button>
+                </form>
+            </div>
+        <?php endif; ?>
     </div>
 </section>
 
