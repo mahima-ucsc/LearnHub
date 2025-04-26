@@ -84,16 +84,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Check if at least one resource option is provided
       const fileInput = document.getElementById("resource-file");
-      const urlInput = document.getElementById("resource-url");
+      const fileUploadContainer = fileInput.closest(".file-upload");
+      const invalidFeedback =
+        fileUploadContainer.querySelector(".invalid-feedback");
 
-      if (
-        (!fileInput.files || fileInput.files.length === 0) &&
-        !urlInput.value.trim()
-      ) {
-        urlInput.classList.add("is-invalid");
+      if (!fileInput.files || fileInput.files.length === 0) {
+        fileUploadContainer.classList.add("is-invalid");
+        invalidFeedback.textContent = "Please upload a resource file";
         isValid = false;
       } else {
-        urlInput.classList.remove("is-invalid");
+        fileUploadContainer.classList.remove("is-invalid");
+        invalidFeedback.textContent = "";
+        isValid = true;
       }
 
       if (isValid) {

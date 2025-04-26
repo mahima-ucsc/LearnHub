@@ -158,11 +158,12 @@
                                 <div class="file-upload-text">Drag & drop your file or click to browse</div>
                                 <div class="file-upload-subtext">Max file size: 50MB</div>
                                 <input type="file" id="resource-file" name="resource_file">
+                                <div class="invalid-feedback">Please upload a resource file</div>
                             </div>
 
-                            <div class="or-divider">OR</div>
 
-                            <div class="form-group">
+
+                            <!-- <div class="form-group">
                                 <label for="resource-url">External Resource URL</label>
                                 <input type="url"
                                     id="resource-url"
@@ -177,7 +178,7 @@
                                     </div>
                                 <?php endif; ?>
 
-                            </div>
+                            </div> -->
                         </div>
                     </div>
 
