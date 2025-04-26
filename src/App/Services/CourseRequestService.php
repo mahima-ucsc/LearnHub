@@ -22,8 +22,8 @@ class CourseRequestService
             [
                 "title" => $formData['title'],
                 "description" => $formData['description'],
-                "subject_id" => $formData['subject'] ? $formData['subject'] : null,
-                "grade_id" => $formData['grade'] ? $formData['grade'] : null,
+                "subject_id" => $formData['subject'] != -1 ? $formData['subject'] : null,
+                "grade_id" => $formData['grade']  != -1 ? $formData['grade'] : null,
                 "user_id" => $user_id,
                 "location" => $formData['location']
             ]
