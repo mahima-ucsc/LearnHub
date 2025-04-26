@@ -10,20 +10,6 @@
         <div class="course-hero-content">
             <h1>Find Your Perfect Course</h1>
             <p>Discover thousands of courses to start learning new skills, advance your career, or pursue your passion.</p>
-            <div class="course-hero-stats">
-                <div class="stat-item">
-                    <i class="fas fa-graduation-cap"></i>
-                    <span>10,000+ Courses</span>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-chalkboard-teacher"></i>
-                    <span>1,500+ Instructors</span>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-users"></i>
-                    <span>500K+ Students</span>
-                </div>
-            </div>
         </div>
     </div>
 </section>
@@ -85,14 +71,6 @@
                                 <?php echo e($location['location']); ?>
                             </option>
                         <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <span class="filter-label">Rating:</span>
-                    <select class="filter-select" name="rating">
-                        <option value="all" <?php echo (!isset($_GET['rating']) || $_GET['rating'] === 'all') ? 'selected' : ''; ?>>Any Rating</option>
-                        <option value="4plus" <?php echo (isset($_GET['rating']) && $_GET['rating'] === '4plus') ? 'selected' : ''; ?>>4★ & above</option>
-                        <option value="3plus" <?php echo (isset($_GET['rating']) && $_GET['rating'] === '3plus') ? 'selected' : ''; ?>>3★ & above</option>
                     </select>
                 </div>
                 <div class="filter-group">

@@ -103,7 +103,7 @@ class CourseService
     }
 
     /**
-     * @-deprecated
+     * @deprecated
      * This function is deprecated.
      * It was used to save course data before developing the payment function.
      */
@@ -317,26 +317,6 @@ class CourseService
             $params["subject"] = $subject;
         }
 
-        // Add price range condition
-        // if ($price !== 'all') {
-        //     switch ($price) {
-        //         case 'free':
-        //             $whereConditions[] = "c.price = 0";
-        //             break;
-        //         case 'paid':
-        //             $whereConditions[] = "c.price > 0";
-        //             break;
-        //         case 'under10':
-        //             $whereConditions[] = "c.price > 0 AND c.price <= 10";
-        //             break;
-        //         case 'under20':
-        //             $whereConditions[] = "c.price > 0 AND c.price <= 20";
-        //             break;
-        //         case 'over20':
-        //             $whereConditions[] = "c.price > 20";
-        //             break;
-        //     }
-        // }
 
         // Add course type condition
         if ($type !== 'all') {
@@ -344,11 +324,6 @@ class CourseService
             $params["type"] = $type;
         }
 
-        // Add rating condition
-        // if ($rating !== 'all') {
-        //     $whereConditions[] = "c.rating >= :rating";
-        //     $params["rating"] = $rating;
-        // }
 
         // Combine all conditions with AND
         $whereClause = !empty($whereConditions) ? "WHERE " . implode(" AND ", $whereConditions) : "";
