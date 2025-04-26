@@ -44,7 +44,6 @@
                         <option value="recent" <?= (!isset($filter_sort) || $filter_sort === 'recent') ? 'selected' : ''; ?>>Most Recent</option>
                         <option value="oldest" <?= (!isset($filter_sort) || $filter_sort === 'oldest') ? 'selected' : ''; ?>>Oldest First</option>
                         <option value="popular" <?= (!isset($filter_sort) || $filter_sort === 'popular') ? 'selected' : ''; ?>>Most Popular</option>
-                        <option value="budget" <?= (!isset($filter_sort) || $filter_sort === 'budget') ? 'selected' : ''; ?>>Highest Budget</option>
                     </select>
                 </div>
                 <div class="filter-button">
