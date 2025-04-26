@@ -487,10 +487,27 @@ class CoursesController
             's' => $_GET['s'] ?? '',
         ];
 
-        [$courses, $courseCount] = $this->courseService->getUserCourses(
-            $itemsPerPage,
-            $offset
-        );
+        // if (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'teacher') {
+        //     if ($_SESSION['user_role'] === 'teacher') {
+        //         $courses = $this->courseService->getTutorcourses((string)$_SESSION['user']);
+
+        //         $courseCount = count($courses);
+        //     }
+        // }
+
+
+        if (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'teacher') {
+            if ($_SESSION['user_role'] === 'teacher') {
+                $courses = $this->courseService->getTeacherCourses($_SESSION['user'], $itemsPerPage, $offset);
+                $courseCount = count($courses);
+            }
+        } elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'student') {
+
+            [$courses, $courseCount] = $this->courseService->getUserCourses(
+                $itemsPerPage,
+                $offset
+            );
+        }
 
         $pagination = generatePagination($courseCount, $page, $itemsPerPage, $searchParams);
 
