@@ -119,7 +119,7 @@ class ResourceService
 
         ]);
 
-        return $this->db->rowCount() > 0;
+        return $this->db->rowCount() >= 0;
     }
 
     public function getFilteredResources(array $filters): array
