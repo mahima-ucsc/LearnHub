@@ -38,4 +38,35 @@ class NotificationController
         $this->notificationService->markAsRead((string) $_SESSION['user'], (string) $notificationId);
         $this->view->renderJson(['status' => 'success']);
     }
+
+    public function notificationView(array $params)
+    {
+        $page = (int) ($_GET['p'] ?? 1);
+        $itemsPerPage = 6;
+        $offset = ($page - 1) * $itemsPerPage;
+        $isread = isset($_GET['isread']) ? $_GET['isread'] : '';
+        $searchTerm = $_GET['s'] ?? '';
+
+        // Get search parameters
+        $searchParams = [
+            's' => $searchTerm,
+            'isread' => $isread,
+        ];
+
+        [$notifications, $notificationCount] = $this->notificationService->getNotificationsForView(
+            $itemsPerPage,
+            $offset,
+            $searchTerm,
+            $isread
+        );
+
+        $pagination = generatePagination($notificationCount, $page, $itemsPerPage, $searchParams);
+
+        echo $this->view->render('/notification/notifications.php', [
+            "title" => "Notifications",
+            "notifications" => $notifications,
+            "pagination" => $pagination,
+            'isread' => $isread,
+        ]);
+    }
 }
