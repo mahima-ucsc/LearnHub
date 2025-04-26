@@ -284,6 +284,40 @@ class PageController
         ]);
     }
 
+    // public function resourceManagment()
+    // {
+    //     // $resources = $this->resourceService->getResources();
+    //     // $resourceCount = count($resources);
+
+    //     $page = (int) ($_GET['p'] ?? 1);
+    //     $itemsPerPage = 6;
+    //     $offset = ($page - 1) * $itemsPerPage;
+
+    //     // Get search parameters
+    //     $searchParams = [
+    //         's' => $_GET['s'] ?? '',
+    //         'status' => $_GET['status'] ?? 'all',
+    //     ];
+
+    //     [$resources, $resourceCount] = $this->resourceService->searchResource(
+    //         $itemsPerPage,
+    //         $offset
+    //     );
+
+    //     $pagination = generatePagination($resourceCount, $page, $itemsPerPage, $searchParams);
+
+
+
+
+
+    //     echo $this->view->render("User/Admin/admin_resource_managment.php", [
+    //         "title" => "Admin Resource managment",
+    //         "resources" => $resources,
+    //         "resourceCount" => $resourceCount,
+    //         "pagination" => $pagination
+    //     ]);
+    // }
+
     public function resourceManagment()
     {
         // $resources = $this->resourceService->getResources();
