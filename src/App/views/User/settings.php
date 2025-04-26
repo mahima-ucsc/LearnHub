@@ -1,4 +1,5 @@
 <?php include $this->resolve("partials/_header.php"); ?>
+<?php include $this->resolve("components/delete_modal.php"); ?>
 <link rel="stylesheet" href="/assets/styles/User/settings.css">
 <link rel="stylesheet" href="/assets/styles/components/toast.css">
 <link rel="stylesheet" href="/assets/styles/Tutor/update_tutor_profile.css">
@@ -193,7 +194,7 @@
                                     <div class="subject-entry">
                                         <div class="entry-header">
                                             <h3>Subject #<?php echo $indexforsubject + 1 ?></h3>
-                                            <button type="button" class="btn-remove">Remove</button>
+                                            <button type="button" class="btn-remove" onclick="showModal('/tutor/delete_experience/<?= $_SESSION['user'] . '/' . $tutorSubject['subject_id'] ?>')">Remove</button>
                                         </div>
                                         <div class="form-row">
                                             <div class="form-group">
@@ -240,7 +241,7 @@
                                     <div class="education-entry">
                                         <div class="entry-header">
                                             <h3>Education #<?php echo $indexforeducation + 1 ?> </h3>
-                                            <button type="button" class="btn-remove">Remove</button>
+                                            <button type="button" class="btn-remove" onclick="showModal('/tutor/delete_education/<?= $tutorEducation['education_id'] ?>')">Remove</button>
                                         </div>
                                         <div class="form-row">
                                             <div class="form-group">

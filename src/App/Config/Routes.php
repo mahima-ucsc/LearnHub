@@ -106,6 +106,8 @@ function registerRoutes(App $app)
     $app->post('/api/tutor/profile_create', [AuthController::class, 'createTutorProfile'], [TeacherOnlyMiddleware::class]);
     $app->get('/tutor/{tutor-id}/update_profile', [AuthController::class, 'updateTutorProfileView'], [TeacherOnlyMiddleware::class]);
     $app->post('/api/tutor/profile_update', [AuthController::class, 'updateTutorProfile'], [TeacherOnlyMiddleware::class]);
+    $app->delete('/tutor/delete_experience/{tutor_id}/{subject_id}', [AuthController::class, 'deleteTutorExperience'], [TeacherOnlyMiddleware::class]);
+    $app->delete('/tutor/delete_education/{education_id}', [AuthController::class, 'deleteTutorEducation'], [TeacherOnlyMiddleware::class]);
 
     // Courses
     $app->get('/courses', [CoursesController::class, 'course']);

@@ -805,4 +805,16 @@ class UserService
             ]
         )->findAll();
     }
+
+    public function deleteTutorExperienceByIDs(string $tutorId, string $subjectId)
+    {
+        $this->db->query(
+            "DELETE FROM TutorSubjects WHERE tutor_id = :tutor_id AND subject_id = :subject_id",
+            [
+                'tutor_id' => $tutorId,
+                'subject_id' => $subjectId,
+            ]
+        );
+        return true;
+    }
 }
