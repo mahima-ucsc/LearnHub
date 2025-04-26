@@ -1,5 +1,7 @@
 <?php include $this->resolve("partials/_header.php"); ?>
-<?php include $this->resolve("course/sidebar/sidebar.php"); ?>
+<?php if ($course['tutor_id'] == $_SESSION['user']): ?>
+    <?php include $this->resolve("course/sidebar/sidebar.php"); ?>
+<?php endif; ?>
 
 <link rel="stylesheet" href="/assets/styles/Course/course-info.css">
 <section class="course-info-container">
@@ -204,7 +206,7 @@
                                         <?php echo e($item['deadline']); ?>
                                     </span>
                                 </div>
-                                <?php foreach ($assignmentsResources[$item['assignment_id']] as $resource): ?>
+                                <!-- <?php foreach ($assignmentsResources[$item['assignment_id']] as $resource): ?>
                                     <ul>
                                         <li>
                                             <a href="/assignment/<?php echo e($item['assignment_id']) ?>/resource/<?php echo e($resource['resource_id']) ?>" class="resource-link">
@@ -213,17 +215,7 @@
                                             </a>
                                         </li>
                                     </ul>
-                                <?php endforeach; ?>
-                                <form class="assignment-upload" action="/submit-assignment" method="POST" enctype="multipart/form-data">
-                                    <input type="hidden" name="module_id" value="1">
-                                    <div class="file-upload">
-                                        <input type="file" name="assignment_file" id="assignment-1" required>
-                                        <label for="assignment-1" class="file-label">
-                                            Choose File
-                                        </label>
-                                    </div>
-                                    <button type="submit" class="submit-assignment" onclick="preventDefault();">Submit Assignment</button>
-                                </form>
+                                <?php endforeach; ?> -->
                             </div>
                         </div>
                     </div>
