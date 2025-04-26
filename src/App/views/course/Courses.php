@@ -76,7 +76,6 @@
                 <div class="filter-group">
                     <span class="filter-label">Sort By:</span>
                     <select class="filter-select" name="sort">
-                        <option value="popular" <?php echo (!isset($_GET['sort']) || $_GET['sort'] === 'popular') ? 'selected' : ''; ?>>Most Popular</option>
                         <option value="newest" <?php echo (isset($_GET['sort']) && $_GET['sort'] === 'newest') ? 'selected' : ''; ?>>Newest First</option>
                         <option value="oldest" <?php echo (isset($_GET['sort']) && $_GET['sort'] === 'oldest') ? 'selected' : ''; ?>>Oldest First</option>
                         <option value="price_low" <?php echo (isset($_GET['sort']) && $_GET['sort'] === 'priceAsc') ? 'selected' : ''; ?>>Price: Low to High</option>
@@ -133,11 +132,6 @@
                                     <?php echo e($course['first_name'] . ' ' . $course['last_name']); ?>
                                 </span>
                             </div>
-                            <div class="course-rating">
-                                <i class="fas fa-star"></i>
-                                <span>5</span>
-                                <span class="reviews">(10)</span>
-                            </div>
                         </div>
                     </div>
                     <div class="course-footer">
@@ -153,10 +147,6 @@
                             <?php endif; ?>
                         </div>
                         <div class="course-details">
-                            <div class="course-detail">
-                                <i class="fas fa-clock"></i>
-                                <span>3H</span>
-                            </div>
                             <div class="course-detail">
                                 <span>Grade 13</span>
                             </div>
