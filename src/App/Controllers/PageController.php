@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\{CourseRequestService, UserService, CourseService, AdvertisementService, PaymentService, ResourceService, ReviewService, SubjectService};
+use App\Services\{CourseRequestService, UserService, CourseService, AdvertisementService, PaymentService, ResourceService, ReviewService, SubjectService, ValidatorService};
 use APP\Config\Paths;
 use Exception;
 
@@ -20,7 +20,8 @@ class PageController
         private PaymentService $paymentService,
         private ResourceService $resourceService,
         private ReviewService $reviewService,
-        private SubjectService $subjectService
+        private SubjectService $subjectService,
+        private validatorService $validatorService,
     ) {}
 
     public function home()
@@ -70,6 +71,23 @@ class PageController
         echo $this->view->render('help_and_support.php', [
             "title" => "help-and-support"
         ]);
+    }
+
+    public function sendHelpAndSupport()
+    {
+        // dd('submitContactForm');
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            $data = [
+                'name' => trim($_POST['name']),
+                'email' => trim($_POST['email']),
+                'message' => trim($_POST['message'])
+            ];
+            //validate form data
+            $errors = $this->validatorService->validateContactForm($data);
+            $this->userService->sendHelpMail($data);
+            redirectTo('/contact/successfull');
+        }
     }
 
     public function contact()
