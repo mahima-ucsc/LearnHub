@@ -817,4 +817,15 @@ class UserService
         );
         return true;
     }
+
+    public function deleteTutorEducationByID(string $educationId)
+    {
+        $this->db->query(
+            "DELETE FROM TutorEducation WHERE education_id = :education_id",
+            [
+                'education_id' => $educationId,
+            ]
+        );
+        return true;
+    }
 }
