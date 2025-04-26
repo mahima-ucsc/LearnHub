@@ -232,8 +232,11 @@ class ValidatorService
         $rules = [
             "moduleTitle" => ['required'],
             "moduleDescription" => ['required'],
-            "accessPeriod" => ['required']
         ];
+
+        if (!empty($formData['accessPeriod']) && $formData['moduleAccessPeriod'] != 'on') {
+            $rules["accessPeriod"] = ['required'];
+        }
 
         if (!empty($formData['moduleAccessPeriod']) && $formData['moduleAccessPeriod'] == 'on') {
             $rules['moduleAccessPeriodStartDate'] = ['required'];

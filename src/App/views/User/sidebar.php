@@ -350,13 +350,6 @@
                 </a>
             </div>
             <div class="sidebar-section">
-                <h4 class="section-title">Ad Management</h4>
-                <a href="/advertisement-managment" class="menu-item">
-                    <span class="menu-icon"><i class="fas fa-ad"></i></i></span>
-                    Advertisements
-                </a>
-            </div>
-            <div class="sidebar-section">
                 <h4 class="section-title">Resources</h4>
                 <a href="/resource-managment" class="menu-item">
                     <span class="menu-icon"><i class="fa-solid fa-square-share-nodes"></i></span>
@@ -364,6 +357,13 @@
                 </a>
             </div>
         <?php endif; ?>
+        <div class="sidebar-section">
+            <h4 class="section-title">Ad Management</h4>
+            <a href="/advertisement-managment" class="menu-item">
+                <span class="menu-icon"><i class="fas fa-ad"></i></i></span>
+                Advertisements
+            </a>
+        </div>
 
         <div class="sidebar-section">
             <h4 class="section-title">Transactions</h4>
