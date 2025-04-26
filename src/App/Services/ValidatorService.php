@@ -261,4 +261,14 @@ class ValidatorService
 
         $this->validator->validate($formData, $rules);
     }
+
+    public function validateAnnouncemnetForm($formData)
+    {
+        $rules = [
+            'title' => 'required',
+            'content' => 'required',
+            'category' => 'required',
+        ];
+        $this->validator->validate($formData, $rules);
+    }
 }
