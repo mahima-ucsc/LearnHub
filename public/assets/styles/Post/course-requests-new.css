@@ -184,6 +184,9 @@
   display: flex;
   justify-content: end;
   margin-bottom: 18px;
+  display: flex;
+  justify-content: end;
+  gap: 12px;
 }
 
 .request-cards {
@@ -412,6 +415,31 @@
 
 .page-numbers a.active-page {
   background-color: var(--primary);
+  color: var(--dark);
+}
+
+.my-requests-btn-container {
+  display: flex;
+  justify-content: end;
+  margin: 18px 0 0 0;
+}
+
+.btn-my-requests {
+  background: var(--primary);
+  color: var(--dark);
+  border: none;
+  border-radius: var(--radius);
+  padding: 12px 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s, color 0.15s;
+  box-shadow: var(--shadow);
+  text-decoration: none;
+}
+
+.btn-my-requests:hover {
+  background: var(--primary-dark);
   color: var(--dark);
 }
 

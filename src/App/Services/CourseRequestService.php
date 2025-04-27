@@ -96,10 +96,10 @@ class CourseRequestService
         $orderClause = "";
         switch ($sort) {
             case 'recent':
-                $orderClause = "ORDER BY cr.created_date DESC";
+                $orderClause = "ORDER BY cr.created_date ASC";
                 break;
             case 'oldest':
-                $orderClause = "ORDER BY cr.created_date ASC";
+                $orderClause = "ORDER BY cr.created_date DESC";
                 break;
             case 'popular':
                 $orderClause = "ORDER BY comments_count DESC";
@@ -136,6 +136,91 @@ class CourseRequestService
         cr.created_date, cr.updated_date, u.user_id, u.first_name, u.last_name
         {$orderClause}";
 
+        $limitQuery = $allQuery . " LIMIT {$length} OFFSET {$offset};";
+
+
+        $requests = $this->db->query($limitQuery, $params)->findAll();
+        $requestCount = $this->db->query($allQuery, $params)->rowCount();
+
+        return [$requests, $requestCount];
+    }
+
+    public function getUserCourseRequests(
+        int $length = 6,
+        int $offset = 0,
+        string $userId,
+        string $searchTerm,
+        string $subject,
+        string $grade,
+        string $sort
+    ) {
+        $searchTerm = trim($_GET['s'] ?? '');
+        $subject = $_GET['subject'] ?? 'all';
+        $grade = $_GET['grade'] ?? 'all';
+        $sort = $_GET['sort'] ?? 'recent';
+
+        $whereConditions = [];
+        $params = [];
+
+        if (!empty($searchTerm)) {
+            $whereConditions[] = "(u.first_name LIKE :term OR u.last_name LIKE :term OR cr.title LIKE :term)";
+            $params["term"] = "%{$searchTerm}%";
+        }
+
+        if ($subject !== 'all') {
+            $whereConditions[] = "cr.subject_id = :subject";
+            $params["subject"] = $subject;
+        }
+        if ($grade !== 'all') {
+            $whereConditions[] = "cr.grade_id = :grade";
+            $params["grade"] = $grade;
+        }
+
+        // Sorting
+        $orderClause = "";
+        switch ($sort) {
+            case 'recent':
+                $orderClause = "ORDER BY cr.created_date DESC";
+                break;
+            case 'oldest':
+                $orderClause = "ORDER BY cr.created_date ASC";
+                break;
+            case 'popular':
+                $orderClause = "ORDER BY comments_count DESC";
+                break;
+        }
+
+        $whereClause = !empty($whereConditions) ? "AND " . implode(" AND ", $whereConditions) : "";
+
+        $allQuery = "SELECT 
+        cr.title,
+        cr.request_id, 
+        cr.description,
+        cr.status, 
+        cr.location,
+        s.subject_title AS subject, 
+        s.subject_id, 
+        g.grade_name AS grade,
+        g.grade_id AS grade_id,
+        cr.created_date, 
+        cr.updated_date, 
+        u.user_id as author_id,
+        CONCAT(u.first_name, ' ', u.last_name) AS author,
+        COUNT(c.comment_id) AS comments_count
+        FROM course_requests cr
+        LEFT JOIN subjects s ON cr.subject_id = s.subject_id
+        JOIN users u ON cr.user_id = u.user_id
+        LEFT JOIN grades g ON g.grade_id = cr.grade_id
+        LEFT JOIN course_request_comments c ON cr.request_id = c.request_id
+        WHERE u.user_id = :user_id
+        {$whereClause}
+        GROUP BY 
+        cr.request_id, cr.title, cr.description, cr.status, cr.location,
+        s.subject_title, s.subject_id, g.grade_name, g.grade_id,
+        cr.created_date, cr.updated_date, u.user_id, u.first_name, u.last_name
+        {$orderClause}";
+
+        $params['user_id'] = $userId;
         $limitQuery = $allQuery . " LIMIT {$length} OFFSET {$offset};";
 
 
@@ -368,29 +453,24 @@ class CourseRequestService
 
     public function updateCourseRequestById(array $formData, string $requestId)
     {
-        try {
-            $this->db->query(
-                "UPDATE course_requests SET
+        $this->db->query(
+            "UPDATE course_requests SET
                 title = :title,
                 description = :description,
                 subject_id = :subject_id,
                 grade_id = :grade_id,
                 location = :location
                 WHERE request_id = :request_id AND user_id = :user_id",
-                [
-                    "title" => $formData['title'],
-                    "description" => $formData['description'],
-                    "subject_id" => $formData['subject'] != -1 ? $formData['subject'] : null,
-                    "request_id" => $requestId,
-                    'grade_id' => $formData['grade'],
-                    'location' => $formData['location'],
-                    "user_id" => $_SESSION['user']
-                ]
-            );
-        } catch (Exception $e) {
-            error_log("Failed to update course request: " . $e->getMessage());
-            redirectTo('/server-error');
-        }
+            [
+                "title" => $formData['title'],
+                "description" => $formData['description'],
+                "subject_id" => $formData['subject'] != -1 ? $formData['subject'] : null,
+                "request_id" => $requestId,
+                'grade_id' => $formData['grade'] != -1 ? $formData['grade'] : null,
+                'location' => $formData['location'],
+                "user_id" => $_SESSION['user']
+            ]
+        );
     }
 
     public function approveCourseRequestById(string $requestId)

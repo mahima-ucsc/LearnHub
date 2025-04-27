@@ -1,9 +1,10 @@
 <?php include $this->resolve("partials/_header.php"); ?>
 <link rel="stylesheet" href="/assets/styles/Post/course-requests-new.css">
+<link rel="stylesheet" href="/assets/styles/Post/my-course-requests.css">
 
 <div class="container">
     <div class="search-section">
-        <h3 class="subsection-title">Find Course Requests</h3>
+        <h3 class="subsection-title">My Course Requests</h3>
         <form class="search-form" id="searchForm" method="GET">
             <div class="search-input-group">
                 <i class="fas fa-search"></i>
@@ -63,15 +64,14 @@
 
         </div>
         <div class="create-course-request-btn">
-            <a href="/course/request/my/requests" class="btn btn-primary btn-my-requests">
-                <i class="fas fa-user"></i> View My Course Requests
+            <a href="/course/request/" class="btn btn-primary btn-my-requests">
+                <i class="fas fa-user"></i> View All Course Requests
             </a>
             <a href="/course/request/create" class="btn btn-primary">
                 <i class="fa-solid fa-plus"></i>
                 Create Course Request
             </a>
         </div>
-        <!-- Removed separate my-requests-btn-container -->
         <div class="request-cards" id="requestCards">
             <?php foreach ($courseRequests as $request): ?>
                 <div class="request-card">
@@ -81,7 +81,9 @@
                             <span><?php echo e($request['author']); ?></span>
                         </div>
                         <div class="request-status">
-                            <!-- <span class="time-posted">Posted 2 days ago</span> -->
+                            <span class="status-tag <?php echo strtolower($request['status']); ?>">
+                                <?php echo e(ucfirst($request['status'])); ?>
+                            </span>
                             <span class="time-posted">
                                 <?= e(
                                     $request["updated_date"] === $request["created_date"] ?
@@ -89,7 +91,6 @@
                                         "Edited on " . formatDate($request["updated_date"], 'F j, Y')
                                 ) ?>
                             </span>
-
                         </div>
                     </div>
                     <h4 class="request-title"><?php echo e($request['title']); ?></h4>
@@ -118,7 +119,19 @@
                     </p>
                     <div class="request-footer">
                         <span class="proposals-count"><i class="fas fa-user-tie"></i> <?php echo e($request['comments_count']); ?> comments</span>
-                        <a href="/course/request/<?php echo e($request['request_id']); ?>" class="view-details">View Details</a>
+                        <div class="request-actions">
+                            <a href="/course/request/edit/<?= $request['request_id'] ?>" class="edit-link">Edit</a>
+                            <div>
+                                <form
+                                    action="/course/request/<?= $request['request_id'] ?>"
+                                    method="POST"
+                                    onsubmit="return confirm('Are you sure you want to delete this request?');">
+                                    <input type="hidden" name="_METHOD" value="DELETE">
+                                    <button type="submit" class="delete-link">Delete</button>
+                                </form>
+                            </div>
+                            <a href="/course/request/<?php echo e($request['request_id']); ?>" class="view-details">View Details</a>
+                        </div>
                     </div>
                 </div>
             <?php endforeach; ?>

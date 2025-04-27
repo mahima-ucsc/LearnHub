@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\{AnnouncementService, CourseService};
+use App\Services\{AnnouncementService, CourseService, ValidatorService};
 
 class AnnouncementController
 {
@@ -13,6 +13,7 @@ class AnnouncementController
         private TemplateEngine $view,
         private AnnouncementService $AnnouncementService,
         private CourseService $CourseService,
+        private ValidatorService $ValidatorService
     ) {}
 
     public function announcementsFormView($params)
@@ -30,6 +31,7 @@ class AnnouncementController
     {
 
         $_POST['course_id'] = $params['course_id'];
+        $this->ValidatorService->validateAnnouncemnetForm($_POST);
         $this->AnnouncementService->createAnnouncements($_POST, $_FILES);
         redirectTo("/courses/{$params['course_id']}/announcements");
     }
@@ -147,5 +149,23 @@ class AnnouncementController
     {
         $this->AnnouncementService->deleteAnnouncementById($params['announcement_id']);
         redirectTo($_SERVER['HTTP_REFERER']);
+    }
+
+    public function editAnnouncementView($params)
+    {
+        $announcement = $this->AnnouncementService->getAnnouncementById($params['announcement_id']);
+        echo $this->view->render(
+            "User/Tutor/edit_announcement.php",
+            [
+                'title' => 'Edit announcement',
+                'announcement_id' => $params['announcement_id'],
+                'announcement' => $announcement
+            ]
+        );
+    }
+
+    public function editAnnouncement()
+    {
+        dd($_POST);
     }
 }

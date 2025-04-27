@@ -1,4 +1,5 @@
 <?php include $this->resolve("partials/_header.php"); ?>
+<?php include $this->resolve("components/delete_modal.php"); ?>
 <link rel="stylesheet" href="/assets/styles/components/toast.css">
 <link rel="stylesheet" href="/assets/styles/Assignment/assignment_view.css">
 
@@ -11,6 +12,10 @@
     <div class="assignment-card">
         <?php if (!empty($_SESSION['user']) && $_SESSION['user'] === $assignment['tutor_id']): ?>
             <div class="teacher-actions">
+                <a href="#" onclick="showModal('/courses/<?php echo e($course['course_id']); ?>/assignment/<?php echo e($assignment['assignment_id']); ?>/delete')" class="teacher-action-btn delete-btn">
+                    <i class="fa-solid fa-trash-alt"></i>
+                    Remove Assignment
+                </a>
                 <a href="/courses/<?php echo e($course['course_id']); ?>/assignment/<?php echo e($assignment['assignment_id']); ?>/edit" class="teacher-action-btn edit-btn">
                     <i class="fa-solid fa-pen-to-square"></i>
                     Edit Assignment

@@ -118,10 +118,10 @@ class ValidatorService
 
 
         ];
-        // Validate the URL only if it is provided
-        if (!empty($formData['resource_url'])) {
-            $rules["resource_url"] = ["url"];
-        }
+        // // Validate the URL only if it is provided
+        // if (!empty($formData['resource_url'])) {
+        //     $rules["resource_url"] = ["url"];
+        // }
 
 
         // Conditionally validate price if the resource is not free
@@ -249,6 +249,40 @@ class ValidatorService
             }
         }
 
+        $this->validator->validate($formData, $rules);
+    }
+
+    public function validateReviewForm(array $formData)
+    {
+        $rules = [
+            "rating" => ['required', 'min:1'],
+            "review" => ['required']
+        ];
+
+        $this->validator->validate($formData, $rules);
+    }
+
+    public function validateAnnouncemnetForm($formData)
+    {
+        $rules = [
+            'title' => 'required',
+            'content' => 'required',
+            'category' => 'required',
+        ];
+        $this->validator->validate($formData, $rules);
+    }
+
+    public function validateUpdateTutorProfileForm($formData)
+    {
+        // dd($formData);
+        $rules = ['title' => 'required'];
+        // if (!empty($formData['educations'])) {
+        //     foreach ($formData['educations'] as $education) {
+        //         if ($education['start_date'] > $education['end_date']) {
+        //             $rules = ['education' . $education['education_id'] => 'dateCompare'];
+        //         }
+        //     }
+        // }
         $this->validator->validate($formData, $rules);
     }
 }
