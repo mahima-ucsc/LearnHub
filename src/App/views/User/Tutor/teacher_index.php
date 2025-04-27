@@ -1,6 +1,7 @@
 <?php include $this->resolve('partials/_header.php') ?>
 
 <?php include $this->resolve('User/sidebar.php'); ?>
+
 <link rel="stylesheet" href="/assets/styles/User/Teacher/teacher_index.css">
 <section class="teacher-hero">
     <div class="container teacher-hero-content">

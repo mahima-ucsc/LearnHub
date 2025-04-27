@@ -226,6 +226,27 @@ class ValidatorService
 
         $this->validator->validate($formData, $rules);
     }
+    public function validateCourseEdit(array $formData)
+    {
+        $rules = [
+            'courseTitle' => ['required'],
+            'courseDescription' => ['required'],
+            'subject' => ['required'],
+            'grade' => ['required'],
+            'courseStartTime' => ['required'],
+            'courseEndTime' => ['required', 'timeCompare:courseStartTime'],
+            'courseday' => ['required'],
+            'location' => ['required'],
+        ];
+
+        if (isset($formData['courseType'])) {
+            if ($formData['courseType'] === 'onetime') {
+                $rules['fullCoursePrice'] = ['required'];
+            }
+        }
+
+        $this->validator->validate($formData, $rules);
+    }
 
     public function validateModuleData(array $formData)
     {

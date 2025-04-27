@@ -8,7 +8,6 @@
 <?php if (!empty($_SESSION['user']) && ($_SESSION['user_role'] == 'admin' || $_SESSION['user_role'] == 'teacher')): ?>
     <?php include $this->resolve('User/sidebar.php'); ?>
 <?php endif; ?>
-
 <section class="settings">
     <div class="settings-container">
         <!-- Settings Navigation -->

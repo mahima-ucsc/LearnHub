@@ -110,11 +110,12 @@ class PageController
             $courseThumbnailPath = Paths::STORAGE_UPLOADS . Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS;
             $userInterest = $this->userService->getUserInterest((string)$_SESSION['user']);
             $suggestedCourses = [];
-
-            for ($i = 0; $i < 3; $i++) {
-                $randomSubject = $userInterest[array_rand($userInterest)]['subject_id'];
-                $course = $this->courseService->getSuggession((string)$randomSubject);
-                $suggestedCourses[] = $course;
+            if (count($userInterest) > 0) {
+                for ($i = 0; $i < 3; $i++) {
+                    $randomSubject = $userInterest[array_rand($userInterest)]['subject_id'];
+                    $course = $this->courseService->getSuggession((string)$randomSubject);
+                    $suggestedCourses[] = $course;
+                }
             }
             echo $this->view->render($path, [
                 "title" => "Dashboard",
@@ -122,7 +123,7 @@ class PageController
                 'userData' => $userData,
                 'courseThumbnailPath' => $courseThumbnailPath,
                 'userInterest' => $userInterest,
-                'suggestedCourses' => $suggestedCourses
+                'suggestedCourses' => $suggestedCourses ?? []
             ]);
             exit;
         } elseif ($_SESSION['user_role'] === "teacher") {
@@ -478,7 +479,7 @@ class PageController
         echo $this->view->render('User/settings.php', [
             "title" => "Settings",
             "userDetails" => $userDetails,
-            "title" => "creat your profile",
+            "title" => "Update Profile",
             'subjects' => $subjects,
             'tutorBasic' => $tutorBasic,
             'tutorSubjects' => $tutorSubjects,
