@@ -28,6 +28,7 @@ class ResourceController
             's' => $_GET['s'] ?? '',
             'subject' => $_GET['subject'] ?? 'all',
             'type' => $_GET['type'] ?? 'all',
+            'category' => $_GET['category'] ?? 'all',
             'price' => $_GET['price'] ?? 'all',
             'sort' => $_GET['sort'] ?? '',
         ];
