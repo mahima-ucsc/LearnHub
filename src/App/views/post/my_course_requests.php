@@ -115,7 +115,11 @@
                     </p>
                     <div class="request-footer">
                         <span class="proposals-count"><i class="fas fa-user-tie"></i> <?php echo e($request['comments_count']); ?> comments</span>
-                        <a href="/course/request/<?php echo e($request['request_id']); ?>" class="view-details">View Details</a>
+                        <div class="request-actions">
+                            <a href="#" class="edit-link">Edit</a>
+                            <a href="#" class="delete-link">Delete</a>
+                            <a href="/course/request/<?php echo e($request['request_id']); ?>" class="view-details">View Details</a>
+                        </div>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -167,6 +171,45 @@
     .status-tag.pending {
         background-color: #fff3bf;
         color: #e6b000;
+    }
+
+    .request-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-top: 8px;
+    }
+
+    .edit-link,
+    .delete-link {
+        font-size: 13px;
+        padding: 4px 12px;
+        border-radius: 16px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: background 0.15s, color 0.15s;
+    }
+
+    .edit-link {
+        background: #e3fcef;
+        color: #0ca678;
+        border: 1px solid #b7efdb;
+    }
+
+    .edit-link:hover {
+        background: #c6f6e4;
+        color: #087f5b;
+    }
+
+    .delete-link {
+        background: #ffe3e3;
+        color: #e03131;
+        border: 1px solid #ffc9c9;
+    }
+
+    .delete-link:hover {
+        background: #ffc9c9;
+        color: #a61e4d;
     }
 </style>
 
