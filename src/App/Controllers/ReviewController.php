@@ -70,7 +70,7 @@ class ReviewController
 
     public function deleteCourseReview($params)
     {
-        if ($_POST['token'] === $_SESSION['token']) {
+        if ($_POST['token'] == $_SESSION['token']) {
             $this->reviewService->deleteCourseReview($params['review']);
             redirectTo($_SERVER['HTTP_REFERER']);
         } else {
@@ -121,7 +121,7 @@ class ReviewController
 
     public function deleteTutorReview($params)
     {
-        if ($_POST['token'] === $_SESSION['token']) {
+        if ($_POST['token'] == $_SESSION['token']) {
             $this->reviewService->deleteTutorReview($params['review']);
         }
         redirectTo($_SERVER['HTTP_REFERER']);

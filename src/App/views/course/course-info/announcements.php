@@ -96,7 +96,7 @@
                             <button class="filter-button" data-filter="event">Event</button>
                         </div>
                     </div>
-                    <?php if (!($tutor_id === $_SESSION['user'] || $_SESSION['user_role'] === 'admin')): ?>
+                    <?php if (!($tutor_id == $_SESSION['user'] || $_SESSION['user_role'] == 'admin')): ?>
                         <button class="filter-button" data-filter="read">Read</button>
                         <button class="filter-button" data-filter="unread">Unread</button>
                     <?php endif; ?>
@@ -154,7 +154,7 @@
                                 ?>
                             </div>
                             <div class="announcement-actions">
-                                <?php if ($announcement['tutor_id'] ===  $_SESSION['user'] || $_SESSION['user_role'] === 'admin'): ?>
+                                <?php if ($announcement['tutor_id'] ==  $_SESSION['user'] || $_SESSION['user_role'] == 'admin'): ?>
                                     <button class="edit-btn" onclick="window.location.href = '/announcements/edit/<?php echo htmlspecialchars($announcement['announcement_id']); ?>'">Edit</button>
                                     <button class="delete-btn" onclick="showModal('/announcements/delete/<?php echo htmlspecialchars($announcement['announcement_id']); ?>')">Delete</button>
                                 <?php else: ?>
@@ -239,14 +239,14 @@
                     const category = item.getAttribute("category");
                     const itemRead = item.getAttribute("data-read");
 
-                    if (activeFilter === "all") {
+                    if (activeFilter == "all") {
                         item.style.display = "block";
-                    } else if (activeFilter === "unread") {
-                        item.style.display = itemRead === "false" ? "block" : "none";
-                    } else if (activeFilter === "read") {
-                        item.style.display = itemRead === "true" ? "block" : "none";
+                    } else if (activeFilter == "unread") {
+                        item.style.display = itemRead == "false" ? "block" : "none";
+                    } else if (activeFilter == "read") {
+                        item.style.display = itemRead == "true" ? "block" : "none";
                     } else {
-                        item.style.display = category === activeFilter ? "block" : "none";
+                        item.style.display = category == activeFilter ? "block" : "none";
                     }
                 });
                 checkEmptyState();
@@ -259,7 +259,7 @@
                 button.addEventListener('click', function() {
                     const btn = this;
                     const announcement_id = btn.getAttribute('announcement_id');
-                    const is_read = btn.getAttribute('is_read') === 'true';
+                    const is_read = btn.getAttribute('is_read') == 'true';
                     const announcementItem = btn.closest(".announcement-item");
                     const unreadIndicator = announcementItem.querySelector(".unread-indicator");
                     let sourceDiv = announcementItem.querySelector(".announcement-source");
@@ -326,7 +326,7 @@
                     existingEmptyState.remove();
                 }
 
-                if (visibleItems.length === 0) {
+                if (visibleItems.length == 0) {
                     const emptyState = document.createElement("div");
                     emptyState.className = "empty-state";
                     emptyState.innerHTML = `

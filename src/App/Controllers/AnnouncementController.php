@@ -42,14 +42,13 @@ class AnnouncementController
         $user_id = $_SESSION['user'];
         $isparticipants = $this->AnnouncementService->getCourseisParticipants($courseId, $user_id);
         $courseData = $this->AnnouncementService->getcourseTitle($courseId);
-
-        if ($user_id === $courseData['tutor_id'] || $_SESSION['user_role'] === 'admin') {
+        if ($user_id == $courseData['tutor_id'] || $_SESSION['user_role'] == 'admin') {
             $announcements = $this->AnnouncementService->getAllAnnouncements($courseId);
         } else {
             $announcements = $this->AnnouncementService->getAnnouncements($courseId, $user_id);
         }
 
-        if ($isparticipants || $_SESSION['user_role'] === 'admin') {
+        if ($isparticipants || $_SESSION['user_role'] == 'admin') {
             echo $this->view->render(
                 "course/course-info/announcements.php",
                 [
@@ -73,7 +72,7 @@ class AnnouncementController
             return;
         }
 
-        $is_read = $_POST['is_read'] === 'true' ? 1 : 0;
+        $is_read = $_POST['is_read'] == 'true' ? 1 : 0;
         $announcementId = $_POST['announcement_id'];
         $userId = $_SESSION['user'];
 
