@@ -10,7 +10,7 @@
     </div>
 
     <div class="assignment-card">
-        <?php if (!empty($_SESSION['user']) && $_SESSION['user'] === $assignment['tutor_id']): ?>
+        <?php if (!empty($_SESSION['user']) && $_SESSION['user'] == $assignment['tutor_id']): ?>
             <div class="teacher-actions">
                 <a href="#" onclick="showModal('/courses/<?php echo e($course['course_id']); ?>/assignment/<?php echo e($assignment['assignment_id']); ?>/delete')" class="teacher-action-btn delete-btn">
                     <i class="fa-solid fa-trash-alt"></i>

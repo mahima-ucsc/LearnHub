@@ -49,7 +49,7 @@ return [
     },
     CourseRequestService::class => function (Container $container) {
         $db = $container->get(Database::class);
-        return new CourseRequestService($db);
+        return new CourseRequestService($db, new NotificationService($db));
     },
     FileService::class => function (Container $container) {
         $db = $container->get(Database::class);

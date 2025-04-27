@@ -99,7 +99,7 @@ class CoursesController
         if (!$course) {
             redirectTo('/courses/my-courses');
         }
-        if ($course['billing_type'] === 'onetime') {
+        if ($course['billing_type'] == 'onetime') {
             $courseModules = $this->courseService->getCourseModuleList($params['course_id']);
             // Get module resources based on module ID
             $moduleResources = [];
@@ -488,7 +488,7 @@ class CoursesController
         ];
 
         // if (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'teacher') {
-        //     if ($_SESSION['user_role'] === 'teacher') {
+        //     if ($_SESSION['user_role'] == 'teacher') {
         //         $courses = $this->courseService->getTutorcourses((string)$_SESSION['user']);
 
         //         $courseCount = count($courses);
@@ -497,8 +497,8 @@ class CoursesController
 
 
         if (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'teacher') {
-            if ($_SESSION['user_role'] === 'teacher') {
-                $courses = $this->courseService->getTeacherCourses($_SESSION['user'], $itemsPerPage, $offset);
+            if ($_SESSION['user_role'] == 'teacher') {
+                $courses = $this->courseService->getTeacherCourses((int)$_SESSION['user'], $itemsPerPage, $offset);
                 $courseCount = count($courses);
             }
         } elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'student') {
