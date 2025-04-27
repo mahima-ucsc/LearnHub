@@ -69,4 +69,18 @@ class NotificationController
             'isread' => $isread,
         ]);
     }
+
+    public function markAsReadFromView(array $params)
+    {
+        $notificationId = $params['notification_id'];
+
+        $this->notificationService->markAsRead((string) $_SESSION['user'], (string) $notificationId);
+        redirectTo("/notifications");
+    }
+
+    public function markAllAsReadFromView(array $params)
+    {
+        $this->notificationService->markAllAsRead((string) $_SESSION['user']);
+        redirectTo("/notifications");
+    }
 }

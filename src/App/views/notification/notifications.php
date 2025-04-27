@@ -9,7 +9,7 @@
             <a href="/notifications" class="refresh-btn" title="Refresh notifications">
                 <i class="fas fa-sync-alt"></i> Refresh
             </a>
-            <a href="/api/notifications/mark-all-as-read" class="mark-all-btn">
+            <a href="/notifications/mark-all-as-read" class="mark-all-btn">
                 <i class="fas fa-check-double"></i> Mark all as read
             </a>
         </div>
@@ -41,7 +41,7 @@
                     </div>
                     <div class="notification-actions">
                         <?php if (!$notification['is_read']): ?>
-                            <a href="/api/notifications/mark-as-read/<?= $notification['notification_id'] ?>" class="mark-read">
+                            <a href="/notifications/<?= $notification['notification_id'] ?>/mark-as-read/" class="mark-read">
                                 <i class="fas fa-check"></i> Mark as read
                             </a>
                         <?php endif; ?>
