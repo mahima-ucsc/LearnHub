@@ -41,7 +41,14 @@
                             </span>
                         <?php endif; ?>
                     </div>
-                    <?php if (($course['billing_type'] === 'onetime') && !$course['is_paid'] && !($course['tutor_id'] === $_SESSION['user'])): ?>
+                    <?php if (
+                        ($course['billing_type'] === 'onetime') &&
+                        (
+                            !$course['is_paid'] &&
+                            !($course['tutor_id'] === $_SESSION['user']) &&
+                            !(!empty($_SESSION['user']) && $_SESSION['user_role'] == 'admin')
+                        )
+                    ): ?>
                         <a href="<?= "/payment/courses/" . $course['course_id'] ?>" class="enroll-button">Enroll Now</a>
                     <?php endif; ?>
                 </div>
@@ -95,7 +102,14 @@
                 <?php endif; ?>
             </div>
 
-            <?php if (($course['billing_type'] == 'onetime' && $course['is_paid']) || (!empty($_SESSION['user']) && $_SESSION['user'] == $course['tutor_id'])): ?>
+            <?php if (
+                $course['billing_type'] == 'onetime' &&
+                (
+                    $course['is_paid'] ||
+                    (!empty($_SESSION['user']) && $_SESSION['user'] == $course['tutor_id']) ||
+                    (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'admin')
+                )
+            ): ?>
                 <div class="course-section">
                     <h2 class="section-title">Course Modules</h2>
                     <div class="module-list">
@@ -107,7 +121,7 @@
                 <?php include $this->resolve('course/course-info/assignment.php'); ?>
             <?php
                 $showAssignment = false;
-            elseif ($course['billing_type'] == 'recurring' || $_SESSION['user_role'] == 'admin' || $course['tutor_id'] == $_SESSION['user']): ?>
+            elseif ($course['billing_type'] == 'recurring') : ?>
                 <div class="course-section">
                     <h2 class="section-title">Current Content</h2>
                     <div class="period-list">
@@ -117,7 +131,7 @@
                                     <div class="period-title">
                                         <h4><?= formatDate($period['start_datetime'], 'Y M j') . " - " . formatDate($period['end_datetime'], 'Y M j') ?></h4>
                                     </div>
-                                    <?php if ($period['is_paid'] || $course['tutor_id'] == $_SESSION['user']): ?>
+                                    <?php if ($period['is_paid'] || $period['is_free_access_period'] || $period['has_special_access']): ?>
 
                                         <div class="period-toggle">
                                             <?php $showAssignment = true; ?>
@@ -132,7 +146,7 @@
 
                                 <div class="period-content">
                                     <div class="module-list">
-                                        <?php if ($period['is_paid'] || $period['is_free_access_period'] || $course['tutor_id'] == $_SESSION['user']): ?>
+                                        <?php if ($period['is_paid'] || $period['is_free_access_period'] || $period['has_special_access']): ?>
                                             <?php foreach ($period['modules'] as $module): ?>
                                                 <?php include $this->resolve("course/course-info/course-module.php"); ?>
                                             <?php endforeach; ?>
@@ -156,7 +170,7 @@
                                     <div class="period-title">
                                         <h4><?= formatDate($period['start_datetime'], 'Y M j') . " - " . formatDate($period['end_datetime'], 'Y M j') ?></h4>
                                     </div>
-                                    <?php if ($period['is_paid']): ?>
+                                    <?php if ($period['is_paid'] || $period['has_special_access']): ?>
                                         <?php $showAssignment = true; ?>
                                         <div class="period-toggle">
                                             <svg class="chevron-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -171,7 +185,7 @@
                                 </div>
                                 <div class="period-content">
                                     <div class="module-list">
-                                        <?php if ($period['is_paid']): ?>
+                                        <?php if ($period['is_paid'] || $period['has_special_access']): ?>
                                             <?php $showAssignment = true; ?>
                                             <?php foreach ($period['modules'] as $module): ?>
                                                 <?php include $this->resolve("course/course-info/course-module.php"); ?>
