@@ -453,29 +453,24 @@ class CourseRequestService
 
     public function updateCourseRequestById(array $formData, string $requestId)
     {
-        try {
-            $this->db->query(
-                "UPDATE course_requests SET
+        $this->db->query(
+            "UPDATE course_requests SET
                 title = :title,
                 description = :description,
                 subject_id = :subject_id,
                 grade_id = :grade_id,
                 location = :location
                 WHERE request_id = :request_id AND user_id = :user_id",
-                [
-                    "title" => $formData['title'],
-                    "description" => $formData['description'],
-                    "subject_id" => $formData['subject'] != -1 ? $formData['subject'] : null,
-                    "request_id" => $requestId,
-                    'grade_id' => $formData['grade'],
-                    'location' => $formData['location'],
-                    "user_id" => $_SESSION['user']
-                ]
-            );
-        } catch (Exception $e) {
-            error_log("Failed to update course request: " . $e->getMessage());
-            redirectTo('/server-error');
-        }
+            [
+                "title" => $formData['title'],
+                "description" => $formData['description'],
+                "subject_id" => $formData['subject'] != -1 ? $formData['subject'] : null,
+                "request_id" => $requestId,
+                'grade_id' => $formData['grade'] != -1 ? $formData['grade'] : null,
+                'location' => $formData['location'],
+                "user_id" => $_SESSION['user']
+            ]
+        );
     }
 
     public function approveCourseRequestById(string $requestId)

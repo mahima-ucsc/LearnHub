@@ -271,7 +271,7 @@
                                 <?php echo e($subject['subject_title']); ?>
                             </option>
                         <?php endforeach; ?>
-                        <option value="other">Other</option>
+                        <option value="-1">Other</option>
                     </select>
                     <div class="error-message" id="subjectError">Please select a subject</div>
                 </div>
@@ -285,7 +285,7 @@
                                 <?php echo e($grade['grade_name']); ?>
                             </option>
                         <?php endforeach; ?>
-                        <option value="all">All Levels</option>
+                        <option value="-1">All Levels</option>
                     </select>
                     <div class="error-message" id="gradeError">Please select a grade level</div>
                 </div>

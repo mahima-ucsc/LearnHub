@@ -171,6 +171,7 @@ class PostController
     public function updateCourseRequest(array $params)
     {
         $requestId = $params['request_id'];
+        $this->validatorService->validateCourseRequest($_POST);
         $this->courseRequestService->updateCourseRequestById($_POST, $requestId);
         redirectTo('/course/request/' . $requestId);
     }
