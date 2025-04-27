@@ -7,6 +7,10 @@
 </div>
 <!-- Basic Course Information Card -->
 <section class="container">
+    <div class="back-button">
+        <a href="/courses/<?= $course['course_id'] ?>">
+            <i class="fa-solid fa-arrow-left"></i> Go Back To Course</a>
+    </div>
     <form method="POST" enctype="multipart/form-data">
         <div class="card">
             <h2 class="section-title">Course Information</h2>
@@ -15,8 +19,7 @@
                 <label for="courseTitle" class="form-label">Course Title*</label>
                 <input type="text" name="courseTitle" id="courseTitle" class="form-control"
                     placeholder="e.g., Advanced Web Development with React"
-                    value="<?= e($course['title']); ?>"
-                    required>
+                    value="<?= e($course['title']); ?>">
                 <?php if (array_key_exists('courseTitle', $errors)) : ?>
                     <div class="error-message" id="courseTitleError" style="display: block;">
                         Please enter a course title
@@ -26,7 +29,7 @@
 
             <div class="form-group">
                 <label for="courseDescription" class="form-label">Course Description*</label>
-                <textarea name="courseDescription" id="courseDescription" class="form-control textarea-control" placeholder="Describe what students will learn in your course..." required><?= e($course['description']); ?></textarea>
+                <textarea name="courseDescription" id="courseDescription" class="form-control textarea-control" placeholder="Describe what students will learn in your course..."><?= e($course['description']); ?></textarea>
                 <?php if (array_key_exists('courseDescription', $errors)) : ?>
                     <div class="error-message" id="courseDescriptionError">Please enter a course description</div>
                 <?php endif; ?>
@@ -35,7 +38,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="courseSubject" class="form-label">Subject*</label>
-                    <select id="courseSubject" name="subject" class="form-control" required>
+                    <select id="courseSubject" name="subject" class="form-control">
                         <option value="">Select Subject</option>
                         <?php foreach ($subjects as $subject): ?>
                             <option value="<?php echo e($subject['subject_id']); ?>" <?= e($course['subject_id']) == $subject['subject_id'] ? 'selected' : '' ?>><?php echo e($subject['subject_title']); ?></option>
@@ -49,7 +52,7 @@
 
                 <div class="form-group">
                     <label for="courseGrade" class="form-label">Grade*</label>
-                    <select id="courseGrade" name="grade" class="form-control" required>
+                    <select id="courseGrade" name="grade" class="form-control">
                         <option value="">Select Grade</option>
                         <?php foreach ($grades as $grade): ?>
                             <option value="<?php echo e($grade['grade_id']); ?>" <?= e($course['grade_id']) == $grade['grade_id'] ? 'selected' : '' ?>>Grade <?php echo e($grade['grade_name']); ?></option>
@@ -82,7 +85,7 @@
                 </div>
                 <div class="form-group">
                     <label for="courseDay" class="form-label">Day*</label>
-                    <select id="courseDay" name="courseday" class="form-control" required>
+                    <select id="courseDay" name="courseday" class="form-control">
                         <option value="">Select Day</option>
                         <option value="Sunday" <?= e($course['day']) == "Sunday" ? 'selected' : '' ?>>Sunday</option>
                         <option value="Monday" <?= e($course['day']) == "Monday" ? 'selected' : '' ?>>Monday</option>
