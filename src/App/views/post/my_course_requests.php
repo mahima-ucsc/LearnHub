@@ -77,7 +77,9 @@
                             <span><?php echo e($request['author']); ?></span>
                         </div>
                         <div class="request-status">
-                            <!-- <span class="time-posted">Posted 2 days ago</span> -->
+                            <span class="status-tag <?php echo strtolower($request['status']); ?>">
+                                <?php echo e(ucfirst($request['status'])); ?>
+                            </span>
                             <span class="time-posted">
                                 <?= e(
                                     $request["updated_date"] === $request["created_date"] ?
@@ -85,7 +87,6 @@
                                         "Edited on " . formatDate($request["updated_date"], 'F j, Y')
                                 ) ?>
                             </span>
-
                         </div>
                     </div>
                     <h4 class="request-title"><?php echo e($request['title']); ?></h4>
@@ -148,5 +149,25 @@
     </div>
 </div>
 
+<style>
+    .status-tag {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .status-tag.approved {
+        background-color: #e3fcef;
+        color: #0ca678;
+    }
+
+    .status-tag.pending {
+        background-color: #fff3bf;
+        color: #e6b000;
+    }
+</style>
 
 <?php include $this->resolve("partials/_footer.php"); ?>
