@@ -17,13 +17,19 @@
                     placeholder="e.g., Advanced Web Development with React"
                     value="<?= e($course['title']); ?>"
                     required>
-                <div class="error-message" id="courseTitleError">Please enter a course title</div>
+                <?php if (array_key_exists('courseTitle', $errors)) : ?>
+                    <div class="error-message" id="courseTitleError" style="display: block;">
+                        Please enter a course title
+                    </div>
+                <?php endif; ?>
             </div>
 
             <div class="form-group">
                 <label for="courseDescription" class="form-label">Course Description*</label>
                 <textarea name="courseDescription" id="courseDescription" class="form-control textarea-control" placeholder="Describe what students will learn in your course..." required><?= e($course['description']); ?></textarea>
-                <div class="error-message" id="courseDescriptionError">Please enter a course description</div>
+                <?php if (array_key_exists('courseDescription', $errors)) : ?>
+                    <div class="error-message" id="courseDescriptionError">Please enter a course description</div>
+                <?php endif; ?>
             </div>
 
             <div class="form-row">
@@ -36,7 +42,9 @@
                         <?php endforeach; ?>
                         <option value="-1">Other</option>
                     </select>
-                    <div class="error-message" id="courseSubjectError">Please select a subject</div>
+                    <?php if (array_key_exists('subject', $errors)) : ?>
+                        <div class="error-message" id="courseSubjectError">Please select a subject</div>
+                    <?php endif; ?>
                 </div>
 
                 <div class="form-group">
@@ -48,19 +56,29 @@
                         <?php endforeach; ?>
                         <option value="-1">Other</option>
                     </select>
-                    <div class="error-message" id="courseGradeError">Please select a grade</div>
+                    <?php if (array_key_exists('grade', $errors)) : ?>
+                        <div class="error-message" id="courseGradeError">Please select a grade</div>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
                     <label for="courseStartTime" class="form-label">Start Time*</label>
                     <input type="time" name="courseStartTime" id="courseStartTime" class="form-control" value="<?= e($course['end_time']); ?>">
-                    <div class="error-message" id="courseStartTimeError">Please enter a start time</div>
+                    <?php if (array_key_exists('courseStartTime', $errors)) : ?>
+                        <div class="error-message">
+                            <?php echo e($errors['courseStartTime'][0]); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <div class="form-group">
                     <label for="courseEndTime" class="form-label">End Time*</label>
                     <input type="time" name="courseEndTime" id="courseEndTime" class="form-control" value="<?= e($course['end_time']); ?>">
-                    <div class="error-message" id="courseEndTimeError">Please enter a end time</div>
+                    <?php if (array_key_exists('courseEndTime', $errors)) : ?>
+                        <div class="error-message">
+                            <?php echo e($errors['courseEndTime'][0]); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <div class="form-group">
                     <label for="courseDay" class="form-label">Day*</label>
@@ -74,13 +92,21 @@
                         <option value="Friday" <?= e($course['day']) == "Friday" ? 'selected' : '' ?>>Friday</option>
                         <option value="Saturday" <?= e($course['day']) == "Saturday" ? 'selected' : '' ?>>Saturday</option>
                     </select>
-                    <div class="error-message" id="courseDayError">Please enter a day</div>
+                    <?php if (array_key_exists('courseday', $errors)) : ?>
+
+                        <div class="error-message" id="courseDayError">
+                            <?php echo e($errors['courseEndTime'][0]); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="form-group">
                 <label for="location" class="form-label">Location*</label>
                 <input type="text" name="location" id="location" class="form-control" value="<?= e($course['location']); ?>">
-                <div class="error-message" id="locationError">Please enter a location</div>
+                <?php if (array_key_exists('courseStartTime', $errors)) : ?>
+
+                    <div class="error-message" id="locationError">Please enter a location</div>
+                <?php endif; ?>
             </div>
             <?php if ($course['billing_type'] == 'onetime'): ?>
                 <div class="form-group">
@@ -92,8 +118,14 @@
             <div class="form-group">
                 <label for="courseThumbnail" class="form-label">Change Course Thumbnail Image*</label>
                 <input type="file" id="courseThumbnail" name="courseThumbnail" class="form-control" accept="image/*">
-                <p class="hint-text">Upload a high-quality image to attract students. Recommended size: 1280x720px</p>
-                <div class="error-message" id="courseThumbnailError">Please upload a course thumbnail</div>
+                <p class="hint-text">Upload a high-quality image to attract students.</p>
+
+                <?php if (array_key_exists('img', $errors)) : ?>
+
+                    <div class="error-message" id="courseThumbnailError">
+                        <?php echo e($errors['img'][0]); ?>
+                    </div>
+                <?php endif; ?>
             </div>
             <div class="form-actions">
                 <input type="hidden" name="_METHOD" value="PUT" />
@@ -105,60 +137,3 @@
         </div>
     </form>
 </section>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Form validation for Basic Course Information
-        function validateBasicInfo() {
-            let isValid = true;
-
-            // Validate basic course info
-            const requiredFields = [
-                'courseTitle',
-                'courseDescription',
-                'courseSubject',
-                'courseGrade',
-                'courseStartTime',
-                'courseEndTime',
-                'courseDay',
-                'location',
-                'courseThumbnail'
-            ];
-
-            requiredFields.forEach(fieldId => {
-                const field = document.getElementById(fieldId);
-                const errorElement = document.getElementById(fieldId + 'Error');
-
-                if (!field.value) {
-                    errorElement.style.display = 'block';
-                    field.classList.add('error');
-                    isValid = false;
-                } else {
-                    errorElement.style.display = 'none';
-                    field.classList.remove('error');
-                }
-            });
-
-            return isValid;
-        }
-
-        // You can call this function as part of a larger form validation
-        // For example, inside a form submit event listener:
-
-        const form = document.getElementById('createCourseForm');
-        if (form) {
-            form.addEventListener('submit', function(e) {
-                if (!validateBasicInfo()) {
-                    e.preventDefault();
-                    // Scroll to first error
-                    const firstError = document.querySelector('.form-control.error');
-                    if (firstError) {
-                        firstError.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'center'
-                        });
-                    }
-                }
-            });
-        }
-    });
-</script>
