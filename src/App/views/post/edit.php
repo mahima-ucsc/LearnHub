@@ -252,14 +252,22 @@
                     <input type="text" id="postTitle" name="title" class="form-control"
                         placeholder="Enter a descriptive title" required maxlength="100"
                         value="<?php echo e($request['title']); ?>">
-                    <div class="error-message" id="postTitleError">Please enter a title</div>
+                    <div class="error-message" id="postTitleError">
+                        <?php if (isset($errors['title'])): ?>
+                            <?php echo e($errors['title'][0]); ?>
+                        <?php endif; ?>
+                    </div>
                 </div>
 
                 <div class="form-group">
                     <label for="postDescription" class="form-label">Description *</label>
                     <textarea id="postDescription" name="description" class="form-control textarea-control"
                         placeholder="Provide a detailed description of your post" required rows="6"><?php echo e($request['description']); ?></textarea>
-                    <div class="error-message" id="postDescriptionError">Please enter a description</div>
+                    <div class="error-message" id="postDescriptionError">
+                        <?php if (isset($errors['description'])): ?>
+                            <?php echo e($errors['description'][0]); ?>
+                        <?php endif; ?>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -273,7 +281,11 @@
                         <?php endforeach; ?>
                         <option value="-1">Other</option>
                     </select>
-                    <div class="error-message" id="subjectError">Please select a subject</div>
+                    <div class="error-message" id="subjectError">
+                        <?php if (isset($errors['subject'])): ?>
+                            <?php echo e($errors['subject'][0]); ?>
+                        <?php endif; ?>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -287,14 +299,22 @@
                         <?php endforeach; ?>
                         <option value="-1">All Levels</option>
                     </select>
-                    <div class="error-message" id="gradeError">Please select a grade level</div>
+                    <div class="error-message" id="gradeError">
+                        <?php if (isset($errors['grade'])): ?>
+                            <?php echo e($errors['grade'][0]); ?>
+                        <?php endif; ?>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="postTitle" class="form-label">Location *</label>
                     <input type="text" id="location" name="location" class="form-control"
                         placeholder="Enter a location" required
                         value="<?php echo e($request['location']); ?>">
-                    <div class="error-message" id="locationError">Please enter a location</div>
+                    <div class="error-message" id="locationError">
+                        <?php if (isset($errors['location'])): ?>
+                            <?php echo e($errors['location'][0]); ?>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
 
