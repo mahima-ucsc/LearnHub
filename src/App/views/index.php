@@ -1547,16 +1547,6 @@
                                     <div class="ad-media">
                                         <div class="ad-badge">Limited Time Offer</div>
                                         <img src="/storage/uploads/advertisement/thumbnail/<?php echo e($ad['thumbnail_url']); ?>" alt="Premium Course">
-                                        <!-- <div class="ad-overlay">
-                                            <div class="timer-container">
-                                                <div class="timer-label">Offer ends in:</div>
-                                                <div class="countdown-timer" data-expires="2025-05-15">
-                                                    <span class="days">28</span>d
-                                                    <span class="hours">14</span>h
-                                                    <span class="minutes">22</span>m
-                                                </div>
-                                            </div>
-                                        </div> -->
                                     </div>
                                     <div class="ad-details">
                                         <div class="partner-info">
@@ -1715,15 +1705,6 @@
                                 <span><?php echo e($request['author']); ?></span>
                             </div>
                             <div class="request-status">
-                                <!-- <span class="time-posted">Posted 2 days ago</span> -->
-                                <span class="time-posted">
-                                    <?= e(
-                                        $request["updated_date"] === $request["created_date"] ?
-                                            "Posted on " . formatDate($request["created_date"], 'F j, Y') :
-                                            "Edited on " . formatDate($request["updated_date"], 'F j, Y')
-                                    ) ?>
-                                </span>
-
                             </div>
                         </div>
                         <h4 class="request-title"><?php echo e($request['title']); ?></h4>
@@ -1779,7 +1760,7 @@
                     <img src="/assets/images/user_placeholder.jpg" alt="Emily Johnson">
                 </div>
                 <div class="testimonial-info">
-                    <div class="testimonial-name">Emily Johnson</div>
+                    <div class="testimonial-name">Amal Perera</div>
                     <div class="testimonial-course">Web Development Bootcamp</div>
                     <div class="testimonial-rating">
                         <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
@@ -1792,10 +1773,10 @@
         <div class="testimonial-card">
             <div class="testimonial-header">
                 <div class="testimonial-avatar">
-                    <img src="/assets/images/user_placeholder.jpg" alt="Michael Chen">
+                    <img src="/assets/images/user_placeholder.jpg" alt="Saman Kumara">
                 </div>
                 <div class="testimonial-info">
-                    <div class="testimonial-name">Michael Chen</div>
+                    <div class="testimonial-name">Saman Kumara</div>
                     <div class="testimonial-course">Data Science Masterclass</div>
                     <div class="testimonial-rating">
                         <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
@@ -1808,10 +1789,10 @@
         <div class="testimonial-card">
             <div class="testimonial-header">
                 <div class="testimonial-avatar">
-                    <img src="/assets/images/user_placeholder.jpg" alt="Sarah Williams">
+                    <img src="/assets/images/user_placeholder.jpg" alt="Isuru Naveen">
                 </div>
                 <div class="testimonial-info">
-                    <div class="testimonial-name">Sarah Williams</div>
+                    <div class="testimonial-name">Isuru Naveen</div>
                     <div class="testimonial-course">UI/UX Design</div>
                     <div class="testimonial-rating">
                         <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
