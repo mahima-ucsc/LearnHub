@@ -224,11 +224,6 @@ class ResourceService
             $params['term'] = "%{$searchTerm}%";
         }
 
-        if ($subject !== 'all') {
-            $whereConditions[] = "sr.subject_id = :subject";
-            $params["subject"] = $subject;
-        }
-
         if ($price !== 'all') {
             $whereConditions[] = "sr.price = :price";
             $params["price"] = $price;
