@@ -149,6 +149,7 @@ class AuthController
 
     public function updateTutorProfile()
     {
+        $this->validatorService->validateUpdateTutorProfileForm($_POST);
         $this->userService->updateTutorProfile($_POST);
         redirectTo($_SERVER['HTTP_REFERER']);
     }

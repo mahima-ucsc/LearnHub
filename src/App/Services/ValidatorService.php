@@ -271,4 +271,18 @@ class ValidatorService
         ];
         $this->validator->validate($formData, $rules);
     }
+
+    public function validateUpdateTutorProfileForm($formData)
+    {
+        // dd($formData);
+        $rules = ['title' => 'required'];
+        // if (!empty($formData['educations'])) {
+        //     foreach ($formData['educations'] as $education) {
+        //         if ($education['start_date'] > $education['end_date']) {
+        //             $rules = ['education' . $education['education_id'] => 'dateCompare'];
+        //         }
+        //     }
+        // }
+        $this->validator->validate($formData, $rules);
+    }
 }

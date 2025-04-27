@@ -268,6 +268,7 @@ class PageController
             error_log("Failed to request withdrawal: " . $e->getMessage());
             redirectTo("/server-error");
         }
+        redirectTo($_SERVER['HTTP_REFERER']);
     }
     public function courseManagment()
     {
