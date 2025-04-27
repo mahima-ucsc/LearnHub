@@ -72,8 +72,7 @@
         </h1>
 
         <div id="alertMessage" class="alert"></div>
-
-        <form id="announcementForm" action="/announcements/edit/<?= $announcement_id ?>" method="post" enctype="multipart/form-data">
+        <form id="announcementForm" action="/courses/<?= $course_id ?>/announcements/edit/<?= $announcement_id ?>" method="post" enctype="multipart/form-data">
             <input type="hidden" name="announcement_id" value="<?= $announcement_id ?>">
             <div class="form-group">
                 <label for="title"><i class="fas fa-heading"></i> Announcement Title</label>

@@ -31,14 +31,16 @@
                         Security
                     </a>
                 </li>
-                <li>
-                    <a href="#bio">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="menu-icon">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                        </svg>
-                        Profile
-                    </a>
-                </li>
+                <?php if ($_SESSION['user_role'] == "teacher"): ?>
+                    <li>
+                        <a href="#bio">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="menu-icon">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                            </svg>
+                            Profile
+                        </a>
+                    </li>
+                <?php endif; ?>
             </ul>
         </div>
 
@@ -154,174 +156,178 @@
                     </div>
                 </form>
             </div>
-            <div id="bio" class="settings-section">
-                <div class="form-header">
-                    <h1>Profile Settings</h1>
-                </div>
 
-                <form id="tutorProfileForm" action="/api/tutor/profile_update" method="POST">
-                    <input type="hidden" id="tutorId" name="tutor_id" value="<?php echo $_SESSION['user'] ?>">
-
-                    <!-- Basic Information -->
-                    <div class="form-card">
-                        <div class="form-section">
-                            <h2>Basic Information</h2>
-
-                            <div class="form-group">
-                                <label for="title">Professional Title</label>
-                                <input type="text" id="title" name="title" placeholder="e.g. Mathematics & Computer Science Tutor" value="<?php echo isset($tutorBasic['title']) ? htmlspecialchars($tutorBasic['title']) : ''; ?>">
-                                <p class="hint-text">A short description of your specialty</p>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="bio">Bio</label>
-                                <textarea id="bio" name="bio" rows="5" placeholder="Introduce yourself, your experience, and your teaching approach"><?php echo isset($tutorBasic['bio']) ? htmlspecialchars($tutorBasic['bio']) : ''; ?></textarea>
-                                <p class="hint-text">This will be displayed on your profile page</p>
-                            </div>
-                        </div>
+            <!-- profile info -->
+            <?php if ($_SESSION['user_role'] == 'teacher'): ?>
+                <div id="bio" class="settings-section">
+                    <div class="form-header">
+                        <h1>Profile Settings</h1>
                     </div>
 
-                    <!-- Subjects & Experience -->
-                    <div class="form-card">
-                        <div class="form-section">
-                            <h2>Subjects & Experience</h2>
+                    <form id="tutorProfileForm" action="/api/tutor/profile_update" method="POST">
+                        <input type="hidden" id="tutorId" name="tutor_id" value="<?php echo $_SESSION['user'] ?>">
 
-                            <div id="subjectEntries">
-                                <?php $indexforsubject = 0 ?>
-                                <?php foreach ($tutorSubjects as $tutorSubject): ?>
-                                    <input type="hidden" name="subjects[<?php echo $indexforsubject ?>][subject_id]" value="<?php echo $tutorSubject['subject_id'] ?>">
-                                    <div class="subject-entry">
-                                        <div class="entry-header">
-                                            <h3>Subject #<?php echo $indexforsubject + 1 ?></h3>
-                                            <button type="button" class="btn-remove" onclick="showModal('/tutor/delete_experience/<?= $_SESSION['user'] . '/' . $tutorSubject['subject_id'] ?>')">Remove</button>
-                                        </div>
-                                        <div class="form-row">
-                                            <div class="form-group">
-                                                <label>Subject</label>
-                                                <select name="subjects[<?php echo $indexforsubject ?>][<?php echo $tutorSubject['subject_id'] ?>]">
-                                                    <?php
-                                                    foreach ($subjects as $subject) {
-                                                        if ($subject['subject_id'] == $tutorSubject['subject_id']) {
-                                                            echo "<option value='" . $subject['subject_id'] . "' selected>" . htmlspecialchars($subject['subject_title']) . "</option>";
+                        <!-- Basic Information -->
+                        <div class="form-card">
+                            <div class="form-section">
+                                <h2>Basic Information</h2>
+
+                                <div class="form-group">
+                                    <label for="title">Professional Title</label>
+                                    <input type="text" id="title" name="title" placeholder="e.g. Mathematics & Computer Science Tutor" value="<?php echo isset($tutorBasic['title']) ? htmlspecialchars($tutorBasic['title']) : ''; ?>" required>
+                                    <p class="hint-text">A short description of your specialty</p>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="bio">Bio</label>
+                                    <textarea id="bio" name="bio" rows="5" placeholder="Introduce yourself, your experience, and your teaching approach" required><?php echo isset($tutorBasic['bio']) ? htmlspecialchars($tutorBasic['bio']) : ''; ?></textarea>
+                                    <p class="hint-text">This will be displayed on your profile page</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Subjects & Experience -->
+                        <div class="form-card">
+                            <div class="form-section">
+                                <h2>Subjects & Experience</h2>
+
+                                <div id="subjectEntries">
+                                    <?php $indexforsubject = 0 ?>
+                                    <?php foreach ($tutorSubjects as $tutorSubject): ?>
+                                        <input type="hidden" name="subjects[<?php echo $indexforsubject ?>][subject_id]" value="<?php echo $tutorSubject['subject_id'] ?>">
+                                        <div class="subject-entry">
+                                            <div class="entry-header">
+                                                <h3>Subject #<?php echo $indexforsubject + 1 ?></h3>
+                                                <button type="button" class="btn-remove" onclick="showModal('/tutor/delete_experience/<?= $_SESSION['user'] . '/' . $tutorSubject['subject_id'] ?>')">Remove</button>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group">
+                                                    <label>Subject</label>
+                                                    <select name="subjects[<?php echo $indexforsubject ?>][<?php echo $tutorSubject['subject_id'] ?>]" required>
+                                                        <?php
+                                                        foreach ($subjects as $subject) {
+                                                            if ($subject['subject_id'] == $tutorSubject['subject_id']) {
+                                                                echo "<option value='" . $subject['subject_id'] . "' selected>" . htmlspecialchars($subject['subject_title']) . "</option>";
+                                                            }
                                                         }
-                                                    }
-                                                    ?>
-                                                    <?php
-                                                    foreach ($subjects as $subject) {
-                                                        echo "<option value='" . $subject['subject_id'] . "'>" . $subject['subject_title'] . "</option>";
-                                                    }
-                                                    ?>
-                                                </select>
+                                                        ?>
+                                                        <?php
+                                                        foreach ($subjects as $subject) {
+                                                            echo "<option value='" . $subject['subject_id'] . "'>" . $subject['subject_title'] . "</option>";
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Years of Experience</label>
+                                                    <input type="number" name="subjects[<?php echo $indexforsubject ?>][years_experience]" value="<?php echo isset($tutorSubject['years_experience']) ? htmlspecialchars($tutorSubject['years_experience']) : ''; ?>" min="0" max="100" required>
+                                                </div>
+                                                <input type="hidden" name="subjects[<?php echo $indexforsubject ?>][is_new]" value="0" required>
                                             </div>
-                                            <div class="form-group">
-                                                <label>Years of Experience</label>
-                                                <input type="number" name="subjects[<?php echo $indexforsubject ?>][years_experience]" value="<?php echo isset($tutorSubject['years_experience']) ? htmlspecialchars($tutorSubject['years_experience']) : ''; ?>" min="0" max="100">
-                                            </div>
-                                            <input type="hidden" name="subjects[<?php echo $indexforsubject ?>][is_new]" value="0">
                                         </div>
-                                    </div>
-                                    <?php $indexforsubject++ ?>
-                                <?php endforeach; ?>
+                                        <?php $indexforsubject++ ?>
+                                    <?php endforeach; ?>
+                                </div>
+
+                                <button type="button" id="addSubject" class="btn-add">+ Add Another Subject</button>
                             </div>
-
-                            <button type="button" id="addSubject" class="btn-add">+ Add Another Subject</button>
                         </div>
-                    </div>
 
-                    <!-- Education -->
-                    <div class="form-card">
-                        <div class="form-section">
-                            <h2>Education</h2>
+                        <!-- Education -->
+                        <div class="form-card">
+                            <div class="form-section">
+                                <h2>Education</h2>
 
-                            <div id="educationEntries">
-                                <?php $indexforeducation = 0 ?>
-                                <?php foreach ($tutorEducations as $tutorEducation): ?>
-                                    <input type="hidden" name="educations[<?php echo $indexforeducation ?>][education_id]" value="<?php echo $tutorEducation['education_id'] ?>">
-                                    <div class="education-entry">
-                                        <div class="entry-header">
-                                            <h3>Education #<?php echo $indexforeducation + 1 ?> </h3>
-                                            <button type="button" class="btn-remove" onclick="showModal('/tutor/delete_education/<?= $tutorEducation['education_id'] ?>')">Remove</button>
-                                        </div>
-                                        <div class="form-row">
-                                            <div class="form-group">
-                                                <label>Degree</label>
-                                                <input type="text" name="educations[<?php echo $indexforeducation ?>][degree]" placeholder="e.g. Ph.D., M.S., B.S." value="<?php echo isset($tutorEducation['degree']) ? $tutorEducation['degree'] : '' ?>">
+                                <div id="educationEntries">
+                                    <?php $indexforeducation = 0 ?>
+                                    <?php foreach ($tutorEducations as $tutorEducation): ?>
+                                        <input type="hidden" name="educations[<?php echo $indexforeducation ?>][education_id]" value="<?php echo $tutorEducation['education_id'] ?>" required>
+                                        <div class="education-entry">
+                                            <div class="entry-header">
+                                                <h3>Education #<?php echo $indexforeducation + 1 ?> </h3>
+                                                <button type="button" class="btn-remove" onclick="showModal('/tutor/delete_education/<?= $tutorEducation['education_id'] ?>')">Remove</button>
                                             </div>
-                                            <div class="form-group">
-                                                <label>Field of Study</label>
-                                                <input type="text" name="educations[<?php echo $indexforeducation ?>][field_of_study]" placeholder="e.g. Applied Mathematics" value="<?php echo isset($tutorEducation['field_of_study']) ? $tutorEducation['field_of_study'] : '' ?>">
-                                            </div>
-                                        </div>
-                                        <div class=" form-group">
-                                            <label>Institution</label>
-                                            <input type="text" name="educations[<?php echo $indexforeducation ?>][institution]" placeholder="e.g. Massachusetts Institute of Technology" value="<?php echo isset($tutorEducation['institution']) ? $tutorEducation['institution'] : '' ?>">
-                                        </div>
-                                        <div class=" form-row">
-                                            <div class="form-group">
-                                                <label>Start Date</label>
-                                                <input type="date" name="educations[<?php echo $indexforeducation ?>][start_date]" value="<?php echo isset($tutorEducation['start_date']) ? $tutorEducation['start_date'] : '' ?>">
+                                            <div class="form-row">
+                                                <div class="form-group">
+                                                    <label>Degree</label>
+                                                    <input type="text" name="educations[<?php echo $indexforeducation ?>][degree]" placeholder="e.g. Ph.D., M.S., B.S." value="<?php echo isset($tutorEducation['degree']) ? $tutorEducation['degree'] : '' ?>" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Field of Study</label>
+                                                    <input type="text" name="educations[<?php echo $indexforeducation ?>][field_of_study]" placeholder="e.g. Applied Mathematics" value="<?php echo isset($tutorEducation['field_of_study']) ? $tutorEducation['field_of_study'] : '' ?>" required>
+                                                </div>
                                             </div>
                                             <div class=" form-group">
-                                                <label>End Date</label>
-                                                <input type="date" name="educations[<?php echo $indexforeducation  ?>][end_date]" value="<?php echo isset($tutorEducation['end_date']) ? $tutorEducation['end_date'] : '' ?>">
+                                                <label>Institution</label>
+                                                <input type="text" name="educations[<?php echo $indexforeducation ?>][institution]" placeholder="e.g. Massachusetts Institute of Technology" value="<?php echo isset($tutorEducation['institution']) ? $tutorEducation['institution'] : '' ?>" required>
                                             </div>
+                                            <div class=" form-row">
+                                                <div class="form-group">
+                                                    <label>Start Date</label>
+                                                    <input type="date" name="educations[<?php echo $indexforeducation ?>][start_date]" value="<?php echo isset($tutorEducation['start_date']) ? $tutorEducation['start_date'] : '' ?>" required>
+                                                </div>
+                                                <div class=" form-group">
+                                                    <label>End Date</label>
+                                                    <input type="date" name="educations[<?php echo $indexforeducation  ?>][end_date]" value="<?php echo isset($tutorEducation['end_date']) ? $tutorEducation['end_date'] : '' ?>" required>
+                                                </div>
+                                            </div>
+                                            <input type="hidden" name="educations[<?php echo $indexforeducation ?>][is_new]" value="0" required>
                                         </div>
-                                        <input type="hidden" name="educations[<?php echo $indexforeducation ?>][is_new]" value="0">
-                                    </div>
-                                    <?php $indexforeducation++ ?>
-                                <?php endforeach; ?>
+                                        <?php $indexforeducation++ ?>
+                                    <?php endforeach; ?>
+                                </div>
+
+                                <button type=" button" id="addEducation" class="btn-add">+ Add Another Education</button>
                             </div>
-
-                            <button type=" button" id="addEducation" class="btn-add">+ Add Another Education</button>
                         </div>
-                    </div>
 
-                    <!-- Availability -->
-                    <div class="form-card">
-                        <div class="form-section">
-                            <h2>Availability</h2>
+                        <!-- Availability -->
+                        <div class="form-card">
+                            <div class="form-section">
+                                <h2>Availability</h2>
 
-                            <div id="availabilityEntries">
-                                <?php $indexfortimeslote = 0 ?>
-                                <?php foreach ($tutorAvailablities as $tutorAvailablity): ?>
-                                    <input type="hidden" name="availability[<?php echo $indexfortimeslote ?>][availability_id]" value="<?php echo $tutorAvailablity['availability_id'] ?>">
-                                    <div class="availability-row">
-                                        <div class="availability-day">
-                                            <select name="availability[<?php echo $indexfortimeslote ?>][day_of_week]">
-                                                <option value="0">Sunday</option>
-                                                <option value="1">Monday</option>
-                                                <option value="2">Tuesday</option>
-                                                <option value="3">Wednesday</option>
-                                                <option value="4">Thursday</option>
-                                                <option value="5">Friday</option>
-                                                <option value="6">Saturday</option>
-                                            </select>
+                                <div id="availabilityEntries">
+                                    <?php $indexfortimeslote = 0 ?>
+                                    <?php foreach ($tutorAvailablities as $tutorAvailablity): ?>
+                                        <input type="hidden" name="availability[<?php echo $indexfortimeslote ?>][availability_id]" value="<?php echo $tutorAvailablity['availability_id'] ?>" required>
+                                        <div class="availability-row">
+                                            <div class="availability-day">
+                                                <select name="availability[<?php echo $indexfortimeslote ?>][day_of_week]" required>
+                                                    <option value="0">Sunday</option>
+                                                    <option value="1">Monday</option>
+                                                    <option value="2">Tuesday</option>
+                                                    <option value="3">Wednesday</option>
+                                                    <option value="4">Thursday</option>
+                                                    <option value="5">Friday</option>
+                                                    <option value="6">Saturday</option>
+                                                </select>
+                                            </div>
+                                            <div class="availability-time">
+                                                <input type="time" name="availability[<?php echo $indexfortimeslote ?>][start_time]" value="<?php echo isset($tutorAvailablity['start_time']) ? $tutorAvailablity['start_time'] : '' ?>" required>
+                                            </div>
+                                            <div class="availability-time">
+                                                <input type="time" name="availability[<?php echo $indexfortimeslote ?>][end_time]" value="<?php echo isset($tutorAvailablity['end_time']) ? $tutorAvailablity['end_time'] : '' ?>" required>
+                                            </div>
+                                            <div>
+                                                <input type="checkbox" id="recurring<?php echo $indexfortimeslote ?>" name="availability[<?php echo $indexfortimeslote ?>][is_recurring]" checked>
+                                                <label for="recurring<?php echo $indexfortimeslote ?>">Recurring</label>
+                                            </div>
+                                            <input type="hidden" name="availability[<?php echo $indexfortimeslote ?>][is_new]" value="0">
+                                            <button type="button" class="btn-remove" onclick="showModal('/tutor/delete_availability/<?= $tutorAvailablity['availability_id'] ?>')">Remove</button>
                                         </div>
-                                        <div class="availability-time">
-                                            <input type="time" name="availability[<?php echo $indexfortimeslote ?>][start_time]" value="<?php echo isset($tutorAvailablity['start_time']) ? $tutorAvailablity['start_time'] : '' ?>">
-                                        </div>
-                                        <div class="availability-time">
-                                            <input type="time" name="availability[<?php echo $indexfortimeslote ?>][end_time]" value="<?php echo isset($tutorAvailablity['end_time']) ? $tutorAvailablity['end_time'] : '' ?>">
-                                        </div>
-                                        <div>
-                                            <input type="checkbox" id="recurring<?php echo $indexfortimeslote ?>" name="availability[<?php echo $indexfortimeslote ?>][is_recurring]" checked>
-                                            <label for="recurring<?php echo $indexfortimeslote ?>">Recurring</label>
-                                        </div>
-                                        <input type="hidden" name="availability[<?php echo $indexfortimeslote ?>][is_new]" value="0">
-                                        <button type="button" class="btn-remove" onclick="showModal('/tutor/delete_availability/<?= $tutorAvailablity['availability_id'] ?>')">Remove</button>
-                                    </div>
-                                    <?php $indexfortimeslote++ ?>
-                                <?php endforeach; ?>
+                                        <?php $indexfortimeslote++ ?>
+                                    <?php endforeach; ?>
+                                </div>
+
+                                <button type="button" id="addAvailability" class="btn-add">+ Add Another Time Slot</button>
                             </div>
-
-                            <button type="button" id="addAvailability" class="btn-add">+ Add Another Time Slot</button>
                         </div>
-                    </div>
-                    <div class="bottom">
-                        <button type="submit" class="btn-submit">Save Profile</button>
-                    </div>
-                </form>
-            </div>
+                        <div class="bottom">
+                            <button type="submit" class="btn-submit">Save Profile</button>
+                        </div>
+                    </form>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -347,7 +353,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Subject</label>
-                        <select name="subjects[${count}][subject_id]">
+                        <select name="subjects[${count}][subject_id]" required>
                             <option value="">Select a subject...</option>
                             <option value="1">Mathematics</option>
                             <?php
@@ -359,7 +365,7 @@
                     </div>
                     <div class="form-group">
                         <label>Years of Experience</label>
-                        <input type="number" name="subjects[${count}][years_experience]" min="0" max="50">
+                        <input type="number" name="subjects[${count}][years_experience]" min="0" max="50" required>
                     </div>
                     <input type="hidden" name="subjects[${count}][is_new]" value="1">
                 </div>
@@ -386,25 +392,25 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Degree</label>
-                        <input type="text" name="educations[${count}][degree]" placeholder="e.g. Ph.D., M.S., B.S.">
+                        <input type="text" name="educations[${count}][degree]" placeholder="e.g. Ph.D., M.S., B.S." required>
                     </div>
                     <div class="form-group">
                         <label>Field of Study</label>
-                        <input type="text" name="educations[${count}][field_of_study]" placeholder="e.g. Applied Mathematics">
+                        <input type="text" name="educations[${count}][field_of_study]" placeholder="e.g. Applied Mathematics" required>
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Institution</label>
-                    <input type="text" name="educations[${count}][institution]" placeholder="e.g. Massachusetts Institute of Technology">
+                    <input type="text" name="educations[${count}][institution]" placeholder="e.g. Massachusetts Institute of Technology" required>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label>Start Date</label>
-                        <input type="date" name="educations[${count}][start_date]">
+                        <input type="date" name="educations[${count}][start_date]" required>
                     </div>
                     <div class="form-group">
                         <label>End Date</label>
-                        <input type="date" name="educations[${count}][end_date]">
+                        <input type="date" name="educations[${count}][end_date]" required>
                     </div>
                 </div>
                 <input type="hidden" name="educations[${count}][is_new]" value="1">
@@ -425,7 +431,8 @@
             newEntry.className = "availability-row";
             newEntry.innerHTML = `
                 <div class="availability-day">
-                    <select name="availability[${count}][day_of_week]">
+                    <select name="availability[${count}][day_of_week]" required>
+                        <option value="">Select Day</option>
                         <option value="0">Sunday</option>
                         <option value="1">Monday</option>
                         <option value="2">Tuesday</option>
@@ -436,10 +443,10 @@
                     </select>
                 </div>
                 <div class="availability-time">
-                    <input type="time" name="availability[${count}][start_time]" value="15:00">
+                    <input type="time" name="availability[${count}][start_time]" value="" required>
                 </div>
                 <div class="availability-time">
-                    <input type="time" name="availability[${count}][end_time]" value="20:00">
+                    <input type="time" name="availability[${count}][end_time]" value="" required>
                 </div>
                 <div>
                     <input type="checkbox" id="recurring${count}" name="availability[${count}][is_recurring]" checked>

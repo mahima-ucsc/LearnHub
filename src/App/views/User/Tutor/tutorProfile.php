@@ -14,7 +14,7 @@
                     <?php if ($tutorDetails['profile_picture_url']): ?>
                         <img class="avatar" src="<?php echo e($tutorDetails['profile_picture_url']); ?>" alt="<?php echo e($tutorDetails['first_name'] . ' ' . $tutorDetails['last_name']); ?>">
                     <?php else: ?>
-                        <img class="avatar" src="/assets/images/user.jpeg" alt="<?php echo e($tutorDetails['first_name'] . ' ' . $tutorDetails['last_name']); ?>">
+                        <img class="avatar" src="/assets/images/user_placeholder.jpg" alt="<?php echo e($tutorDetails['first_name'] . ' ' . $tutorDetails['last_name']); ?>">
                     <?php endif; ?>
                 </div>
 
@@ -261,10 +261,10 @@
                                 <!-- <?php echo e($course['price']); ?> -->
                                 <?php if (isset($course['billing_type'])): ?>
                                     <span>
-                                        <?php echo $course['billing_type'] === 'onetime' ? 'Rs.' . e($course['price']) : '<i class="fas fa-money-bill" style="color: var(--success);"></i> Monthly payment'; ?>
+                                        <?php echo $course['billing_type'] == 'onetime' ? 'Rs.' . e($course['price']) : '<i class="fas fa-money-bill" style="color: var(--success);"></i> Monthly payment'; ?>
                                     </span>
                                     <span class="onetime-payment-tag">
-                                        <?php echo $course['billing_type'] === 'onetime' ? 'onetime payment' : ''; ?>
+                                        <?php echo $course['billing_type'] == 'onetime' ? 'onetime payment' : ''; ?>
                                     </span>
                                 <?php endif; ?>
                             </div>
@@ -347,7 +347,7 @@
                     <div class="review-header">
                         <!-- avatar -->
                         <img src="<?= isset($review['profile_picture_url'])
-                                        ? $user['profile_picture_url'] :
+                                        ? isset($user['profile_picture_url']) :
                                         "/assets/images/user_placeholder.jpg" ?>" alt=" <?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
                         <!-- since when-->
                         <div class="review-meta">
@@ -381,7 +381,7 @@
                         </div>
                         <!-- edit and delete menue -->
                         <?php
-                        if ($review['user_id'] === $_SESSION['user'] || $_SESSION['user_role'] === "admin") : ?>
+                        if ($review['user_id'] == $_SESSION['user'] || $_SESSION['user_role'] == "admin") : ?>
                             <div class="cart-menu">
                                 <div class="cart-btn" onclick="toggleCartMenu(this)">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -456,7 +456,7 @@
     // Toggle the display of the cart options
     function toggleCartMenu(button) {
         const cartOptions = button.nextElementSibling;
-        cartOptions.style.display = cartOptions.style.display === 'block' ? 'none' : 'block';
+        cartOptions.style.display = cartOptions.style.display == 'block' ? 'none' : 'block';
 
         // Close the menu if clicked outside
         window.onclick = function(event) {
@@ -496,7 +496,7 @@
                                             ${generateStarRating(element.rating)} 
                                         </div>
                                         <!-- edit and delete menue -->
-                                        ${(element.user_id === userId || userRoll === "admin") ? `
+                                        ${(element.user_id == userId || userRoll == "admin") ? `
                                             <div class="cart-menu">
                                                 <div class="cart-btn" onclick="toggleCartMenu(this)">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
