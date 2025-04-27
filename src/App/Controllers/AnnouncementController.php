@@ -42,6 +42,7 @@ class AnnouncementController
         $user_id = $_SESSION['user'];
         $isparticipants = $this->AnnouncementService->getCourseisParticipants($courseId, $user_id);
         $courseData = $this->AnnouncementService->getcourseTitle($courseId);
+        $course = $this->CourseService->getCourseById($params['course_id']);
 
         if ($user_id === $courseData['tutor_id'] || $_SESSION['user_role'] === 'admin') {
             $announcements = $this->AnnouncementService->getAllAnnouncements($courseId);
@@ -57,7 +58,8 @@ class AnnouncementController
                     'announcements' => $announcements,
                     'course_title' => $courseData['title'],
                     'course_id' => $courseId,
-                    'tutor_id' => $courseData['tutor_id']
+                    'tutor_id' => $courseData['tutor_id'],
+                    'course' => $course
                 ]
             );
         } else {
