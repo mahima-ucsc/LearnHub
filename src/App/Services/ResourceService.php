@@ -202,8 +202,8 @@ class ResourceService
     public function searchResource(int $limit, int $offset)
     {
         $searchTerm = $_GET['s'] ?? '';
-        $subject = $_GET['subject'] ?? 'all';
         $type = $_GET['type'] ?? 'all';
+        $category = $_GET['category'] ?? 'all';
         $price = $_GET['price'] ?? 'all';
         $sort = $_GET['sort'] ?? '';
 
@@ -224,9 +224,19 @@ class ResourceService
             $params['term'] = "%{$searchTerm}%";
         }
 
+        if ($type !== 'all') {
+            $whereConditions[] = "sr.resource_type = :type";
+            $params["type"] = $type;
+        }
+
         if ($price !== 'all') {
-            $whereConditions[] = "sr.price = :price";
+            $whereConditions[] = "sr.is_free = :price";
             $params["price"] = $price;
+        }
+
+        if ($category !== 'all') {
+            $whereConditions[] = "sr.category = :category";
+            $params["category"] = $category;
         }
 
         $whereClause = !empty($whereConditions) ? "WHERE " . implode(" AND ", $whereConditions) : "";
