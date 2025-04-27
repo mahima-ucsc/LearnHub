@@ -533,3 +533,7 @@ header {
   color: var(--danger-color);
   text-decoration: none;
 }
+.announcement-actions .edit-btn {
+  color: var(--primary-color);
+  text-decoration: none;
+}

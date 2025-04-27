@@ -155,7 +155,8 @@
                             </div>
                             <div class="announcement-actions">
                                 <?php if ($announcement['tutor_id'] ===  $_SESSION['user'] || $_SESSION['user_role'] === 'admin'): ?>
-                                    <button class="delete-btn" onclick="showModal('/announcements/delete/<?php echo e($announcement['announcement_id']) ?>')">Delete</button>
+                                    <button class="edit-btn" onclick="window.location.href = '/announcements/edit/<?php echo htmlspecialchars($announcement['announcement_id']); ?>'">Edit</button>
+                                    <button class="delete-btn" onclick="showModal('/announcements/delete/<?php echo htmlspecialchars($announcement['announcement_id']); ?>')">Delete</button>
                                 <?php else: ?>
                                     <button
                                         class="read_btn"
