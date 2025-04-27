@@ -42,7 +42,7 @@
                     <select id="courseSubject" name="subject" class="form-control">
                         <option value="">Select Subject</option>
                         <?php foreach ($subjects as $subject): ?>
-                            <option value="<?php echo e($subject['subject_id']); ?>" <?= $oldFormData['subject'] == e($subject['subject_id']) ? 'selected' : ''; ?>>
+                            <option value="<?php echo e($subject['subject_id']); ?>" <?= !empty($oldFormData['subject']) && $oldFormData['subject'] == e($subject['subject_id']) ? 'selected' : ''; ?>>
                                 <?php echo e($subject['subject_title']); ?>
                             </option>
                         <?php endforeach; ?>
@@ -57,7 +57,7 @@
                     <select id="courseGrade" name="grade" class="form-control">
                         <option value="">Select Grade</option>
                         <?php foreach ($grades as $grade): ?>
-                            <option value="<?php echo e($grade['grade_id']); ?>" <?= $oldFormData['grade'] == e($grade['grade_id']) ? 'selected' : ''; ?>>
+                            <option value="<?php echo e($grade['grade_id']); ?>" <?= !empty($oldFormData['grade']) && $oldFormData['grade'] == e($grade['grade_id']) ? 'selected' : ''; ?>>
                                 Grade <?php echo e($grade['grade_name']); ?>
                             </option>
                         <?php endforeach; ?>
@@ -137,13 +137,13 @@
             <h2 class="section-title">Course Type & Pricing</h2>
 
             <div class="course-type-selector">
-                <div class="course-type-option <?= $oldFormData['courseType'] == 'onetime' ? 'selected' : '' ?>" id="fullCourseOption">
+                <div class="course-type-option <?= !empty($oldFormData['courseType']) && $oldFormData['courseType'] == 'onetime' ? 'selected' : '' ?>" id="fullCourseOption">
                     <i class="fas fa-box"></i>
                     <h3>Complete Course</h3>
                     <p>Set a price for the entire course.</p>
                 </div>
 
-                <div class="course-type-option <?= $oldFormData['courseType'] == 'recurring' ? 'selected' : '' ?>" id="monthlyCourseOption">
+                <div class="course-type-option <?= !empty($oldFormData['courseType']) && $oldFormData['courseType'] == 'recurring' ? 'selected' : '' ?>" id="monthlyCourseOption">
                     <i class="fas fa-calendar-alt"></i>
                     <h3>Recurring Course</h3>
                     <p>Organize course content into time-based access periods, each with customizable pricing.</p>
