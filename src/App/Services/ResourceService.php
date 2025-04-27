@@ -110,7 +110,7 @@ class ResourceService
         }
 
         $query = "UPDATE shared_resources 
-              SET title = :title, description = :description, category = :category, resource_type = :resource_type, is_free = :is_free, price = :price , resource_path = :resource_path
+              SET title = :title, description = :description, category = :category, resource_type = :resource_type, is_free = :is_free, price = :price , resource_path = :resource_path, status = 'pending'
               WHERE resource_id = :resource_id AND user_id = :user_id";
 
         $this->db->query($query, [
