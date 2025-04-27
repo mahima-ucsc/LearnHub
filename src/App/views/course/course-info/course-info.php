@@ -94,7 +94,7 @@
                     </button>
                 <?php endif; ?>
 
-                <?php if ($course['tutor_id'] == $_SESSION['user'] || $_SESSION['user_role'] == 'admin' || $course['is_paid']): ?>
+                <?php if ($course['tutor_id'] == $_SESSION['user'] || $_SESSION['user_role'] == 'admin' || $course['is_paid'] || $course['is_paid'] == null): ?>
                     <button type="button" class="add-module-btn"
                         onclick="window.location.href='/courses/<?= $course['course_id'] ?>/announcements'">
                         <i class="fas fa-list"></i> View Announcements
