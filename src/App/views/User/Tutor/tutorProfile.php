@@ -14,7 +14,7 @@
                     <?php if ($tutorDetails['profile_picture_url']): ?>
                         <img class="avatar" src="<?php echo e($tutorDetails['profile_picture_url']); ?>" alt="<?php echo e($tutorDetails['first_name'] . ' ' . $tutorDetails['last_name']); ?>">
                     <?php else: ?>
-                        <img class="avatar" src="/assets/images/user.jpeg" alt="<?php echo e($tutorDetails['first_name'] . ' ' . $tutorDetails['last_name']); ?>">
+                        <img class="avatar" src="/assets/images/user_placeholder.jpg" alt="<?php echo e($tutorDetails['first_name'] . ' ' . $tutorDetails['last_name']); ?>">
                     <?php endif; ?>
                 </div>
 
@@ -347,7 +347,7 @@
                     <div class="review-header">
                         <!-- avatar -->
                         <img src="<?= isset($review['profile_picture_url'])
-                                        ? $user['profile_picture_url'] :
+                                        ? isset($user['profile_picture_url']) :
                                         "/assets/images/user_placeholder.jpg" ?>" alt=" <?php echo htmlspecialchars($review['name']); ?>" class="review-avatar">
                         <!-- since when-->
                         <div class="review-meta">
