@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="/assets/styles/User/payment.css">
 
 <!-- Include sidebar for users except students -->
-<?php if (!empty($_SESSION['user']) && ($_SESSION['user_role'] == 'admin' || $_SESSION['user_role'] = 'teacher')): ?>
+<?php if (!empty($_SESSION['user']) && ($_SESSION['user_role'] == 'admin' || $_SESSION['user_role'] == 'teacher')): ?>
     <?php include $this->resolve('User/sidebar.php'); ?>
 <?php endif; ?>
 
