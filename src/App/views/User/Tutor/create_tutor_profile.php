@@ -19,13 +19,13 @@
 
                 <div class="form-group">
                     <label for="title">Professional Title</label>
-                    <input type="text" id="title" name="title" placeholder="e.g. Mathematics & Computer Science Tutor">
+                    <input type="text" id="title" name="title" placeholder="e.g. Mathematics & Computer Science Tutor" required>
                     <p class="hint-text">A short description of your specialty</p>
                 </div>
 
                 <div class="form-group">
                     <label for="bio">Bio</label>
-                    <textarea id="bio" name="bio" rows="5" placeholder="Introduce yourself, your experience, and your teaching approach"></textarea>
+                    <textarea id="bio" name="bio" rows="5" placeholder="Introduce yourself, your experience, and your teaching approach" required></textarea>
                     <p class="hint-text">This will be displayed on your profile page</p>
                 </div>
             </div>
@@ -45,7 +45,7 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Subject</label>
-                                <select name="subjects[0][subject_id]">
+                                <select name="subjects[0][subject_id]" required>
                                     <option value="">Select a subject...</option>
                                     <?php
                                     foreach ($subjects as $subject) {
@@ -56,7 +56,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Years of Experience</label>
-                                <input type="number" name="subjects[0][years_experience]" min="0" max="50">
+                                <input type="number" name="subjects[0][years_experience]" min="0" max="80" required>
                             </div>
                         </div>
                     </div>
@@ -80,25 +80,25 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Degree</label>
-                                <input type="text" name="educations[0][degree]" placeholder="e.g. Ph.D., M.S., B.S.">
+                                <input type="text" name="educations[0][degree]" placeholder="e.g. Ph.D., M.S., B.S." required>
                             </div>
                             <div class="form-group">
                                 <label>Field of Study</label>
-                                <input type="text" name="educations[0][field_of_study]" placeholder="e.g. Applied Mathematics">
+                                <input type="text" name="educations[0][field_of_study]" placeholder="e.g. Applied Mathematics" required>
                             </div>
                         </div>
                         <div class="form-group">
                             <label>Institution</label>
-                            <input type="text" name="educations[0][institution]" placeholder="e.g. Massachusetts Institute of Technology">
+                            <input type="text" name="educations[0][institution]" placeholder="e.g. Massachusetts Institute of Technology" required>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Start Date</label>
-                                <input type="date" name="educations[0][start_date]">
+                                <input type="date" name="educations[0][start_date]" required>
                             </div>
                             <div class="form-group">
                                 <label>End Date</label>
-                                <input type="date" name="educations[0][end_date]">
+                                <input type="date" name="educations[0][end_date]" required>
                             </div>
                         </div>
                     </div>
@@ -116,7 +116,8 @@
                 <div id="availabilityEntries">
                     <div class="availability-row">
                         <div class="availability-day">
-                            <select name="availability[0][day_of_week]">
+                            <select name="availability[0][day_of_week]" required>
+                                <option value="">Select Day</option>
                                 <option value="0">Sunday</option>
                                 <option value="1">Monday</option>
                                 <option value="2">Tuesday</option>
@@ -127,10 +128,10 @@
                             </select>
                         </div>
                         <div class="availability-time">
-                            <input type="time" name="availability[0][start_time]" value="15:00">
+                            <input type="time" name="availability[0][start_time]" value="" required>
                         </div>
                         <div class="availability-time">
-                            <input type="time" name="availability[0][end_time]" value="20:00">
+                            <input type="time" name="availability[0][end_time]" value="" required>
                         </div>
                         <div>
                             <input type="checkbox" id="recurring0" name="availability[0][is_recurring]" checked>
@@ -166,7 +167,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Subject</label>
-                        <select name="subjects[${count}][subject_id]">
+                        <select name="subjects[${count}][subject_id]" required>
                             <option value="">Select a subject...</option>
                             <option value="1">Mathematics</option>
                             <?php
@@ -178,7 +179,7 @@
                     </div>
                     <div class="form-group">
                         <label>Years of Experience</label>
-                        <input type="number" name="subjects[${count}][years_experience]" min="0" max="50">
+                        <input type="number" name="subjects[${count}][years_experience]" min="0" max="50" required>
                     </div>
                 </div>
             `;
@@ -202,25 +203,25 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Degree</label>
-                        <input type="text" name="educations[${count}][degree]" placeholder="e.g. Ph.D., M.S., B.S.">
+                        <input type="text" name="educations[${count}][degree]" placeholder="e.g. Ph.D., M.S., B.S." required>
                     </div>
                     <div class="form-group">
                         <label>Field of Study</label>
-                        <input type="text" name="educations[${count}][field_of_study]" placeholder="e.g. Applied Mathematics">
+                        <input type="text" name="educations[${count}][field_of_study]" placeholder="e.g. Applied Mathematics" required>
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Institution</label>
-                    <input type="text" name="educations[${count}][institution]" placeholder="e.g. Massachusetts Institute of Technology">
+                    <input type="text" name="educations[${count}][institution]" placeholder="e.g. Massachusetts Institute of Technology" required>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label>Start Date</label>
-                        <input type="date" name="educations[${count}][start_date]">
+                        <input type="date" name="educations[${count}][start_date]" required>
                     </div>
                     <div class="form-group">
                         <label>End Date</label>
-                        <input type="date" name="educations[${count}][end_date]">
+                        <input type="date" name="educations[${count}][end_date]" required>
                     </div>
                 </div>
             `;
@@ -238,7 +239,8 @@
         newEntry.className = 'availability-row';
         newEntry.innerHTML = `
                 <div class="availability-day">
-                    <select name="availability[${count}][day_of_week]">
+                    <select name="availability[${count}][day_of_week]" required>
+                        <option value="">Select Day</option>
                         <option value="0">Sunday</option>
                         <option value="1">Monday</option>
                         <option value="2">Tuesday</option>
@@ -249,10 +251,10 @@
                     </select>
                 </div>
                 <div class="availability-time">
-                    <input type="time" name="availability[${count}][start_time]" value="15:00">
+                    <input type="time" name="availability[${count}][start_time]" value="" required>
                 </div>
                 <div class="availability-time">
-                    <input type="time" name="availability[${count}][end_time]" value="20:00">
+                    <input type="time" name="availability[${count}][end_time]" value="" required>
                 </div>
                 <div>
                     <input type="checkbox" id="recurring${count}" name="availability[${count}][is_recurring]" checked>
