@@ -372,6 +372,7 @@ class CoursesController
     public function editCourse(array $params)
     {
 
+        $this->validatorService->validateCourseData($_POST);
         $course = $this->courseService->getCourseById($params['course_id']);
         if (!$course) {
             redirectTo('/server-error');
