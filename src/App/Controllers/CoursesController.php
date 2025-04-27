@@ -498,7 +498,7 @@ class CoursesController
 
         if (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'teacher') {
             if ($_SESSION['user_role'] === 'teacher') {
-                $courses = $this->courseService->getTeacherCourses($_SESSION['user'], $itemsPerPage, $offset);
+                $courses = $this->courseService->getTeacherCourses((int)$_SESSION['user'], $itemsPerPage, $offset);
                 $courseCount = count($courses);
             }
         } elseif (!empty($_SESSION['user']) && $_SESSION['user_role'] == 'student') {
