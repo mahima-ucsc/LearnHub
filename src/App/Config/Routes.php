@@ -150,6 +150,7 @@ function registerRoutes(App $app)
     $app->put('/course/request/edit/{request_id}', [PostController::class, 'updateCourseRequest'], [AuthRequiredMiddleware::class]);
     $app->delete('/course/request/{id}', [PostController::class, 'deleteCourseRequest'], [AuthRequiredMiddleware::class]);
     $app->delete('/course/request/{requestId}/comments/{commentId}', [PostController::class, 'deleteComment'], [AuthRequiredMiddleware::class]);
+    $app->get('/course/request/my/requests', [PostController::class, 'getCourseRequestsOfLoggedInUserView'], [AuthRequiredMiddleware::class]);
 
     $app->get('/courserequest-managment', [PostController::class, 'managmentView']);
 
