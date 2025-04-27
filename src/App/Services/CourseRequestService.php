@@ -10,7 +10,10 @@ use Framework\Database;
 
 class CourseRequestService
 {
-    public function __construct(private Database $db) {}
+    public function __construct(
+        private Database $db,
+        private NotificationService $notificationService
+    ) {}
 
     public function create(array $formData)
     {
@@ -27,6 +30,11 @@ class CourseRequestService
                 "user_id" => $user_id,
                 "location" => $formData['location']
             ]
+        );
+        $this->notificationService->createNotification(
+            "New course request created - waiting for admin approval",
+            "/course/request/{$this->db->lastInsertId()}",
+            [$user_id]
         );
     }
 
@@ -96,10 +104,10 @@ class CourseRequestService
         $orderClause = "";
         switch ($sort) {
             case 'recent':
-                $orderClause = "ORDER BY cr.created_date ASC";
+                $orderClause = "ORDER BY cr.updated_date DESC";
                 break;
             case 'oldest':
-                $orderClause = "ORDER BY cr.created_date DESC";
+                $orderClause = "ORDER BY cr.updated_date ASC";
                 break;
             case 'popular':
                 $orderClause = "ORDER BY comments_count DESC";
@@ -180,10 +188,10 @@ class CourseRequestService
         $orderClause = "";
         switch ($sort) {
             case 'recent':
-                $orderClause = "ORDER BY cr.created_date DESC";
+                $orderClause = "ORDER BY cr.updated_date DESC";
                 break;
             case 'oldest':
-                $orderClause = "ORDER BY cr.created_date ASC";
+                $orderClause = "ORDER BY cr.updated_date ASC";
                 break;
             case 'popular':
                 $orderClause = "ORDER BY comments_count DESC";

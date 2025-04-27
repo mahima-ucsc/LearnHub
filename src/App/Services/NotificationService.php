@@ -85,7 +85,7 @@ class NotificationService
         $query .= " AND message LIKE :searchTerm";
         $params['searchTerm'] = "%{$searchTerm}%";
 
-        if (isset($isread)) {
+        if ($isread !== '') {
             $query .= " AND is_read = :is_read";
             $params['is_read'] = $isread;
         }
