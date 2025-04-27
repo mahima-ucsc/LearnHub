@@ -3,7 +3,6 @@
 <link rel="stylesheet" href="/assets/styles/components/toast.css">
 
 <style>
-    /* Keep essential styles only - removed unused styles */
     :root {
         --primary: #FFC400;
         --primary-light: #FFE380;
@@ -513,10 +512,8 @@
 <script src="/assets/js/components/toast.js"></script>
 
 <script>
-    // The data provided in PHP array format converted to JavaScript object
     const advertisementData = <?php echo json_encode($advertisements); ?>;
 
-    // Function to render the advertisements table
     function renderAdvertisements(advertisements) {
         const tableBody = document.querySelector('.posts-table tbody');
         tableBody.innerHTML = '';
