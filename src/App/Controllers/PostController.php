@@ -171,6 +171,7 @@ class PostController
     public function updateCourseRequest(array $params)
     {
         $requestId = $params['request_id'];
+        $this->validatorService->validateCourseRequest($_POST);
         $this->courseRequestService->updateCourseRequestById($_POST, $requestId);
         redirectTo('/course/request/' . $requestId);
     }
@@ -214,6 +215,81 @@ class PostController
         echo $this->view->render("/post/user_course_request.php", [
             "title" => "Post Managment",
             "posts" => $posts
+        ]);
+    }
+
+    public function getCourseRequestsOfLoggedInUserView()
+    {
+        $searchTerm = trim($_GET['s'] ?? '');
+        $subject = $_GET['subject'] ?? 'all';
+        $grade = $_GET['grade'] ?? 'all';
+        $sort = $_GET['sort'] ?? 'recent';
+
+        $page = $_GET['p'] ?? 1;
+        $page = (int) $page;
+        $length = 6;
+        $offset = ($page - 1) * $length;
+
+        [$courseRequests, $requestCount] =
+            $this->courseRequestService->getUserCourseRequests(
+                $length,
+                $offset,
+                (string) $_SESSION['user'],
+                $searchTerm,
+                $subject,
+                $grade,
+                $sort
+            );
+
+        $lastPage = ceil($requestCount / $length);
+        $pages = $lastPage ? range(1, $lastPage) : [];
+
+        $pageLinks = array_map(
+            (fn($searchTerm, $subject, $grade, $sort) => fn($pageNum) => http_build_query([
+                'p' => $pageNum,
+                's' =>  $searchTerm,
+                'subject' => $subject,
+                'grade' => $grade,
+                'sort' => $sort
+            ]))(
+                $searchTerm,
+                $subject,
+                $grade,
+                $sort
+            ),
+            $pages
+        );
+
+        $subjects = $this->subjectService->getSubjects();
+        $grades = $this->courseService->getGrades();
+
+        echo $this->view->render('post/my_course_requests.php', [
+            "title" => "Course Requests",
+            "courseRequests" => $courseRequests,
+            'subjects' => $subjects,
+            'grades' => $grades,
+            'requestCount' => $requestCount,
+            "currentPage" => $page,
+            "previousPageQuery" => http_build_query([
+                'p' => $page - 1,
+                's' => $searchTerm,
+                'subject' => $subject,
+                'grade' => $grade,
+                'sort' => $sort
+            ]),
+            'lastPage' => $lastPage,
+            "nextPageQuery" => http_build_query([
+                'p' => $page + 1,
+                's' => $searchTerm,
+                'subject' => $subject,
+                'grade' => $grade,
+                'sort' => $sort
+            ]),
+            "pageLinks" => $pageLinks,
+            'filter_s' => $searchTerm,
+            'filter_subject' => $subject,
+            'filter_grade' => $grade,
+            'filter_sort' => $sort
         ]);
     }
 }

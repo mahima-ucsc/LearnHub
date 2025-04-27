@@ -256,7 +256,7 @@ class ReportService
         return $result->findAll();
     }
 
-    private function getTotalPaymentsForReccuringCourses(string $tutorId, string $startDate, string $endDate)
+    public function getTotalPaymentsForReccuringCourses(string $tutorId, string $startDate, string $endDate)
     {
         $result = $this->db->query(
             "SELECT c.course_id, c.title, SUM(p.amount) as total_payments 

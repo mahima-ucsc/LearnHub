@@ -69,6 +69,7 @@ class AssignmentService
                 }
             }
             $this->db->commit();
+            return $assignmentId;
         } catch (Exception $e) {
             $this->db->rollBack();
             throw $e;
