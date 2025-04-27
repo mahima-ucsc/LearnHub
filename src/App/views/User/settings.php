@@ -155,6 +155,8 @@
                     </div>
                 </form>
             </div>
+
+            <!-- profile info -->
             <div id="bio" class="settings-section">
                 <div class="form-header">
                     <h1>Profile Settings</h1>
