@@ -75,7 +75,6 @@
 
         <form id="announcementForm" action="/announcements/edit/<?= $announcement_id ?>" method="post" enctype="multipart/form-data">
             <input type="hidden" name="announcement_id" value="<?= $announcement_id ?>">
-            <input type="hidden" name="current_attachments" value="<?= $announcement["attachments"] ?>">
             <div class="form-group">
                 <label for="title"><i class="fas fa-heading"></i> Announcement Title</label>
                 <input type="text" id="title" name="title" placeholder="Enter a clear title for your announcement" value="<?= $announcement['title'] ?>" required>
@@ -135,7 +134,6 @@
                     echo "</ul>";
                     ?>
                 </div>
-                <!-- Hidden input to pass current attachments to the form submission -->
                 <input type="hidden" name="current_attachments" value="<?php echo htmlspecialchars($announcement['attachments'] ?? ''); ?>">
             </div>
 
@@ -377,6 +375,7 @@
             }
         });
     </script>
+
     <script>
         function downloadAttachment(fileName) {
             const formData = new FormData();

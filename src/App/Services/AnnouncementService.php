@@ -81,10 +81,29 @@ class AnnouncementService
     public function updateAnnouncement(array $formData, array $fileData)
     {
         // Initialize attachments from current attachments or empty array
-        // dd($formData);
         $attachments = isset($formData["current_attachments"])
             ? json_decode($formData["current_attachments"])
             : [];
+
+        // remove removevabel Attachments
+        if ($fileData && isset($formData['remove_attachments'])) {
+            $uploadDir = Paths::STORAGE_UPLOADS . '/announcement/';
+            foreach ($formData["remove_attachments"] as $fileToRemove) {
+                $filePath = $uploadDir . $fileToRemove;
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+                // Remove the file from the attachments array
+                $attachments = array_filter(
+                    $attachments,
+                    function ($attachment) use ($fileToRemove) {
+                        return $attachment !== $fileToRemove;
+                    }
+                );
+            }
+        }
+
+        // add new files
         if ($fileData && !empty($fileData['attachments']['name'][0])) {
             try {
                 // Handle file uploads
