@@ -1,5 +1,6 @@
 <?php include $this->resolve("partials/_header.php"); ?>
 <link rel="stylesheet" href="/assets/styles/Post/course-requests-new.css">
+<link rel="stylesheet" href="/assets/styles/Post/my-course-requests.css">
 
 <div class="container">
     <div class="search-section">
@@ -152,65 +153,5 @@
         </div>
     </div>
 </div>
-
-<style>
-    .status-tag {
-        display: inline-block;
-        padding: 4px 10px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 600;
-        margin-bottom: 5px;
-    }
-
-    .status-tag.approved {
-        background-color: #e3fcef;
-        color: #0ca678;
-    }
-
-    .status-tag.pending {
-        background-color: #fff3bf;
-        color: #e6b000;
-    }
-
-    .request-actions {
-        display: flex;
-        gap: 12px;
-        align-items: center;
-        margin-top: 8px;
-    }
-
-    .edit-link,
-    .delete-link {
-        font-size: 13px;
-        padding: 4px 12px;
-        border-radius: 16px;
-        text-decoration: none;
-        font-weight: 500;
-        transition: background 0.15s, color 0.15s;
-    }
-
-    .edit-link {
-        background: #e3fcef;
-        color: #0ca678;
-        border: 1px solid #b7efdb;
-    }
-
-    .edit-link:hover {
-        background: #c6f6e4;
-        color: #087f5b;
-    }
-
-    .delete-link {
-        background: #ffe3e3;
-        color: #e03131;
-        border: 1px solid #ffc9c9;
-    }
-
-    .delete-link:hover {
-        background: #ffc9c9;
-        color: #a61e4d;
-    }
-</style>
 
 <?php include $this->resolve("partials/_footer.php"); ?>
