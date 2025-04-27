@@ -78,6 +78,99 @@ class AnnouncementService
         }
     }
 
+    public function updateAnnouncement(array $formData, array $fileData)
+    {
+        // Initialize attachments from current attachments or empty array
+        $attachments = isset($formData["current_attachments"])
+            ? json_decode($formData["current_attachments"])
+            : [];
+
+        // remove removevabel Attachments
+        if ($fileData && isset($formData['remove_attachments'])) {
+            $uploadDir = Paths::STORAGE_UPLOADS . '/announcement/';
+            foreach ($formData["remove_attachments"] as $fileToRemove) {
+                $filePath = $uploadDir . $fileToRemove;
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+                // Remove the file from the attachments array
+                $attachments = array_filter(
+                    $attachments,
+                    function ($attachment) use ($fileToRemove) {
+                        return $attachment !== $fileToRemove;
+                    }
+                );
+            }
+        }
+
+        // add new files
+        if ($fileData && !empty($fileData['attachments']['name'][0])) {
+            try {
+                // Handle file uploads
+                $uploadDir = Paths::STORAGE_UPLOADS  . '/announcement/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+                if (isset($fileData['attachments']) && is_array($fileData['attachments']['name'])) {
+                    foreach ($fileData['attachments']['name'] as $key => $fileName) {
+                        // Skip empty file uploads
+                        if (empty($fileName)) continue;
+
+                        $fileTmp = $fileData['attachments']['tmp_name'][$key];
+
+                        // Generate a unique file name to avoid overwriting
+                        $uniqueFileName = uniqid() . '_' . basename($fileName);
+                        $destination = $uploadDir . $uniqueFileName;
+
+                        if (move_uploaded_file($fileTmp, $destination)) {
+                            $attachments[] = $uniqueFileName;
+                            // Append the new filename to the attachments array
+                        } else {
+                            throw new Exception("File upload failed for file: " . $fileName);
+                        }
+                    }
+                }
+            } catch (Exception $e) {
+                throw new ValidationException(["File upload error: " . $e->getMessage()]);
+            }
+        }
+
+        // update announcement data in the database
+        $this->db->beginTransaction();
+        try {
+            $this->db->query(
+                "UPDATE announcements 
+                SET title = :title, 
+                    content = :content, 
+                    category = :category, 
+                    attachments = :attachments
+                WHERE announcement_id = :announcement_id",
+                [
+                    'title' => $formData['title'],
+                    'content' => $formData['content'],
+                    'category' => $formData['category'],
+                    'attachments' => !empty($attachments) ? json_encode($attachments) : NULL,
+                    'announcement_id' => $formData['announcement_id']
+                ]
+            );
+
+            // update read state for users
+            $this->db->query(
+                "UPDATE announcements_read 
+                SET is_read = 0 
+                WHERE announcement_id = :announcement_id",
+                [
+                    'announcement_id' => $formData['announcement_id'],
+                ]
+            );
+
+            $this->db->commit();
+        } catch (Exception $e) {
+            $this->db->rollback();
+        }
+    }
+
+    // get all announcement for specified student
     public function getAnnouncements($courseId, $studentId)
     {
         // dd([$courseId, $student_id]);

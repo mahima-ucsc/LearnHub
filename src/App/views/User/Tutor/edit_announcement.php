@@ -6,6 +6,64 @@
     <link rel="stylesheet" href="/assets/styles/Tutor/create_announcement.css">
 </head>
 
+<style>
+    .attachments-list {
+        margin-top: 15px;
+        padding: 10px 15px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        border: 1px solid #dee2e6;
+    }
+
+    .attachments-list h4 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 16px;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .attachments-list ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .attachments-list li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+        padding: 5px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .attachments-list a {
+        color: #007bff;
+        text-decoration: none;
+        flex-grow: 1;
+    }
+
+    .attachments-list a:hover {
+        text-decoration: underline;
+        color: #0056b3;
+    }
+
+    .attachments-list input[type="checkbox"] {
+        margin: 0;
+        cursor: pointer;
+    }
+
+    .attachments-list label {
+        font-size: 14px;
+        color: #dc3545;
+        cursor: pointer;
+        margin-left: 3px;
+    }
+</style>
+
 <body>
     <div class="container">
         <h1 class="page-title">
@@ -15,7 +73,8 @@
 
         <div id="alertMessage" class="alert"></div>
 
-        <form id="announcementForm" action="/courses/<?php echo $course_id; ?>/announcements/edit/<?= $announcement_id ?>" method="post" enctype="multipart/form-data">
+        <form id="announcementForm" action="/announcements/edit/<?= $announcement_id ?>" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="announcement_id" value="<?= $announcement_id ?>">
             <div class="form-group">
                 <label for="title"><i class="fas fa-heading"></i> Announcement Title</label>
                 <input type="text" id="title" name="title" placeholder="Enter a clear title for your announcement" value="<?= $announcement['title'] ?>" required>
@@ -23,7 +82,7 @@
 
             <div class="form-group">
                 <label for="content"><i class="fas fa-align-left"></i> Announcement Content</label>
-                <textarea id="content" name="content" placeholder="Write your announcement here. Include all relevant details." <? -$announcement['content'] ?> required></textarea>
+                <textarea id="content" name="content" placeholder="Write your announcement here. Include all relevant details." required><?= $announcement['content'] ?> </textarea>
             </div>
 
             <div class="form-group">
@@ -56,27 +115,29 @@
                 </div>
                 <div id="fileInfo" class="file-info"></div>
 
-                <?php if (!empty($attachments)): ?>
-                    <div class="current-attachments">
-                        <h4><i class="fas fa-file"></i> Current Attachments</h4>
-                        <ul>
-                            <?php foreach ($attachments as $attachment): ?>
-                                <li>
-                                    <span><?= htmlspecialchars($attachment['file_name']) ?></span>
-                                    <button type="button" class="btn-link" onclick="downloadAttachment('<?= htmlspecialchars($attachment['file_name']) ?>')">
-                                        <i class="fas fa-download"></i> Download
-                                    </button>
-                                    <input type="checkbox" name="remove_attachments[]" value="<?= $attachment['id'] ?>">
-                                    <label>Remove</label>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
-                <?php endif; ?>
+                <div class="attachments-list" style="display: <?php echo (isset($announcement['attachments'])) ? 'block' : 'none'; ?>">
+                    <h4><i class="fas fa-file"></i> Current Attachments</h4>
+                    <?php
+                    echo "<ul>";
+                    if (isset($announcement['attachments'])) {
+                        $files = json_decode($announcement['attachments']);
+                        foreach ($files as $file) {
+                            // Remove prefix before underscore using regex
+                            $display_name = preg_replace('/^[^_]+_/', '', $file);
+                            echo "<li>
+                                <a href='#' onclick='downloadAttachment(\"" . htmlspecialchars($file) . "\")'>" . htmlspecialchars($display_name) . "</a>
+                                <input type='checkbox' name='remove_attachments[]' value='" . htmlspecialchars($file) . "'>
+                                <label>Remove</label>
+                            </li>";
+                        }
+                    }
+                    echo "</ul>";
+                    ?>
+                </div>
+                <input type="hidden" name="current_attachments" value="<?php echo htmlspecialchars($announcement['attachments'] ?? ''); ?>">
             </div>
 
             <div class="form-actions">
-                <button type="button" id="previewBtn" class="btn btn-secondary"><i class="fas fa-eye"></i> Preview</button>
                 <button type="submit" class="btn"><i class="fas fa-paper-plane"></i> Publish Announcement</button>
             </div>
         </form>
@@ -216,62 +277,6 @@
                 }
             });
 
-            // Preview announcement
-            previewBtn.addEventListener('click', function() {
-                const title = titleInput.value.trim();
-                const content = contentInput.value.trim();
-                const category = categorySelect.value;
-
-                if (!title || !content) {
-                    showAlert('Please fill in both title and content fields for preview.', 'danger');
-                    return;
-                }
-
-                previewTitle.textContent = title;
-                previewContent.textContent = content;
-
-                // Style based on category
-                previewCategory.classList.add('category');
-                let categoryIcon = '';
-                switch (category) {
-                    case 'Assignments':
-                        categoryIcon = '<i class="fas fa-tasks"></i> ';
-                        break;
-                    case 'Event':
-                        categoryIcon = '<i class="fas fa-calendar-alt"></i> ';
-                        break;
-                    case 'General':
-                        categoryIcon = '<i class="fas fa-info-circle"></i> ';
-                        break;
-                    case 'Reminder':
-                        categoryIcon = '<i class="fas fa-bell"></i> ';
-                        break;
-                    default:
-                        categoryIcon = '<i class="fas fa-exclamation-triangle"></i> ';
-                }
-
-                previewCategory.innerHTML = categoryIcon + category;
-
-                // Display attached files in preview
-                attachmentList.innerHTML = '';
-                if (fileInput.files.length > 0) {
-                    for (let i = 0; i < fileInput.files.length; i++) {
-                        const file = fileInput.files[i];
-                        const listItem = document.createElement('li');
-                        listItem.innerHTML = `<a href="#" onclick="return false;" title="Download ${file.name}"><i class="fas fa-download"></i> ${file.name}</a>`;
-                        attachmentList.appendChild(listItem);
-                    }
-                    document.getElementById('previewAttachments').style.display = 'block';
-                } else {
-                    document.getElementById('previewAttachments').style.display = 'none';
-                }
-
-                previewSection.style.display = 'block';
-                previewSection.scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-
             // Form submission
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -313,6 +318,7 @@
             }
         });
     </script>
+
     <script>
         function downloadAttachment(fileName) {
             const formData = new FormData();
