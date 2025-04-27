@@ -158,14 +158,15 @@ class AnnouncementController
             [
                 'title' => 'Edit announcement',
                 'announcement_id' => $params['announcement_id'],
-                'announcement' => $announcement
+                'announcement' => $announcement,
+                'course_id' => $params['course_id'],
             ]
         );
     }
 
-    public function editAnnouncement()
+    public function editAnnouncement($params)
     {
         $this->AnnouncementService->updateAnnouncement($_POST, $_FILES);
-        redirectTo($_SERVER['HTTP_REFERER']);
+        redirectTo('/courses/' . $params["course_id"] . '/announcements');
     }
 }
