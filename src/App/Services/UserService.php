@@ -839,4 +839,16 @@ class UserService
         );
         return true;
     }
+
+    public function getUserInterest(string $id)
+    {
+        return $this->db->query(
+            "SELECT subject_id
+            FROM user_interest
+            WHERE user_id = :id",
+            [
+                'id' => $id
+            ]
+        )->findAll();
+    }
 }

@@ -820,11 +820,14 @@ class CourseService
                 s.subject_title AS subject
                 FROM courses c
                 JOIN course_payments cp ON cp.course_id = c.course_id
+                JOIN payments p ON cp.payment_id = p.payment_id
                 JOIN users u ON u.user_id = c.tutor_id
                 JOIN subjects s ON c.subject_id = s.subject_id
-                WHERE cp.user_id = :id",
+                WHERE cp.user_id = :id
+                AND p.payment_status = :payment_status",
                 [
-                    'id' => $id
+                    'id' => $id,
+                    'payment_status' => AppConstants::PAYMENT_STATUS_SUCCESS
                 ]
             )->findAll();
         } catch (Exception $e) {
@@ -832,6 +835,22 @@ class CourseService
             error_log('Failed to fetch student courses: ' . $e->getMessage());
             redirectTo('/server-error');
         }
+    }
+
+    public function getSuggession(string $subject)
+    {
+        return $this->db->query(
+            "SELECT DISTINCT c.*,
+                CONCAT(u.first_name, ' ', u.last_name) AS teacher,
+                s.subject_title AS subject
+                FROM courses c
+                JOIN users u ON u.user_id = c.tutor_id
+                JOIN subjects s ON c.subject_id = s.subject_id
+                WHERE c.subject_id = :id",
+            [
+                'id' => $subject
+            ]
+        )->find();
     }
 
     /**

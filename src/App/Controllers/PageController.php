@@ -102,14 +102,27 @@ class PageController
         if ($_SESSION['user_role'] === "student") {
 
             $path = "User/student/std_index.php";
+
             $courses = $this->courseService->getStudentCourses((string)$_SESSION['user']);
+            $courses = array_slice($courses, 0, 3);
+
             $userData = $this->userService->getUserProfile($_SESSION['user']);
             $courseThumbnailPath = Paths::STORAGE_UPLOADS . Paths::RELATIVE_COURSE_THUMBNAIL_UPLOADS;
+            $userInterest = $this->userService->getUserInterest((string)$_SESSION['user']);
+            $suggestedCourses = [];
+
+            for ($i = 0; $i < 3; $i++) {
+                $randomSubject = $userInterest[array_rand($userInterest)]['subject_id'];
+                $course = $this->courseService->getSuggession((string)$randomSubject);
+                $suggestedCourses[] = $course;
+            }
             echo $this->view->render($path, [
                 "title" => "Dashboard",
                 'courses' => $courses,
                 'userData' => $userData,
-                'courseThumbnailPath' => $courseThumbnailPath
+                'courseThumbnailPath' => $courseThumbnailPath,
+                'userInterest' => $userInterest,
+                'suggestedCourses' => $suggestedCourses
             ]);
             exit;
         } elseif ($_SESSION['user_role'] === "teacher") {
