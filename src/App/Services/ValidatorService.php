@@ -118,10 +118,10 @@ class ValidatorService
 
 
         ];
-        // Validate the URL only if it is provided
-        if (!empty($formData['resource_url'])) {
-            $rules["resource_url"] = ["url"];
-        }
+        // // Validate the URL only if it is provided
+        // if (!empty($formData['resource_url'])) {
+        //     $rules["resource_url"] = ["url"];
+        // }
 
 
         // Conditionally validate price if the resource is not free

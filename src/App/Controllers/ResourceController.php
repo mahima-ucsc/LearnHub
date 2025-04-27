@@ -46,6 +46,33 @@ class ResourceController
             'resourceCount' => $resourceCount
         ]);
     }
+    public function listResources()
+    {
+        $page = (int) ($_GET['p'] ?? 1);
+        $itemsPerPage = 6;
+        $offset = ($page - 1) * $itemsPerPage;
+
+        $filters = [
+            's' => $_GET['s'] ?? '',
+            'type' => $_GET['type'] ?? 'all',
+            'category' => $_GET['category'] ?? 'all',
+            'price' => $_GET['price'] ?? 'all',
+
+        ];
+
+        $resources = $this->resourceService->getFilteredResources($filters);
+        $resourceCount = count($resources);
+
+        $pagination = generatePagination($resourceCount, $page, $itemsPerPage, $filters);
+
+
+        echo $this->view->render('Resource/resource.php', [
+            'title' => 'Resource',
+            'resources' => $resources,
+            'resourceCount' => $resourceCount,
+            'pagination' => $pagination,
+        ]);
+    }
 
     public function createView()
     {
@@ -117,7 +144,7 @@ class ResourceController
         $resourceId = (int)$params['resource_id'];
         $userId = $_SESSION['user']; // Assuming user_id is stored in the session
 
-        $isUpdated = $this->resourceService->updateResource($resourceId, $userId, $_POST);
+        $isUpdated = $this->resourceService->updateResource($resourceId, $userId, $_POST, $_FILES);
 
         if ($isUpdated) {
             redirectTo('/resource/my-resources'); // Redirect to the resources page
@@ -165,7 +192,7 @@ class ResourceController
         $resourceId = (int)$params['resource_id'];
         $resource = $this->resourceService->getResourceByIdDownload($resourceId);
 
-        if (!$resource || $resource['is_free'] != 1) {
+        if (!$resource) {
             // Redirect back if the resource is not free or doesn't exist
             redirectTo('/resource');
         }
