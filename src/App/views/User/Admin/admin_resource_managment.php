@@ -185,6 +185,10 @@
         background: rgba(231, 76, 60, 0.2);
     }
 
+    .resource-link {
+        text-decoration: none;
+    }
+
 
     @media (max-width: 1024px) {
         .stats-container {
@@ -302,11 +306,12 @@
                                         <i class="fas fa-trash"></i>
                                         Delete
                                     </button>
-                                    <button class="action-btn btn-view"
-                                        onclick="window.location.href='/courses/<?php echo e($course['course_id']) ?>)'">
+                                    <button class="action-btn btn-view">
+                                        <a href="/resource/download/<?php echo e($resource['resource_id']); ?>" class="resource-link">View <i class="fas fa-arrow-right"></i></a>
                                         <i class="fa-solid fa-eye"></i>
-                                        view
+
                                     </button>
+
 
                                 </td>
                             </tr>
@@ -324,5 +329,6 @@
 </div>
 
 <script>
+
 </script>
 <?php include $this->resolve('partials/_footer.php'); ?>

@@ -41,7 +41,7 @@
                             </span>
                         <?php endif; ?>
                     </div>
-                    <?php if (($course['billing_type'] === 'onetime') && $course['is_paid'] && !($course['tutor_id'] === $_SESSION['user'])): ?>
+                    <?php if (($course['billing_type'] === 'onetime') && !$course['is_paid'] && !($course['tutor_id'] === $_SESSION['user'])): ?>
                         <a href="<?= "/payment/courses/" . $course['course_id'] ?>" class="enroll-button">Enroll Now</a>
                     <?php endif; ?>
                 </div>
@@ -117,7 +117,7 @@
                                     <div class="period-title">
                                         <h4><?= formatDate($period['start_datetime'], 'Y M j') . " - " . formatDate($period['end_datetime'], 'Y M j') ?></h4>
                                     </div>
-                                    <?php if ($period['is_paid'] || $period['tutor_id'] == $_SESSION['user']): ?>
+                                    <?php if ($period['is_paid'] || $course['tutor_id'] == $_SESSION['user']): ?>
 
                                         <div class="period-toggle">
                                             <?php $showAssignment = true; ?>
@@ -132,7 +132,7 @@
 
                                 <div class="period-content">
                                     <div class="module-list">
-                                        <?php if ($period['is_paid'] || $period['is_free_access_period'] || $period['tutor_id'] == $_SESSION['user']): ?>
+                                        <?php if ($period['is_paid'] || $period['is_free_access_period'] || $course['tutor_id'] == $_SESSION['user']): ?>
                                             <?php foreach ($period['modules'] as $module): ?>
                                                 <?php include $this->resolve("course/course-info/course-module.php"); ?>
                                             <?php endforeach; ?>
@@ -184,8 +184,8 @@
                                     </div>
                                 </div>
                             </div>
+                        <?php endforeach; ?>
                     </div>
-                <?php endforeach; ?>
                 </div>
             <?php endif; ?>
 

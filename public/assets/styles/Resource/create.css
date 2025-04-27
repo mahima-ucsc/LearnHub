@@ -360,6 +360,14 @@ input:checked + .slider:before {
   padding: 2px 4px;
   font-size: 14px;
 }
+
+.paid-description label {
+  font-size: 14px;
+  color: #ff0000;
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
 /* Form validation */
 .invalid-feedback {
   display: none;
@@ -373,6 +381,30 @@ input:checked + .slider:before {
 }
 
 .form-control.is-invalid + .invalid-feedback {
+  display: block;
+}
+
+.file-upload.is-invalid {
+  border-color: var(--danger);
+}
+
+.file-upload.is-invalid + .invalid-feedback {
+  display: block;
+}
+
+.file-upload input.is-invalid {
+  border-color: var(--danger);
+}
+
+.file-upload input.is-invalid + .invalid-feedback {
+  display: block;
+}
+
+.file-upload.is-invalid {
+  border-color: var(--danger);
+}
+
+.file-upload.is-invalid .invalid-feedback {
   display: block;
 }
 
