@@ -166,6 +166,7 @@ class AnnouncementController
 
     public function editAnnouncement()
     {
-        dd($_POST);
+        $this->AnnouncementService->updateAnnouncement($_POST, $_FILES);
+        redirectTo($_SERVER['HTTP_REFERER']);
     }
 }
