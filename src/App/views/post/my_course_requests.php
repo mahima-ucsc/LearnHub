@@ -64,6 +64,9 @@
 
         </div>
         <div class="create-course-request-btn">
+            <a href="/course/request/" class="btn btn-primary btn-my-requests">
+                <i class="fas fa-user"></i> View All Course Requests
+            </a>
             <a href="/course/request/create" class="btn btn-primary">
                 <i class="fa-solid fa-plus"></i>
                 Create Course Request

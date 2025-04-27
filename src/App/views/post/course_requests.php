@@ -63,11 +63,15 @@
 
         </div>
         <div class="create-course-request-btn">
+            <a href="/course/request/my/requests" class="btn btn-primary btn-my-requests">
+                <i class="fas fa-user"></i> View My Course Requests
+            </a>
             <a href="/course/request/create" class="btn btn-primary">
                 <i class="fa-solid fa-plus"></i>
                 Create Course Request
             </a>
         </div>
+        <!-- Removed separate my-requests-btn-container -->
         <div class="request-cards" id="requestCards">
             <?php foreach ($courseRequests as $request): ?>
                 <div class="request-card">
@@ -147,6 +151,5 @@
         </div>
     </div>
 </div>
-
 
 <?php include $this->resolve("partials/_footer.php"); ?>
