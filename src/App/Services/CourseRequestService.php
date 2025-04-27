@@ -96,10 +96,10 @@ class CourseRequestService
         $orderClause = "";
         switch ($sort) {
             case 'recent':
-                $orderClause = "ORDER BY cr.created_date DESC";
+                $orderClause = "ORDER BY cr.created_date ASC";
                 break;
             case 'oldest':
-                $orderClause = "ORDER BY cr.created_date ASC";
+                $orderClause = "ORDER BY cr.created_date DESC";
                 break;
             case 'popular':
                 $orderClause = "ORDER BY comments_count DESC";
