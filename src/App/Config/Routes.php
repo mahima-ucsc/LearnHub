@@ -222,6 +222,9 @@ function registerRoutes(App $app)
     $app->get('/api/notifications', [NotificationController::class, 'getUserNotifications'], [NotificationMiddleware::class]);
     $app->post('/api/notifications/mark-all-as-read', [NotificationController::class, 'markAllAsRead'], [NotificationMiddleware::class]);
     $app->post('/api/notifications/mark-as-read/{notification_id}', [NotificationController::class, 'markAsRead'], [NotificationMiddleware::class]);
+    $app->get('/notifications', [NotificationController::class, 'notificationView'], [AuthRequiredMiddleware::class]);
+    $app->get('/notifications/{notification_id}/mark-as-read', [NotificationController::class, 'markAsReadFromView'], [AuthRequiredMiddleware::class]);
+    $app->get('/notifications/mark-all-as-read', [NotificationController::class, 'markAllAsReadFromView'], [AuthRequiredMiddleware::class]);
 
     // Payments
     $app->get('/payment/courses/{course_id}', [PaymentController::class, 'onetimeCoursePaymentView'], [AuthRequiredMiddleware::class]);
