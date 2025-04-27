@@ -116,7 +116,7 @@ class AnnouncementController
 
     public function downloadAttachment($params)
     {
-        dd($params);
+        // dd($params);
         $file = $_POST['file_name'] ?? null;
         $Dir = __DIR__ . '/../../../public/assets/uploads/announcement/';
         if ($file) {

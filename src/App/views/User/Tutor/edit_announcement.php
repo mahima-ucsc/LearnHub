@@ -6,6 +6,64 @@
     <link rel="stylesheet" href="/assets/styles/Tutor/create_announcement.css">
 </head>
 
+<style>
+    .attachments-list {
+        margin-top: 15px;
+        padding: 10px 15px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        border: 1px solid #dee2e6;
+    }
+
+    .attachments-list h4 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 16px;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .attachments-list ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .attachments-list li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+        padding: 5px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .attachments-list a {
+        color: #007bff;
+        text-decoration: none;
+        flex-grow: 1;
+    }
+
+    .attachments-list a:hover {
+        text-decoration: underline;
+        color: #0056b3;
+    }
+
+    .attachments-list input[type="checkbox"] {
+        margin: 0;
+        cursor: pointer;
+    }
+
+    .attachments-list label {
+        font-size: 14px;
+        color: #dc3545;
+        cursor: pointer;
+        margin-left: 3px;
+    }
+</style>
+
 <body>
     <div class="container">
         <h1 class="page-title">
@@ -15,7 +73,7 @@
 
         <div id="alertMessage" class="alert"></div>
 
-        <form id="announcementForm" action="/courses/<?php echo $course_id; ?>/announcements/edit/<?= $announcement_id ?>" method="post" enctype="multipart/form-data">
+        <form id="announcementForm" action="/announcements/edit/<?= $announcement_id ?>" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="title"><i class="fas fa-heading"></i> Announcement Title</label>
                 <input type="text" id="title" name="title" placeholder="Enter a clear title for your announcement" value="<?= $announcement['title'] ?>" required>
@@ -56,23 +114,27 @@
                 </div>
                 <div id="fileInfo" class="file-info"></div>
 
-                <?php if (!empty($attachments)): ?>
-                    <div class="current-attachments">
-                        <h4><i class="fas fa-file"></i> Current Attachments</h4>
-                        <ul>
-                            <?php foreach ($attachments as $attachment): ?>
-                                <li>
-                                    <span><?= htmlspecialchars($attachment['file_name']) ?></span>
-                                    <button type="button" class="btn-link" onclick="downloadAttachment('<?= htmlspecialchars($attachment['file_name']) ?>')">
-                                        <i class="fas fa-download"></i> Download
-                                    </button>
-                                    <input type="checkbox" name="remove_attachments[]" value="<?= $attachment['id'] ?>">
-                                    <label>Remove</label>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
-                <?php endif; ?>
+                <div class="attachments-list" style="display: <?php echo (isset($announcement['attachments'])) ? 'block' : 'none'; ?>">
+                    <h4><i class="fas fa-file"></i> Current Attachments</h4>
+                    <?php
+                    echo "<ul>";
+                    if (isset($announcement['attachments'])) {
+                        $files = json_decode($announcement['attachments']);
+                        foreach ($files as $file) {
+                            // Remove prefix before underscore using regex
+                            $display_name = preg_replace('/^[^_]+_/', '', $file);
+                            echo "<li>
+                                <a href='#' onclick='downloadAttachment(\"" . htmlspecialchars($file) . "\")'>" . htmlspecialchars($display_name) . "</a>
+                                <input type='checkbox' name='remove_attachments[]' value='" . htmlspecialchars($file) . "'>
+                                <label>Remove</label>
+                            </li>";
+                        }
+                    }
+                    echo "</ul>";
+                    ?>
+                </div>
+                <!-- Hidden input to pass current attachments to the form submission -->
+                <input type="hidden" name="current_attachments" value="<?php echo htmlspecialchars($announcement['attachments'] ?? ''); ?>">
             </div>
 
             <div class="form-actions">
