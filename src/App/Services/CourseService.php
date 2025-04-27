@@ -169,9 +169,14 @@ class CourseService
             $freeAccessEndDateTime = $period['free_access_end_datetime'];
             $isFreeAccessPeriod = $freeAccessStartDateTime <= $currentDateTime && $freeAccessEndDateTime >= $currentDateTime;
             $period['is_free_access_period'] = $isFreeAccessPeriod;
+            $hasSpecialAccess = $this->isCourseOwner(
+                (string) $_SESSION['user'],
+                (string) $courseId
+            ) || ($_SESSION['user_role'] === 'admin');
+            $period['has_special_access'] = $hasSpecialAccess;
 
-            // Set modules for each sub period only if paid or in free access period
-            if ($isPaid || $isFreeAccessPeriod) {
+            // Set modules for each sub period only if paid or in free access period or has special access.
+            if ($isPaid || $isFreeAccessPeriod || $hasSpecialAccess) {
                 $subPeriodModules = $this->db->query(
                     "SELECT * FROM course_modules
                         WHERE sub_period_id = :sub_period_id",
@@ -1061,5 +1066,17 @@ class CourseService
             $count[$d['billing_type']] = $d['count'];
         }
         return $count;
+    }
+
+    public function isCourseOwner(string $userId, string $courseId)
+    {
+        $courseOwner = $this->db->query(
+            "SELECT * FROM courses WHERE course_id = :course_id",
+            [
+                'course_id' => $courseId
+            ]
+        )->find();
+
+        return $userId === (string)$courseOwner['tutor_id'];
     }
 }
