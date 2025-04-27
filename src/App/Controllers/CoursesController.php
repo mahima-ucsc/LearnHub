@@ -82,7 +82,7 @@ class CoursesController
 
         // Get user attendance
         if (!empty($_SESSION['user']) && $isParticipant) {
-            $attendance = $this->courseService->userAttendance($_SESSION['user']);
+            $attendance = $this->courseService->userAttendance((int)$_SESSION['user']);
             $attendanceData = [];
             foreach ($attendance as $a) {
                 $attendanceData[$a['module_id']] = $a['is_attended'];
@@ -134,7 +134,6 @@ class CoursesController
         $userReview = $this->reviewService->getCourseReview($params['course_id'], '0');
         //calculate summery of reviews
         $summeryOfReviews = $this->reviewService->getSummeryOfReview($params['course_id']);
-
         // get tutor profile
         $user = $this->userService->getUserDetailsById((string)$course['tutor_id']);
         echo $this->view->render(

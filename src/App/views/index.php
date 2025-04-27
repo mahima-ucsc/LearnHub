@@ -1705,15 +1705,6 @@
                                 <span><?php echo e($request['author']); ?></span>
                             </div>
                             <div class="request-status">
-                                <!-- <span class="time-posted">Posted 2 days ago</span> -->
-                                <span class="time-posted">
-                                    <?= e(
-                                        $request["updated_date"] === $request["created_date"] ?
-                                            "Posted on " . formatDate($request["created_date"], 'F j, Y') :
-                                            "Edited on " . formatDate($request["updated_date"], 'F j, Y')
-                                    ) ?>
-                                </span>
-
                             </div>
                         </div>
                         <h4 class="request-title"><?php echo e($request['title']); ?></h4>
