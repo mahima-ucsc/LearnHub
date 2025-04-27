@@ -117,8 +117,16 @@
                     <div class="request-footer">
                         <span class="proposals-count"><i class="fas fa-user-tie"></i> <?php echo e($request['comments_count']); ?> comments</span>
                         <div class="request-actions">
-                            <a href="#" class="edit-link">Edit</a>
-                            <a href="#" class="delete-link">Delete</a>
+                            <a href="/course/request/edit/<?= $request['request_id'] ?>" class="edit-link">Edit</a>
+                            <div>
+                                <form
+                                    action="/course/request/<?= $request['request_id'] ?>"
+                                    method="POST"
+                                    onsubmit="return confirm('Are you sure you want to delete this request?');">
+                                    <input type="hidden" name="_METHOD" value="DELETE">
+                                    <button type="submit" class="delete-link">Delete</button>
+                                </form>
+                            </div>
                             <a href="/course/request/<?php echo e($request['request_id']); ?>" class="view-details">View Details</a>
                         </div>
                     </div>
