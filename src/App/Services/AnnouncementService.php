@@ -140,7 +140,7 @@ class AnnouncementService
             FROM announcements
             INNER JOIN courses ON announcements.course_id = courses.course_id
             INNER JOIN users ON courses.tutor_id = users.user_id
-            WHERE announcements.id = :announcementId;",
+            WHERE announcements.announcement_id = :announcementId;",
             ['announcementId' => $announcementId]
         )->find();
     }

@@ -18,21 +18,21 @@
         <form id="announcementForm" action="/courses/<?php echo $course_id; ?>/announcements/edit/<?= $announcement_id ?>" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="title"><i class="fas fa-heading"></i> Announcement Title</label>
-                <input type="text" id="title" name="title" placeholder="Enter a clear title for your announcement" required>
+                <input type="text" id="title" name="title" placeholder="Enter a clear title for your announcement" value="<?= $announcement['title'] ?>" required>
             </div>
 
             <div class="form-group">
                 <label for="content"><i class="fas fa-align-left"></i> Announcement Content</label>
-                <textarea id="content" name="content" placeholder="Write your announcement here. Include all relevant details." required></textarea>
+                <textarea id="content" name="content" placeholder="Write your announcement here. Include all relevant details." <? -$announcement['content'] ?> required></textarea>
             </div>
 
             <div class="form-group">
                 <label for="category"><i class="fas fa-exclamation-circle"></i> Category</label>
                 <select id="category" name="category">
-                    <option value="assignment">Assignments</option>
-                    <option value="event">Event</option>
-                    <option value="general">General</option>
-                    <option value="reminder">Remainder</option>
+                    <option value="assignment" <?= $announcement['category'] == 'assignment' ? 'selected' : '' ?>>Assignments</option>
+                    <option value="event" <?= $announcement['category'] == 'event' ? 'selected' : '' ?>>Event</option>
+                    <option value="general" <?= $announcement['category'] == 'general' ? 'selected' : '' ?>>General</option>
+                    <option value="reminder" <?= $announcement['category'] == 'reminder' ? 'selected' : '' ?>>Reminder</option>
                 </select>
             </div>
 
@@ -55,6 +55,24 @@
                     <input type="file" id="attachments" name="attachments[]" multiple>
                 </div>
                 <div id="fileInfo" class="file-info"></div>
+
+                <?php if (!empty($attachments)): ?>
+                    <div class="current-attachments">
+                        <h4><i class="fas fa-file"></i> Current Attachments</h4>
+                        <ul>
+                            <?php foreach ($attachments as $attachment): ?>
+                                <li>
+                                    <span><?= htmlspecialchars($attachment['file_name']) ?></span>
+                                    <button type="button" class="btn-link" onclick="downloadAttachment('<?= htmlspecialchars($attachment['file_name']) ?>')">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                    <input type="checkbox" name="remove_attachments[]" value="<?= $attachment['id'] ?>">
+                                    <label>Remove</label>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <div class="form-actions">
@@ -294,6 +312,34 @@
                 }, 5000);
             }
         });
+    </script>
+    <script>
+        function downloadAttachment(fileName) {
+            const formData = new FormData();
+            formData.append("file_name", fileName);
+
+            fetch("/courses/<?= $course_id ?>/announcements/attachments", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error("Download failed");
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    alert("Error downloading file: " + error.message);
+                });
+        }
     </script>
 </body>
 <?php include $this->resolve('partials/_footer.php') ?>

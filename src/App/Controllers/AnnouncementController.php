@@ -154,9 +154,8 @@ class AnnouncementController
     public function editAnnouncementView($params)
     {
         $announcement = $this->AnnouncementService->getAnnouncementById($params['announcement_id']);
-        dd($announcement);
         echo $this->view->render(
-            "User/Tutor/create_announcement.php",
+            "User/Tutor/edit_announcement.php",
             [
                 'title' => 'Edit announcement',
                 'announcement_id' => $params['announcement_id'],
