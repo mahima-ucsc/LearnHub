@@ -25,7 +25,10 @@ class AssignmentController
     }
     public function createAssignment(array $params)
     {
-        $this->assignmentService->create($_POST, $params['courseId'], $_FILES);
+        $assignmentId = $this->assignmentService->create($_POST, $params['courseId'], $_FILES);
+        if ($assignmentId) {
+            redirectTo("/courses/{$params['courseId']}/assignment/{$assignmentId}");
+        }
     }
     public function review(array $param)
     {
@@ -86,6 +89,7 @@ class AssignmentController
     public function updateAssignment(array $params)
     {
         $this->assignmentService->update($_POST, $params['courseId'], $params['assignment_id'], $_FILES);
+        redirectTo('/courses/' . $params['courseId']);
     }
 
 
@@ -130,5 +134,11 @@ class AssignmentController
     public function removeSubmissionFile(array $param)
     {
         $this->assignmentService->removeSubmissionFile($param['submission_id'], $param['attachment_id']);
+    }
+
+    public function deleteAssignment($params)
+    {
+        $this->assignmentService->deleteAssignmentById($params['assignment_id']);
+        redirectTo('/courses/' . $params['courseId']);
     }
 }

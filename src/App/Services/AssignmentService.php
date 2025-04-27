@@ -69,6 +69,7 @@ class AssignmentService
                 }
             }
             $this->db->commit();
+            return $assignmentId;
         } catch (Exception $e) {
             $this->db->rollBack();
             throw $e;
@@ -439,5 +440,15 @@ class AssignmentService
         } catch (Exception $e) {
             return $e;
         }
+    }
+
+    public function deleteAssignmentById($assignmentId)
+    {
+        $this->db->query(
+            "DELETE FROM assignments WHERE assignment_id = :assignment_id",
+            [
+                'assignment_id' => $assignmentId,
+            ]
+        );
     }
 }

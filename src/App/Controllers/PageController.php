@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\{CourseRequestService, UserService, CourseService, AdvertisementService, PaymentService, ResourceService, ReviewService, SubjectService, ValidatorService};
+use App\Services\{CourseRequestService, UserService, CourseService, AdvertisementService, PaymentService, ResourceService, ReviewService, SubjectService, ValidatorService, ReportService};
 use APP\Config\Paths;
 use Exception;
 
@@ -22,6 +22,7 @@ class PageController
         private ReviewService $reviewService,
         private SubjectService $subjectService,
         private validatorService $validatorService,
+        private ReportService $reportService
     ) {}
 
     public function home()
@@ -75,7 +76,6 @@ class PageController
 
     public function sendHelpAndSupport()
     {
-        // dd('submitContactForm');
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $data = [
@@ -130,18 +130,37 @@ class PageController
                 $studentCount += count($participants);
             }
 
+            $totalRevenue = $this->paymentService->getTeacherCourseIncome((int)$_SESSION['user'])['revenue'];
+            $onetimeCoursePayments = $this->reportService->getTotalPaymentsForOneTimeCourses((string)$_SESSION['user'], '1970-01-01', '9999-12-31');
+            $recurringCoursePayments = $this->reportService->getTotalPaymentsForReccuringCourses((string)$_SESSION['user'], '1900-01-01', '9999-12-31');
+
+            $totalOnetimeCoursePayments = 0;
+            $totalRecurringCoursePayments = 0;
+            foreach ($onetimeCoursePayments as $payment) {
+                $totalOnetimeCoursePayments += (int)$payment['total_payments'];
+            }
+            foreach ($recurringCoursePayments as $payment) {
+                $totalRecurringCoursePayments += (int)$payment['total_payments'];
+            }
+
+            $totalCoursePayments = $totalOnetimeCoursePayments + $totalRecurringCoursePayments;
             $path = "User/Tutor/teacher_index.php";
             echo $this->view->render($path, [
                 "title" => "Teacher Dashboard",
                 "courseCount" => $courseCount,
-                "studentCount" => $studentCount
+                "studentCount" => $studentCount,
+                "totalRevenue" => $totalRevenue ?? [],
+                "totalOnetimeCoursePayments" => $totalOnetimeCoursePayments,
+                "totalRecurringCoursePayments" => $totalRecurringCoursePayments,
+                "totalCoursePayments" => $totalCoursePayments
+
             ]);
             exit;
         } elseif ($_SESSION['user_role'] === "admin") {
 
             $path = "User/Admin/admin_dashboard.php";
             $userCount = $this->userService->getUserCount();
-            $totalUsers = (int)$userCount['students'] + (int)$userCount['admin'] + (int)$userCount['teacher'];
+            $totalUsers = (int)$userCount['students'] + (int)$userCount['admin'] + (int)$userCount['teachers'];
 
             $totalCourses = $this->courseService->getNoOfCourses();
             $courseCountByType = $this->courseService->getCourseCountByType();
@@ -269,6 +288,7 @@ class PageController
             error_log("Failed to request withdrawal: " . $e->getMessage());
             redirectTo("/server-error");
         }
+        redirectTo($_SERVER['HTTP_REFERER']);
     }
     public function courseManagment()
     {

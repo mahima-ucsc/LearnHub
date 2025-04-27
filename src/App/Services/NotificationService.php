@@ -69,4 +69,33 @@ class NotificationService
             );
         }
     }
+
+    public function getNotificationsForView(
+        int $itemsPerPage,
+        int $offset,
+        string $searchTerm,
+        string $isread
+    ): array {
+        $params = [];
+        $query = "SELECT n.notification_id as notification_id, message, url, updated_at, is_read 
+        FROM notifications n INNER JOIN notification_users n_u ON n.notification_id = n_u.notification_id
+            WHERE n_u.user_id = :user_id";
+        $params['user_id'] = $_SESSION['user'];
+
+        $query .= " AND message LIKE :searchTerm";
+        $params['searchTerm'] = "%{$searchTerm}%";
+
+        if (isset($isread)) {
+            $query .= " AND is_read = :is_read";
+            $params['is_read'] = $isread;
+        }
+
+        $notificationCount = $this->db->query($query, $params)->rowCount();
+
+        $query .= " ORDER BY n.updated_at DESC LIMIT {$itemsPerPage} OFFSET {$offset}";
+
+        $notifications =  $this->db->query($query, $params)->findAll();
+
+        return ([$notifications, $notificationCount]);
+    }
 }
