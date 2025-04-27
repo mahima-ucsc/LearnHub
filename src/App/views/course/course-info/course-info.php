@@ -41,7 +41,7 @@
                             </span>
                         <?php endif; ?>
                     </div>
-                    <?php if (($course['billing_type'] === 'onetime') && $course['is_paid'] && !($course['tutor_id'] === $_SESSION['user'])): ?>
+                    <?php if (($course['billing_type'] === 'onetime') && !$course['is_paid'] && !($course['tutor_id'] === $_SESSION['user'])): ?>
                         <a href="<?= "/payment/courses/" . $course['course_id'] ?>" class="enroll-button">Enroll Now</a>
                     <?php endif; ?>
                 </div>
@@ -184,8 +184,8 @@
                                     </div>
                                 </div>
                             </div>
+                        <?php endforeach; ?>
                     </div>
-                <?php endforeach; ?>
                 </div>
             <?php endif; ?>
 
