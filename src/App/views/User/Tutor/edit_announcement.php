@@ -138,7 +138,6 @@
             </div>
 
             <div class="form-actions">
-                <button type="button" id="previewBtn" class="btn btn-secondary"><i class="fas fa-eye"></i> Preview</button>
                 <button type="submit" class="btn"><i class="fas fa-paper-plane"></i> Publish Announcement</button>
             </div>
         </form>
@@ -276,62 +275,6 @@
                 } else {
                     fileInfo.innerHTML = '';
                 }
-            });
-
-            // Preview announcement
-            previewBtn.addEventListener('click', function() {
-                const title = titleInput.value.trim();
-                const content = contentInput.value.trim();
-                const category = categorySelect.value;
-
-                if (!title || !content) {
-                    showAlert('Please fill in both title and content fields for preview.', 'danger');
-                    return;
-                }
-
-                previewTitle.textContent = title;
-                previewContent.textContent = content;
-
-                // Style based on category
-                previewCategory.classList.add('category');
-                let categoryIcon = '';
-                switch (category) {
-                    case 'Assignments':
-                        categoryIcon = '<i class="fas fa-tasks"></i> ';
-                        break;
-                    case 'Event':
-                        categoryIcon = '<i class="fas fa-calendar-alt"></i> ';
-                        break;
-                    case 'General':
-                        categoryIcon = '<i class="fas fa-info-circle"></i> ';
-                        break;
-                    case 'Reminder':
-                        categoryIcon = '<i class="fas fa-bell"></i> ';
-                        break;
-                    default:
-                        categoryIcon = '<i class="fas fa-exclamation-triangle"></i> ';
-                }
-
-                previewCategory.innerHTML = categoryIcon + category;
-
-                // Display attached files in preview
-                attachmentList.innerHTML = '';
-                if (fileInput.files.length > 0) {
-                    for (let i = 0; i < fileInput.files.length; i++) {
-                        const file = fileInput.files[i];
-                        const listItem = document.createElement('li');
-                        listItem.innerHTML = `<a href="#" onclick="return false;" title="Download ${file.name}"><i class="fas fa-download"></i> ${file.name}</a>`;
-                        attachmentList.appendChild(listItem);
-                    }
-                    document.getElementById('previewAttachments').style.display = 'block';
-                } else {
-                    document.getElementById('previewAttachments').style.display = 'none';
-                }
-
-                previewSection.style.display = 'block';
-                previewSection.scrollIntoView({
-                    behavior: 'smooth'
-                });
             });
 
             // Form submission
