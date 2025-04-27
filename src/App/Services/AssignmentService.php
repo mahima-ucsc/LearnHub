@@ -441,4 +441,14 @@ class AssignmentService
             return $e;
         }
     }
+
+    public function deleteAssignmentById($assignmentId)
+    {
+        $this->db->query(
+            "DELETE FROM assignments WHERE assignment_id = :assignment_id",
+            [
+                'assignment_id' => $assignmentId,
+            ]
+        );
+    }
 }

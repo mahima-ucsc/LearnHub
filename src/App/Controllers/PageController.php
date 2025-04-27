@@ -76,7 +76,6 @@ class PageController
 
     public function sendHelpAndSupport()
     {
-        // dd('submitContactForm');
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $data = [
@@ -161,7 +160,7 @@ class PageController
 
             $path = "User/Admin/admin_dashboard.php";
             $userCount = $this->userService->getUserCount();
-            $totalUsers = (int)$userCount['students'] + (int)$userCount['admin'] + (int)$userCount['teacher'];
+            $totalUsers = (int)$userCount['students'] + (int)$userCount['admin'] + (int)$userCount['teachers'];
 
             $totalCourses = $this->courseService->getNoOfCourses();
             $courseCountByType = $this->courseService->getCourseCountByType();
@@ -289,6 +288,7 @@ class PageController
             error_log("Failed to request withdrawal: " . $e->getMessage());
             redirectTo("/server-error");
         }
+        redirectTo($_SERVER['HTTP_REFERER']);
     }
     public function courseManagment()
     {

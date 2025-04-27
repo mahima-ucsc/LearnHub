@@ -170,6 +170,8 @@ function registerRoutes(App $app)
     $app->post('/courses/{course_id}/announcements/create', [AnnouncementController::class, 'createAnnouncements'], [AuthRequiredMiddleware::class]);
     $app->get('/courses/{course_id}/announcements', [AnnouncementController::class, 'announcementsListView'], [AuthRequiredMiddleware::class]);
     $app->delete('/announcements/delete/{announcement_id}', [AnnouncementController::class, 'deleteAnnouncement'], [AuthRequiredMiddleware::class]);
+    $app->get('/announcements/edit/{announcement_id}', [AnnouncementController::class, 'editAnnouncementView'], [AuthRequiredMiddleware::class]);
+    $app->post('/announcements/edit/{announcement_id}', [AnnouncementController::class, 'editAnnouncement'], [AuthRequiredMiddleware::class]);
     $app->post('/announcements/mark-as-read', [AnnouncementController::class, 'markAsRead'], [AuthRequiredMiddleware::class]);
     $app->post('/announcements/mark_as', [AnnouncementController::class, 'markAsButtonToggle'], [AuthRequiredMiddleware::class]);
     $app->post('/announcements/mark-as-unread', [AnnouncementController::class, 'markAsUnread'], [AuthRequiredMiddleware::class]);
@@ -202,6 +204,7 @@ function registerRoutes(App $app)
     $app->post('/courses/{courseId}/assignment/{assignment_id}/update', [AssignmentController::class, 'updateAssignment']);
     $app->get('/courses/{courseId}/assignment/{assignment_id}', [AssignmentController::class, 'assignmentView']);
     $app->post('/courses/{courseId}/assignment/{assignment_id}/submit', [AssignmentController::class, 'submitAssignment']);
+    $app->delete('/courses/{courseId}/assignment/{assignment_id}/delete', [AssignmentController::class, 'deleteAssignment']);
 
     $app->get('/assignment/{assignment_id}/resource/{resource_id}', [AssignmentController::class, 'getResource']);
 
