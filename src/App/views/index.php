@@ -1566,7 +1566,7 @@
                                         <?php endif; ?>
                                         <div class="ad-footer">
                                             <div class="ad-pricing">
-                                                <div class="ad-price">Rs. <?php echo e($ad['price']) - e($ad['price']) * (e($ad['discount']) / 100); ?></div>
+                                                <div class="ad-price">Rs. <?php echo e((int)$ad['price']) - e((int)$ad['price']) * (int)(e($ad['discount']) / 100); ?></div>
                                                 <div class="ad-original-price">Rs. <?php echo e($ad['price']); ?></div>
                                                 <div class="ad-discount"><?php echo e($ad['discount']); ?>% OFF</div>
                                             </div>

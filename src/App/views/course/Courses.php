@@ -59,7 +59,7 @@
                     <select class="filter-select" name="type">
                         <option value="all" <?php echo (!isset($_GET['type']) || $_GET['type'] === 'all') ? 'selected' : ''; ?>>Any type</option>
                         <option value="onetime" <?php echo (isset($_GET['type']) && $_GET['type'] === 'onetime') ? 'selected' : ''; ?>>One time payment</option>
-                        <option value="recurring" <?php echo (isset($_GET['type']) && $_GET['type'] === 'recurring') ? 'selected' : ''; ?>>Monthly payment</option>
+                        <option value="recurring" <?php echo (isset($_GET['type']) && $_GET['type'] === 'recurring') ? 'selected' : ''; ?>>Recurring payment</option>
                     </select>
                 </div>
                 <div class="filter-group">
@@ -139,7 +139,7 @@
                             <!-- <?php echo e($course['price']); ?> -->
                             <?php if (isset($course['billing_type'])): ?>
                                 <span>
-                                    <?php echo $course['billing_type'] === 'onetime' ? 'Rs.' . e($course['price']) : '<i class="fas fa-money-bill" style="color: var(--success);"></i> Monthly payment'; ?>
+                                    <?php echo $course['billing_type'] === 'onetime' ? 'Rs.' . e($course['price']) : '<i class="fas fa-money-bill" style="color: var(--success);"></i> Recurring payment'; ?>
                                 </span>
                                 <span class="onetime-payment-tag">
                                     <?php echo $course['billing_type'] === 'onetime' ? 'onetime payment' : ''; ?>
@@ -160,16 +160,4 @@
     <?php include $this->resolve('components/pagination.php'); ?>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize any client-side functionality needed
-        const clearFiltersBtn = document.getElementById('clearFilters');
-        if (clearFiltersBtn) {
-            clearFiltersBtn.addEventListener('click', function() {
-                window.location.href = '<?php echo $_SERVER['PHP_SELF']; ?>';
-                showLoader();
-            });
-        }
-    });
-</script>
 <?php include $this->resolve("partials/_footer.php"); ?>

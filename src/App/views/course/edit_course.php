@@ -67,7 +67,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="courseStartTime" class="form-label">Start Time*</label>
-                    <input type="time" name="courseStartTime" id="courseStartTime" class="form-control" value="<?= e($course['end_time']); ?>">
+                    <input type="time" name="courseStartTime" id="courseStartTime" class="form-control" value="<?= e($course['start_time']); ?>">
                     <?php if (array_key_exists('courseStartTime', $errors)) : ?>
                         <div class="error-message">
                             <?php echo e($errors['courseStartTime'][0]); ?>

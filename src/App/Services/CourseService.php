@@ -541,22 +541,6 @@ class CourseService
         return $subjects;
     }
 
-
-    /**
-     * Creates a new course with associated modules, subscription periods, and resources.
-     * 
-     * This method handles the creation of both one-time and recurring payment courses with their
-     * respective modules. For recurring courses, it also creates subscription periods with pricing 
-     * and optional free trial periods. Course resources (attachments) are uploaded and linked to 
-     * their respective modules.
-     * 
-     * The entire process is wrapped in a transaction to ensure data integrity.
-     *
-     * @param array $courseData An associative array containing course details
-     * 
-     * @param array $files Array of file data for course resources/attachments
-     * 
-     */
     public function createCourse(array $courseData, array $files)
     {
         $this->db->beginTransaction();
