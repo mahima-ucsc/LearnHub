@@ -10,7 +10,7 @@
     </div>
 
     <div class="assignment-card">
-        <?php if (!empty($_SESSION['user']) && $_SESSION['user'] == $assignment['tutor_id']): ?>
+        <?php if (!empty($_SESSION['user']) && $_SESSION['user'] === $assignment['tutor_id']): ?>
             <div class="teacher-actions">
                 <a href="#" onclick="showModal('/courses/<?php echo e($course['course_id']); ?>/assignment/<?php echo e($assignment['assignment_id']); ?>/delete')" class="teacher-action-btn delete-btn">
                     <i class="fa-solid fa-trash-alt"></i>
@@ -79,10 +79,10 @@
                     <h3 class="upload-text">Drag and drop your files here</h3>
                     <p class="upload-subtext">or click to browse files from your computer</p>
                     <input type="file" id="fileInput" class="file-input" name="files[]" multiple>
-                    <button class="btn" onclick="preventDefault();">
+                    <!-- <button class="btn">
                         <i class="fas fa-upload"></i>
                         Select Files
-                    </button>
+                    </button> -->
                 </div>
 
                 <div class="selected-files" id="selectedFiles" style="margin-top: 1.5rem; display: none;">
@@ -91,7 +91,7 @@
                 </div>
 
                 <div class="submit-section">
-                    <button type="submit" class="btn" id="submitButton" onclick="preventDefault();">
+                    <button type="submit" class="btn" id="submitButton">
                         <i class="fas fa-paper-plane"></i>
                         Submit Assignment
                     </button>

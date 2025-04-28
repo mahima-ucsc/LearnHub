@@ -27,14 +27,17 @@ class PageController
 
     public function home()
     {
-        $advertisements = $this->advertisementService->getApprovedAds();
+        $userInterest = $this->userService->getUserInterest((string)$_SESSION['user']);
+        if (!empty($_SESSION['user']) && !empty($userInterest)) {
+            $advertisements = $this->advertisementService->getUserInterestAds((string)$_SESSION['user']);
+        } else {
+            $advertisements = $this->advertisementService->getApprovedAds();
+        }
         $courseCount = $this->courseService->getNoOfCourses();
         $roundedCourseCount = floor($courseCount / 10) * 10;
         $subjectCourseCount = $this->courseService->getCourseCountBySubject(10);
         $recentCourseRequests = $this->courseRequestService->getRecentCourseRequest(2);
 
-        //TODO: must implement after development of resource component is finished
-        // $recentResources = $this->resourceService->getRecentResource(3);
 
         echo $this->view->render('index.php', [
             "title" => "Home",
