@@ -152,7 +152,7 @@ class ReviewService
             ]
         )->findAll();
 
-        foreach ($userReview as &$review) {  // Note the & reference operator
+        foreach ($userReview as &$review) {
             if ($review['profile_picture_url'] !== null) {
                 $url = Paths::UPLOAD_FOLDER_RELATIVE_TO_PUBLIC . "/" .
                     Paths::RELATIVE_USER_PROFILE_PICTURE_UPLOADS .
@@ -161,7 +161,6 @@ class ReviewService
                 $review['profile_picture_url'] = $url;
             }
         }
-        unset($review); // Unset the reference to avoid accidental modifications later
 
         return $userReview;
     }
