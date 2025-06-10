@@ -96,4 +96,4 @@
 
 #### 9. **Error Handling**
 
-- `/{any:.*}` - Catch-all route for 404 page
+- `/{any:.*}` - Catch all route for 404 page
